@@ -1775,7 +1775,7 @@ async function handleAuthButton() {
     return;
   }
   if (S.isPremium) logout();
-  else await login();
+  else window.location.href = '/login.html';
 }
 
 /* ── PRICING ── */
