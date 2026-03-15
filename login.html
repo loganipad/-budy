@@ -10,6 +10,7 @@
 
 <!-- Auth0 Universal Login SDK — REQUIRED, do not remove -->
 <script src="https://cdn.auth0.com/ulp/react-components/1.48.1/auth0-acul-js.production.min.js"></script>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 
 <style>
 :root {
@@ -571,6 +572,25 @@ const AUTH0_REDIRECT_URI = window.location.origin;
 
 let loginInstance = null;
 let signupInstance = null;
+let spaAuthClient = null;
+
+async function ensureSpaAuthClient() {
+  if (spaAuthClient) return spaAuthClient;
+  if (!window.auth0 || !window.auth0.createAuth0Client) {
+    throw new Error('Auth SDK failed to load.');
+  }
+
+  spaAuthClient = await window.auth0.createAuth0Client({
+    domain: AUTH0_DOMAIN,
+    clientId: AUTH0_CLIENT_ID,
+    authorizationParams: {
+      redirect_uri: AUTH0_REDIRECT_URI
+    },
+    cacheLocation: 'localstorage'
+  });
+
+  return spaAuthClient;
+}
 
 async function initAuth0() {
   try {
@@ -801,15 +821,14 @@ async function loginWithGoogle() {
         return;
       }
 
-      // Standalone fallback for deployments outside Auth0-hosted transaction context.
-      const params = new URLSearchParams({
-        client_id: AUTH0_CLIENT_ID,
-        redirect_uri: AUTH0_REDIRECT_URI,
-        response_type: 'code',
-        scope: 'openid profile email',
-        connection: 'google-oauth2'
+      // Standalone fallback uses Auth0 SPA SDK so PKCE/session state is preserved.
+      const client = await ensureSpaAuthClient();
+      await client.loginWithRedirect({
+        authorizationParams: {
+          redirect_uri: AUTH0_REDIRECT_URI,
+          connection: 'google-oauth2'
+        }
       });
-      window.location.href = `https://${AUTH0_DOMAIN}/authorize?${params.toString()}`;
     }
   } catch (err) {
     console.error('Google login error:', err);
