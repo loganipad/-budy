@@ -565,6 +565,10 @@ footer {
    Docs: https://auth0.com/docs/customize/universal-login-pages/advanced-customization
    ================================================================ */
 
+const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
+const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
+const AUTH0_REDIRECT_URI = window.location.origin;
+
 let loginInstance = null;
 let signupInstance = null;
 
@@ -791,10 +795,25 @@ async function loginWithGoogle() {
     if (loginInstance && loginInstance.federatedLogin) {
       await loginInstance.federatedLogin({ connection: 'google-oauth2' });
     } else {
-      submitAuth0Form({ connection: 'google-oauth2', action: 'default' });
+      const form = document.getElementById('form') || document.querySelector('form[method="post"]');
+      if (form) {
+        submitAuth0Form({ connection: 'google-oauth2', action: 'default' });
+        return;
+      }
+
+      // Standalone fallback for deployments outside Auth0-hosted transaction context.
+      const params = new URLSearchParams({
+        client_id: AUTH0_CLIENT_ID,
+        redirect_uri: AUTH0_REDIRECT_URI,
+        response_type: 'code',
+        scope: 'openid profile email',
+        connection: 'google-oauth2'
+      });
+      window.location.href = `https://${AUTH0_DOMAIN}/authorize?${params.toString()}`;
     }
   } catch (err) {
     console.error('Google login error:', err);
+    showAlert('login-alert', 'login-alert-msg', 'Google sign-in failed. Please try again.');
   }
 }
 
