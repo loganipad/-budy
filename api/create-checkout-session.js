@@ -31,7 +31,9 @@ function normalizeSecretKey(input) {
   // Handle common typo variants like SKlive... / sklive... / SKtest... / sktest...
   key = key
     .replace(/^sklive_?/i, 'sk_live_')
-    .replace(/^sktest_?/i, 'sk_test_');
+    .replace(/^sktest_?/i, 'sk_test_')
+    .replace(/^sk[_-]?live_?/i, 'sk_live_')
+    .replace(/^sk[_-]?test_?/i, 'sk_test_');
 
   return key;
 }
