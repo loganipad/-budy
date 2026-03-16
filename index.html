@@ -209,8 +209,8 @@ input,select{font-family:inherit}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-.phone-prog{padding:14px 20px 20px;display:flex;gap:8px}
-.prog-dot{flex:1;height:10px;border-radius:999px;background:#cbd5e1;cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:1}
+.phone-prog{padding:14px 20px 20px;display:flex;justify-content:center;gap:8px}
+.prog-dot{width:56px;height:10px;border-radius:999px;background:#cbd5e1;cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:1;flex-shrink:0}
 .prog-dot.done{background:var(--green)}
 .prog-dot.cur{background:var(--brand);transform:translateY(0)}
 .prog-dot:active{transform:scale(.94)}
@@ -2172,17 +2172,12 @@ function renderLandingDemo(index) {
   });
 
   dots.innerHTML = '';
-  const indicatorSlots = 10;
-  const maxQuestionIndex = Math.max(1, LANDING_DEMO_QUESTIONS.length - 1);
-  const currentSlot = Math.round((index / maxQuestionIndex) * (indicatorSlots - 1));
-
-  Array.from({ length: indicatorSlots }).forEach((_, i) => {
+  LANDING_DEMO_QUESTIONS.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.type = 'button';
-    dot.className = 'prog-dot' + (i < currentSlot ? ' done' : i === currentSlot ? ' cur' : '');
-    const mappedQuestion = Math.round((i / (indicatorSlots - 1)) * maxQuestionIndex);
-    dot.setAttribute('aria-label', 'Go to demo question ' + (mappedQuestion + 1));
-    dot.onclick = () => renderLandingDemo(mappedQuestion);
+    dot.className = 'prog-dot' + (i < index ? ' done' : i === index ? ' cur' : '');
+    dot.setAttribute('aria-label', 'Go to demo question ' + (i + 1));
+    dot.onclick = () => renderLandingDemo(i);
     dots.appendChild(dot);
   });
 }
