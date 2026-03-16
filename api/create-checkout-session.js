@@ -9,6 +9,26 @@ function json(res, status, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function normalizeSecretKey(input) {
+  if (!input) return '';
+
+  let key = String(input).trim();
+
+  // Remove wrapping quotes if they were pasted with quotes in env vars.
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+
+  // Handle common typo variants like SKlive... / SKtest...
+  key = key.replace(/^SKlive/i, 'sk_live_').replace(/^SKtest/i, 'sk_test_');
+
+  return key;
+}
+
+function isLikelyValidSecretKey(key) {
+  return /^sk_(live|test)_[A-Za-z0-9]+$/.test(key);
+}
+
 async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl }) {
   const body = new URLSearchParams();
   body.set('mode', 'subscription');
@@ -41,9 +61,12 @@ export default async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
-  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const secretKey = normalizeSecretKey(process.env.STRIPE_SECRET_KEY);
   if (!secretKey) {
     return json(res, 500, { error: 'Missing STRIPE_SECRET_KEY environment variable.' });
+  }
+  if (!isLikelyValidSecretKey(secretKey)) {
+    return json(res, 500, { error: 'Invalid STRIPE_SECRET_KEY format. Use sk_live_... or sk_test_...' });
   }
 
   const plan = (req.body && req.body.plan ? String(req.body.plan) : 'monthly').toLowerCase();
@@ -70,6 +93,6 @@ export default async function handler(req, res) {
     });
     return json(res, 200, { url: session.url, id: session.id });
   } catch (err) {
-    return json(res, 500, { error: err.message || 'Unable to create checkout session.' });
+    return json(res, 500, { error: 'Unable to create checkout session. Check Stripe key and price IDs.' });
   }
 }
