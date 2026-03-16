@@ -209,8 +209,8 @@ input,select{font-family:inherit}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-.phone-prog{padding:14px 20px 20px;display:flex;gap:4px}
-.prog-dot{flex:1;height:5px;border-radius:3px;background:var(--line);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:1}
+.phone-prog{padding:14px 20px 20px;display:flex;gap:4px;width:75%;margin:0 auto}
+.prog-dot{flex:1;height:1px;border-radius:2px;background:var(--line);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:1}
 .prog-dot.done{background:var(--green)}
 .prog-dot.cur{background:var(--brand);transform:translateY(0)}
 .prog-dot:active{transform:scale(.94)}
@@ -427,15 +427,25 @@ input,select{font-family:inherit}
   .price-card.featured{transform:scale(1)}
 }
 
-.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:42px}
-.solution-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm)}
-.solution-card h3{font-size:.95rem;font-weight:800;margin-bottom:8px}
-.solution-card p{font-size:.84rem;color:var(--muted);line-height:1.65}
+.solution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+.solution-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
+.solution-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md);border-color:rgba(26,86,219,.2)}
+.solution-card h3{font-size:.92rem;font-weight:800;margin-bottom:7px}
+.solution-card p{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.solution-preview{height:84px;border-radius:12px;background:linear-gradient(180deg,#0f172a,#1e293b);padding:10px;display:flex;flex-direction:column;gap:7px;overflow:hidden;position:relative}
+.solution-preview::before{content:'';position:absolute;inset:-30% -20%;background:radial-gradient(circle at 20% 20%,rgba(59,130,246,.28),transparent 45%);opacity:.45;transition:opacity .25s var(--ease)}
+.solution-card:hover .solution-preview::before{opacity:.8}
+.sp-row{height:8px;border-radius:5px;background:rgba(148,163,184,.28);position:relative;overflow:hidden}
+.sp-row::after{content:'';position:absolute;left:-45%;top:0;bottom:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent)}
+.solution-card:hover .sp-row::after{animation:scan 1.1s linear infinite}
+.sp-chip{width:42%;height:12px;border-radius:999px;background:rgba(16,185,129,.8)}
+.solution-card.blank .solution-preview{display:flex;align-items:center;justify-content:center;color:rgba(226,232,240,.6);font-size:.78rem;font-weight:700}
+@keyframes scan{from{left:-45%}to{left:120%}}
 
 /* ============================================================
    TESTIMONIALS
    ============================================================ */
-.test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:48px}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
 .test-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;transition:all .22s var(--ease)}
 .test-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
 .test-stars{color:var(--gold);font-size:.875rem;margin-bottom:12px;letter-spacing:2px}
@@ -445,6 +455,8 @@ input,select{font-family:inherit}
   font-weight:800;font-size:.8125rem;color:#fff;flex-shrink:0}
 .test-name{font-size:.875rem;font-weight:700;color:var(--ink)}
 .test-meta{font-size:.775rem;color:var(--muted)}
+@media(max-width:980px){.test-grid,.solution-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.test-grid,.solution-grid{grid-template-columns:1fr}}
 
 /* ============================================================
    CTA BAND
@@ -1028,7 +1040,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       Budy.Study
     </a>
     <div class="nav-right">
-      <a href="#features" class="btn btn-ghost btn-sm nav-link-hide">Features</a>
+      <a href="#features" class="btn btn-ghost btn-sm nav-link-hide">Why Budy?</a>
       <a href="#solutions" class="btn btn-ghost btn-sm nav-link-hide">Solutions</a>
       <a href="#pricing" class="btn btn-ghost btn-sm nav-link-hide">Pricing</a>
       <button class="btn btn-ghost btn-sm" onclick="showDash()">My Progress</button>
@@ -1038,7 +1050,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <button class="btn btn-primary btn-sm" onclick="openOnboard()">Start Free Test</button>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
         <div class="mobile-menu-panel" id="mobile-menu-panel">
-          <a class="mobile-menu-link" href="#features" onclick="closeMobileMenu()">Features</a>
+          <a class="mobile-menu-link" href="#features" onclick="closeMobileMenu()">Why Budy?</a>
           <a class="mobile-menu-link" href="#solutions" onclick="closeMobileMenu()">Solutions</a>
           <a class="mobile-menu-link" href="#pricing" onclick="closeMobileMenu()">Pricing</a>
           <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();showDash();return false">Progress</a>
@@ -1088,39 +1100,6 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <div class="phone-exp" id="demo-exp"></div>
       </div>
       <div class="phone-prog" id="demo-dots"></div>
-    </div>
-  </div>
-</section>
-
-<!-- SOLUTIONS -->
-<section class="section" id="solutions">
-  <div class="wrap">
-    <div class="section-center">
-      <div class="sec-eyebrow">Solutions</div>
-      <h2 class="sec-head">SAT / PSAT test prep, built around your mistakes</h2>
-      <p class="sec-sub">Everything below is designed to turn wrong answers into long-term score gains.</p>
-    </div>
-    <div class="solution-grid">
-      <div class="solution-card">
-        <h3>📚 SAT / PSAT Test Prep Paths</h3>
-        <p>Targeted reading, writing, and math drills with adaptive pacing so each study session focuses on your highest-impact gaps.</p>
-      </div>
-      <div class="solution-card">
-        <h3>🗂 Printable Flashcards</h3>
-        <p>Generate flashcards from wrong answers with print mode guides: fold line for booklet-style review and cut lines to split cards cleanly.</p>
-      </div>
-      <div class="solution-card">
-        <h3>🧪 Extra Quizzes from Missed Skills</h3>
-        <p>Auto-build mini quizzes on the exact concepts you missed so practice is focused instead of random.</p>
-      </div>
-      <div class="solution-card">
-        <h3>🤖 AI Deep Dive Explanations</h3>
-        <p>Expandable explanations break down why each distractor is wrong and which clue leads to the correct answer.</p>
-      </div>
-      <div class="solution-card">
-        <h3>📈 Test & Score Analytics</h3>
-        <p>Track score trend, strongest skills, recurring misses, pacing, and improvement by section over time.</p>
-      </div>
     </div>
   </div>
 </section>
@@ -1403,6 +1382,65 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="test-avi" style="background:var(--rose)">PR</div>
           <div><div class="test-name">Priya R.</div><div class="test-meta">Parent · Son scored 1390</div></div>
         </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-body">"The daily mini-quizzes fixed my weakest math topics. I finally stopped guessing on linear models."</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:#0ea5e9">NT</div>
+          <div><div class="test-name">Noah T.</div><div class="test-meta">10th Grade · +170 pts</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-body">"The explanation mode feels like tutoring. I can see exactly why each wrong answer is tempting."</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:#8b5cf6">ES</div>
+          <div><div class="test-name">Emma S.</div><div class="test-meta">9th Grade · PSAT prep</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="section" id="solutions">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Solutions</div>
+      <h2 class="sec-head">Tools that convert missed questions into higher scores</h2>
+      <p class="sec-sub">Hover each card to preview how the workflow behaves in real study sessions.</p>
+    </div>
+    <div class="solution-grid">
+      <div class="solution-card">
+        <h3>📚 SAT / PSAT Test Prep</h3>
+        <p>Adaptive section plans that focus on your biggest score-impact gaps first.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3>🗂 Wrong-Answer Flashcards</h3>
+        <p>Turn misses into printable flashcards with fold and cut guides for fast review.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3>🧪 Extra Quizzes</h3>
+        <p>Auto-generated mini quizzes from weak skills so practice stays targeted.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3>🤖 AI Deep-Dive Explanations</h3>
+        <p>Animated explanation flow showing why each distractor fails and what wins.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3>📈 Test / Score Analytics</h3>
+        <p>Track score trend, pacing, and skill-level movement over time.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card blank">
+        <h3>🧩 Coming Soon</h3>
+        <p>Reserved slot for the next premium solution module.</p>
+        <div class="solution-preview">Preview placeholder</div>
       </div>
     </div>
   </div>
