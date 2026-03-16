@@ -19,8 +19,10 @@ function normalizeSecretKey(input) {
     key = key.slice(1, -1).trim();
   }
 
-  // Handle common typo variants like SKlive... / SKtest...
-  key = key.replace(/^SKlive/i, 'sk_live_').replace(/^SKtest/i, 'sk_test_');
+  // Handle common typo variants like SKlive... / sklive... / SKtest... / sktest...
+  key = key
+    .replace(/^sklive_?/i, 'sk_live_')
+    .replace(/^sktest_?/i, 'sk_test_');
 
   return key;
 }
