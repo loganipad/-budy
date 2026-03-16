@@ -28,7 +28,7 @@ function normalizeSecretKey(input) {
 }
 
 function isLikelyValidSecretKey(key) {
-  return /^sk_(live|test)_/.test(key);
+  return /^(sk|rk)_(live|test)_/.test(key);
 }
 
 function looksMaskedKey(key) {
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
     return json(res, 500, { error: 'STRIPE_SECRET_KEY appears masked or incomplete. Paste the full key from Stripe API Keys.' });
   }
   if (!isLikelyValidSecretKey(secretKey)) {
-    return json(res, 500, { error: 'Invalid STRIPE_SECRET_KEY format. Use sk_live_... or sk_test_...' });
+    return json(res, 500, { error: 'Invalid STRIPE_SECRET_KEY format. Use sk_live_/sk_test_ (or rk_live_/rk_test_ restricted key).' });
   }
 
   const plan = (req.body && req.body.plan ? String(req.body.plan) : 'monthly').toLowerCase();
