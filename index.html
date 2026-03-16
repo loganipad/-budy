@@ -189,32 +189,33 @@ input,select{font-family:inherit}
 
 /* Mock phone preview */
 .hero-phone{
-  position:relative;z-index:1;max-width:340px;margin:48px auto 0;
-  background:var(--white);border-radius:28px;
+  position:relative;z-index:1;max-width:312px;margin:38px auto 0;
+  background:var(--white);border-radius:22px;
   box-shadow:var(--sh-xl),0 0 0 1px rgba(255,255,255,.06);
   overflow:hidden;animation:phoneFloat 5s ease-in-out infinite;
 }
 @keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.phone-bar{background:var(--ink-80);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.phone-bar{background:var(--ink-80);padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
 .phone-logo{font-size:.8rem;font-weight:800;color:#fff}
-.phone-timer{font-family:var(--font-mono);font-size:.8125rem;color:var(--gold-l);font-weight:600}
-.phone-body{padding:20px}
+.phone-timer{font-family:var(--font-mono);font-size:.75rem;color:var(--gold-l);font-weight:600}
+.phone-body{padding:14px 14px 10px}
 .phone-q-label{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.phone-q{font-size:.875rem;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.phone-q{font-size:.82rem;font-weight:700;color:var(--ink);line-height:1.45;margin-bottom:12px}
+.phone-copy{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:10px}
 .phone-opts{display:flex;flex-direction:column;gap:8px}
-.phone-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;
-  border-radius:10px;border:1.5px solid var(--line);font-size:.8125rem;color:var(--slate);font-weight:500}
+.phone-opt{display:flex;align-items:center;gap:10px;padding:8px 10px;
+  border-radius:9px;border:1.5px solid var(--line);font-size:.77rem;color:var(--slate);font-weight:600}
 .phone-opt.sel{border-color:var(--brand);background:var(--brand-pale);color:var(--brand);font-weight:700}
 .phone-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green);animation:demoPulse .35s var(--ease)}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-.phone-prog{padding:14px 20px 20px;display:flex;gap:4px}
-.prog-dot{flex:1;height:5px;border-radius:3px;background:var(--line);cursor:pointer;transition:transform .15s,var(--ease),background .2s}
+.phone-prog{padding:8px 0 14px;display:flex;justify-content:center;gap:8px}
+.prog-dot{width:8px;height:8px;border-radius:3px;background:#cbd5e1;cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:.8}
 .prog-dot.done{background:var(--green)}
-.prog-dot.cur{background:var(--brand)}
+.prog-dot.cur{background:var(--brand);opacity:1;transform:scale(1.15)}
 .prog-dot:active{transform:scale(.94)}
-.phone-exp{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.75rem;line-height:1.5;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
+.phone-exp{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:.72rem;line-height:1.45;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
 .phone-exp.show{opacity:1;transform:translateY(0)}
 .phone-exp.good{border-left-color:var(--green);background:var(--green-pale)}
 .phone-exp.bad{border-left-color:var(--rose);background:var(--rose-pale)}
@@ -504,6 +505,7 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
   width:100%;max-width:480px;max-height:92vh;overflow-y:auto;
   transform:translateY(20px) scale(.97);transition:transform .35s var(--ease)}
 .overlay.open .modal{transform:translateY(0) scale(1)}
+.modal.paywall-modal-shell{max-width:430px;max-height:84vh;overflow:hidden;position:relative}
 .modal-hd{padding:28px 28px 0;display:flex;justify-content:space-between;align-items:flex-start}
 .modal-hd-text h2{font-size:1.25rem;font-weight:800;color:var(--ink)}
 .modal-hd-text p{font-size:.875rem;color:var(--muted);margin-top:4px}
@@ -567,6 +569,8 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .paywall-perks{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;text-align:left}
 .pw-perk{display:flex;align-items:center;gap:10px;font-size:.875rem;font-weight:600;color:var(--ink)}
 .pw-perk-icon{font-size:1rem;width:28px;text-align:center}
+.paywall-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.paywall-close:hover{color:var(--ink);border-color:#cbd5e1}
 
 /* ============================================================
    LOADING
@@ -1081,6 +1085,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="phone-body">
         <div class="phone-q-label" id="demo-q-label">Question 1 of 5</div>
         <div class="phone-q" id="demo-q-text">Loading question...</div>
+        <div class="phone-copy">Tap one answer to see instant coaching.</div>
         <div class="phone-opts" id="demo-opts"></div>
         <div class="phone-exp" id="demo-exp"></div>
       </div>
@@ -1313,8 +1318,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
 
       <!-- WEEKLY -->
-      <div class="price-card featured">
-        <div class="best-badge">Starter Paid</div>
+      <div class="price-card">
         <div class="price-tier" style="color:rgba(255,255,255,.8)">Weekly</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="weekly" data-rate="weekly">9.99</span></div>
         <div class="price-billed" style="color:rgba(255,255,255,.65)">
@@ -1330,7 +1334,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
 
       <!-- MONTHLY -->
-      <div class="price-card">
+      <div class="price-card featured">
+        <div class="best-badge">BEST VALUE</div>
         <div class="price-tier">Monthly</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="monthly" data-rate="weekly">4.99</span></div>
         <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="monthly-bill-main">Billed $19.99/month</strong> · ~50% lower than weekly equivalent</div>
@@ -1340,7 +1345,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Includes AI deep-dive explanations</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Flashcards + extra wrong-skill quizzes</div>
         </div>
-        <button class="btn-price-ghost" onclick="selectPlan('monthly');openPaywall('pricing')">Choose Monthly</button>
+        <button class="btn-price-ghost" onclick="selectPlan('monthly');openPaywall('pricing')">BEST VALUE</button>
       </div>
 
       <!-- ANNUAL -->
@@ -1734,36 +1739,35 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
      PAYWALL MODAL
      ============================================================ -->
 <div class="overlay" id="paywall-overlay" role="dialog" aria-modal="true">
-  <div class="modal">
-    <div class="modal-bd" style="padding-top:28px">
+  <div class="modal paywall-modal-shell">
+    <button class="paywall-close" onclick="closePaywall()" aria-label="Close">✕</button>
+    <div class="modal-bd" style="padding:22px 22px 12px">
       <div class="paywall-modal">
-        <div class="paywall-icon">🚀</div>
-        <h2>Unlock Budy.Study Premium</h2>
-        <p id="paywall-msg">Get full-length tests, unlimited tries, and step-by-step explanations that help you actually understand what you missed.</p>
+        <div class="paywall-icon" style="width:58px;height:58px;font-size:1.5rem;margin-bottom:14px">🚀</div>
+        <h2 style="font-size:1.2rem;margin-bottom:6px">Unlock Budy.Study Premium</h2>
+        <p id="paywall-msg" style="font-size:.84rem;line-height:1.55;margin-bottom:14px">Full tests, instant AI explanations, and smarter score growth.</p>
         <div class="paywall-perks">
           <div class="pw-perk"><span class="pw-perk-icon">📋</span> Full 27–49 question practice tests</div>
-          <div class="pw-perk"><span class="pw-perk-icon">♾️</span> Unlimited attempts — practice every day</div>
-          <div class="pw-perk"><span class="pw-perk-icon">💡</span> Step-by-step explanations for every question</div>
-          <div class="pw-perk"><span class="pw-perk-icon">📊</span> Detailed skill breakdown & score history</div>
-          <div class="pw-perk"><span class="pw-perk-icon">🎯</span> Both PSAT and SAT preparation covered</div>
+          <div class="pw-perk"><span class="pw-perk-icon">💡</span> AI deep-dive explanations</div>
+          <div class="pw-perk"><span class="pw-perk-icon">📊</span> Score analytics and progress tracking</div>
         </div>
         <!-- Inline pricing in paywall -->
-        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
-          <button onclick="selectPlan('weekly')" class="pw-plan-btn" id="pwp-weekly" style="border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+          <button onclick="selectPlan('weekly')" class="pw-plan-btn" id="pwp-weekly" style="border:2px solid var(--line);border-radius:var(--r-md);padding:11px 12px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div style="font-weight:800;color:var(--ink);font-size:.9375rem">Weekly</div>
               <div style="font-size:1.25rem;font-weight:800;color:var(--ink)">$9.99<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/wk</span></div>
             </div>
             <div style="font-size:.75rem;color:var(--muted);margin-top:3px">Billed $9.99/week · ~$1.43/day</div>
           </button>
-          <button onclick="selectPlan('monthly')" class="pw-plan-btn" id="pwp-monthly" style="border:2px solid var(--brand);border-radius:var(--r-md);padding:14px 16px;text-align:left;cursor:pointer;background:var(--brand-pale);transition:all .15s;font-family:var(--font-h)">
+          <button onclick="selectPlan('monthly')" class="pw-plan-btn" id="pwp-monthly" style="border:2px solid var(--brand);border-radius:var(--r-md);padding:11px 12px;text-align:left;cursor:pointer;background:var(--brand-pale);transition:all .15s;font-family:var(--font-h)">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div style="font-weight:800;color:var(--brand);font-size:.9375rem">Monthly <span style="background:var(--brand);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:10px;margin-left:4px">POPULAR</span></div>
               <div style="font-size:1.25rem;font-weight:800;color:var(--brand)">$19.99<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/mo</span></div>
             </div>
             <div style="font-size:.75rem;color:var(--muted);margin-top:3px">~$4.99/week equivalent</div>
           </button>
-          <button onclick="selectPlan('annual')" class="pw-plan-btn" id="pwp-annual" style="border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
+          <button onclick="selectPlan('annual')" class="pw-plan-btn" id="pwp-annual" style="border:2px solid var(--line);border-radius:var(--r-md);padding:11px 12px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div style="font-weight:800;color:var(--ink);font-size:.9375rem">Annual</div>
               <div style="font-size:1.25rem;font-weight:800;color:var(--green)">$119.99<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/yr</span></div>
@@ -1772,10 +1776,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           </button>
         </div>
         <button class="btn btn-primary btn-full" id="pw-cta-btn" onclick="handlePurchase()">Start Premium →</button>
-        <p style="font-size:.75rem;color:var(--muted);margin-top:12px">7-day money-back guarantee · Cancel any time</p>
+        <p style="font-size:.72rem;color:var(--muted);margin-top:10px">7-day money-back guarantee · Cancel any time</p>
       </div>
     </div>
-    <div style="padding:0 28px 20px;text-align:center">
+    <div style="padding:0 18px 14px;text-align:center">
       <button class="btn btn-ghost btn-sm" onclick="closePaywall()">No thanks, stay free</button>
     </div>
   </div>
@@ -1796,16 +1800,16 @@ const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com'];
 
 const LANDING_DEMO_QUESTIONS = [
   {
-    section: 'Digital SAT Demo',
-    question: 'Which sentence is the clearest revision? "The student, who studied late, and then she reviewed notes, scored higher."',
+    section: 'Quick SAT Demo',
+    question: 'What is 15% of 80?',
     choices: [
-      'The student, who studied late, and then she reviewed notes, scored higher.',
-      'After studying late and reviewing notes, the student scored higher.',
-      'The student scored higher because she studied and notes were reviewed late.',
-      'The student studied late and scored higher, and she reviewed notes.'
+      '10',
+      '11',
+      '12',
+      '14'
     ],
-    answer: 'B',
-    explanation: 'Choice B removes redundancy and creates a concise modifier phrase.'
+    answer: 'C',
+    explanation: '10% is 8 and 5% is 4, so 15% is 12.'
   },
   {
     section: 'PSAT Skills Demo',
@@ -2154,6 +2158,24 @@ function renderLandingDemo(index) {
     dot.onclick = () => renderLandingDemo(i);
     dots.appendChild(dot);
   });
+}
+
+function attachDemoSwipe() {
+  const shell = document.querySelector('.hero-phone');
+  if (!shell) return;
+  let startX = 0;
+  shell.addEventListener('touchstart', e => {
+    if (!e.touches || !e.touches.length) return;
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+  shell.addEventListener('touchend', e => {
+    if (!e.changedTouches || !e.changedTouches.length) return;
+    const endX = e.changedTouches[0].clientX;
+    const delta = endX - startX;
+    if (Math.abs(delta) < 36) return;
+    if (delta < 0) renderLandingDemo((S.demoIndex + 1) % LANDING_DEMO_QUESTIONS.length);
+    else renderLandingDemo((S.demoIndex - 1 + LANDING_DEMO_QUESTIONS.length) % LANDING_DEMO_QUESTIONS.length);
+  }, { passive: true });
 }
 
 /* ── ONBOARDING ── */
@@ -2983,7 +3005,8 @@ async function init() {
   closeMobileMenu();
   selectPlan('monthly');
   updatePriceDisplay('weekly');
-  renderLandingDemo(0);
+  renderLandingDemo(1);
+  attachDemoSwipe();
   attachRipple();
   updateAuthUI();
   try {
