@@ -569,7 +569,6 @@ footer {
 const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
-const AUTH0_DB_CONNECTION = 'Username-Password-Authentication';
 
 let loginInstance = null;
 let signupInstance = null;
@@ -802,31 +801,11 @@ async function submitSignup() {
         family_name: document.getElementById('signup-lname').value.trim()
       });
     } else {
-      const lname = document.getElementById('signup-lname').value.trim();
-      const res = await fetch(`https://${AUTH0_DOMAIN}/dbconnections/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          client_id: AUTH0_CLIENT_ID,
-          email,
-          password,
-          connection: AUTH0_DB_CONNECTION,
-          user_metadata: {
-            given_name: fname,
-            family_name: lname
-          }
-        })
-      });
-
-      const bodyText = await res.text();
-      if (!res.ok) {
-        throw new Error(bodyText || 'Could not create account.');
-      }
-
       const client = await ensureSpaAuthClient();
       await client.loginWithRedirect({
         authorizationParams: {
           redirect_uri: AUTH0_REDIRECT_URI,
+          screen_hint: 'signup',
           login_hint: email
         }
       });
