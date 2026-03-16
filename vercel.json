@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/checkout",
+      "destination": "/checkout.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    }
+  ]
+}
