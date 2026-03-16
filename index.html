@@ -139,6 +139,13 @@ input,select{font-family:inherit}
 .nav-link-hide{display:none}
 @media(min-width:640px){.nav-link-hide{display:inline-flex}}
 
+.mobile-menu-wrap{display:none;position:relative}
+.mobile-menu-btn{height:40px;padding:0 14px;border-radius:var(--r-full);font-size:.8125rem;font-weight:700;border:2px solid rgba(13,17,23,.15);background:#fff;color:var(--ink)}
+.mobile-menu-panel{position:absolute;right:0;top:48px;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh-lg);padding:8px;display:none;z-index:30}
+.mobile-menu-panel.open{display:block}
+.mobile-menu-link{display:block;padding:10px 12px;border-radius:10px;font-size:.875rem;font-weight:700;color:var(--ink)}
+.mobile-menu-link:hover{background:var(--bg)}
+
 /* ============================================================
    HERO
    ============================================================ */
@@ -198,12 +205,20 @@ input,select{font-family:inherit}
 .phone-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;
   border-radius:10px;border:1.5px solid var(--line);font-size:.8125rem;color:var(--slate);font-weight:500}
 .phone-opt.sel{border-color:var(--brand);background:var(--brand-pale);color:var(--brand);font-weight:700}
+.phone-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green);animation:demoPulse .35s var(--ease)}
+.phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
 .phone-prog{padding:14px 20px 20px;display:flex;gap:4px}
-.prog-dot{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.prog-dot{flex:1;height:5px;border-radius:3px;background:var(--line);cursor:pointer;transition:transform .15s,var(--ease),background .2s}
 .prog-dot.done{background:var(--green)}
 .prog-dot.cur{background:var(--brand)}
+.prog-dot:active{transform:scale(.94)}
+.phone-exp{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.75rem;line-height:1.5;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
+.phone-exp.show{opacity:1;transform:translateY(0)}
+.phone-exp.good{border-left-color:var(--green);background:var(--green-pale)}
+.phone-exp.bad{border-left-color:var(--rose);background:var(--rose-pale)}
+@keyframes demoPulse{0%{transform:scale(.98)}100%{transform:scale(1)}}
 
 /* ============================================================
    $40M IMPACT BAND
@@ -361,7 +376,7 @@ input,select{font-family:inherit}
 .save-chip{display:inline-block;background:var(--gold);color:var(--ink);font-size:.7rem;
   font-weight:800;padding:2px 8px;border-radius:20px;margin-left:6px}
 
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;align-items:start}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;align-items:start}
 .price-card{
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
   border-radius:var(--r-xl);padding:32px;position:relative;
@@ -404,10 +419,18 @@ input,select{font-family:inherit}
 .btn-price-ghost:hover{border-color:rgba(255,255,255,.5);color:#fff}
 .price-note{text-align:center;margin-top:20px;font-size:.8125rem;color:rgba(255,255,255,.35)}
 
+@media(max-width:1024px){
+  .price-grid{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:768px){
   .price-grid{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto}
   .price-card.featured{transform:scale(1)}
 }
+
+.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:42px}
+.solution-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm)}
+.solution-card h3{font-size:.95rem;font-weight:800;margin-bottom:8px}
+.solution-card p{font-size:.84rem;color:var(--muted);line-height:1.65}
 
 /* ============================================================
    TESTIMONIALS
@@ -750,8 +773,27 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .sc-lo{background:var(--gold-pale);color:var(--amber)}
 .empty-s{text-align:center;padding:36px;color:var(--muted);font-size:.875rem}
 .empty-s-icon{font-size:2rem;margin-bottom:8px}
+
+.settings-wrap{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px}
+.settings-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.settings-tab{height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);font-size:.8rem;font-weight:700;color:var(--muted);background:#fff}
+.settings-tab.active{border-color:var(--brand);background:var(--brand-pale);color:var(--brand)}
+.settings-panel{display:none}
+.settings-panel.active{display:block}
+.settings-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--bg);font-size:.875rem}
+.settings-row:last-child{border-bottom:none}
+.settings-k{font-weight:700;color:var(--ink-60)}
+.settings-v{color:var(--ink)}
+.settings-switch{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--slate)}
 @media(max-width:700px){.dash-grid{grid-template-columns:1fr}.dash-stats{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.dash-stats{grid-template-columns:1fr}}
+
+@media(max-width:860px){
+  .nav-link-hide,.nav-right > .btn.btn-ghost.btn-sm:not(#auth-btn):not(.mobile-menu-btn){display:none}
+  .nav-right > #auth-btn{display:none}
+  .nav-right > .btn.btn-primary.btn-sm{display:none}
+  .mobile-menu-wrap{display:block}
+}
 
 /* ============================================================
    TOAST
@@ -798,7 +840,7 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 
 /* Test topbar */
 .tb { padding-top: var(--sat); height: calc(58px + var(--sat)); padding-left: calc(16px + var(--sal)); padding-right: calc(16px + var(--sar)); }
-.test-body { /* account for home bar */ }
+.test-body { padding-bottom: var(--sab); }
 .test-ft { padding-bottom: calc(12px + var(--sab)); padding-left: calc(24px + var(--sal)); padding-right: calc(24px + var(--sar)); }
 
 /* Modals clear the home bar */
@@ -984,10 +1026,22 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     </a>
     <div class="nav-right">
       <a href="#features" class="btn btn-ghost btn-sm nav-link-hide">Features</a>
+      <a href="#solutions" class="btn btn-ghost btn-sm nav-link-hide">Solutions</a>
       <a href="#pricing" class="btn btn-ghost btn-sm nav-link-hide">Pricing</a>
       <button class="btn btn-ghost btn-sm" onclick="showDash()">My Progress</button>
       <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()">Log In</button>
       <button class="btn btn-primary btn-sm" onclick="openOnboard()">Start Free Test</button>
+      <div class="mobile-menu-wrap">
+        <button class="btn btn-primary btn-sm" onclick="openOnboard()">Start Free Test</button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
+        <div class="mobile-menu-panel" id="mobile-menu-panel">
+          <a class="mobile-menu-link" href="#features" onclick="closeMobileMenu()">Features</a>
+          <a class="mobile-menu-link" href="#solutions" onclick="closeMobileMenu()">Solutions</a>
+          <a class="mobile-menu-link" href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+          <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();showDash();return false">Progress</a>
+          <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();handleAuthButton();return false" id="mobile-auth-link">Log In</a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
@@ -1022,24 +1076,47 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="hero-phone">
       <div class="phone-bar">
         <span class="phone-logo">Budy.Study</span>
-        <span class="phone-timer">⏱ 29:14</span>
+        <span class="phone-timer" id="demo-topic">SAT Demo</span>
       </div>
       <div class="phone-body">
-        <div class="phone-q-label">Math · Question 7 of 22</div>
-        <div class="phone-q">If 3x + 7 = 22, what is the value of 6x?</div>
-        <div class="phone-opts">
-          <div class="phone-opt"><span class="phone-opt-k">A</span> 10</div>
-          <div class="phone-opt sel"><span class="phone-opt-k">B</span> 30</div>
-          <div class="phone-opt"><span class="phone-opt-k">C</span> 15</div>
-          <div class="phone-opt"><span class="phone-opt-k">D</span> 45</div>
-        </div>
+        <div class="phone-q-label" id="demo-q-label">Question 1 of 5</div>
+        <div class="phone-q" id="demo-q-text">Loading question...</div>
+        <div class="phone-opts" id="demo-opts"></div>
+        <div class="phone-exp" id="demo-exp"></div>
       </div>
-      <div class="phone-prog">
-        <div class="prog-dot done"></div><div class="prog-dot done"></div>
-        <div class="prog-dot done"></div><div class="prog-dot done"></div>
-        <div class="prog-dot done"></div><div class="prog-dot done"></div>
-        <div class="prog-dot cur"></div><div class="prog-dot"></div>
-        <div class="prog-dot"></div><div class="prog-dot"></div>
+      <div class="phone-prog" id="demo-dots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="section" id="solutions">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Solutions</div>
+      <h2 class="sec-head">SAT / PSAT test prep, built around your mistakes</h2>
+      <p class="sec-sub">Everything below is designed to turn wrong answers into long-term score gains.</p>
+    </div>
+    <div class="solution-grid">
+      <div class="solution-card">
+        <h3>📚 SAT / PSAT Test Prep Paths</h3>
+        <p>Targeted reading, writing, and math drills with adaptive pacing so each study session focuses on your highest-impact gaps.</p>
+      </div>
+      <div class="solution-card">
+        <h3>🗂 Printable Flashcards</h3>
+        <p>Generate flashcards from wrong answers with print mode guides: fold line for booklet-style review and cut lines to split cards cleanly.</p>
+      </div>
+      <div class="solution-card">
+        <h3>🧪 Extra Quizzes from Missed Skills</h3>
+        <p>Auto-build mini quizzes on the exact concepts you missed so practice is focused instead of random.</p>
+      </div>
+      <div class="solution-card">
+        <h3>🤖 AI Deep Dive Explanations</h3>
+        <p>Expandable explanations break down why each distractor is wrong and which clue leads to the correct answer.</p>
+      </div>
+      <div class="solution-card">
+        <h3>📈 Test & Score Analytics</h3>
+        <p>Track score trend, strongest skills, recurring misses, pacing, and improvement by section over time.</p>
       </div>
     </div>
   </div>
@@ -1210,12 +1287,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <!-- Billing toggle -->
     <div style="text-align:center">
       <div class="billing-toggle">
-        <input type="radio" name="billing" id="b-weekly" value="weekly">
-        <label for="b-weekly">Weekly</label>
-        <input type="radio" name="billing" id="b-monthly" value="monthly" checked>
-        <label for="b-monthly">Monthly <span class="save-chip">Best Value</span></label>
-        <input type="radio" name="billing" id="b-annual" value="annual">
-        <label for="b-annual">Annual <span class="save-chip">Save 62%</span></label>
+        <input type="radio" name="billing" id="b-weekly" value="weekly" checked>
+        <label for="b-weekly">Show Weekly Rates</label>
+        <input type="radio" name="billing" id="b-monthly" value="monthly">
+        <label for="b-monthly">Show Monthly Rates</label>
       </div>
     </div>
 
@@ -1237,42 +1312,49 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <button class="btn-price-ghost" onclick="openOnboard()">Start for Free</button>
       </div>
 
-      <!-- PREMIUM (featured / default monthly) -->
+      <!-- WEEKLY -->
       <div class="price-card featured">
-        <div class="best-badge">⭐ Most Popular</div>
-        <div class="price-tier" style="color:rgba(255,255,255,.8)">Premium</div>
-        <div class="price-per-week" id="price-main-num"><sup>$</sup><span id="pw-num">6.25</span></div>
-        <div class="price-billed" id="price-main-billed" style="color:rgba(255,255,255,.65)">
-          <strong id="pw-billed-strong" style="color:#fff">Billed $24.99/month</strong> · ~$6.25/wk
+        <div class="best-badge">Starter Paid</div>
+        <div class="price-tier" style="color:rgba(255,255,255,.8)">Weekly</div>
+        <div class="price-per-week"><sup>$</sup><span data-plan="weekly" data-rate="weekly">9.99</span></div>
+        <div class="price-billed" style="color:rgba(255,255,255,.65)">
+          <strong style="color:#fff" id="weekly-bill-main">Billed weekly</strong> · Flexible anytime
         </div>
         <div class="price-divider"></div>
         <div class="price-features">
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full-length practice tests</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited test attempts</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Step-by-step AI explanations</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Skill breakdown charts</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Score history dashboard</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Downloadable score report</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All premium learning tools</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Best for short-term prep bursts</div>
         </div>
-        <button class="btn-price-solid" onclick="openPaywall('pricing')">Get Premium →</button>
+        <button class="btn-price-solid" onclick="selectPlan('weekly');openPaywall('pricing')">Choose Weekly</button>
+      </div>
+
+      <!-- MONTHLY -->
+      <div class="price-card">
+        <div class="price-tier">Monthly</div>
+        <div class="price-per-week"><sup>$</sup><span data-plan="monthly" data-rate="weekly">4.99</span></div>
+        <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="monthly-bill-main">Billed $19.99/month</strong> · ~50% lower than weekly equivalent</div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Most popular everyday plan</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Includes AI deep-dive explanations</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Flashcards + extra wrong-skill quizzes</div>
+        </div>
+        <button class="btn-price-ghost" onclick="selectPlan('monthly');openPaywall('pricing')">Choose Monthly</button>
       </div>
 
       <!-- ANNUAL -->
       <div class="price-card">
         <div class="price-tier">Annual</div>
-        <div class="price-per-week"><sup>$</sup>3.83</div>
-        <div class="price-billed"><strong style="color:rgba(255,255,255,.8)">Billed $199/year</strong> · ~$3.83/wk</div>
+        <div class="price-per-week"><sup>$</sup><span data-plan="annual" data-rate="weekly">2.31</span></div>
+        <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="annual-bill-main">Billed $119.99/year</strong> · Huge 50% off offer</div>
         <div class="price-divider"></div>
         <div class="price-features">
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Everything in Premium</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full school year of prep</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>PSAT + SAT both covered</div>
-          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority new features</div>
-          <div class="pf-item" style="color:rgba(255,255,255,.55);font-size:.8rem">
-            <span style="background:rgba(245,158,11,.2);color:var(--gold-l);padding:2px 8px;border-radius:12px;font-weight:800">Save $100 vs. monthly</span>
-          </div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Lowest long-term cost</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Perfect for full-year prep</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Premium analytics included</div>
         </div>
-        <button class="btn-price-ghost" onclick="openPaywall('annual')">Get Annual Plan</button>
+        <button class="btn-price-ghost" onclick="selectPlan('annual');openPaywall('annual')">Choose Annual</button>
       </div>
     </div>
     <p class="price-note">💳 Secure checkout · Cancel any time · 7-day money-back guarantee</p>
@@ -1379,6 +1461,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <h4>Product</h4>
         <ul>
           <li><a href="#features">Features</a></li>
+          <li><a href="#solutions">Solutions</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#" onclick="showDash();return false">My Progress</a></li>
         </ul>
@@ -1549,6 +1632,35 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           </table>
         </div>
       </div>
+
+      <div class="settings-wrap">
+        <h3 style="font-size:1rem;font-weight:800;margin-bottom:14px">Profile & Settings</h3>
+        <div class="settings-tabs">
+          <button class="settings-tab active" id="settings-tab-account" onclick="setSettingsTab('account')">Account</button>
+          <button class="settings-tab" id="settings-tab-billing" onclick="setSettingsTab('billing')">Billing</button>
+          <button class="settings-tab" id="settings-tab-privacy" onclick="setSettingsTab('privacy')">Privacy</button>
+        </div>
+
+        <div class="settings-panel active" id="settings-panel-account">
+          <div class="settings-row"><span class="settings-k">Account status</span><span class="settings-v" id="profile-account-status">FREE</span></div>
+          <div class="settings-row"><span class="settings-k">Name</span><span class="settings-v" id="profile-name">-</span></div>
+          <div class="settings-row"><span class="settings-k">Email</span><span class="settings-v" id="profile-email">-</span></div>
+          <div class="settings-row"><span class="settings-k">Grade</span><span class="settings-v" id="profile-grade">-</span></div>
+        </div>
+
+        <div class="settings-panel" id="settings-panel-billing">
+          <div class="settings-row"><span class="settings-k">Current plan</span><span class="settings-v" id="profile-plan">Free</span></div>
+          <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
+          <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v"><button class="btn btn-ghost btn-sm" onclick="openPaywall('pricing')">Upgrade / Manage Plan</button></span></div>
+        </div>
+
+        <div class="settings-panel" id="settings-panel-privacy">
+          <div class="settings-row"><span class="settings-k">Privacy policy</span><span class="settings-v">Accepted by account creation and app use.</span></div>
+          <div class="settings-row"><span class="settings-k">Marketing emails</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-email"> Opt in</label></div>
+          <div class="settings-row"><span class="settings-k">SMS updates</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-sms"> Opt in</label></div>
+          <div class="settings-row"><span class="settings-k">Product announcements</span><label class="settings-switch"><input type="checkbox" id="opt-product-news" checked> Opt in</label></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1647,16 +1759,16 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <button onclick="selectPlan('monthly')" class="pw-plan-btn" id="pwp-monthly" style="border:2px solid var(--brand);border-radius:var(--r-md);padding:14px 16px;text-align:left;cursor:pointer;background:var(--brand-pale);transition:all .15s;font-family:var(--font-h)">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div style="font-weight:800;color:var(--brand);font-size:.9375rem">Monthly <span style="background:var(--brand);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:10px;margin-left:4px">POPULAR</span></div>
-              <div style="font-size:1.25rem;font-weight:800;color:var(--brand)">$6.25<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/wk</span></div>
+              <div style="font-size:1.25rem;font-weight:800;color:var(--brand)">$19.99<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/mo</span></div>
             </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">Billed $24.99/month — save vs. weekly</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">~$4.99/week equivalent</div>
           </button>
           <button onclick="selectPlan('annual')" class="pw-plan-btn" id="pwp-annual" style="border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div style="font-weight:800;color:var(--ink);font-size:.9375rem">Annual</div>
-              <div style="font-size:1.25rem;font-weight:800;color:var(--green)">$3.83<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/wk</span></div>
+              <div style="font-size:1.25rem;font-weight:800;color:var(--green)">$119.99<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/yr</span></div>
             </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">Billed $199/year · Save $100 vs. monthly</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">~$2.31/week · 50% off annual offer</div>
           </button>
         </div>
         <button class="btn btn-primary btn-full" id="pw-cta-btn" onclick="handlePurchase()">Start Premium →</button>
@@ -1682,6 +1794,67 @@ const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com'];
 
+const LANDING_DEMO_QUESTIONS = [
+  {
+    section: 'Digital SAT Demo',
+    question: 'Which sentence is the clearest revision? "The student, who studied late, and then she reviewed notes, scored higher."',
+    choices: [
+      'The student, who studied late, and then she reviewed notes, scored higher.',
+      'After studying late and reviewing notes, the student scored higher.',
+      'The student scored higher because she studied and notes were reviewed late.',
+      'The student studied late and scored higher, and she reviewed notes.'
+    ],
+    answer: 'B',
+    explanation: 'Choice B removes redundancy and creates a concise modifier phrase.'
+  },
+  {
+    section: 'PSAT Skills Demo',
+    question: 'If a tutoring app has 120 users and grows by 25%, how many users does it have now?',
+    choices: ['130', '140', '150', '160'],
+    answer: 'C',
+    explanation: '25% of 120 is 30, so 120 + 30 = 150.'
+  },
+  {
+    section: 'SAT Reading Demo',
+    question: 'A passage says a scientist repeated an experiment three times with the same result. The best inference is:',
+    choices: ['The result may be reliable', 'The experiment is definitely perfect', 'The scientist is biased', 'No conclusion can be made'],
+    answer: 'A',
+    explanation: 'Repeated consistent outcomes increase confidence in reliability.'
+  },
+  {
+    section: 'SAT Math Demo',
+    question: 'What is the slope of a line through points (2, 4) and (6, 12)?',
+    choices: ['1', '2', '3', '4'],
+    answer: 'B',
+    explanation: 'Slope = (12 - 4) / (6 - 2) = 8 / 4 = 2.'
+  },
+  {
+    section: 'Writing Demo',
+    question: 'Choose the best transition: "The class practiced daily. _____, scores improved by 18%."',
+    choices: ['However', 'For example', 'As a result', 'Meanwhile'],
+    answer: 'C',
+    explanation: 'The second clause is an outcome of the first, so "As a result" fits best.'
+  }
+];
+
+const BILLING_DISPLAY = {
+  weekly: {
+    weekly: '9.99',
+    monthly: '39.96',
+    note: 'Billed weekly'
+  },
+  monthly: {
+    weekly: '4.99',
+    monthly: '19.99',
+    note: 'Billed monthly'
+  },
+  annual: {
+    weekly: '2.31',
+    monthly: '10.00',
+    note: 'Billed $119.99/year · 50% off offer'
+  }
+};
+
 let authClient = null;
 let authReady = false;
 
@@ -1706,7 +1879,9 @@ const S = {
 
   results: null,
   chart: null,
-  selectedPlan: 'monthly'
+  selectedPlan: 'monthly',
+  demoIndex: 0,
+  settingsTab: 'account'
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -1716,7 +1891,31 @@ const FREE_Q = 10; // questions allowed on free tier
 function updateAuthUI() {
   const btn = document.getElementById('auth-btn');
   if (!btn) return;
-  btn.textContent = S.isLoggedIn ? 'Log Out' : 'Log In';
+  const nextLabel = S.isLoggedIn ? 'Log Out' : 'Log In';
+  btn.textContent = nextLabel;
+  const mobileAuth = document.getElementById('mobile-auth-link');
+  if (mobileAuth) mobileAuth.textContent = nextLabel;
+}
+
+function toggleMobileMenu() {
+  const panel = document.getElementById('mobile-menu-panel');
+  if (!panel) return;
+  panel.classList.toggle('open');
+}
+
+function closeMobileMenu() {
+  const panel = document.getElementById('mobile-menu-panel');
+  if (panel) panel.classList.remove('open');
+}
+
+function setSettingsTab(tab) {
+  S.settingsTab = tab;
+  ['account', 'billing', 'privacy'].forEach(name => {
+    const tabEl = document.getElementById('settings-tab-' + name);
+    const panelEl = document.getElementById('settings-panel-' + name);
+    if (tabEl) tabEl.classList.toggle('active', name === tab);
+    if (panelEl) panelEl.classList.toggle('active', name === tab);
+  });
 }
 
 function isAdminPremiumEmail(email) {
@@ -1829,9 +2028,9 @@ async function handleAuthButton() {
 
 /* ── PRICING ── */
 const PLANS = {
-  weekly:  { label:'Weekly',  perWeek:'$9.99', billed:'$9.99/week',  billedStrong:'Billed $9.99/week',   pw:9.99 },
-  monthly: { label:'Monthly', perWeek:'$6.25', billed:'$24.99/month',billedStrong:'Billed $24.99/month', pw:24.99 },
-  annual:  { label:'Annual',  perWeek:'$3.83', billed:'$199/year',   billedStrong:'Billed $199/year',    pw:199 }
+  weekly:  { label:'Weekly',  perWeek:'$9.99', billed:'$9.99/week',    billedStrong:'Billed $9.99/week',    pw:9.99 },
+  monthly: { label:'Monthly', perWeek:'$4.99', billed:'$19.99/month',  billedStrong:'Billed $19.99/month',  pw:19.99 },
+  annual:  { label:'Annual',  perWeek:'$2.31', billed:'$119.99/year',  billedStrong:'Billed $119.99/year',  pw:119.99 }
 };
 
 /* ── VIEWS ── */
@@ -1889,11 +2088,72 @@ document.querySelectorAll('input[name="billing"]').forEach(radio=>{
   radio.addEventListener('change',()=>updatePriceDisplay(radio.value));
 });
 function updatePriceDisplay(plan) {
-  const p=PLANS[plan];
-  const pwNum=document.getElementById('pw-num');
-  const billedStr=document.getElementById('pw-billed-strong');
-  if(pwNum) pwNum.textContent=p.perWeek.replace('$','');
-  if(billedStr) billedStr.textContent=p.billedStrong+' · ~'+p.perWeek+'/wk';
+  const mode = plan === 'monthly' ? 'monthly' : 'weekly';
+  document.querySelectorAll('[data-plan][data-rate]').forEach(el => {
+    const planKey = el.getAttribute('data-plan');
+    if (!planKey || !BILLING_DISPLAY[planKey]) return;
+    el.textContent = BILLING_DISPLAY[planKey][mode];
+  });
+  const weeklyBill = document.getElementById('weekly-bill-main');
+  const monthlyBill = document.getElementById('monthly-bill-main');
+  const annualBill = document.getElementById('annual-bill-main');
+  if (weeklyBill) weeklyBill.textContent = mode === 'weekly' ? 'Billed weekly' : 'Billed $39.96/month equivalent';
+  if (monthlyBill) monthlyBill.textContent = mode === 'weekly' ? 'Billed $19.99/month' : 'Billed monthly';
+  if (annualBill) annualBill.textContent = mode === 'weekly' ? 'Billed $119.99/year' : 'Billed $10.00/month equivalent';
+}
+
+function renderLandingDemo(index) {
+  const q = LANDING_DEMO_QUESTIONS[index];
+  if (!q) return;
+  S.demoIndex = index;
+
+  const topic = document.getElementById('demo-topic');
+  const label = document.getElementById('demo-q-label');
+  const text = document.getElementById('demo-q-text');
+  const opts = document.getElementById('demo-opts');
+  const exp = document.getElementById('demo-exp');
+  const dots = document.getElementById('demo-dots');
+  if (!topic || !label || !text || !opts || !exp || !dots) return;
+
+  topic.textContent = q.section;
+  label.textContent = 'Question ' + (index + 1) + ' of ' + LANDING_DEMO_QUESTIONS.length;
+  text.textContent = q.question;
+  exp.className = 'phone-exp';
+  exp.textContent = '';
+
+  opts.innerHTML = '';
+  q.choices.forEach((choice, i) => {
+    const letter = ['A', 'B', 'C', 'D'][i];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'phone-opt';
+    btn.innerHTML = '<span class="phone-opt-k">' + letter + '</span>' + choice;
+    btn.onclick = () => {
+      const all = opts.querySelectorAll('.phone-opt');
+      all.forEach(o => o.classList.remove('correct', 'wrong'));
+      const isCorrect = letter === q.answer;
+      btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+      if (!isCorrect) {
+        const rightIdx = ['A', 'B', 'C', 'D'].indexOf(q.answer);
+        if (rightIdx >= 0 && all[rightIdx]) all[rightIdx].classList.add('correct');
+      }
+
+      exp.className = 'phone-exp show ' + (isCorrect ? 'good' : 'bad');
+      exp.textContent = (isCorrect ? 'Correct. ' : 'Not quite. ') + q.explanation;
+    };
+    opts.appendChild(btn);
+  });
+
+  dots.innerHTML = '';
+  LANDING_DEMO_QUESTIONS.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'prog-dot' + (i < index ? ' done' : i === index ? ' cur' : '');
+    dot.setAttribute('aria-label', 'Go to demo question ' + (i + 1));
+    dot.onclick = () => renderLandingDemo(i);
+    dots.appendChild(dot);
+  });
 }
 
 /* ── ONBOARDING ── */
@@ -2588,6 +2848,19 @@ function getSessions(){try{return JSON.parse(localStorage.getItem('sm_s')||'[]')
 function renderDash(){
   const ss=getSessions();
   document.getElementById('dash-sub').textContent=S.user.name?`Welcome back, ${S.user.name}!`:'Track your scores over time';
+
+  const accountStatus = document.getElementById('profile-account-status');
+  const profileName = document.getElementById('profile-name');
+  const profileEmail = document.getElementById('profile-email');
+  const profileGrade = document.getElementById('profile-grade');
+  const profilePlan = document.getElementById('profile-plan');
+  if (accountStatus) accountStatus.textContent = S.isPremium ? 'PREMIUM' : 'FREE';
+  if (profileName) profileName.textContent = S.user.name || '-';
+  if (profileEmail) profileEmail.textContent = S.user.email || '-';
+  if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
+  if (profilePlan) profilePlan.textContent = S.isPremium ? 'Premium' : 'Free';
+  setSettingsTab(S.settingsTab || 'account');
+
   if(!ss.length){
     ['d-best','d-latest','d-imp'].forEach(id=>document.getElementById(id).textContent='—');
     document.getElementById('sess-empty').classList.remove('hidden');
@@ -2707,7 +2980,10 @@ async function init() {
     const nav = document.getElementById('nav');
     if (nav) nav.classList.toggle('scrolled', scrollY > 20);
   });
+  closeMobileMenu();
   selectPlan('monthly');
+  updatePriceDisplay('weekly');
+  renderLandingDemo(0);
   attachRipple();
   updateAuthUI();
   try {
@@ -2772,6 +3048,13 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
+
+document.addEventListener('click', e => {
+  const panel = document.getElementById('mobile-menu-panel');
+  const wrap = document.querySelector('.mobile-menu-wrap');
+  if (!panel || !wrap) return;
+  if (!wrap.contains(e.target)) panel.classList.remove('open');
+});
 </script>
 </body>
 </html>
