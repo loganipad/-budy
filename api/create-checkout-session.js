@@ -60,10 +60,35 @@ async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl }
 
   const data = await response.json();
   if (!response.ok) {
-    const message = data && data.error && data.error.message ? data.error.message : 'Stripe session creation failed.';
-    throw new Error(message);
+    const stripeErr = data && data.error ? data.error : {};
+    const err = new Error(stripeErr.message || 'Stripe session creation failed.');
+    err.stripeType = stripeErr.type || '';
+    err.stripeCode = stripeErr.code || '';
+    err.stripeParam = stripeErr.param || '';
+    throw err;
   }
   return data;
+}
+
+function humanizeStripeError(err) {
+  const code = err && err.stripeCode ? err.stripeCode : '';
+  const type = err && err.stripeType ? err.stripeType : '';
+  const param = err && err.stripeParam ? err.stripeParam : '';
+
+  if (code === 'api_key_expired' || type === 'authentication_error') {
+    return 'Stripe key is invalid or expired. Update STRIPE_SECRET_KEY in Vercel Production env vars.';
+  }
+  if (type === 'permission_error') {
+    return 'Stripe key lacks permissions for checkout sessions. Use a full Secret key or grant restricted-key permission for checkout.sessions.create.';
+  }
+  if (code === 'resource_missing' && param.includes('line_items')) {
+    return 'Stripe price ID was not found. Verify STRIPE_PRICE_ID_WEEKLY/MONTHLY/YEARLY are real price_ IDs in the same Stripe mode (live vs test) as STRIPE_SECRET_KEY.';
+  }
+  if (code === 'invalid_request_error' && param.includes('line_items')) {
+    return 'Stripe price ID is invalid for this request. Verify the selected plan env var points to a recurring price_ ID.';
+  }
+
+  return err && err.message ? err.message : 'Unable to create checkout session.';
 }
 
 export default async function handler(req, res) {
@@ -107,6 +132,6 @@ export default async function handler(req, res) {
     });
     return json(res, 200, { url: session.url, id: session.id });
   } catch (err) {
-    return json(res, 500, { error: 'Unable to create checkout session. Check Stripe key and price IDs.' });
+    return json(res, 500, { error: humanizeStripeError(err) });
   }
 }
