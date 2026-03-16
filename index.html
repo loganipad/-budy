@@ -1946,7 +1946,7 @@ function obBack(){if(S.obStep>1)obUpdateStep(S.obStep-1)}
 let paywallCtx='';
 function openPaywall(ctx='') {
   paywallCtx=ctx;
-  selectPlan('monthly');
+  selectPlan(ctx === 'annual' ? 'annual' : 'monthly');
   document.getElementById('paywall-overlay').classList.add('open');
 }
 function closePaywall(){ document.getElementById('paywall-overlay').classList.remove('open') }
@@ -1966,16 +1966,41 @@ function selectPlan(plan) {
   document.getElementById('pw-cta-btn').textContent=`Start ${p.label} Plan (${p.perWeek}/wk) →`;
 }
 
-function handlePurchase() {
-  if (S.isPremium) {
-    toast('You already have access on this account.','ok');
+async function handlePurchase() {
+  if (!S.isPremium) {
+    toast('Please log in to continue.', 'wn');
     closePaywall();
-    if (paywallCtx==='results' && S.results) renderResults(S.results);
+    window.location.href = '/login.html';
     return;
   }
-  toast('Please log in to continue.', 'wn');
-  closePaywall();
-  login();
+
+  const cta = document.getElementById('pw-cta-btn');
+  const originalText = cta ? cta.textContent : '';
+  if (cta) {
+    cta.disabled = true;
+    cta.textContent = 'Redirecting to checkout...';
+  }
+
+  try {
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: S.selectedPlan })
+    });
+    const data = await response.json();
+
+    if (!response.ok || !data.url) {
+      throw new Error((data && data.error) ? data.error : 'Could not start checkout.');
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    toast(err.message || 'Could not start checkout. Try again.', 'er');
+    if (cta) {
+      cta.disabled = false;
+      cta.textContent = originalText;
+    }
+  }
 }
 
 /* ── QUESTIONS ── */
