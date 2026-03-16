@@ -211,9 +211,8 @@ input,select{font-family:inherit}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
 .phone-prog{padding:8px 0 14px;display:flex;justify-content:center;gap:8px}
-.prog-dot{width:8px;height:8px;border-radius:3px;background:#cbd5e1;cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:.8}
-.prog-dot.done{background:var(--green)}
-.prog-dot.cur{background:var(--brand);opacity:1;transform:scale(1.15)}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:rgba(148,163,184,.6);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:.75}
+.prog-dot.cur{width:18px;border-radius:999px;background:rgba(26,86,219,.95);opacity:1;transform:translateY(0)}
 .prog-dot:active{transform:scale(.94)}
 .phone-exp{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:.72rem;line-height:1.45;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
 .phone-exp.show{opacity:1;transform:translateY(0)}
@@ -1800,18 +1799,6 @@ const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com'];
 
 const LANDING_DEMO_QUESTIONS = [
   {
-    section: 'Quick SAT Demo',
-    question: 'What is 15% of 80?',
-    choices: [
-      '10',
-      '11',
-      '12',
-      '14'
-    ],
-    answer: 'C',
-    explanation: '10% is 8 and 5% is 4, so 15% is 12.'
-  },
-  {
     section: 'PSAT Skills Demo',
     question: 'If a tutoring app has 120 users and grows by 25%, how many users does it have now?',
     choices: ['130', '140', '150', '160'],
@@ -2153,7 +2140,7 @@ function renderLandingDemo(index) {
   LANDING_DEMO_QUESTIONS.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.type = 'button';
-    dot.className = 'prog-dot' + (i < index ? ' done' : i === index ? ' cur' : '');
+    dot.className = 'prog-dot' + (i === index ? ' cur' : '');
     dot.setAttribute('aria-label', 'Go to demo question ' + (i + 1));
     dot.onclick = () => renderLandingDemo(i);
     dots.appendChild(dot);
@@ -3005,7 +2992,7 @@ async function init() {
   closeMobileMenu();
   selectPlan('monthly');
   updatePriceDisplay('weekly');
-  renderLandingDemo(1);
+  renderLandingDemo(0);
   attachDemoSwipe();
   attachRipple();
   updateAuthUI();
