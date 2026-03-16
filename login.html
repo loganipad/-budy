@@ -569,6 +569,8 @@ footer {
 const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
+const AUTH0_DB_CONNECTION = 'Username-Password-Authentication';
+const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 
 let loginInstance = null;
 let signupInstance = null;
@@ -687,6 +689,90 @@ function hideAlert(alertId) {
   document.getElementById(alertId).classList.remove('show');
 }
 
+function decodeJwtPayload(token) {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return {};
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(atob(normalized).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(json);
+  } catch {
+    return {};
+  }
+}
+
+function extractAuthErrorMessage(raw, fallback) {
+  if (!raw) return fallback;
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed.description || parsed.error_description || parsed.message || fallback;
+    } catch {
+      return raw || fallback;
+    }
+  }
+  return raw.description || raw.error_description || raw.message || fallback;
+}
+
+function persistLocalUserSession(idToken, fallbackEmail) {
+  const claims = decodeJwtPayload(idToken);
+  const stored = {
+    email: claims.email || fallbackEmail || '',
+    name: claims.name || claims.nickname || fallbackEmail || '',
+    picture: claims.picture || '',
+    source: 'db'
+  };
+  localStorage.setItem(LOCAL_AUTH_KEY, JSON.stringify(stored));
+}
+
+async function loginWithDatabase(email, password) {
+  const res = await fetch(`https://${AUTH0_DOMAIN}/oauth/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      grant_type: 'http://auth0.com/oauth/grant-type/password-realm',
+      client_id: AUTH0_CLIENT_ID,
+      username: email,
+      password,
+      realm: AUTH0_DB_CONNECTION,
+      scope: 'openid profile email'
+    })
+  });
+
+  let payload = null;
+  try { payload = await res.json(); } catch { payload = null; }
+
+  if (!res.ok) {
+    throw new Error(extractAuthErrorMessage(payload, 'Login failed. Please check your credentials.'));
+  }
+
+  if (!payload || !payload.id_token) {
+    throw new Error('Login succeeded but token was missing.');
+  }
+
+  persistLocalUserSession(payload.id_token, email);
+}
+
+async function signupWithDatabase(email, password) {
+  const res = await fetch(`https://${AUTH0_DOMAIN}/dbconnections/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id: AUTH0_CLIENT_ID,
+      email,
+      password,
+      connection: AUTH0_DB_CONNECTION
+    })
+  });
+
+  let payload = null;
+  try { payload = await res.json(); } catch { payload = null; }
+
+  if (!res.ok) {
+    throw new Error(extractAuthErrorMessage(payload, 'Could not create account.'));
+  }
+}
+
 /* ── LOADING STATE ── */
 function setLoading(btnId, loading) {
   const btn = document.getElementById(btnId);
@@ -749,13 +835,8 @@ async function submitLogin() {
   setLoading('login-btn', true);
 
   try {
-    if (loginInstance && loginInstance.login) {
-      // Auth0 ACUL SDK method — handles the actual authentication
-      await loginInstance.login({ username: email, password });
-    } else {
-      // Fallback: submit the underlying Auth0 form directly
-      submitAuth0Form({ username: email, password, action: 'default' });
-    }
+    await loginWithDatabase(email, password);
+    window.location.href = '/';
   } catch (err) {
     setLoading('login-btn', false);
     const msg = err.message || 'Wrong email or password. Please try again.';
@@ -793,23 +874,9 @@ async function submitSignup() {
   setLoading('signup-btn', true);
 
   try {
-    if (loginInstance && loginInstance.signup) {
-      await loginInstance.signup({
-        email,
-        password,
-        given_name: fname,
-        family_name: document.getElementById('signup-lname').value.trim()
-      });
-    } else {
-      const client = await ensureSpaAuthClient();
-      await client.loginWithRedirect({
-        authorizationParams: {
-          redirect_uri: AUTH0_REDIRECT_URI,
-          screen_hint: 'signup',
-          login_hint: email
-        }
-      });
-    }
+    await signupWithDatabase(email, password);
+    await loginWithDatabase(email, password);
+    window.location.href = '/';
   } catch (err) {
     setLoading('signup-btn', false);
     const msg = err.message || 'Could not create account. Please try again.';
@@ -853,13 +920,28 @@ async function submitForgot() {
   setLoading('forgot-btn', true);
 
   try {
-    if (loginInstance && loginInstance.resetPassword) {
-      await loginInstance.resetPassword({ email });
-    } else {
-      submitAuth0Form({ email, action: 'forgot_password' });
+    const res = await fetch(`https://${AUTH0_DOMAIN}/dbconnections/change_password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: AUTH0_CLIENT_ID,
+        email,
+        connection: AUTH0_DB_CONNECTION
+      })
+    });
+
+    const text = await res.text();
+    if (!res.ok) {
+      throw new Error(extractAuthErrorMessage(text, 'Could not send reset email.'));
     }
+
+    setLoading('forgot-btn', false);
+    hideAlert('login-alert');
+    switchTab('login');
+    showAlert('login-alert', 'login-alert-msg', 'Password reset email sent. Check your inbox.');
   } catch (err) {
     setLoading('forgot-btn', false);
+    showAlert('login-alert', 'login-alert-msg', err.message || 'Could not send reset email.');
     console.error('Reset error:', err);
   }
 }
