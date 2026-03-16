@@ -14,10 +14,19 @@ function normalizeSecretKey(input) {
 
   let key = String(input).trim();
 
+  // Handle values pasted as env assignments, e.g. STRIPE_SECRET_KEY=sk_live_...
+  const assignMatch = key.match(/^[A-Za-z_][A-Za-z0-9_]*=(.+)$/);
+  if (assignMatch) {
+    key = assignMatch[1].trim();
+  }
+
   // Remove wrapping quotes if they were pasted with quotes in env vars.
   if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
     key = key.slice(1, -1).trim();
   }
+
+  // Handle values pasted as Authorization headers.
+  key = key.replace(/^Bearer\s+/i, '');
 
   // Handle common typo variants like SKlive... / sklive... / SKtest... / sktest...
   key = key
@@ -25,10 +34,6 @@ function normalizeSecretKey(input) {
     .replace(/^sktest_?/i, 'sk_test_');
 
   return key;
-}
-
-function isLikelyValidSecretKey(key) {
-  return /^(sk|rk)_(live|test)_/.test(key);
 }
 
 function looksMaskedKey(key) {
@@ -74,9 +79,9 @@ export default async function handler(req, res) {
   if (looksMaskedKey(secretKey)) {
     return json(res, 500, { error: 'STRIPE_SECRET_KEY appears masked or incomplete. Paste the full key from Stripe API Keys.' });
   }
-  if (!isLikelyValidSecretKey(secretKey)) {
-    return json(res, 500, { error: 'Invalid STRIPE_SECRET_KEY format. Use sk_live_/sk_test_ (or rk_live_/rk_test_ restricted key).' });
-  }
+
+  // Do not hard-block uncommon but potentially valid key formats.
+  // Stripe API will return a canonical auth error if the key is invalid.
 
   const plan = (req.body && req.body.plan ? String(req.body.plan) : 'monthly').toLowerCase();
   const envName = PLAN_TO_ENV[plan];
