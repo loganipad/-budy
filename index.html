@@ -209,10 +209,11 @@ input,select{font-family:inherit}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-.phone-prog{padding:14px 20px 20px;display:flex;justify-content:center;gap:8px}
-.prog-dot{width:56px;height:2.5px;border-radius:999px;background:#cbd5e1;cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:1;flex-shrink:0}
-.prog-dot.done{background:var(--green)}
-.prog-dot.cur{background:var(--brand);transform:translateY(0)}
+.phone-prog{padding:14px 20px 20px;display:flex;justify-content:center;gap:7px}
+.prog-dot{width:28px;height:28px;border-radius:7px;background:var(--line);color:var(--slate);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),color .2s var(--ease);opacity:1;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:800;border:none}
+.prog-dot.done{background:var(--green);color:#fff}
+.prog-dot.cur{background:var(--brand);color:#fff;transform:translateY(0)}
+.prog-dot.wrong{background:var(--rose);color:#fff}
 .prog-dot:active{transform:scale(.94)}
 .phone-exp{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:.72rem;line-height:1.45;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
 .phone-exp.show{opacity:1;transform:translateY(0)}
@@ -1909,6 +1910,8 @@ const S = {
   chart: null,
   selectedPlan: 'monthly',
   demoIndex: 0,
+  demoAnswers: {},
+  demoStatus: {},
   settingsTab: 'account'
 };
 
@@ -2148,17 +2151,28 @@ function renderLandingDemo(index) {
   exp.textContent = '';
 
   opts.innerHTML = '';
+  const previousAnswer = S.demoAnswers[index];
+  const previousStatus = S.demoStatus[index];
+
   q.choices.forEach((choice, i) => {
     const letter = ['A', 'B', 'C', 'D'][i];
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'phone-opt';
     btn.innerHTML = '<span class="phone-opt-k">' + letter + '</span>' + choice;
+
+    if (previousAnswer === letter) {
+      btn.classList.add(previousStatus === 'correct' ? 'correct' : 'wrong');
+    }
+
     btn.onclick = () => {
       const all = opts.querySelectorAll('.phone-opt');
       all.forEach(o => o.classList.remove('correct', 'wrong'));
       const isCorrect = letter === q.answer;
       btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+      S.demoAnswers[index] = letter;
+      S.demoStatus[index] = isCorrect ? 'correct' : 'wrong';
 
       if (!isCorrect) {
         const rightIdx = ['A', 'B', 'C', 'D'].indexOf(q.answer);
@@ -2167,6 +2181,15 @@ function renderLandingDemo(index) {
 
       exp.className = 'phone-exp show ' + (isCorrect ? 'good' : 'bad');
       exp.textContent = (isCorrect ? 'Correct. ' : 'Not quite. ') + q.explanation;
+
+      const boxes = dots.querySelectorAll('.prog-dot');
+      boxes.forEach((box, boxIdx) => {
+        box.className = 'prog-dot';
+        const status = S.demoStatus[boxIdx];
+        if (boxIdx === S.demoIndex) box.classList.add('cur');
+        else if (status === 'correct') box.classList.add('done');
+        else if (status === 'wrong') box.classList.add('wrong');
+      });
     };
     opts.appendChild(btn);
   });
@@ -2175,7 +2198,11 @@ function renderLandingDemo(index) {
   LANDING_DEMO_QUESTIONS.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.type = 'button';
-    dot.className = 'prog-dot' + (i < index ? ' done' : i === index ? ' cur' : '');
+    dot.className = 'prog-dot';
+    if (i === index) dot.classList.add('cur');
+    else if (S.demoStatus[i] === 'correct') dot.classList.add('done');
+    else if (S.demoStatus[i] === 'wrong') dot.classList.add('wrong');
+    dot.textContent = String(i + 1);
     dot.setAttribute('aria-label', 'Go to demo question ' + (i + 1));
     dot.onclick = () => renderLandingDemo(i);
     dots.appendChild(dot);
