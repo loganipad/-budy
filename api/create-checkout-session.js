@@ -28,7 +28,11 @@ function normalizeSecretKey(input) {
 }
 
 function isLikelyValidSecretKey(key) {
-  return /^sk_(live|test)_[A-Za-z0-9]+$/.test(key);
+  return /^sk_(live|test)_/.test(key);
+}
+
+function looksMaskedKey(key) {
+  return key.includes('*') || key.endsWith('...') || /<|>|\[|\]/.test(key);
 }
 
 async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl }) {
@@ -66,6 +70,9 @@ export default async function handler(req, res) {
   const secretKey = normalizeSecretKey(process.env.STRIPE_SECRET_KEY);
   if (!secretKey) {
     return json(res, 500, { error: 'Missing STRIPE_SECRET_KEY environment variable.' });
+  }
+  if (looksMaskedKey(secretKey)) {
+    return json(res, 500, { error: 'STRIPE_SECRET_KEY appears masked or incomplete. Paste the full key from Stripe API Keys.' });
   }
   if (!isLikelyValidSecretKey(secretKey)) {
     return json(res, 500, { error: 'Invalid STRIPE_SECRET_KEY format. Use sk_live_... or sk_test_...' });
