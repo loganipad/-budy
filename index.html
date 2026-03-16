@@ -1680,6 +1680,7 @@ const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
+const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com'];
 
 let authClient = null;
 let authReady = false;
@@ -1687,7 +1688,8 @@ let authReady = false;
 /* ── STATE ── */
 const S = {
   view: 'landing',
-  user: { name: '', grade: '' },
+  user: { name: '', grade: '', email: '' },
+  isLoggedIn: false,
   authViaLocal: false,
   section: null,
   isPremium: false,
@@ -1714,7 +1716,12 @@ const FREE_Q = 10; // questions allowed on free tier
 function updateAuthUI() {
   const btn = document.getElementById('auth-btn');
   if (!btn) return;
-  btn.textContent = S.isPremium ? 'Log Out' : 'Log In';
+  btn.textContent = S.isLoggedIn ? 'Log Out' : 'Log In';
+}
+
+function isAdminPremiumEmail(email) {
+  if (!email) return false;
+  return ADMIN_PREMIUM_EMAILS.includes(String(email).trim().toLowerCase());
 }
 
 function getLocalAuthUser() {
@@ -1754,19 +1761,26 @@ async function initAuth() {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 
+  S.isLoggedIn = false;
+  S.isPremium = false;
+  S.user.email = '';
   const isAuthenticated = await authClient.isAuthenticated();
-  S.isPremium = isAuthenticated;
   S.authViaLocal = false;
 
   if (isAuthenticated) {
+    S.isLoggedIn = true;
     const user = await authClient.getUser();
     if (user && user.name && !S.user.name) S.user.name = user.name;
+    if (user && user.email) S.user.email = user.email;
+    S.isPremium = isAdminPremiumEmail(S.user.email);
   } else {
     const localUser = getLocalAuthUser();
     if (localUser) {
-      S.isPremium = true;
+      S.isLoggedIn = true;
       S.authViaLocal = true;
       if (localUser.name && !S.user.name) S.user.name = localUser.name;
+      if (localUser.email) S.user.email = localUser.email;
+      S.isPremium = isAdminPremiumEmail(S.user.email);
     }
   }
 
@@ -1790,7 +1804,9 @@ function logout() {
   clearLocalAuthUser();
   if (S.authViaLocal) {
     S.authViaLocal = false;
+    S.isLoggedIn = false;
     S.isPremium = false;
+    S.user.email = '';
     updateAuthUI();
     return;
   }
@@ -1807,7 +1823,7 @@ async function handleAuthButton() {
     toast('Auth is still loading. Please try again.', 'wn');
     return;
   }
-  if (S.isPremium) logout();
+  if (S.isLoggedIn) logout();
   else window.location.href = '/login.html';
 }
 
@@ -1967,10 +1983,17 @@ function selectPlan(plan) {
 }
 
 async function handlePurchase() {
-  if (!S.isPremium) {
+  if (!S.isLoggedIn) {
     toast('Please log in to continue.', 'wn');
     closePaywall();
     window.location.href = '/login.html';
+    return;
+  }
+
+  if (S.isPremium) {
+    toast('Admin premium access is active on this account.', 'ok');
+    closePaywall();
+    if (paywallCtx==='results' && S.results) renderResults(S.results);
     return;
   }
 
