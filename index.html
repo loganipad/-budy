@@ -189,30 +189,30 @@ input,select{font-family:inherit}
 
 /* Mock phone preview */
 .hero-phone{
-  position:relative;z-index:1;max-width:312px;margin:38px auto 0;
-  background:var(--white);border-radius:22px;
+  position:relative;z-index:1;max-width:340px;margin:48px auto 0;
+  background:var(--white);border-radius:28px;
   box-shadow:var(--sh-xl),0 0 0 1px rgba(255,255,255,.06);
   overflow:hidden;animation:phoneFloat 5s ease-in-out infinite;
 }
 @keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.phone-bar{background:var(--ink-80);padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.phone-bar{background:var(--ink-80);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
 .phone-logo{font-size:.8rem;font-weight:800;color:#fff}
-.phone-timer{font-family:var(--font-mono);font-size:.75rem;color:var(--gold-l);font-weight:600}
-.phone-body{padding:14px 14px 10px}
+.phone-timer{font-family:var(--font-mono);font-size:.8125rem;color:var(--gold-l);font-weight:600}
+.phone-body{padding:20px}
 .phone-q-label{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.phone-q{font-size:.82rem;font-weight:700;color:var(--ink);line-height:1.45;margin-bottom:12px}
-.phone-copy{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:10px}
+.phone-q{font-size:.875rem;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:16px}
 .phone-opts{display:flex;flex-direction:column;gap:8px}
-.phone-opt{display:flex;align-items:center;gap:10px;padding:8px 10px;
-  border-radius:9px;border:1.5px solid var(--line);font-size:.77rem;color:var(--slate);font-weight:600}
+.phone-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-radius:10px;border:1.5px solid var(--line);font-size:.8125rem;color:var(--slate);font-weight:500}
 .phone-opt.sel{border-color:var(--brand);background:var(--brand-pale);color:var(--brand);font-weight:700}
 .phone-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green);animation:demoPulse .35s var(--ease)}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-.phone-prog{padding:8px 0 14px;display:flex;justify-content:center;gap:8px}
-.prog-dot{width:7px;height:7px;border-radius:50%;background:rgba(148,163,184,.6);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:.75}
-.prog-dot.cur{width:18px;border-radius:999px;background:rgba(26,86,219,.95);opacity:1;transform:translateY(0)}
+.phone-prog{padding:14px 20px 20px;display:flex;gap:4px}
+.prog-dot{flex:1;height:5px;border-radius:3px;background:var(--line);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),opacity .2s var(--ease);opacity:1}
+.prog-dot.done{background:var(--green)}
+.prog-dot.cur{background:var(--brand);transform:translateY(0)}
 .prog-dot:active{transform:scale(.94)}
 .phone-exp{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:.72rem;line-height:1.45;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
 .phone-exp.show{opacity:1;transform:translateY(0)}
@@ -1079,12 +1079,11 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="hero-phone">
       <div class="phone-bar">
         <span class="phone-logo">Budy.Study</span>
-        <span class="phone-timer" id="demo-topic">SAT Demo</span>
+        <span class="phone-timer">⏱ 29:14</span>
       </div>
       <div class="phone-body">
-        <div class="phone-q-label" id="demo-q-label">Question 1 of 5</div>
+        <div class="phone-q-label" id="demo-q-label">Math · Question 1 of 4</div>
         <div class="phone-q" id="demo-q-text">Loading question...</div>
-        <div class="phone-copy">Tap one answer to see instant coaching.</div>
         <div class="phone-opts" id="demo-opts"></div>
         <div class="phone-exp" id="demo-exp"></div>
       </div>
@@ -2098,16 +2097,14 @@ function renderLandingDemo(index) {
   if (!q) return;
   S.demoIndex = index;
 
-  const topic = document.getElementById('demo-topic');
   const label = document.getElementById('demo-q-label');
   const text = document.getElementById('demo-q-text');
   const opts = document.getElementById('demo-opts');
   const exp = document.getElementById('demo-exp');
   const dots = document.getElementById('demo-dots');
-  if (!topic || !label || !text || !opts || !exp || !dots) return;
+  if (!label || !text || !opts || !exp || !dots) return;
 
-  topic.textContent = q.section;
-  label.textContent = 'Question ' + (index + 1) + ' of ' + LANDING_DEMO_QUESTIONS.length;
+  label.textContent = q.section.toUpperCase() + ' · QUESTION ' + (index + 1) + ' OF ' + LANDING_DEMO_QUESTIONS.length;
   text.textContent = q.question;
   exp.className = 'phone-exp';
   exp.textContent = '';
@@ -2140,7 +2137,7 @@ function renderLandingDemo(index) {
   LANDING_DEMO_QUESTIONS.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.type = 'button';
-    dot.className = 'prog-dot' + (i === index ? ' cur' : '');
+    dot.className = 'prog-dot' + (i < index ? ' done' : i === index ? ' cur' : '');
     dot.setAttribute('aria-label', 'Go to demo question ' + (i + 1));
     dot.onclick = () => renderLandingDemo(i);
     dots.appendChild(dot);
