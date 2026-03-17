@@ -772,9 +772,9 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .dash-hd p{font-size:.9rem;color:var(--muted);margin-top:3px}
 .acct-status{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
 .acct-status.free{background:var(--brand-pale);color:var(--brand)}
-.acct-status.premium{background:var(--green-pale);color:var(--green)}
+.acct-status.paid{background:var(--green-pale);color:var(--green)}
 .acct-status-icon{font-size:.9rem;line-height:1}
-.acct-status.premium .acct-status-icon{animation:acctPulse 1.2s var(--ease) infinite}
+.acct-status.paid .acct-status-icon{animation:acctPulse 1.2s var(--ease) infinite}
 @keyframes acctPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 .acct-tabs{display:flex;gap:8px;margin-top:18px;border-top:1px solid var(--line);padding-top:12px;overflow:auto}
 .acct-tab{height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);font-size:.82rem;font-weight:700;color:var(--muted);background:#fff;white-space:nowrap}
@@ -1335,7 +1335,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Includes AI deep-dive explanations</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Flashcards + extra wrong-skill quizzes</div>
         </div>
-        <button class="btn-price-ghost" onclick="selectPlan('monthly');openPaywall('pricing')">BEST VALUE</button>
+        <button class="btn-price-ghost" onclick="selectPlan('monthly');openPaywall('pricing')">Choose Monthly</button>
       </div>
 
       <!-- ANNUAL -->
@@ -1666,11 +1666,11 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <p id="dash-sub">Welcome to your test prep portal</p>
       </div>
       <div class="acct-status free" id="acct-status-badge">
-        <span class="acct-status-icon">★</span>
+        <span class="acct-status-icon" id="acct-status-icon">○</span>
         <span id="acct-status-text">Free User</span>
       </div>
       <div class="acct-tabs" role="tablist" aria-label="My account tabs">
-        <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab" aria-selected="true">My Progress</button>
+        <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab" aria-selected="true">Progress</button>
         <button class="acct-tab" id="acct-tab-billing" onclick="setAccountTab('billing')" role="tab" aria-selected="false">Billing</button>
         <button class="acct-tab" id="acct-tab-settings" onclick="setAccountTab('settings')" role="tab" aria-selected="false">Settings</button>
       </div>
@@ -2951,14 +2951,17 @@ function renderDash(){
   const statusBadge = document.getElementById('acct-status-badge');
   const statusText = document.getElementById('acct-status-text');
   if (statusBadge && statusText) {
+    const statusIcon = document.getElementById('acct-status-icon');
     if (S.isPremium) {
       statusBadge.classList.remove('free');
-      statusBadge.classList.add('premium');
-      statusText.textContent = 'Premium User';
+      statusBadge.classList.add('paid');
+      statusText.textContent = 'Paid User';
+      if (statusIcon) statusIcon.textContent = '◆';
     } else {
-      statusBadge.classList.remove('premium');
+      statusBadge.classList.remove('paid');
       statusBadge.classList.add('free');
       statusText.textContent = 'Free User';
+      if (statusIcon) statusIcon.textContent = '○';
     }
   }
 
@@ -2972,11 +2975,11 @@ function renderDash(){
   const profileEmail = document.getElementById('profile-email');
   const profileGrade = document.getElementById('profile-grade');
   const profilePlan = document.getElementById('profile-plan');
-  if (accountStatus) accountStatus.textContent = S.isPremium ? 'PREMIUM' : 'FREE';
+  if (accountStatus) accountStatus.textContent = S.isPremium ? 'PAID' : 'FREE';
   if (profileName) profileName.textContent = S.user.name || '-';
   if (profileEmail) profileEmail.textContent = S.user.email || '-';
   if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
-  if (profilePlan) profilePlan.textContent = S.isPremium ? 'Premium' : 'Free';
+  if (profilePlan) profilePlan.textContent = S.isPremium ? 'Paid' : 'Free';
   setAccountTab(S.accountTab || 'progress');
 
   const weekImpEl = document.getElementById('d-week-imp');
