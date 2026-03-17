@@ -762,20 +762,35 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .res-actions{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
 
 /* ============================================================
-   DASHBOARD
-   ============================================================ */
+  MY ACCOUNT
+  ============================================================ */
 #dash-screen{display:none;min-height:100vh;background:var(--bg);padding-top:var(--nav-h)}
 #dash-screen.show{display:block}
-.dash-hd{background:#fff;border-bottom:1px solid var(--line);padding:22px 0}
-.dash-hd-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.dash-hd h1{font-size:1.375rem;font-weight:800;color:var(--ink)}
-.dash-hd p{font-size:.875rem;color:var(--muted);margin-top:3px}
-.dash-body{padding:28px 0}
-.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.dash-hd{background:#fff;border-bottom:1px solid var(--line);padding:22px 0 0}
+.dash-hd-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dash-hd h1{font-size:1.5rem;font-weight:800;color:var(--ink)}
+.dash-hd p{font-size:.9rem;color:var(--muted);margin-top:3px}
+.acct-status{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.acct-status.free{background:var(--brand-pale);color:var(--brand)}
+.acct-status.premium{background:var(--green-pale);color:var(--green)}
+.acct-status-icon{font-size:.9rem;line-height:1}
+.acct-status.premium .acct-status-icon{animation:acctPulse 1.2s var(--ease) infinite}
+@keyframes acctPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.acct-tabs{display:flex;gap:8px;margin-top:18px;border-top:1px solid var(--line);padding-top:12px;overflow:auto}
+.acct-tab{height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);font-size:.82rem;font-weight:700;color:var(--muted);background:#fff;white-space:nowrap}
+.acct-tab.active{border-color:var(--brand);background:var(--brand-pale);color:var(--brand)}
+
+.dash-body{padding:24px 0}
+.acct-pane{display:none}
+.acct-pane.active{display:block}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 .d-stat{background:#fff;border-radius:var(--r-lg);padding:20px;border:1px solid var(--line)}
 .d-stat-lbl{font-size:.7rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .d-stat-v{font-size:2rem;font-weight:800;color:var(--ink);font-family:var(--font-h)}
 .d-stat-sub{font-size:.75rem;color:var(--muted);margin-top:3px}
+.d-stat-v.pos{color:var(--green)}
+.d-stat-v.neg{color:var(--rose)}
+.d-stat-v.neu{color:var(--muted)}
 .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
 .d-card{background:#fff;border-radius:var(--r-lg);padding:22px;border:1px solid var(--line)}
 .d-card h3{font-size:.9375rem;font-weight:800;color:var(--ink);margin-bottom:16px}
@@ -790,17 +805,14 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .empty-s{text-align:center;padding:36px;color:var(--muted);font-size:.875rem}
 .empty-s-icon{font-size:2rem;margin-bottom:8px}
 
-.settings-wrap{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px}
-.settings-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.settings-tab{height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);font-size:.8rem;font-weight:700;color:var(--muted);background:#fff}
-.settings-tab.active{border-color:var(--brand);background:var(--brand-pale);color:var(--brand)}
-.settings-panel{display:none}
-.settings-panel.active{display:block}
+.settings-wrap{margin-top:0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px}
+.settings-panel{display:block}
 .settings-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--bg);font-size:.875rem}
 .settings-row:last-child{border-bottom:none}
 .settings-k{font-weight:700;color:var(--ink-60)}
 .settings-v{color:var(--ink)}
 .settings-switch{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--slate)}
+@media(max-width:980px){.dash-stats{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.dash-grid{grid-template-columns:1fr}.dash-stats{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.dash-stats{grid-template-columns:1fr}}
 
@@ -1042,9 +1054,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     </a>
     <div class="nav-right">
       <a href="#features" class="btn btn-ghost btn-sm nav-link-hide">Why Budy?</a>
-      <a href="#solutions" class="btn btn-ghost btn-sm nav-link-hide">Solutions</a>
+      <a href="#solutions" class="btn btn-ghost btn-sm nav-link-hide">Features</a>
       <a href="#pricing" class="btn btn-ghost btn-sm nav-link-hide">Pricing</a>
-      <button class="btn btn-ghost btn-sm" onclick="showDash()">My Progress</button>
+      <button class="btn btn-ghost btn-sm" onclick="showDash()">My Account</button>
       <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()">Log In</button>
       <button class="btn btn-primary btn-sm" onclick="openOnboard()">Start Free Test</button>
       <div class="mobile-menu-wrap">
@@ -1052,9 +1064,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
         <div class="mobile-menu-panel" id="mobile-menu-panel">
           <a class="mobile-menu-link" href="#features" onclick="closeMobileMenu()">Why Budy?</a>
-          <a class="mobile-menu-link" href="#solutions" onclick="closeMobileMenu()">Solutions</a>
+          <a class="mobile-menu-link" href="#solutions" onclick="closeMobileMenu()">Features</a>
           <a class="mobile-menu-link" href="#pricing" onclick="closeMobileMenu()">Pricing</a>
-          <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();showDash();return false">Progress</a>
+          <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();showDash();return false">My Account</a>
           <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();handleAuthButton();return false" id="mobile-auth-link">Log In</a>
         </div>
       </div>
@@ -1308,7 +1320,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Best for short-term prep bursts</div>
         </div>
-        <button class="btn-price-solid" onclick="selectPlan('weekly');openPaywall('pricing')">Choose Weekly</button>
+        <button class="btn-price-ghost" onclick="selectPlan('weekly');openPaywall('pricing')">Choose Weekly</button>
       </div>
 
       <!-- MONTHLY -->
@@ -1408,7 +1420,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 <section class="section" id="solutions">
   <div class="wrap">
     <div class="section-center">
-      <div class="sec-eyebrow">Solutions</div>
+      <div class="sec-eyebrow">Features</div>
       <h2 class="sec-head">Tools that convert missed questions into higher scores</h2>
       <p class="sec-sub">Hover each card to preview how the workflow behaves in real study sessions.</p>
     </div>
@@ -1503,9 +1515,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <h4>Product</h4>
         <ul>
           <li><a href="#features">Features</a></li>
-          <li><a href="#solutions">Solutions</a></li>
+          <li><a href="#solutions">Features</a></li>
           <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#" onclick="showDash();return false">My Progress</a></li>
+          <li><a href="#" onclick="showDash();return false">My Account</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1627,7 +1639,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
       <div class="res-actions">
         <button class="btn btn-primary" onclick="openOnboard()">Take Another Test</button>
-        <button class="btn btn-ghost" onclick="showDash()">View Progress</button>
+        <button class="btn btn-ghost" onclick="showDash()">My Account</button>
         <button class="btn btn-ghost" onclick="downloadReport()">⬇ Report</button>
       </div>
     </div>
@@ -1649,58 +1661,70 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   </nav>
   <div class="dash-hd" style="padding-top:calc(64px + 22px)">
     <div class="wrap dash-hd-inner">
-      <div><h1>My Progress</h1><p id="dash-sub">Track your score history</p></div>
+      <div>
+        <h1>My Account</h1>
+        <p id="dash-sub">Welcome to your test prep portal</p>
+      </div>
+      <div class="acct-status free" id="acct-status-badge">
+        <span class="acct-status-icon">★</span>
+        <span id="acct-status-text">Free User</span>
+      </div>
+      <div class="acct-tabs" role="tablist" aria-label="My account tabs">
+        <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab" aria-selected="true">My Progress</button>
+        <button class="acct-tab" id="acct-tab-billing" onclick="setAccountTab('billing')" role="tab" aria-selected="false">Billing</button>
+        <button class="acct-tab" id="acct-tab-settings" onclick="setAccountTab('settings')" role="tab" aria-selected="false">Settings</button>
+      </div>
     </div>
   </div>
   <div class="dash-body">
     <div class="wrap">
-      <div class="dash-stats">
-        <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v" id="d-best">—</div><div class="d-stat-sub">All-time</div></div>
-        <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">—</div><div class="d-stat-sub">Most recent</div></div>
-        <div class="d-stat"><div class="d-stat-lbl">Improvement</div><div class="d-stat-v" id="d-imp" style="color:var(--green)">—</div><div class="d-stat-sub">vs. first test</div></div>
+      <div class="acct-pane active" id="acct-pane-progress" role="tabpanel">
+        <div class="dash-stats">
+          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v" id="d-best">—</div><div class="d-stat-sub">All-time</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">—</div><div class="d-stat-sub">Most recent</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Last 7 Days</div><div class="d-stat-v neu" id="d-week-imp">+0</div><div class="d-stat-sub">Score improvement</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Today</div><div class="d-stat-v" id="d-date">—</div><div class="d-stat-sub">Current date</div></div>
+        </div>
+        <div class="dash-grid">
+          <div class="d-card">
+            <h3>Score History</h3>
+            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon">📊</div><p>Complete your first test to see your score chart.</p></div>
+            <canvas id="score-chart" height="230"></canvas>
+          </div>
+          <div class="d-card">
+            <h3>Recent Tests</h3>
+            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon">📝</div><p>No tests yet. Start one!</p></div>
+            <table class="sessions-tbl" id="sess-tbl">
+              <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
+              <tbody id="sess-tbody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="dash-grid">
-        <div class="d-card">
-          <h3>Score History</h3>
-          <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon">📊</div><p>Complete your first test to see your score chart.</p></div>
-          <canvas id="score-chart" height="230"></canvas>
-        </div>
-        <div class="d-card">
-          <h3>Recent Tests</h3>
-          <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon">📝</div><p>No tests yet. Start one!</p></div>
-          <table class="sessions-tbl" id="sess-tbl">
-            <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
-            <tbody id="sess-tbody"></tbody>
-          </table>
+
+      <div class="acct-pane" id="acct-pane-billing" role="tabpanel">
+        <div class="settings-wrap">
+          <h3 style="font-size:1rem;font-weight:800;margin-bottom:14px">Billing</h3>
+          <div class="settings-panel">
+            <div class="settings-row"><span class="settings-k">Current plan</span><span class="settings-v" id="profile-plan">Free</span></div>
+            <div class="settings-row"><span class="settings-k">Account status</span><span class="settings-v" id="profile-account-status">FREE</span></div>
+            <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
+            <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v"><button class="btn btn-ghost btn-sm" onclick="openPaywall('pricing')">Upgrade / Manage Plan</button></span></div>
+          </div>
         </div>
       </div>
 
-      <div class="settings-wrap">
-        <h3 style="font-size:1rem;font-weight:800;margin-bottom:14px">Profile & Settings</h3>
-        <div class="settings-tabs">
-          <button class="settings-tab active" id="settings-tab-account" onclick="setSettingsTab('account')">Account</button>
-          <button class="settings-tab" id="settings-tab-billing" onclick="setSettingsTab('billing')">Billing</button>
-          <button class="settings-tab" id="settings-tab-privacy" onclick="setSettingsTab('privacy')">Privacy</button>
-        </div>
-
-        <div class="settings-panel active" id="settings-panel-account">
-          <div class="settings-row"><span class="settings-k">Account status</span><span class="settings-v" id="profile-account-status">FREE</span></div>
-          <div class="settings-row"><span class="settings-k">Name</span><span class="settings-v" id="profile-name">-</span></div>
-          <div class="settings-row"><span class="settings-k">Email</span><span class="settings-v" id="profile-email">-</span></div>
-          <div class="settings-row"><span class="settings-k">Grade</span><span class="settings-v" id="profile-grade">-</span></div>
-        </div>
-
-        <div class="settings-panel" id="settings-panel-billing">
-          <div class="settings-row"><span class="settings-k">Current plan</span><span class="settings-v" id="profile-plan">Free</span></div>
-          <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
-          <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v"><button class="btn btn-ghost btn-sm" onclick="openPaywall('pricing')">Upgrade / Manage Plan</button></span></div>
-        </div>
-
-        <div class="settings-panel" id="settings-panel-privacy">
-          <div class="settings-row"><span class="settings-k">Privacy policy</span><span class="settings-v">Accepted by account creation and app use.</span></div>
-          <div class="settings-row"><span class="settings-k">Marketing emails</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-email"> Opt in</label></div>
-          <div class="settings-row"><span class="settings-k">SMS updates</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-sms"> Opt in</label></div>
-          <div class="settings-row"><span class="settings-k">Product announcements</span><label class="settings-switch"><input type="checkbox" id="opt-product-news" checked> Opt in</label></div>
+      <div class="acct-pane" id="acct-pane-settings" role="tabpanel">
+        <div class="settings-wrap">
+          <h3 style="font-size:1rem;font-weight:800;margin-bottom:14px">Settings</h3>
+          <div class="settings-panel">
+            <div class="settings-row"><span class="settings-k">Name</span><span class="settings-v" id="profile-name">-</span></div>
+            <div class="settings-row"><span class="settings-k">Email</span><span class="settings-v" id="profile-email">-</span></div>
+            <div class="settings-row"><span class="settings-k">Grade</span><span class="settings-v" id="profile-grade">-</span></div>
+            <div class="settings-row"><span class="settings-k">Marketing emails</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-email"> Opt in</label></div>
+            <div class="settings-row"><span class="settings-k">SMS updates</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-sms"> Opt in</label></div>
+            <div class="settings-row"><span class="settings-k">Product announcements</span><label class="settings-switch"><input type="checkbox" id="opt-product-news" checked> Opt in</label></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1912,7 +1936,7 @@ const S = {
   demoIndex: 0,
   demoAnswers: {},
   demoStatus: {},
-  settingsTab: 'account'
+  accountTab: 'progress'
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -1939,12 +1963,16 @@ function closeMobileMenu() {
   if (panel) panel.classList.remove('open');
 }
 
-function setSettingsTab(tab) {
-  S.settingsTab = tab;
-  ['account', 'billing', 'privacy'].forEach(name => {
-    const tabEl = document.getElementById('settings-tab-' + name);
-    const panelEl = document.getElementById('settings-panel-' + name);
-    if (tabEl) tabEl.classList.toggle('active', name === tab);
+function setAccountTab(tab) {
+  S.accountTab = tab;
+  ['progress', 'billing', 'settings'].forEach(name => {
+    const tabEl = document.getElementById('acct-tab-' + name);
+    const panelEl = document.getElementById('acct-pane-' + name);
+    if (tabEl) {
+      const active = name === tab;
+      tabEl.classList.toggle('active', active);
+      tabEl.setAttribute('aria-selected', active ? 'true' : 'false');
+    }
     if (panelEl) panelEl.classList.toggle('active', name === tab);
   });
 }
@@ -2918,7 +2946,26 @@ function getSessions(){try{return JSON.parse(localStorage.getItem('sm_s')||'[]')
 /* ── DASHBOARD ── */
 function renderDash(){
   const ss=getSessions();
-  document.getElementById('dash-sub').textContent=S.user.name?`Welcome back, ${S.user.name}!`:'Track your scores over time';
+  document.getElementById('dash-sub').textContent=S.user.name?`Welcome back, ${S.user.name}!`:'Welcome back, Student!';
+
+  const statusBadge = document.getElementById('acct-status-badge');
+  const statusText = document.getElementById('acct-status-text');
+  if (statusBadge && statusText) {
+    if (S.isPremium) {
+      statusBadge.classList.remove('free');
+      statusBadge.classList.add('premium');
+      statusText.textContent = 'Premium User';
+    } else {
+      statusBadge.classList.remove('premium');
+      statusBadge.classList.add('free');
+      statusText.textContent = 'Free User';
+    }
+  }
+
+  const dateEl = document.getElementById('d-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
 
   const accountStatus = document.getElementById('profile-account-status');
   const profileName = document.getElementById('profile-name');
@@ -2930,10 +2977,22 @@ function renderDash(){
   if (profileEmail) profileEmail.textContent = S.user.email || '-';
   if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
   if (profilePlan) profilePlan.textContent = S.isPremium ? 'Premium' : 'Free';
-  setSettingsTab(S.settingsTab || 'account');
+  setAccountTab(S.accountTab || 'progress');
+
+  const weekImpEl = document.getElementById('d-week-imp');
+  const weekCutoff = Date.now() - (7 * 24 * 60 * 60 * 1000);
+  const weekSessions = ss
+    .filter(s => new Date(s.date).getTime() >= weekCutoff)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const weekImp = weekSessions.length >= 2 ? (weekSessions[weekSessions.length - 1].total - weekSessions[0].total) : 0;
+  if (weekImpEl) {
+    weekImpEl.textContent = (weekImp >= 0 ? '+' : '') + weekImp;
+    weekImpEl.classList.remove('pos', 'neg', 'neu');
+    weekImpEl.classList.add(weekImp > 0 ? 'pos' : weekImp < 0 ? 'neg' : 'neu');
+  }
 
   if(!ss.length){
-    ['d-best','d-latest','d-imp'].forEach(id=>document.getElementById(id).textContent='—');
+    ['d-best','d-latest'].forEach(id=>document.getElementById(id).textContent='—');
     document.getElementById('sess-empty').classList.remove('hidden');
     document.getElementById('sess-tbl').style.display='none';
     document.getElementById('ch-empty').classList.remove('hidden');
@@ -2949,10 +3008,6 @@ function renderDash(){
   const scores=ss.map(s=>s.total);
   document.getElementById('d-best').textContent=Math.max(...scores);
   document.getElementById('d-latest').textContent=scores[scores.length-1];
-  const imp=scores[scores.length-1]-scores[0];
-  const impEl=document.getElementById('d-imp');
-  impEl.textContent=(imp>=0?'+':'')+imp;
-  impEl.style.color=imp>=0?'var(--green)':'var(--rose)';
 
   const tb=document.getElementById('sess-tbody');tb.innerHTML='';
   [...ss].reverse().slice(0,8).forEach(s=>{
