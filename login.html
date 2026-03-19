@@ -714,12 +714,14 @@ function extractAuthErrorMessage(raw, fallback) {
   return raw.description || raw.error_description || raw.message || fallback;
 }
 
-function persistLocalUserSession(idToken, fallbackEmail) {
+function persistLocalUserSession(idToken, accessToken, fallbackEmail) {
   const claims = decodeJwtPayload(idToken);
   const stored = {
+    sub: claims.sub || '',
     email: claims.email || fallbackEmail || '',
     name: claims.name || claims.nickname || fallbackEmail || '',
     picture: claims.picture || '',
+    accessToken: accessToken || '',
     source: 'db'
   };
   localStorage.setItem(LOCAL_AUTH_KEY, JSON.stringify(stored));
@@ -746,11 +748,11 @@ async function loginWithDatabase(email, password) {
     throw new Error(extractAuthErrorMessage(payload, 'Login failed. Please check your credentials.'));
   }
 
-  if (!payload || !payload.id_token) {
+  if (!payload || !payload.id_token || !payload.access_token) {
     throw new Error('Login succeeded but token was missing.');
   }
 
-  persistLocalUserSession(payload.id_token, email);
+  persistLocalUserSession(payload.id_token, payload.access_token, email);
 }
 
 async function signupWithDatabase(email, password) {

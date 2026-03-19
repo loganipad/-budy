@@ -2042,6 +2042,7 @@ async function initAuth() {
     if (localUser) {
       S.isLoggedIn = true;
       S.authViaLocal = true;
+      if (localUser.sub) S.authUserId = String(localUser.sub);
       if (localUser.name && !S.user.name) S.user.name = localUser.name;
       if (localUser.email) S.user.email = localUser.email;
       S.isPremium = isAdminPremiumEmail(S.user.email);
@@ -2093,7 +2094,14 @@ async function handleAuthButton() {
 }
 
 async function getAccessToken() {
-  if (!authClient || !S.isLoggedIn || S.authViaLocal) return '';
+  if (!S.isLoggedIn) return '';
+
+  if (S.authViaLocal) {
+    const localUser = getLocalAuthUser();
+    return localUser && localUser.accessToken ? String(localUser.accessToken) : '';
+  }
+
+  if (!authClient) return '';
   try {
     const token = await authClient.getTokenSilently();
     return token || '';
@@ -2103,7 +2111,7 @@ async function getAccessToken() {
 }
 
 async function refreshPremiumStatus() {
-  if (!S.isLoggedIn || S.authViaLocal) return;
+  if (!S.isLoggedIn) return;
 
   const token = await getAccessToken();
   if (!token) return;
@@ -2385,13 +2393,6 @@ function selectPlan(plan) {
 async function handlePurchase() {
   if (!S.isLoggedIn) {
     toast('Please log in to continue.', 'wn');
-    closePaywall();
-    window.location.href = '/login.html';
-    return;
-  }
-
-  if (S.authViaLocal) {
-    toast('Please use Auth0 login to purchase securely.', 'wn');
     closePaywall();
     window.location.href = '/login.html';
     return;
