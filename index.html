@@ -1921,6 +1921,8 @@ const S = {
   authUserId: '',
   isLoggedIn: false,
   authViaLocal: false,
+  scoreStoreDisabled: false,
+  sessionCache: [],
   section: null,
   isPremium: false,
   obStep: 1,
@@ -2096,6 +2098,8 @@ async function login() {
 
 function logout() {
   clearLocalAuthUser();
+  S.sessionCache = [];
+  S.scoreStoreDisabled = false;
   if (S.authViaLocal) {
     S.authViaLocal = false;
     S.isLoggedIn = false;
@@ -3040,9 +3044,110 @@ function downloadReport(){
 
 /* ── PERSIST ── */
 function saveSession(r){
-  try{const s=getSessions();s.push({date:r.date,section:r.section,total:r.total,correct:r.correct,total_q:r.total_q});localStorage.setItem('sm_s',JSON.stringify(s))}catch(e){}
+  const entry = {
+    date: r.date,
+    section: r.section,
+    total: r.total,
+    correct: r.correct,
+    total_q: r.total_q,
+    skillMap: r.skillMap || {}
+  };
+
+  if (S.isLoggedIn) {
+    S.sessionCache = [...S.sessionCache, entry];
+    void saveSessionRemote(entry);
+    return;
+  }
+
+  saveSessionLocal(entry);
 }
-function getSessions(){try{return JSON.parse(localStorage.getItem('sm_s')||'[]')}catch(e){return[]}}
+function getSessions(){
+  if (S.isLoggedIn) return Array.isArray(S.sessionCache) ? S.sessionCache : [];
+  return getSessionsLocal();
+}
+
+function saveSessionLocal(entry) {
+  try {
+    const s = getSessionsLocal();
+    s.push(entry);
+    localStorage.setItem('sm_s', JSON.stringify(s));
+  } catch {}
+}
+
+function getSessionsLocal() {
+  try {
+    return JSON.parse(localStorage.getItem('sm_s') || '[]');
+  } catch {
+    return [];
+  }
+}
+
+async function hydrateSessions() {
+  if (!S.isLoggedIn) {
+    S.sessionCache = [];
+    return;
+  }
+
+  const token = await getAccessToken();
+  if (!token) {
+    S.sessionCache = [];
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/test-attempts', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data && data.disabled) S.scoreStoreDisabled = true;
+      return;
+    }
+
+    const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+    S.sessionCache = attempts.map((item) => ({
+      date: item.date,
+      section: item.section,
+      total: Number(item.total || 0),
+      correct: Number(item.correct || 0),
+      total_q: Number(item.total_q || 0),
+      skillMap: item.skillMap && typeof item.skillMap === 'object' ? item.skillMap : {}
+    }));
+  } catch {
+    // Keep in-memory cache as-is when score sync temporarily fails.
+  }
+}
+
+async function saveSessionRemote(entry) {
+  const token = await getAccessToken();
+  if (!token) {
+    saveSessionLocal(entry);
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/test-attempts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(entry)
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data && data.disabled) S.scoreStoreDisabled = true;
+      saveSessionLocal(entry);
+    }
+  } catch {
+    saveSessionLocal(entry);
+  }
+}
 
 /* ── DASHBOARD ── */
 function renderDash(){
@@ -3220,6 +3325,7 @@ async function init() {
   try {
     await initAuth();
     await refreshPremiumStatus();
+    await hydrateSessions();
   } catch (err) {
     console.error('Auth init failed:', err);
     toast('Auth setup failed. Check Auth0 URLs and try again.', 'er');
