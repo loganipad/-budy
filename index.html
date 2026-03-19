@@ -1918,6 +1918,7 @@ let authReady = false;
 const S = {
   view: 'landing',
   user: { name: '', grade: '', email: '' },
+  authUserId: '',
   isLoggedIn: false,
   authViaLocal: false,
   section: null,
@@ -2024,6 +2025,7 @@ async function initAuth() {
 
   S.isLoggedIn = false;
   S.isPremium = false;
+  S.authUserId = '';
   S.user.email = '';
   const isAuthenticated = await authClient.isAuthenticated();
   S.authViaLocal = false;
@@ -2031,6 +2033,7 @@ async function initAuth() {
   if (isAuthenticated) {
     S.isLoggedIn = true;
     const user = await authClient.getUser();
+    if (user && user.sub) S.authUserId = String(user.sub);
     if (user && user.name && !S.user.name) S.user.name = user.name;
     if (user && user.email) S.user.email = user.email;
     S.isPremium = isAdminPremiumEmail(S.user.email);
@@ -2067,6 +2070,7 @@ function logout() {
     S.authViaLocal = false;
     S.isLoggedIn = false;
     S.isPremium = false;
+    S.authUserId = '';
     S.user.email = '';
     updateAuthUI();
     return;
@@ -2086,6 +2090,40 @@ async function handleAuthButton() {
   }
   if (S.isLoggedIn) logout();
   else window.location.href = '/login.html';
+}
+
+async function getAccessToken() {
+  if (!authClient || !S.isLoggedIn || S.authViaLocal) return '';
+  try {
+    const token = await authClient.getTokenSilently();
+    return token || '';
+  } catch {
+    return '';
+  }
+}
+
+async function refreshPremiumStatus() {
+  if (!S.isLoggedIn || S.authViaLocal) return;
+
+  const token = await getAccessToken();
+  if (!token) return;
+
+  try {
+    const response = await fetch('/api/me', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      S.isPremium = Boolean(data.isPremium) || isAdminPremiumEmail(S.user.email);
+      if (data.userId) S.authUserId = String(data.userId);
+    }
+  } catch {
+    // Keep current in-memory status if entitlement lookup is temporarily unavailable.
+  }
 }
 
 /* ── PRICING ── */
@@ -2352,6 +2390,13 @@ async function handlePurchase() {
     return;
   }
 
+  if (S.authViaLocal) {
+    toast('Please use Auth0 login to purchase securely.', 'wn');
+    closePaywall();
+    window.location.href = '/login.html';
+    return;
+  }
+
   if (S.isPremium) {
     toast('Admin premium access is active on this account.', 'ok');
     closePaywall();
@@ -2367,9 +2412,17 @@ async function handlePurchase() {
   }
 
   try {
+    const token = await getAccessToken();
+    if (!token) {
+      throw new Error('Your session expired. Please log in again.');
+    }
+
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({ plan: S.selectedPlan })
     });
     const data = await response.json();
@@ -3121,9 +3174,35 @@ async function init() {
   updateAuthUI();
   try {
     await initAuth();
+    await refreshPremiumStatus();
   } catch (err) {
     console.error('Auth init failed:', err);
     toast('Auth setup failed. Check Auth0 URLs and try again.', 'er');
+  }
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const checkoutStatus = searchParams.get('checkout');
+  if (checkoutStatus === 'success') {
+    await refreshPremiumStatus();
+    if (S.isPremium) {
+      toast('Payment confirmed. Premium is now active.', 'ok', 4500);
+    } else {
+      toast('Payment received. Subscription is syncing, refresh in a few seconds.', 'wn', 5500);
+    }
+    searchParams.delete('checkout');
+    searchParams.delete('plan');
+    searchParams.delete('session_id');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+  }
+  if (checkoutStatus === 'cancel') {
+    toast('Checkout canceled. No charge was made.', 'wn', 4000);
+    searchParams.delete('checkout');
+    searchParams.delete('plan');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
   }
 
   /* $40M animated counter — triggers when scrolled into view */

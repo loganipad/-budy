@@ -1,8 +1,39 @@
+import { resolveAuthUser } from './_auth.js';
+
 const PLAN_TO_ENV = {
   weekly: 'STRIPE_PRICE_ID_WEEKLY',
   monthly: 'STRIPE_PRICE_ID_MONTHLY',
   annual: 'STRIPE_PRICE_ID_YEARLY'
 };
+
+function getAllowedOrigins() {
+  const raw = process.env.ALLOWED_ORIGINS || 'https://www.budy.study,http://localhost:3000,http://localhost:5173';
+  return raw
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function getOriginFromReferer(referer) {
+  try {
+    return referer ? new URL(referer).origin : '';
+  } catch {
+    return '';
+  }
+}
+
+function resolveSafeOrigin(req) {
+  const allowed = getAllowedOrigins();
+  const requestOrigin = req.headers.origin || '';
+  const refererOrigin = getOriginFromReferer(req.headers.referer || '');
+  const candidate = requestOrigin || refererOrigin;
+
+  if (candidate && allowed.includes(candidate)) {
+    return candidate;
+  }
+
+  return allowed[0] || 'https://www.budy.study';
+}
 
 function json(res, status, payload) {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -42,7 +73,7 @@ function looksMaskedKey(key) {
   return key.includes('*') || key.endsWith('...') || /<|>|\[|\]/.test(key);
 }
 
-async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl }) {
+async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl, userId, email, plan }) {
   const body = new URLSearchParams();
   body.set('mode', 'subscription');
   body.set('success_url', successUrl);
@@ -50,6 +81,13 @@ async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl }
   body.set('line_items[0][price]', priceId);
   body.set('line_items[0][quantity]', '1');
   body.set('allow_promotion_codes', 'true');
+  body.set('client_reference_id', userId);
+  body.set('metadata[userId]', userId);
+  body.set('metadata[plan]', plan);
+  body.set('subscription_data[metadata][userId]', userId);
+  if (email) {
+    body.set('customer_email', email);
+  }
 
   const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
@@ -99,6 +137,11 @@ export default async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const auth = await resolveAuthUser(req);
+  if (!auth.ok) {
+    return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
   const secretKey = normalizeSecretKey(process.env.STRIPE_SECRET_KEY);
   if (!secretKey) {
     return json(res, 500, { error: 'Missing STRIPE_SECRET_KEY environment variable.' });
@@ -121,8 +164,8 @@ export default async function handler(req, res) {
     return json(res, 500, { error: `Missing ${envName} environment variable.` });
   }
 
-  const origin = req.headers.origin || 'https://www.budy.study';
-  const successUrl = `${origin}/?checkout=success&plan=${encodeURIComponent(plan)}`;
+  const origin = resolveSafeOrigin(req);
+  const successUrl = `${origin}/?checkout=success&plan=${encodeURIComponent(plan)}&session_id={CHECKOUT_SESSION_ID}`;
   const cancelUrl = `${origin}/?checkout=cancel&plan=${encodeURIComponent(plan)}`;
 
   try {
@@ -130,7 +173,10 @@ export default async function handler(req, res) {
       secretKey,
       priceId,
       successUrl,
-      cancelUrl
+      cancelUrl,
+      userId: auth.user.id,
+      email: auth.user.email,
+      plan
     });
     return json(res, 200, { url: session.url, id: session.id });
   } catch (err) {
