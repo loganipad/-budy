@@ -2014,12 +2014,18 @@ async function initAuth() {
     authorizationParams: {
       redirect_uri: AUTH0_REDIRECT_URI
     },
-    cacheLocation: 'localstorage'
+    cacheLocation: 'localstorage',
+    useRefreshTokens: true,
+    useRefreshTokensFallback: true
   });
 
   const hasAuthParams = window.location.search.includes('code=') && window.location.search.includes('state=');
   if (hasAuthParams) {
-    await authClient.handleRedirectCallback();
+    try {
+      await authClient.handleRedirectCallback();
+    } catch {
+      toast('Login callback failed. Please log in again.', 'er');
+    }
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 
@@ -2103,10 +2109,20 @@ async function getAccessToken() {
 
   if (!authClient) return '';
   try {
-    const token = await authClient.getTokenSilently();
+    const token = await authClient.getTokenSilently({
+      authorizationParams: { scope: 'openid profile email' }
+    });
     return token || '';
   } catch {
-    return '';
+    // Safari and some social auth flows can block silent token refresh; fallback to popup.
+    try {
+      const popupToken = await authClient.getTokenWithPopup({
+        authorizationParams: { scope: 'openid profile email' }
+      });
+      return popupToken || '';
+    } catch {
+      return '';
+    }
   }
 }
 
@@ -2399,7 +2415,11 @@ async function handlePurchase() {
   }
 
   if (S.isPremium) {
-    toast('Admin premium access is active on this account.', 'ok');
+    if (isAdminPremiumEmail(S.user.email)) {
+      toast('Admin premium access is active on this account.', 'ok');
+    } else {
+      toast('Premium access is already active on this account.', 'ok');
+    }
     closePaywall();
     if (paywallCtx==='results' && S.results) renderResults(S.results);
     return;
