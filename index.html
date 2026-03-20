@@ -1743,6 +1743,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="settings-panel">
             <div class="settings-row"><span class="settings-k">Current plan</span><span class="settings-v" id="profile-plan">Free</span></div>
             <div class="settings-row"><span class="settings-k">Account status</span><span class="settings-v" id="profile-account-status">FREE</span></div>
+            <div class="settings-row"><span class="settings-k">Subscription timing</span><span class="settings-v" id="profile-billing-timing">-</span></div>
             <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
             <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v"><button class="btn btn-ghost btn-sm" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button></span></div>
           </div>
@@ -1976,6 +1977,11 @@ const S = {
   demoIndex: 0,
   demoAnswers: {},
   demoStatus: {},
+  subscriptionStatus: 'free',
+  cancelAtPeriodEnd: false,
+  currentPeriodEnd: null,
+  cancelAt: null,
+  canceledAt: null,
   accountTab: 'progress',
   checkoutSyncInProgress: false
 };
@@ -2218,6 +2224,11 @@ async function refreshPremiumStatus() {
     if (response.ok) {
       S.isPremium = Boolean(data.isPremium) || isAdminPremiumEmail(S.user.email);
       if (data.userId) S.authUserId = String(data.userId);
+      S.subscriptionStatus = data && data.subscriptionStatus ? String(data.subscriptionStatus).toLowerCase() : 'free';
+      S.cancelAtPeriodEnd = Boolean(data && data.cancelAtPeriodEnd);
+      S.currentPeriodEnd = data && data.currentPeriodEnd ? String(data.currentPeriodEnd) : null;
+      S.cancelAt = data && data.cancelAt ? String(data.cancelAt) : null;
+      S.canceledAt = data && data.canceledAt ? String(data.canceledAt) : null;
       updateAuthUI();
     }
   } catch {
@@ -2225,6 +2236,37 @@ async function refreshPremiumStatus() {
   }
 
   return Boolean(S.isPremium);
+}
+
+function formatBillingDate(isoValue) {
+  if (!isoValue) return '';
+  const dt = new Date(isoValue);
+  if (Number.isNaN(dt.getTime())) return '';
+  return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function getBillingTimingText() {
+  if (S.canceledAt) {
+    const endedOn = formatBillingDate(S.canceledAt);
+    return endedOn ? `Ended on ${endedOn}` : 'Ended';
+  }
+
+  if (S.cancelAtPeriodEnd) {
+    const endDate = formatBillingDate(S.currentPeriodEnd || S.cancelAt);
+    return endDate ? `Cancels on ${endDate}` : 'Cancels at period end';
+  }
+
+  if (S.isPremium) {
+    const renewDate = formatBillingDate(S.currentPeriodEnd);
+    return renewDate ? `Renews on ${renewDate}` : 'Auto-renews';
+  }
+
+  const status = String(S.subscriptionStatus || 'free').toLowerCase();
+  if (status && status !== 'free') {
+    return `Status: ${status}`;
+  }
+
+  return 'No active subscription';
 }
 
 function dismissCheckoutStatus() {
@@ -3460,11 +3502,13 @@ function renderDash(){
   const profileEmail = document.getElementById('profile-email');
   const profileGrade = document.getElementById('profile-grade');
   const profilePlan = document.getElementById('profile-plan');
+  const profileBillingTiming = document.getElementById('profile-billing-timing');
   if (accountStatus) accountStatus.textContent = S.isPremium ? 'PAID' : 'FREE';
   if (profileName) profileName.textContent = S.user.name || '-';
   if (profileEmail) profileEmail.textContent = S.user.email || '-';
   if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
   if (profilePlan) profilePlan.textContent = S.isPremium ? 'Paid' : 'Free';
+  if (profileBillingTiming) profileBillingTiming.textContent = getBillingTimingText();
   setAccountTab(S.accountTab || 'progress');
 
   const weekImpEl = document.getElementById('d-week-imp');
