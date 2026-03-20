@@ -772,7 +772,7 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .dash-title-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .dash-hd h1{font-size:3.5rem;font-weight:800;line-height:1;color:var(--ink);letter-spacing:-.03em}
 .acct-status{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-.acct-status.free{background:#edf1f7;color:#5f6b7b}
+.acct-status.free{background:var(--green-pale);color:var(--green)}
 .acct-status.paid{background:var(--green-pale);color:var(--green)}
 .acct-status-icon{font-size:.9rem;line-height:1}
 .acct-status.paid .acct-status-icon{animation:acctPulse 1.2s var(--ease) infinite}
@@ -3486,15 +3486,16 @@ function renderDash(){
   const statusText = document.getElementById('acct-status-text');
   if (statusBadge && statusText) {
     const statusIcon = document.getElementById('acct-status-icon');
+    const isTestUser = isTestUserEmail(S.user.email);
     if (S.isPremium) {
       statusBadge.classList.remove('free');
       statusBadge.classList.add('paid');
-      statusText.textContent = 'PAID USER';
+      statusText.textContent = isTestUser ? 'TEST USER' : 'PAID USER';
       if (statusIcon) statusIcon.textContent = '✦';
     } else {
       statusBadge.classList.remove('paid');
       statusBadge.classList.add('free');
-      statusText.textContent = 'FREE USER';
+      statusText.textContent = isTestUser ? 'TEST USER' : 'FREE USER';
       if (statusIcon) statusIcon.textContent = '•';
     }
   }
