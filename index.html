@@ -2786,8 +2786,8 @@ async function openBillingPortal() {
     });
     const data = await response.json();
 
-    if (response.status === 409) {
-      toast('No active Stripe subscription found yet. Choose a plan to subscribe.', 'wn', 4200);
+    if (response.status === 403 || response.status === 409) {
+      toast('Billing portal unlocks after you start a paid plan.', 'wn', 4200);
       openPaywall('pricing');
       return;
     }

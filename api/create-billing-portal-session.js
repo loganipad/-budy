@@ -84,22 +84,17 @@ async function stripeRequest(path, secretKey, body) {
   return data;
 }
 
-async function findCustomerId({ authUser, subscriptionRow, secretKey }) {
-  if (subscriptionRow && subscriptionRow.stripe_customer_id) {
-    return String(subscriptionRow.stripe_customer_id);
-  }
+function canAccessBillingPortal(subscriptionRow) {
+  if (!subscriptionRow) return false;
 
-  const email = authUser && authUser.email ? String(authUser.email).trim().toLowerCase() : '';
-  if (!email) return '';
+  const status = subscriptionRow.subscription_status
+    ? String(subscriptionRow.subscription_status).toLowerCase()
+    : 'free';
 
-  const body = new URLSearchParams();
-  body.set('email', email);
-  body.set('limit', '1');
+  if (status === 'free') return false;
 
-  const response = await stripeRequest('/v1/customers', secretKey, body);
-  const list = response && Array.isArray(response.data) ? response.data : [];
-  if (!list.length || !list[0] || !list[0].id) return '';
-  return String(list[0].id);
+  const hasStripeIds = Boolean(subscriptionRow.stripe_customer_id && subscriptionRow.stripe_subscription_id);
+  return hasStripeIds;
 }
 
 function humanizeStripeError(err) {
@@ -141,10 +136,11 @@ export default async function handler(req, res) {
   }
 
   const row = subscription.ok ? subscription.data : null;
-  const customerId = await findCustomerId({ authUser: auth.user, subscriptionRow: row, secretKey });
-  if (!customerId) {
-    return json(res, 409, { error: 'No Stripe customer found for this account yet. Start a subscription first.' });
+  if (!canAccessBillingPortal(row)) {
+    return json(res, 403, { error: 'Billing portal is available after you start a paid subscription.' });
   }
+
+  const customerId = String(row.stripe_customer_id);
 
   const origin = resolveSafeOrigin(req);
   const returnUrl = `${origin}/?billing=return`;
