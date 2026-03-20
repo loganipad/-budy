@@ -410,18 +410,8 @@ button { font-family: inherit; cursor: pointer; }
 </style>
 </head>
 <body>
-<nav id="nav" aria-label="Main navigation">
-  <div class="wrap nav-inner">
-    <a href="/" class="nav-logo">
-      <img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">
-      Budy.Study
-    </a>
-    <div class="nav-right">
-      <a href="/" class="btn btn-ghost btn-sm">Home</a>
-      <button class="btn btn-primary btn-sm" id="auth-btn">Log Out</button>
-    </div>
-  </div>
-</nav>
+<div id="navbar-slot"></div>
+<script src="/navbar-loader.js" defer></script>
 
 <div id="toasts"></div>
 
@@ -597,6 +587,19 @@ function clearLocalAuthUser() {
   localStorage.removeItem(LOCAL_AUTH_KEY);
 }
 
+function bindNavAuthButtonForState() {
+  const btn = document.getElementById('auth-btn');
+  if (!btn) return;
+
+  if (S.isLoggedIn) {
+    btn.textContent = 'Log Out';
+    btn.onclick = function () { logout(); };
+  } else {
+    btn.textContent = 'Log In';
+    btn.onclick = function () { window.location.href = '/login.html'; };
+  }
+}
+
 async function initAuth() {
   if (!window.auth0 || !window.auth0.createAuth0Client) {
     toast('Auth SDK failed to load.', 'er');
@@ -640,7 +643,7 @@ async function initAuth() {
     }
   }
 
-  document.getElementById('auth-btn').onclick = () => logout();
+  bindNavAuthButtonForState();
 }
 
 async function getAccessToken() {
@@ -974,6 +977,7 @@ function renderDash() {
 
 async function boot() {
   await initAuth();
+  bindNavAuthButtonForState();
 
   if (!S.isLoggedIn) {
     document.getElementById('logged-out-notice').classList.remove('hidden');
@@ -981,8 +985,7 @@ async function boot() {
     document.getElementById('acct-pane-billing').classList.add('hidden');
     document.getElementById('acct-pane-settings').classList.add('hidden');
     document.getElementById('dash-greet-name').textContent = 'Please log in';
-    document.getElementById('auth-btn').textContent = 'Log In';
-    document.getElementById('auth-btn').onclick = () => { window.location.href = '/login.html'; };
+    bindNavAuthButtonForState();
     return;
   }
 
@@ -990,6 +993,8 @@ async function boot() {
   await hydrateSessions();
   renderDash();
 }
+
+document.addEventListener('navbar:mounted', bindNavAuthButtonForState);
 
 boot();
 </script>

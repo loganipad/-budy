@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Budy.Study Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0d1117;
@@ -197,18 +199,8 @@
   </style>
 </head>
 <body>
-  <nav id="nav" aria-label="Main navigation">
-    <div class="wrap nav-inner">
-      <a href="/" class="nav-logo">
-        <img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">
-        Budy.Study
-      </a>
-      <div class="nav-right">
-        <a class="top-btn ghost" href="/">Home</a>
-        <a class="top-btn gold" href="/login.html">Log In</a>
-      </div>
-    </div>
-  </nav>
+  <div id="navbar-slot"></div>
+  <script src="/navbar-loader.js" defer></script>
 
   <div class="page">
   <main class="card">

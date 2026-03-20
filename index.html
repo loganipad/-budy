@@ -1109,33 +1109,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 <!-- ============================================================
      NAV
      ============================================================ -->
-<nav id="nav" aria-label="Main navigation">
-  <div class="wrap nav-inner">
-    <a href="#" class="nav-logo" onclick="goLanding();return false">
-      <img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">
-      Budy.Study
-    </a>
-    <div class="nav-right">
-      <a href="#features" class="btn btn-ghost btn-sm nav-link-hide">Why Budy?</a>
-      <a href="#solutions" class="btn btn-ghost btn-sm nav-link-hide">Features</a>
-      <a href="#pricing" class="btn btn-ghost btn-sm nav-link-hide">Pricing</a>
-      <a class="btn btn-ghost btn-sm" href="/my-account.html">My Account</a>
-      <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()">Log In</button>
-      <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Free Test" data-premium-text="Start Test">Start Free Test</button>
-      <div class="mobile-menu-wrap">
-        <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Free Test" data-premium-text="Start Test">Start Free Test</button>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
-        <div class="mobile-menu-panel" id="mobile-menu-panel">
-          <a class="mobile-menu-link" href="#features" onclick="closeMobileMenu()">Why Budy?</a>
-          <a class="mobile-menu-link" href="#solutions" onclick="closeMobileMenu()">Features</a>
-          <a class="mobile-menu-link" href="#pricing" onclick="closeMobileMenu()">Pricing</a>
-          <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()">My Account</a>
-          <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();handleAuthButton();return false" id="mobile-auth-link">Log In</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
+<div id="navbar-slot"></div>
+<script src="/navbar-loader.js" defer></script>
 
 <!-- ============================================================
      LANDING
@@ -1667,15 +1642,6 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
      RESULTS
      ============================================================ -->
 <div id="results-screen" role="main">
-  <nav id="nav" aria-label="Results navigation" style="position:fixed;top:0;left:0;right:0;z-index:900;height:64px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)">
-    <div class="wrap nav-inner">
-      <div class="nav-logo"><img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">Budy.Study</div>
-      <div class="nav-right">
-        <button class="btn btn-ghost btn-sm" onclick="goLanding()">← Home</button>
-        <button class="btn btn-primary btn-sm" onclick="openOnboard()">New Test</button>
-      </div>
-    </div>
-  </nav>
   <div class="res-header">
     <div class="wrap"><h1 id="res-headline">Your Results Are In!</h1><p id="res-subline">Practice Test</p></div>
   </div>
@@ -1728,18 +1694,6 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
      DASHBOARD
      ============================================================ -->
 <div id="dash-screen" role="main">
-  <nav style="position:fixed;top:0;left:0;right:0;z-index:900;height:64px;background:rgba(13,17,23,.82);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08)">
-    <div class="wrap nav-inner">
-      <div class="nav-logo" style="color:#f0f4ff">
-        <img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">
-        <span>Budy<span style="color:#f59e0b">.</span>Study</span>
-      </div>
-      <div class="nav-right">
-        <button class="btn btn-ghost-dark" onclick="goLanding()">Home</button>
-        <button class="btn btn-gold" onclick="openOnboard()">+ New Test</button>
-      </div>
-    </div>
-  </nav>
   <div class="dash-hd">
     <div class="wrap dash-hd-inner">
       <div style="position:relative">
