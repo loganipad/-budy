@@ -78,7 +78,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── NAV ── */
 #nav {
-  position: relative; z-index: 10;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
   height: calc(var(--nav-h) + var(--sat));
   padding-top: var(--sat);
   background: rgba(13,17,23,.7);
@@ -90,6 +90,7 @@ a { text-decoration: none; color: inherit; }
   display: flex; align-items: center; gap: 9px;
   font-family: var(--font); font-size: 1.3rem; font-weight: 800; color: #fff;
 }
+.nav-logo-img { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,.22); }
 .nav-logo-mark {
   width: 34px; height: 34px; background: var(--brand); border-radius: 10px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -107,7 +108,7 @@ a { text-decoration: none; color: inherit; }
 /* ── PAGE BODY ── */
 .page-body {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: 48px 20px; position: relative; z-index: 1;
+  padding: calc(var(--nav-h) + var(--sat) + 48px) 20px 48px; position: relative; z-index: 1;
 }
 .auth-wrap { width: 100%; max-width: 460px; }
 
@@ -333,11 +334,7 @@ footer {
 <nav id="nav">
   <div class="wrap nav-inner">
     <a href="/" class="nav-logo">
-      <div class="nav-logo-mark">
-        <svg viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2">
-          <path d="M10 2L2 7l8 4 8-4-8-5zM2 14l8 4 8-4M2 10.5l8 4 8-4"/>
-        </svg>
-      </div>
+      <img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">
       Budy.Study
     </a>
     <a href="/" class="btn-back">← Back to Home</a>
