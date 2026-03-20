@@ -39,6 +39,35 @@
     }
   }
 
+  function customizeForAccountPage() {
+    var path = String(window.location.pathname || '').toLowerCase();
+    if (path !== '/my-account.html' && path !== '/my-account') return;
+
+    var desktopWhy = document.getElementById('nav-link-why');
+    var desktopFeatures = document.getElementById('nav-link-features');
+    var desktopPricing = document.getElementById('nav-link-pricing');
+    var desktopAccount = document.getElementById('nav-link-account');
+    var mobileWhy = document.getElementById('nav-m-link-why');
+    var mobileFeatures = document.getElementById('nav-m-link-features');
+    var mobilePricing = document.getElementById('nav-m-link-pricing');
+    var mobileAccount = document.getElementById('nav-m-link-account');
+
+    [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
+      if (!el) return;
+      el.style.display = 'none';
+    });
+
+    if (desktopAccount) {
+      desktopAccount.textContent = 'Home';
+      desktopAccount.setAttribute('href', '/');
+    }
+
+    if (mobileAccount) {
+      mobileAccount.textContent = 'Home';
+      mobileAccount.setAttribute('href', '/');
+    }
+  }
+
   function setNavFallbacks() {
     if (typeof window.toggleMobileMenu !== 'function') {
       window.toggleMobileMenu = function () {
@@ -87,6 +116,7 @@
       .then(function (html) {
         slot.innerHTML = html;
         setNavFallbacks();
+        customizeForAccountPage();
         syncNavAuthFallbackState();
         document.dispatchEvent(new CustomEvent('navbar:mounted'));
       })
