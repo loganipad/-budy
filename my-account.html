@@ -754,6 +754,43 @@ function loadGrade() {
   if (sel) sel.value = S.user.grade || '';
 }
 
+function setDemoDashboardState() {
+  S.user.name = 'Alex Rivera';
+  S.user.email = '';
+  S.isPremium = false;
+  S.subscriptionStatus = 'free';
+  S.cancelAtPeriodEnd = false;
+  S.currentPeriodEnd = null;
+  S.cancelAt = null;
+  S.canceledAt = null;
+  S.sessionCache = [
+    { date: '2026-03-07T10:00:00.000Z', section: 'english', total: 1310, correct: 39, total_q: 50 },
+    { date: '2026-03-10T10:00:00.000Z', section: 'math', total: 1290, correct: 37, total_q: 50 },
+    { date: '2026-03-14T10:00:00.000Z', section: 'english', total: 1350, correct: 42, total_q: 50 },
+    { date: '2026-03-17T10:00:00.000Z', section: 'english', total: 1420, correct: 47, total_q: 50 },
+    { date: '2026-03-19T10:00:00.000Z', section: 'math', total: 1380, correct: 44, total_q: 50 }
+  ];
+}
+
+function setBillingButtonsForMode() {
+  const portalBtn = document.getElementById('billing-portal-btn');
+  const cancelBtn = document.getElementById('billing-cancel-btn');
+  if (!portalBtn || !cancelBtn) return;
+
+  if (S.isLoggedIn) {
+    portalBtn.disabled = false;
+    cancelBtn.disabled = false;
+    portalBtn.title = '';
+    cancelBtn.title = '';
+    return;
+  }
+
+  portalBtn.disabled = true;
+  cancelBtn.disabled = true;
+  portalBtn.title = 'Log in to manage billing';
+  cancelBtn.title = 'Log in to manage billing';
+}
+
 function saveGrade() {
   const sel = document.getElementById('profile-grade-select');
   if (!sel) return;
@@ -898,6 +935,7 @@ function renderDash() {
   document.getElementById('profile-email').textContent = S.user.email || '-';
   document.getElementById('profile-plan').textContent = S.isPremium ? 'Pro' : 'Free';
   document.getElementById('profile-billing-timing').textContent = getBillingTimingText();
+  setBillingButtonsForMode();
 
   loadGrade();
 
@@ -981,14 +1019,15 @@ async function boot() {
 
   if (!S.isLoggedIn) {
     document.getElementById('logged-out-notice').classList.remove('hidden');
-    document.getElementById('acct-pane-progress').classList.add('hidden');
-    document.getElementById('acct-pane-billing').classList.add('hidden');
-    document.getElementById('acct-pane-settings').classList.add('hidden');
-    document.getElementById('dash-greet-name').textContent = 'Please log in';
+    document.getElementById('logged-out-notice').textContent = 'Viewing demo dashboard. Log in to see your real account data.';
+    setDemoDashboardState();
+    renderDash();
+    setAccountTab('progress');
     bindNavAuthButtonForState();
     return;
   }
 
+  document.getElementById('logged-out-notice').classList.add('hidden');
   await refreshPremiumStatus();
   await hydrateSessions();
   renderDash();

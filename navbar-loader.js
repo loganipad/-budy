@@ -1,4 +1,44 @@
 (function () {
+  function getLocalAuthUser() {
+    try {
+      var raw = localStorage.getItem('budy_local_auth_user');
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function syncNavAuthFallbackState() {
+    var authBtn = document.getElementById('auth-btn');
+    var mobileAuth = document.getElementById('mobile-auth-link');
+    if (!authBtn) return;
+
+    if (typeof window.updateAuthUI === 'function') {
+      try {
+        window.updateAuthUI();
+        return;
+      } catch (_) {}
+    }
+
+    var localUser = getLocalAuthUser();
+    var isLoggedIn = Boolean(localUser && localUser.accessToken);
+    authBtn.textContent = isLoggedIn ? 'Log Out' : 'Log In';
+    if (mobileAuth) mobileAuth.textContent = isLoggedIn ? 'Log Out' : 'Log In';
+
+    if (typeof window.handleAuthButton !== 'function') {
+      window.handleAuthButton = function () {
+        if (isLoggedIn) {
+          try { localStorage.removeItem('budy_local_auth_user'); } catch (_) {}
+          window.location.href = '/';
+          return;
+        }
+        window.location.href = '/login.html';
+      };
+    }
+  }
+
   function setNavFallbacks() {
     if (typeof window.toggleMobileMenu !== 'function') {
       window.toggleMobileMenu = function () {
@@ -47,9 +87,7 @@
       .then(function (html) {
         slot.innerHTML = html;
         setNavFallbacks();
-        if (typeof window.updateAuthUI === 'function') {
-          try { window.updateAuthUI(); } catch (_) {}
-        }
+        syncNavAuthFallbackState();
         document.dispatchEvent(new CustomEvent('navbar:mounted'));
       })
       .catch(function () {
