@@ -42,6 +42,7 @@
   function applyNavVariant() {
     var path = String(window.location.pathname || '').toLowerCase();
     var isAccountPage = path === '/my-account.html' || path === '/my-account';
+    var nav = document.getElementById('nav');
 
     var desktopWhy = document.getElementById('nav-link-why');
     var desktopFeatures = document.getElementById('nav-link-features');
@@ -53,6 +54,11 @@
     var mobileAccount = document.getElementById('nav-m-link-account');
 
     if (isAccountPage) {
+      if (nav) {
+        nav.classList.add('nav-account-mode');
+        nav.classList.remove('nav-default-mode');
+      }
+
       [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
         if (!el) return;
         el.style.display = 'none';
@@ -68,6 +74,11 @@
         mobileAccount.setAttribute('href', '/');
       }
       return;
+    }
+
+    if (nav) {
+      nav.classList.add('nav-default-mode');
+      nav.classList.remove('nav-account-mode');
     }
 
     [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
