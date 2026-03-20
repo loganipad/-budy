@@ -1743,6 +1743,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="settings-panel">
             <div class="settings-row"><span class="settings-k">Current plan</span><span class="settings-v" id="profile-plan">Free</span></div>
             <div class="settings-row"><span class="settings-k">Account status</span><span class="settings-v" id="profile-account-status">FREE</span></div>
+            <div class="settings-row"><span class="settings-k">Account type</span><span class="settings-v" id="profile-account-type">Standard user</span></div>
             <div class="settings-row"><span class="settings-k">Subscription timing</span><span class="settings-v" id="profile-billing-timing">-</span></div>
             <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
             <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v"><button class="btn btn-ghost btn-sm" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button></span></div>
@@ -1894,6 +1895,7 @@ const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const ADMIN_PREMIUM_EMAILS = [];
+const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
 const CHECKOUT_SYNC_DELAY_MS = 2500;
 
@@ -2062,6 +2064,11 @@ function setAccountTab(tab) {
 function isAdminPremiumEmail(email) {
   if (!email) return false;
   return ADMIN_PREMIUM_EMAILS.includes(String(email).trim().toLowerCase());
+}
+
+function isTestUserEmail(email) {
+  if (!email) return false;
+  return TEST_USER_EMAILS.includes(String(email).trim().toLowerCase());
 }
 
 function getLocalAuthUser() {
@@ -3498,12 +3505,20 @@ function renderDash(){
   }
 
   const accountStatus = document.getElementById('profile-account-status');
+  const accountType = document.getElementById('profile-account-type');
   const profileName = document.getElementById('profile-name');
   const profileEmail = document.getElementById('profile-email');
   const profileGrade = document.getElementById('profile-grade');
   const profilePlan = document.getElementById('profile-plan');
   const profileBillingTiming = document.getElementById('profile-billing-timing');
-  if (accountStatus) accountStatus.textContent = S.isPremium ? 'PAID' : 'FREE';
+  if (accountStatus) {
+    if (isTestUserEmail(S.user.email)) {
+      accountStatus.textContent = S.isPremium ? 'TEST (PAID)' : 'TEST (FREE)';
+    } else {
+      accountStatus.textContent = S.isPremium ? 'PAID' : 'FREE';
+    }
+  }
+  if (accountType) accountType.textContent = isTestUserEmail(S.user.email) ? 'Test user' : 'Standard user';
   if (profileName) profileName.textContent = S.user.name || '-';
   if (profileEmail) profileEmail.textContent = S.user.email || '-';
   if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
