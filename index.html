@@ -1746,7 +1746,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
             <div class="settings-row"><span class="settings-k">Account type</span><span class="settings-v" id="profile-account-type">Standard user</span></div>
             <div class="settings-row"><span class="settings-k">Subscription timing</span><span class="settings-v" id="profile-billing-timing">-</span></div>
             <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
-            <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v"><button class="btn btn-ghost btn-sm" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button></span></div>
+            <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button><button class="btn btn-ghost btn-sm" id="billing-cancel-btn" onclick="cancelSubscriptionNow()">Cancel Now</button></span></div>
           </div>
         </div>
       </div>
@@ -2814,6 +2814,80 @@ async function openBillingPortal() {
     if (btn) {
       btn.disabled = false;
       btn.textContent = originalText || 'Manage Billing';
+    }
+  }
+}
+
+async function cancelSubscriptionNow() {
+  if (!S.isLoggedIn) {
+    toast('Please log in to manage billing.', 'wn');
+    window.location.href = '/login.html';
+    return;
+  }
+
+  if (!S.isPremium) {
+    toast('No active paid subscription to cancel.', 'wn', 3200);
+    return;
+  }
+
+  const confirmed = window.confirm('Cancel your subscription immediately? Your premium access will end right away.');
+  if (!confirmed) return;
+
+  const btn = document.getElementById('billing-cancel-btn');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Canceling...';
+  }
+
+  try {
+    trackEvent('billing_cancel_now_requested', {
+      view: S.view,
+      isPremium: Boolean(S.isPremium)
+    });
+
+    const token = await getAccessToken();
+    if (!token) {
+      throw new Error('Your session expired. Please log in again.');
+    }
+
+    const response = await fetch('/api/cancel-subscription-now', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({})
+    });
+    const data = await response.json();
+
+    if (response.status === 409) {
+      toast((data && data.error) ? data.error : 'No active paid subscription to cancel.', 'wn', 4200);
+      await refreshPremiumStatus();
+      renderDash();
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error((data && data.error) ? data.error : 'Could not cancel subscription immediately.');
+    }
+
+    trackEvent('billing_cancel_now_success', {
+      status: data && data.subscriptionStatus ? String(data.subscriptionStatus) : 'canceled'
+    });
+
+    await refreshPremiumStatus();
+    renderDash();
+    toast('Subscription canceled immediately.', 'ok', 4200);
+  } catch (err) {
+    trackEvent('billing_cancel_now_error', {
+      message: err && err.message ? String(err.message) : 'unknown'
+    });
+    toast(err && err.message ? err.message : 'Could not cancel subscription.', 'er');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = originalText || 'Cancel Now';
     }
   }
 }
