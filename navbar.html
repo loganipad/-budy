@@ -37,12 +37,12 @@
   }
 
   #nav .nav-logo-img {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 236px;
+    height: 46px;
+    border-radius: 0;
     object-fit: contain;
     flex-shrink: 0;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.18));
+    filter: none;
   }
 
   #nav .nav-right {
@@ -155,6 +155,11 @@
   }
 
   @media(max-width:860px) {
+    #nav .nav-logo-img {
+      width: 180px;
+      height: 36px;
+    }
+
     #nav .nav-right > .btn.btn-ghost.btn-sm:not(#auth-btn):not(.mobile-menu-btn),
     #nav .nav-right > #auth-btn,
     #nav .nav-right > .btn.btn-primary.btn-sm {
@@ -168,8 +173,7 @@
 <nav id="nav" aria-label="Main navigation">
   <div class="wrap nav-inner">
     <a href="/" class="nav-logo">
-      <img src="/assets/budy-logo.png" alt="Budy logo" class="nav-logo-img">
-      Budy.Study
+      <img src="/assets/budy-logo-nav.png" alt="Budy.Study" class="nav-logo-img">
     </a>
     <div class="nav-right">
       <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide" id="nav-link-why">Why Budy?</a>
