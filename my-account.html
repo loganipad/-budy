@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study - My Account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<style>
+:root {
+  --ink: #0d1117;
+  --slate: #4a5568;
+  --muted: #718096;
+  --line: #e2e8f0;
+  --white: #ffffff;
+  --brand: #1a56db;
+  --brand-d: #1440b0;
+  --gold: #f59e0b;
+  --gold-l: #fbbf24;
+  --green: #059669;
+  --green-l: #10b981;
+  --rose-l: #f43f5e;
+  --font: 'Sora', system-ui, sans-serif;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --bounce: cubic-bezier(0.34,1.56,0.64,1);
+  --nav-h: 64px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: #131822;
+  color: #f0f4ff;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -5%, rgba(26,86,219,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 90% 100%, rgba(245,158,11,.08) 0%, transparent 60%);
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+.hidden { display: none !important; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  font-weight: 700;
+  transition: all .2s var(--ease);
+}
+.btn-sm { height: 38px; padding: 0 18px; font-size: .84rem; }
+.btn-ghost {
+  background: rgba(255,255,255,.08);
+  color: rgba(240,244,255,.7);
+  border: 1.5px solid rgba(255,255,255,.14);
+}
+.btn-ghost:hover { background: rgba(255,255,255,.14); color: #fff; }
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border: 1.5px solid transparent;
+}
+.btn-primary:hover { background: var(--brand-d); }
+.btn-gold {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
+}
+.btn-gold:hover { background: var(--gold-l); }
+
+/* Shared top bar style from index */
+#nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  height: var(--nav-h);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.nav-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0d1117;
+}
+.nav-logo-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-right .btn-primary { color: #fff; }
+.nav-right .btn-ghost {
+  background: transparent;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+}
+.nav-right .btn-ghost:hover { border-color: #1a56db; color: #1a56db; background: #eff6ff; }
+
+.page { position: relative; z-index: 1; }
+.dash-hd {
+  padding-top: calc(var(--nav-h) + 36px);
+}
+.dash-greeting {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #3b82f6;
+  margin-bottom: 6px;
+}
+.dash-name {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: #f0f4ff;
+}
+
+.acct-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+.acct-status.free {
+  background: rgba(5,150,105,.15);
+  border: 1px solid rgba(16,185,129,.25);
+  color: #10b981;
+}
+.acct-status.pro {
+  background: rgba(26,86,219,.18);
+  border: 1px solid rgba(59,130,246,.3);
+  color: #3b82f6;
+}
+.acct-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
+
+.acct-tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 24px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  overflow: auto;
+}
+.acct-tab {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 20px 20px 0 0;
+  font-size: .875rem;
+  font-weight: 700;
+  color: rgba(240,244,255,.38);
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  position: relative;
+  bottom: -1px;
+}
+.acct-tab.active {
+  color: #f0f4ff;
+  background: #1a2235;
+  border-color: rgba(255,255,255,.14);
+  border-bottom-color: #1a2235;
+}
+
+.dash-body { padding: 24px 0 60px; }
+.acct-pane { display: none; }
+.acct-pane.active { display: block; }
+
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.d-stat {
+  background: #1a2235;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
+  padding: 20px;
+}
+.d-stat-lbl {
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(240,244,255,.38);
+  margin-bottom: 10px;
+}
+.d-stat-v { font-size: 2rem; font-weight: 800; line-height: 1; }
+.d-stat-v.pos { color: #10b981; }
+.d-stat-v.neg { color: #f43f5e; }
+.d-stat-v.neu { color: rgba(240,244,255,.38); }
+.d-stat-sub { font-size: .72rem; color: rgba(240,244,255,.38); margin-top: 6px; }
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+}
+.d-card {
+  background: #1a2235;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
+  padding: 22px;
+}
+.d-card-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.d-card-hd h3 { font-size: .875rem; font-weight: 800; color: #f0f4ff; }
+.d-card-tag {
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.tag-brand { background: rgba(26,86,219,.18); color: #3b82f6; }
+.tag-gold { background: rgba(245,158,11,.15); color: #fbbf24; }
+
+.sessions-tbl { width: 100%; border-collapse: collapse; }
+.sessions-tbl th {
+  text-align: left;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(240,244,255,.38);
+  padding: 0 10px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.sessions-tbl td {
+  padding: 10px;
+  font-size: .8125rem;
+  color: rgba(240,244,255,.65);
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.sessions-tbl tr:last-child td { border-bottom: none; }
+.sc-pill {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.sc-hi { background: rgba(16,185,129,.18); color: #10b981; }
+.sc-mid { background: rgba(59,130,246,.18); color: #3b82f6; }
+.sc-lo { background: rgba(245,158,11,.15); color: #fbbf24; }
+.empty-s { text-align: center; padding: 40px; color: rgba(240,244,255,.38); font-size: .875rem; }
+.empty-s-icon { font-size: 2rem; margin-bottom: 10px; }
+
+.billing-wrap, .settings-wrap { display: flex; flex-direction: column; gap: 14px; }
+.panel {
+  background: #1a2235;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
+  overflow: hidden;
+}
+.panel-hd {
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(240,244,255,.38);
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: .875rem;
+}
+.row:last-child { border-bottom: none; }
+.k { font-weight: 700; color: rgba(240,244,255,.38); font-size: .8rem; }
+.v { color: #f0f4ff; font-weight: 600; }
+
+.billing-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-outline-dark {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.14);
+  color: rgba(240,244,255,.65);
+  height: 36px;
+  padding: 0 16px;
+  font-size: .8125rem;
+  font-weight: 700;
+  border-radius: 999px;
+}
+.btn-danger {
+  background: transparent;
+  border: 1.5px solid rgba(225,29,72,.3);
+  color: rgba(244,63,94,.9);
+  height: 36px;
+  padding: 0 16px;
+  font-size: .8125rem;
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.grade-select {
+  height: 36px;
+  min-width: 140px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: #f0f4ff;
+  padding: 0 12px;
+  font-size: .82rem;
+}
+.grade-select option { color: #0d1117; }
+
+.notice {
+  background: rgba(245,158,11,.12);
+  border: 1px solid rgba(245,158,11,.25);
+  color: #fbbf24;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: .84rem;
+}
+
+#toasts {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  background: #1c2333;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: .85rem;
+}
+.toast.ok { background: #059669; }
+.toast.er { background: #e11d48; }
+.toast.wn { background: #d97706; color: #fff; }
+
+@media (max-width: 980px) {
+  .dash-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .dash-stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Main navigation">
+  <div class="wrap nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/assets/budy-logo.jpg" alt="Budy logo" class="nav-logo-img">
+      Budy.Study
+    </a>
+    <div class="nav-right">
+      <a href="/" class="btn btn-ghost btn-sm">Home</a>
+      <button class="btn btn-primary btn-sm" id="auth-btn">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<div id="toasts"></div>
+
+<div class="page">
+  <div class="dash-hd">
+    <div class="wrap">
+      <p class="dash-greeting">Welcome back</p>
+      <h1 class="dash-name" id="dash-greet-name">Student</h1>
+      <div class="acct-status free" id="acct-status-badge">
+        <span class="acct-status-dot"></span>
+        <span id="acct-status-text">Free Plan</span>
+      </div>
+
+      <div class="acct-tabs" role="tablist">
+        <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab">My Progress</button>
+        <button class="acct-tab" id="acct-tab-billing" onclick="setAccountTab('billing')" role="tab">Billing</button>
+        <button class="acct-tab" id="acct-tab-settings" onclick="setAccountTab('settings')" role="tab">Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <div class="wrap">
+      <div id="logged-out-notice" class="notice hidden">Please log in to view your account dashboard. <a href="/login.html" style="text-decoration:underline">Go to login</a></div>
+
+      <div class="acct-pane active" id="acct-pane-progress" role="tabpanel">
+        <div class="dash-stats">
+          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v pos" id="d-best">-</div><div class="d-stat-sub">All-time SAT</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">-</div><div class="d-stat-sub">Most recent</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Last 7 Days</div><div class="d-stat-v neu" id="d-week-imp">+0</div><div class="d-stat-sub">Score improvement</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Tests Taken</div><div class="d-stat-v" id="d-count">0</div><div class="d-stat-sub">This month</div></div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="d-card">
+            <div class="d-card-hd">
+              <h3>Score History</h3>
+              <span class="d-card-tag tag-brand">30 Days</span>
+            </div>
+            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon">📊</div><p>Complete your first test to see your score chart.</p></div>
+            <canvas id="score-chart" height="220"></canvas>
+          </div>
+
+          <div class="d-card">
+            <div class="d-card-hd">
+              <h3>Recent Tests</h3>
+              <span class="d-card-tag tag-gold">Latest</span>
+            </div>
+            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon">📝</div><p>No tests yet. Start one!</p></div>
+            <table class="sessions-tbl" id="sess-tbl">
+              <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
+              <tbody id="sess-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="acct-pane" id="acct-pane-billing" role="tabpanel">
+        <div class="billing-wrap">
+          <div class="panel">
+            <div class="panel-hd">Billing</div>
+            <div class="row"><span class="k">Current Plan</span><span class="v" id="profile-plan">Free</span></div>
+            <div class="row"><span class="k">Account status</span><span class="v" id="profile-account-status">ACTIVE FREE</span></div>
+            <div class="row"><span class="k">Account type</span><span class="v" id="profile-account-type">Standard user</span></div>
+            <div class="row"><span class="k">Subscription timing</span><span class="v" id="profile-billing-timing">No active subscription</span></div>
+            <div class="row"><span class="k">Payment method</span><span class="v">Managed in Stripe checkout</span></div>
+            <div class="row">
+              <span class="k">Billing actions</span>
+              <div class="billing-actions">
+                <button class="btn-outline-dark" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button>
+                <button class="btn-danger" id="billing-cancel-btn" onclick="cancelSubscriptionNow()">Cancel Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acct-pane" id="acct-pane-settings" role="tabpanel">
+        <div class="settings-wrap">
+          <div class="panel">
+            <div class="panel-hd">Profile</div>
+            <div class="row"><span class="k">Full Name</span><span class="v" id="profile-name">-</span></div>
+            <div class="row"><span class="k">Email</span><span class="v" id="profile-email">-</span></div>
+            <div class="row">
+              <span class="k">Grade</span>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <select id="profile-grade-select" class="grade-select" onchange="saveGrade()">
+                  <option value="">Select grade</option>
+                  <option value="8">8th Grade</option>
+                  <option value="9">9th Grade</option>
+                  <option value="10">10th Grade</option>
+                  <option value="11">11th Grade</option>
+                  <option value="12">12th Grade</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-hd">Account</div>
+            <div class="row"><span class="k">Sign out</span><button class="btn-outline-dark" onclick="logout()">Sign Out</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
+const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
+const AUTH0_REDIRECT_URI = window.location.origin;
+const LOCAL_AUTH_KEY = 'budy_local_auth_user';
+const TEST_USER_EMAILS = ['loganipad@gmail.com'];
+const GRADE_KEY = 'budy_grade_pref';
+
+let authClient = null;
+
+const S = {
+  user: { name: '', email: '', grade: '' },
+  authViaLocal: false,
+  isLoggedIn: false,
+  isPremium: false,
+  authUserId: '',
+  accountTab: 'progress',
+  subscriptionStatus: 'free',
+  cancelAtPeriodEnd: false,
+  currentPeriodEnd: null,
+  cancelAt: null,
+  canceledAt: null,
+  sessionCache: [],
+  chart: null
+};
+
+function toast(msg, type = '', dur = 2800) {
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), dur);
+}
+
+function isTestUserEmail(email) {
+  if (!email) return false;
+  return TEST_USER_EMAILS.includes(String(email).trim().toLowerCase());
+}
+
+function setAccountTab(tab) {
+  S.accountTab = tab;
+  ['progress', 'billing', 'settings'].forEach((name) => {
+    const tabEl = document.getElementById('acct-tab-' + name);
+    const paneEl = document.getElementById('acct-pane-' + name);
+    if (tabEl) tabEl.classList.toggle('active', name === tab);
+    if (paneEl) paneEl.classList.toggle('active', name === tab);
+  });
+}
+
+function getLocalAuthUser() {
+  try {
+    const raw = localStorage.getItem(LOCAL_AUTH_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearLocalAuthUser() {
+  localStorage.removeItem(LOCAL_AUTH_KEY);
+}
+
+async function initAuth() {
+  if (!window.auth0 || !window.auth0.createAuth0Client) {
+    toast('Auth SDK failed to load.', 'er');
+    return;
+  }
+
+  authClient = await window.auth0.createAuth0Client({
+    domain: AUTH0_DOMAIN,
+    clientId: AUTH0_CLIENT_ID,
+    authorizationParams: { redirect_uri: AUTH0_REDIRECT_URI },
+    cacheLocation: 'localstorage',
+    useRefreshTokens: true,
+    useRefreshTokensFallback: true
+  });
+
+  const hasAuthParams = window.location.search.includes('code=') && window.location.search.includes('state=');
+  if (hasAuthParams) {
+    try {
+      await authClient.handleRedirectCallback();
+    } catch {
+      toast('Login callback failed. Please log in again.', 'er');
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  const isAuthenticated = await authClient.isAuthenticated();
+  if (isAuthenticated) {
+    S.isLoggedIn = true;
+    const user = await authClient.getUser();
+    if (user && user.sub) S.authUserId = String(user.sub);
+    if (user && user.name) S.user.name = user.name;
+    if (user && user.email) S.user.email = user.email;
+  } else {
+    const localUser = getLocalAuthUser();
+    if (localUser) {
+      S.isLoggedIn = true;
+      S.authViaLocal = true;
+      if (localUser.sub) S.authUserId = String(localUser.sub);
+      if (localUser.name) S.user.name = localUser.name;
+      if (localUser.email) S.user.email = localUser.email;
+    }
+  }
+
+  document.getElementById('auth-btn').onclick = () => logout();
+}
+
+async function getAccessToken() {
+  if (!S.isLoggedIn) return '';
+
+  if (S.authViaLocal) {
+    const localUser = getLocalAuthUser();
+    return localUser && localUser.accessToken ? String(localUser.accessToken) : '';
+  }
+
+  if (!authClient) return '';
+  try {
+    const token = await authClient.getTokenSilently({
+      authorizationParams: { scope: 'openid profile email' }
+    });
+    return token || '';
+  } catch {
+    try {
+      const popupToken = await authClient.getTokenWithPopup({
+        authorizationParams: { scope: 'openid profile email' }
+      });
+      return popupToken || '';
+    } catch {
+      return '';
+    }
+  }
+}
+
+async function refreshPremiumStatus() {
+  if (!S.isLoggedIn) return;
+  const token = await getAccessToken();
+  if (!token) return;
+
+  try {
+    const response = await fetch('/api/me', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await response.json();
+
+    if (!response.ok) return;
+
+    S.isPremium = Boolean(data.isPremium);
+    S.subscriptionStatus = data && data.subscriptionStatus ? String(data.subscriptionStatus).toLowerCase() : 'free';
+    S.cancelAtPeriodEnd = Boolean(data && data.cancelAtPeriodEnd);
+    S.currentPeriodEnd = data && data.currentPeriodEnd ? String(data.currentPeriodEnd) : null;
+    S.cancelAt = data && data.cancelAt ? String(data.cancelAt) : null;
+    S.canceledAt = data && data.canceledAt ? String(data.canceledAt) : null;
+  } catch {
+    // No-op.
+  }
+}
+
+async function hydrateSessions() {
+  const token = await getAccessToken();
+  if (!token) return;
+
+  try {
+    const response = await fetch('/api/test-attempts', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await response.json();
+    if (!response.ok) return;
+
+    const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+    S.sessionCache = attempts.map((item) => ({
+      date: item.date,
+      section: item.section,
+      total: Number(item.total || 0),
+      correct: Number(item.correct || 0),
+      total_q: Number(item.total_q || 0)
+    }));
+  } catch {
+    // No-op.
+  }
+}
+
+function formatBillingDate(isoValue) {
+  if (!isoValue) return '';
+  const dt = new Date(isoValue);
+  if (Number.isNaN(dt.getTime())) return '';
+  return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function getBillingTimingText() {
+  if (S.canceledAt) {
+    const endedOn = formatBillingDate(S.canceledAt);
+    return endedOn ? 'Ended on ' + endedOn : 'Ended';
+  }
+  if (S.cancelAtPeriodEnd) {
+    const endDate = formatBillingDate(S.currentPeriodEnd || S.cancelAt);
+    return endDate ? 'Cancels on ' + endDate : 'Cancels at period end';
+  }
+  if (S.isPremium) {
+    const renewDate = formatBillingDate(S.currentPeriodEnd);
+    return renewDate ? 'Renews on ' + renewDate : 'Auto-renews';
+  }
+  return 'No active subscription';
+}
+
+function loadGrade() {
+  const saved = localStorage.getItem(GRADE_KEY);
+  if (saved && ['8','9','10','11','12'].includes(saved)) {
+    S.user.grade = saved;
+  }
+  const sel = document.getElementById('profile-grade-select');
+  if (sel) sel.value = S.user.grade || '';
+}
+
+function saveGrade() {
+  const sel = document.getElementById('profile-grade-select');
+  if (!sel) return;
+  const grade = String(sel.value || '');
+  S.user.grade = grade;
+  if (grade) localStorage.setItem(GRADE_KEY, grade);
+  else localStorage.removeItem(GRADE_KEY);
+  const gradeView = document.getElementById('profile-grade');
+  if (gradeView) gradeView.textContent = grade ? grade + 'th grade' : '-';
+  toast('Grade saved.', 'ok');
+}
+
+async function openBillingPortal() {
+  if (!S.isLoggedIn) {
+    window.location.href = '/login.html';
+    return;
+  }
+  const btn = document.getElementById('billing-portal-btn');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Opening portal...';
+
+  try {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Session expired.');
+
+    const response = await fetch('/api/create-billing-portal-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      },
+      body: JSON.stringify({})
+    });
+    const data = await response.json();
+
+    if (response.status === 403 || response.status === 409) {
+      toast('Billing portal unlocks after you start a paid plan.', 'wn', 4200);
+      return;
+    }
+
+    if (!response.ok || !data.url) {
+      throw new Error((data && data.error) ? data.error : 'Could not open billing portal.');
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    toast(err && err.message ? err.message : 'Could not open billing portal.', 'er');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+async function cancelSubscriptionNow() {
+  if (!S.isLoggedIn) {
+    window.location.href = '/login.html';
+    return;
+  }
+  if (!S.isPremium) {
+    toast('No active paid subscription to cancel.', 'wn');
+    return;
+  }
+
+  if (!window.confirm('Cancel your subscription immediately?')) return;
+
+  const btn = document.getElementById('billing-cancel-btn');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Canceling...';
+
+  try {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Session expired.');
+
+    const response = await fetch('/api/cancel-subscription-now', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      },
+      body: JSON.stringify({})
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error((data && data.error) ? data.error : 'Could not cancel subscription.');
+    }
+
+    await refreshPremiumStatus();
+    renderDash();
+    toast('Subscription canceled.', 'ok');
+  } catch (err) {
+    toast(err && err.message ? err.message : 'Could not cancel subscription.', 'er');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+function logout() {
+  clearLocalAuthUser();
+  if (S.authViaLocal) {
+    window.location.href = '/';
+    return;
+  }
+  if (!authClient) {
+    window.location.href = '/';
+    return;
+  }
+  authClient.logout({ logoutParams: { returnTo: AUTH0_REDIRECT_URI } });
+}
+
+function renderDash() {
+  const ss = Array.isArray(S.sessionCache) ? S.sessionCache : [];
+
+  document.getElementById('dash-greet-name').textContent = S.user.name ? (S.user.name + ' 👋') : 'Student 👋';
+
+  const badge = document.getElementById('acct-status-badge');
+  const badgeText = document.getElementById('acct-status-text');
+  const isTest = isTestUserEmail(S.user.email);
+  if (S.isPremium) {
+    badge.classList.remove('free');
+    badge.classList.add('pro');
+    badgeText.textContent = isTest ? 'Test Plan' : 'Pro Plan';
+  } else {
+    badge.classList.remove('pro');
+    badge.classList.add('free');
+    badgeText.textContent = isTest ? 'Test Plan' : 'Free Plan';
+  }
+
+  const now = new Date();
+  const monthCount = ss.filter((s) => {
+    const d = new Date(s.date);
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  }).length;
+  document.getElementById('d-count').textContent = String(monthCount);
+
+  document.getElementById('profile-account-status').textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
+  document.getElementById('profile-account-type').textContent = isTest ? 'Test user' : 'Standard user';
+  document.getElementById('profile-name').textContent = S.user.name || '-';
+  document.getElementById('profile-email').textContent = S.user.email || '-';
+  document.getElementById('profile-plan').textContent = S.isPremium ? 'Pro' : 'Free';
+  document.getElementById('profile-billing-timing').textContent = getBillingTimingText();
+
+  loadGrade();
+
+  const weekCutoff = Date.now() - (7 * 24 * 60 * 60 * 1000);
+  const weekSessions = ss
+    .filter((s) => new Date(s.date).getTime() >= weekCutoff)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const weekImp = weekSessions.length >= 2 ? (weekSessions[weekSessions.length - 1].total - weekSessions[0].total) : 0;
+  const weekEl = document.getElementById('d-week-imp');
+  weekEl.textContent = (weekImp >= 0 ? '+' : '') + weekImp;
+  weekEl.classList.remove('pos', 'neg', 'neu');
+  weekEl.classList.add(weekImp > 0 ? 'pos' : weekImp < 0 ? 'neg' : 'neu');
+
+  if (!ss.length) {
+    document.getElementById('d-best').textContent = '-';
+    document.getElementById('d-latest').textContent = '-';
+    document.getElementById('sess-empty').classList.remove('hidden');
+    document.getElementById('sess-tbl').style.display = 'none';
+    document.getElementById('ch-empty').classList.remove('hidden');
+    document.getElementById('score-chart').style.display = 'none';
+    if (S.chart) { S.chart.destroy(); S.chart = null; }
+    return;
+  }
+
+  document.getElementById('sess-empty').classList.add('hidden');
+  document.getElementById('sess-tbl').style.display = '';
+  document.getElementById('ch-empty').classList.add('hidden');
+  document.getElementById('score-chart').style.display = '';
+
+  const scores = ss.map((s) => Number(s.total || 0));
+  document.getElementById('d-best').textContent = Math.max(...scores);
+  document.getElementById('d-latest').textContent = scores[scores.length - 1];
+
+  const tb = document.getElementById('sess-tbody');
+  tb.innerHTML = '';
+  [...ss].reverse().slice(0, 8).forEach((s) => {
+    const pct = s.total_q ? Math.round((s.correct / s.total_q) * 100) : 0;
+    const cls = s.total >= 700 ? 'sc-hi' : s.total >= 500 ? 'sc-mid' : 'sc-lo';
+    const section = s.section === 'full' ? 'Full' : s.section === 'english' ? 'R&W' : 'Math';
+    tb.innerHTML += '<tr><td>' + new Date(s.date).toLocaleDateString() + '</td><td>' + section + '</td><td><span class="sc-pill ' + cls + '">' + s.total + '</span></td><td>' + pct + '%</td></tr>';
+  });
+
+  if (S.chart) S.chart.destroy();
+  const labels = ss.map((s) => {
+    const d = new Date(s.date);
+    return (d.getMonth() + 1) + '/' + d.getDate();
+  });
+
+  const ctx = document.getElementById('score-chart').getContext('2d');
+  S.chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Score',
+        data: scores,
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(26,86,219,.2)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#f59e0b',
+        pointRadius: 4,
+        fill: true,
+        tension: .35
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: 'rgba(240,244,255,.45)' }, grid: { color: 'rgba(255,255,255,.05)' } },
+        y: { ticks: { color: 'rgba(240,244,255,.45)' }, grid: { color: 'rgba(255,255,255,.05)' } }
+      }
+    }
+  });
+}
+
+async function boot() {
+  await initAuth();
+
+  if (!S.isLoggedIn) {
+    document.getElementById('logged-out-notice').classList.remove('hidden');
+    document.getElementById('acct-pane-progress').classList.add('hidden');
+    document.getElementById('acct-pane-billing').classList.add('hidden');
+    document.getElementById('acct-pane-settings').classList.add('hidden');
+    document.getElementById('dash-greet-name').textContent = 'Please log in';
+    document.getElementById('auth-btn').textContent = 'Log In';
+    document.getElementById('auth-btn').onclick = () => { window.location.href = '/login.html'; };
+    return;
+  }
+
+  await refreshPremiumStatus();
+  await hydrateSessions();
+  renderDash();
+}
+
+boot();
+</script>
+</body>
+</html>

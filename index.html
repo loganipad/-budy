@@ -1119,7 +1119,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <a href="#features" class="btn btn-ghost btn-sm nav-link-hide">Why Budy?</a>
       <a href="#solutions" class="btn btn-ghost btn-sm nav-link-hide">Features</a>
       <a href="#pricing" class="btn btn-ghost btn-sm nav-link-hide">Pricing</a>
-      <button class="btn btn-ghost btn-sm" onclick="showDash()">My Account</button>
+      <a class="btn btn-ghost btn-sm" href="/my-account.html">My Account</a>
       <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()">Log In</button>
       <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Free Test" data-premium-text="Start Test">Start Free Test</button>
       <div class="mobile-menu-wrap">
@@ -1129,7 +1129,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <a class="mobile-menu-link" href="#features" onclick="closeMobileMenu()">Why Budy?</a>
           <a class="mobile-menu-link" href="#solutions" onclick="closeMobileMenu()">Features</a>
           <a class="mobile-menu-link" href="#pricing" onclick="closeMobileMenu()">Pricing</a>
-          <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();showDash();return false">My Account</a>
+          <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()">My Account</a>
           <a class="mobile-menu-link" href="#" onclick="closeMobileMenu();handleAuthButton();return false" id="mobile-auth-link">Log In</a>
         </div>
       </div>
@@ -1595,7 +1595,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <li><a href="#features">Features</a></li>
           <li><a href="#solutions">Features</a></li>
           <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#" onclick="showDash();return false">My Account</a></li>
+          <li><a href="/my-account.html">My Account</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1717,7 +1717,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
       <div class="res-actions">
         <button class="btn btn-primary" onclick="openOnboard()">Take Another Test</button>
-        <button class="btn btn-ghost" onclick="showDash()">My Account</button>
+        <a class="btn btn-ghost" href="/my-account.html">My Account</a>
         <button class="btn btn-ghost" onclick="downloadReport()">⬇ Report</button>
       </div>
     </div>
@@ -2602,7 +2602,7 @@ function goLanding() {
 }
 function showDash() {
   if (S.testActive) { if (!confirm('Leave the test?')) return; clearTimer(); S.testActive=false; }
-  renderDash(); setView('dash');
+  window.location.href = '/my-account.html';
 }
 
 /* ── NAV SCROLL ── */
