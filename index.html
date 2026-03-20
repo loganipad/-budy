@@ -764,58 +764,106 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 /* ============================================================
   MY ACCOUNT
   ============================================================ */
-#dash-screen{display:none;min-height:100vh;background:var(--bg);padding-top:var(--nav-h)}
+#dash-screen{display:none;min-height:100vh;background:#131822;padding-top:var(--nav-h);color:#f0f4ff}
 #dash-screen.show{display:block}
-.dash-hd{background:#fff;border-bottom:1px solid #e9ecf4;padding:20px 0 14px}
-.dash-hd-inner{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
-.dash-greet{font-size:2.75rem;font-weight:700;line-height:1.05;color:var(--ink);letter-spacing:-.02em}
-.dash-title-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.dash-hd h1{font-size:3.5rem;font-weight:800;line-height:1;color:var(--ink);letter-spacing:-.03em}
-.acct-status{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-.acct-status.free{background:var(--green-pale);color:var(--green)}
-.acct-status.paid{background:var(--green-pale);color:var(--green)}
-.acct-status-icon{font-size:.9rem;line-height:1}
-.acct-status.paid .acct-status-icon{animation:acctPulse 1.2s var(--ease) infinite}
-@keyframes acctPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
-.acct-tabs{display:flex;gap:10px;overflow:auto;padding-top:2px}
-.acct-tab{height:42px;padding:0 16px;border-radius:999px;border:1.5px solid #dde2ee;font-size:1.2rem;font-weight:700;color:#6f7888;background:#f4f5f8;white-space:nowrap}
-.acct-tab.active{border-color:var(--brand);background:#fff;color:var(--brand)}
+#dash-screen::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% -5%, rgba(26,86,219,.35) 0%, transparent 60%),radial-gradient(ellipse 40% 35% at 90% 100%, rgba(245,158,11,.08) 0%, transparent 60%)}
+#dash-screen::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:40px 40px}
 
-.dash-body{padding:22px 0 28px;background:#f5f6fb}
-.acct-pane{display:none}
-.acct-pane.active{display:block}
-.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.d-stat{background:#fff;border-radius:18px;padding:18px;border:1px solid #e6e9f2;min-height:120px}
-.d-stat-lbl{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8b94a6;margin-bottom:8px}
-.d-stat-v{font-size:2rem;font-weight:800;color:var(--ink);font-family:var(--font-h)}
-.d-stat-sub{font-size:.75rem;color:var(--muted);margin-top:3px}
-.d-stat-v.pos{color:var(--green)}
-.d-stat-v.neg{color:var(--rose)}
-.d-stat-v.neu{color:var(--muted)}
-.dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
-.d-card{background:#fff;border-radius:18px;padding:20px;border:1px solid #e6e9f2}
-.d-card h3{font-size:.9375rem;font-weight:800;color:var(--ink);margin-bottom:16px}
-.sessions-tbl{width:100%;border-collapse:collapse}
-.sessions-tbl th{text-align:left;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--line)}
-.sessions-tbl td{padding:10px;font-size:.8375rem;color:var(--slate);border-bottom:1px solid var(--bg)}
-.sessions-tbl tr:last-child td{border-bottom:none}
-.sc-pill{display:inline-block;font-size:.75rem;font-weight:800;padding:2px 9px;border-radius:var(--r-full)}
-.sc-hi{background:var(--green-pale);color:var(--green)}
-.sc-mid{background:var(--brand-pale);color:var(--brand)}
-.sc-lo{background:var(--gold-pale);color:var(--amber)}
-.empty-s{text-align:center;padding:36px;color:var(--muted);font-size:.875rem}
-.empty-s-icon{font-size:2rem;margin-bottom:8px}
+#dash-screen .dash-hd,#dash-screen .dash-body{position:relative;z-index:1}
+#dash-screen .dash-hd{padding-top:calc(64px + 36px);padding-bottom:0;position:relative;overflow:hidden}
+#dash-screen .dash-hd-inner{display:flex;flex-direction:column;gap:20px}
+#dash-screen .dash-greeting{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3b82f6;margin-bottom:6px}
+#dash-screen .dash-greet{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;line-height:1.05;color:#f0f4ff;letter-spacing:-.03em}
 
-.settings-wrap{margin-top:0;background:#fff;border:1px solid #e6e9f2;border-radius:18px;padding:22px}
-.settings-panel{display:block}
-.settings-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--bg);font-size:.875rem}
-.settings-row:last-child{border-bottom:none}
-.settings-k{font-weight:700;color:var(--ink-60)}
-.settings-v{color:var(--ink)}
-.settings-switch{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--slate)}
-@media(max-width:980px){.dash-stats{grid-template-columns:1fr 1fr}.dash-greet{font-size:2rem}.dash-hd h1{font-size:2.8rem}}
-@media(max-width:700px){.dash-grid{grid-template-columns:1fr}.dash-stats{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.dash-stats{grid-template-columns:1fr}.dash-greet{font-size:1.5rem}.dash-hd h1{font-size:2.2rem}}
+#dash-screen .acct-status{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-top:8px}
+#dash-screen .acct-status.free{background:rgba(5,150,105,.15);border:1px solid rgba(16,185,129,.25);color:#10b981}
+#dash-screen .acct-status.pro{background:rgba(26,86,219,.18);border:1px solid rgba(59,130,246,.3);color:#3b82f6}
+#dash-screen .acct-status-icon{width:6px;height:6px;border-radius:50%;display:inline-block;background:currentColor;animation:acctPulse 1.5s ease infinite;line-height:1;text-indent:-9999px;overflow:hidden}
+@keyframes acctPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+#dash-screen .acct-tabs{display:flex;gap:4px;margin-top:24px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:0;overflow:auto}
+#dash-screen .acct-tab{height:44px;padding:0 20px;border-radius:20px 20px 0 0;font-size:.875rem;font-weight:700;color:rgba(240,244,255,.38);background:transparent;border:1px solid transparent;border-bottom:none;transition:all .2s var(--ease);position:relative;bottom:-1px;white-space:nowrap}
+#dash-screen .acct-tab:hover{color:rgba(240,244,255,.65);background:rgba(255,255,255,.04)}
+#dash-screen .acct-tab.active{color:#f0f4ff;background:#1a2235;border-color:rgba(255,255,255,.14);border-bottom-color:#1a2235}
+
+#dash-screen .dash-body{padding:24px 0 60px}
+#dash-screen .acct-pane{display:none}
+#dash-screen .acct-pane.active{display:block;animation:fadeUp .3s var(--ease)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+#dash-screen .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+#dash-screen .d-stat{background:#1a2235;border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:20px;position:relative;overflow:hidden;transition:border-color .2s}
+#dash-screen .d-stat:hover{border-color:rgba(255,255,255,.14)}
+#dash-screen .d-stat::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,86,219,.06) 0%,transparent 60%);pointer-events:none}
+#dash-screen .d-stat-lbl{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,244,255,.38);margin-bottom:10px}
+#dash-screen .d-stat-v{font-size:2rem;font-weight:800;color:#f0f4ff;font-family:var(--font-h);line-height:1}
+#dash-screen .d-stat-sub{font-size:.72rem;color:rgba(240,244,255,.38);margin-top:6px}
+#dash-screen .d-stat-v.pos{color:#10b981}
+#dash-screen .d-stat-v.neg{color:#f43f5e}
+#dash-screen .d-stat-v.neu{color:rgba(240,244,255,.38)}
+
+#dash-screen .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+#dash-screen .d-card{background:#1a2235;border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:22px}
+#dash-screen .d-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:8px}
+#dash-screen .d-card h3{font-size:.875rem;font-weight:800;color:#f0f4ff;letter-spacing:.01em;margin-bottom:0}
+#dash-screen .d-card-tag{font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+#dash-screen .tag-brand{background:rgba(26,86,219,.18);color:#3b82f6}
+#dash-screen .tag-gold{background:rgba(245,158,11,.15);color:#fbbf24}
+
+#dash-screen .sessions-tbl{width:100%;border-collapse:collapse}
+#dash-screen .sessions-tbl th{text-align:left;font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.38);padding:0 10px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+#dash-screen .sessions-tbl td{padding:10px;font-size:.8125rem;color:rgba(240,244,255,.65);border-bottom:1px solid rgba(255,255,255,.04)}
+#dash-screen .sessions-tbl tr:last-child td{border-bottom:none}
+#dash-screen .sessions-tbl tr:hover td{background:rgba(255,255,255,.03);color:#f0f4ff}
+#dash-screen .sc-pill{display:inline-block;font-size:.7rem;font-weight:800;padding:2px 10px;border-radius:999px}
+#dash-screen .sc-hi{background:rgba(16,185,129,.18);color:#10b981}
+#dash-screen .sc-mid{background:rgba(59,130,246,.18);color:#3b82f6}
+#dash-screen .sc-lo{background:rgba(245,158,11,.15);color:#fbbf24}
+#dash-screen .empty-s{text-align:center;padding:40px;color:rgba(240,244,255,.38);font-size:.875rem}
+#dash-screen .empty-s-icon{font-size:2rem;margin-bottom:10px}
+
+#dash-screen .expl-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.22);border:1px solid rgba(59,130,246,.3);border-radius:999px;padding:4px 12px;font-size:.7rem;font-weight:700;color:#3b82f6;letter-spacing:.03em}
+#dash-screen .billing-wrap{display:flex;flex-direction:column;gap:14px}
+#dash-screen .billing-plan-card{background:#1a2235;border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:24px 28px;position:relative;overflow:hidden}
+#dash-screen .billing-plan-card.pro{border-color:rgba(26,86,219,.4);background:linear-gradient(135deg,rgba(26,86,219,.1) 0%,#1a2235 60%)}
+#dash-screen .billing-plan-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,86,219,.04),transparent 70%);pointer-events:none}
+#dash-screen .plan-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,244,255,.38);margin-bottom:6px}
+#dash-screen .plan-name{font-size:1.6rem;font-weight:800;color:#f0f4ff;line-height:1}
+#dash-screen .plan-price{font-size:.9rem;color:rgba(240,244,255,.65);margin-top:4px}
+
+#dash-screen .billing-rows,#dash-screen .settings-section{background:#1a2235;border:1px solid rgba(255,255,255,.08);border-radius:28px;overflow:hidden}
+#dash-screen .billing-row,#dash-screen .settings-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.875rem}
+#dash-screen .billing-row:last-child,#dash-screen .settings-row:last-child{border-bottom:none}
+#dash-screen .billing-k{font-weight:700;color:rgba(240,244,255,.38);font-size:.8rem;letter-spacing:.02em}
+#dash-screen .billing-v{color:#f0f4ff;font-weight:600}
+#dash-screen .billing-actions{display:flex;gap:8px;flex-wrap:wrap}
+#dash-screen .settings-section{margin-bottom:14px}
+#dash-screen .settings-section-hd{padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,244,255,.38)}
+#dash-screen .settings-k{font-weight:600;color:rgba(240,244,255,.65);font-size:.85rem}
+#dash-screen .settings-v{color:#f0f4ff;font-weight:700;font-size:.85rem}
+
+#dash-screen .toggle-wrap{display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(240,244,255,.38)}
+#dash-screen .toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+#dash-screen .toggle input{opacity:0;width:0;height:0}
+#dash-screen .toggle-track{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:12px;border:1px solid rgba(255,255,255,.1);transition:background .2s;cursor:pointer}
+#dash-screen .toggle input:checked + .toggle-track{background:#1a56db}
+#dash-screen .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s var(--bounce);pointer-events:none}
+#dash-screen .toggle input:checked ~ .toggle-thumb{transform:translateX(18px)}
+
+#dash-screen .btn-ghost-dark{background:rgba(255,255,255,.08);color:rgba(240,244,255,.65);border:1.5px solid rgba(255,255,255,.14);height:38px;padding:0 18px;font-size:.84rem}
+#dash-screen .btn-ghost-dark:hover{background:rgba(255,255,255,.14);color:#f0f4ff}
+#dash-screen .btn-primary{background:#1a56db;color:#fff;height:38px;padding:0 20px;font-size:.84rem}
+#dash-screen .btn-primary:hover{background:#1440b0;transform:translateY(-1px);box-shadow:0 6px 24px rgba(26,86,219,.5)}
+#dash-screen .btn-gold{background:#f59e0b;color:#0d1117;height:38px;padding:0 20px;font-size:.84rem;font-weight:800}
+#dash-screen .btn-gold:hover{background:#fbbf24;transform:translateY(-1px);box-shadow:0 6px 24px rgba(245,158,11,.45)}
+#dash-screen .btn-outline-dark{background:transparent;border:1.5px solid rgba(255,255,255,.14);color:rgba(240,244,255,.65);height:36px;padding:0 16px;font-size:.8125rem;font-weight:700;border-radius:999px;transition:all .2s}
+#dash-screen .btn-outline-dark:hover{border-color:#3b82f6;color:#f0f4ff;background:rgba(26,86,219,.1)}
+#dash-screen .btn-danger{background:transparent;border:1.5px solid rgba(225,29,72,.3);color:rgba(244,63,94,.8);height:36px;padding:0 16px;font-size:.8125rem;font-weight:700;border-radius:999px;transition:all .2s}
+#dash-screen .btn-danger:hover{background:rgba(225,29,72,.12);color:#f43f5e}
+
+@media(max-width:980px){#dash-screen .dash-stats{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){#dash-screen .dash-grid{grid-template-columns:1fr}#dash-screen .dash-stats{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){#dash-screen .dash-stats{grid-template-columns:1fr}}
 
 @media(max-width:860px){
   .nav-link-hide,.nav-right > .btn.btn-ghost.btn-sm:not(#auth-btn):not(.mobile-menu-btn){display:none}
@@ -1683,25 +1731,40 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
      DASHBOARD
      ============================================================ -->
 <div id="dash-screen" role="main">
-  <nav style="position:fixed;top:0;left:0;right:0;z-index:900;height:64px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)">
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:900;height:64px;background:rgba(13,17,23,.82);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08)">
     <div class="wrap nav-inner">
-      <div class="nav-logo"><div class="nav-logo-mark"><svg viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2"><path d="M10 2L2 7l8 4 8-4-8-5zM2 14l8 4 8-4M2 10.5l8 4 8-4"/></svg></div>Budy.Study</div>
+      <div class="nav-logo" style="color:#f0f4ff">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="100" height="100" rx="22" fill="#1a56db"/>
+          <path d="M20 30 Q50 24 80 30 L80 72 Q50 66 20 72 Z" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+          <path d="M20 30 Q50 24 80 30" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <line x1="50" y1="26" x2="50" y2="70" stroke="rgba(255,255,255,.6)" stroke-width="2"/>
+          <circle cx="36" cy="48" r="3.5" fill="white"/>
+          <circle cx="64" cy="48" r="3.5" fill="white"/>
+          <path d="M40 58 Q50 64 60 58" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        </svg>
+        <span>Budy<span style="color:#f59e0b">.</span>Study</span>
+      </div>
       <div class="nav-right">
-        <button class="btn btn-ghost btn-sm" onclick="goLanding()">Home</button>
-        <button class="btn btn-primary btn-sm" onclick="openOnboard()">+ New Test</button>
+        <button class="btn btn-ghost-dark" onclick="goLanding()">Home</button>
+        <button class="btn btn-gold" onclick="openOnboard()">+ New Test</button>
       </div>
     </div>
   </nav>
-  <div class="dash-hd" style="padding-top:calc(64px + 22px)">
+  <div class="dash-hd">
     <div class="wrap dash-hd-inner">
-      <div>
-        <p id="dash-greet" class="dash-greet">Welcome back, Student!</p>
-        <div class="dash-title-row">
-          <h1>My Account</h1>
-          <div class="acct-status free" id="acct-status-badge">
-            <span class="acct-status-icon" id="acct-status-icon">•</span>
-            <span id="acct-status-text">FREE USER</span>
-          </div>
+      <div style="position:relative">
+        <svg style="position:absolute;right:0;top:-60px;width:200px;opacity:.07;pointer-events:none" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 20 Q50 10 90 20 L90 80 Q50 70 10 80 Z" fill="white"/>
+          <circle cx="35" cy="44" r="7" fill="#1a56db"/>
+          <circle cx="65" cy="44" r="7" fill="#1a56db"/>
+          <path d="M36 60 Q50 70 64 60" stroke="#1a56db" stroke-width="5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <p class="dash-greeting">Welcome back</p>
+        <h1 id="dash-greet" class="dash-greet">Welcome back, Student!</h1>
+        <div class="acct-status free" id="acct-status-badge">
+          <span class="acct-status-icon" id="acct-status-icon">•</span>
+          <span id="acct-status-text">FREE PLAN</span>
         </div>
       </div>
       <div class="acct-tabs" role="tablist" aria-label="My account tabs">
@@ -1715,19 +1778,19 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="wrap">
       <div class="acct-pane active" id="acct-pane-progress" role="tabpanel">
         <div class="dash-stats">
-          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v" id="d-best">—</div><div class="d-stat-sub">All-time</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v pos" id="d-best">—</div><div class="d-stat-sub">All-time SAT</div></div>
           <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">—</div><div class="d-stat-sub">Most recent</div></div>
           <div class="d-stat"><div class="d-stat-lbl">Last 7 Days</div><div class="d-stat-v neu" id="d-week-imp">+0</div><div class="d-stat-sub">Score improvement</div></div>
-          <div class="d-stat"><div class="d-stat-lbl">Today</div><div class="d-stat-v" id="d-date">—</div><div class="d-stat-sub">Current date</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Tests Taken</div><div class="d-stat-v" id="d-count">0</div><div class="d-stat-sub">This month</div></div>
         </div>
         <div class="dash-grid">
           <div class="d-card">
-            <h3>Score History</h3>
+            <div class="d-card-hd"><h3>Score History</h3><span class="d-card-tag tag-brand">30 Days</span></div>
             <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon">📊</div><p>Complete your first test to see your score chart.</p></div>
             <canvas id="score-chart" height="230"></canvas>
           </div>
           <div class="d-card">
-            <h3>Recent Tests</h3>
+            <div class="d-card-hd"><h3>Recent Tests</h3><span class="d-card-tag tag-gold">Latest</span></div>
             <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon">📝</div><p>No tests yet. Start one!</p></div>
             <table class="sessions-tbl" id="sess-tbl">
               <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
@@ -1735,32 +1798,104 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
             </table>
           </div>
         </div>
+
+        <div style="margin-top:14px">
+          <div class="d-card">
+            <div class="d-card-hd">
+              <h3>Recent AI Explanation</h3>
+              <span class="expl-chip">AI Explanation</span>
+            </div>
+            <div style="background:rgba(26,86,219,.08);border:1px solid rgba(59,130,246,.15);border-radius:14px;padding:16px 20px">
+              <p style="font-size:.8rem;color:rgba(240,244,255,.38);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;font-weight:700">Q: Which best describes the main argument?</p>
+              <p style="font-size:.875rem;color:rgba(240,244,255,.65);line-height:1.7">The passage argues that <strong style="color:#f0f4ff">economic incentives alone are insufficient</strong> to explain behavioral change - social norms and peer influence play an equally critical role. The author supports this with the community recycling study in paragraphs 3-4.</p>
+              <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span style="font-size:.72rem;color:#10b981;font-weight:700;background:rgba(16,185,129,.12);padding:3px 10px;border-radius:999px">Your answer was correct</span>
+                <span style="font-size:.72rem;color:rgba(240,244,255,.38)">Answer: B - Social norms as primary driver</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="acct-pane" id="acct-pane-billing" role="tabpanel">
-        <div class="settings-wrap">
-          <h3 style="font-size:1rem;font-weight:800;margin-bottom:14px">Billing</h3>
-          <div class="settings-panel">
-            <div class="settings-row"><span class="settings-k">Current plan</span><span class="settings-v" id="profile-plan">Free</span></div>
-            <div class="settings-row"><span class="settings-k">Account status</span><span class="settings-v" id="profile-account-status">FREE</span></div>
-            <div class="settings-row"><span class="settings-k">Account type</span><span class="settings-v" id="profile-account-type">Standard user</span></div>
-            <div class="settings-row"><span class="settings-k">Subscription timing</span><span class="settings-v" id="profile-billing-timing">-</span></div>
-            <div class="settings-row"><span class="settings-k">Payment method</span><span class="settings-v">Managed in Stripe checkout</span></div>
-            <div class="settings-row"><span class="settings-k">Billing actions</span><span class="settings-v" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button><button class="btn btn-ghost btn-sm" id="billing-cancel-btn" onclick="cancelSubscriptionNow()">Cancel Now</button></span></div>
+        <div class="billing-wrap">
+          <div class="billing-plan-card">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <div class="plan-label">Current Plan</div>
+                <div class="plan-name" id="profile-plan">Free</div>
+                <div class="plan-price" style="margin-top:6px">$0 / month - 20 QR generations lifetime</div>
+                <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-primary" onclick="openPaywall('billing')">Upgrade to Pro</button>
+                  <button class="btn btn-ghost-dark" onclick="openPaywall('pricing')">View Plans</button>
+                </div>
+              </div>
+              <svg width="56" height="56" viewBox="0 0 100 100" fill="none" style="flex-shrink:0;opacity:.5" aria-hidden="true">
+                <rect width="100" height="100" rx="22" fill="#1a56db"/>
+                <path d="M20 30 Q50 24 80 30 L80 72 Q50 66 20 72 Z" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+                <line x1="50" y1="26" x2="50" y2="70" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+                <circle cx="36" cy="48" r="3.5" fill="white"/>
+                <circle cx="64" cy="48" r="3.5" fill="white"/>
+                <path d="M40 58 Q50 64 60 58" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="billing-plan-card pro">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <div class="plan-label">Pro Plan</div>
+                <div class="plan-name" style="color:#3b82f6">$50<span style="font-size:1rem;color:rgba(240,244,255,.38)">/month</span></div>
+                <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Unlimited test attempts</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Full AI explanations on every question</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Score analytics and progress charts</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Printable flashcard generator</div>
+                </div>
+              </div>
+              <svg width="64" height="64" viewBox="0 0 100 100" fill="none" style="flex-shrink:0" aria-hidden="true">
+                <rect width="100" height="100" rx="26" fill="#f59e0b"/>
+                <path d="M15 28 Q50 18 85 28 L85 74 Q50 64 15 74 Z" fill="rgba(255,255,255,.25)" stroke="white" stroke-width="3"/>
+                <line x1="50" y1="22" x2="50" y2="70" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+                <circle cx="34" cy="46" r="5" fill="#1a56db"/>
+                <circle cx="66" cy="46" r="5" fill="#1a56db"/>
+                <path d="M36 57 Q50 65 64 57" stroke="#1a56db" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="billing-rows">
+            <div class="billing-row"><span class="billing-k">Account status</span><span class="billing-v"><span class="sc-pill sc-hi" id="profile-account-status">ACTIVE</span></span></div>
+            <div class="billing-row"><span class="billing-k">Account type</span><span class="billing-v" id="profile-account-type">Standard user</span></div>
+            <div class="billing-row"><span class="billing-k">Subscription timing</span><span class="billing-v" id="profile-billing-timing">-</span></div>
+            <div class="billing-row"><span class="billing-k">Payment method</span><span class="billing-v">Managed in Stripe checkout</span></div>
+            <div class="billing-row"><span class="billing-k">Billing actions</span><div class="billing-actions"><button class="btn-outline-dark" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button><button class="btn-danger" id="billing-cancel-btn" onclick="cancelSubscriptionNow()">Cancel Now</button></div></div>
           </div>
         </div>
       </div>
 
       <div class="acct-pane" id="acct-pane-settings" role="tabpanel">
-        <div class="settings-wrap">
-          <h3 style="font-size:1rem;font-weight:800;margin-bottom:14px">Settings</h3>
-          <div class="settings-panel">
-            <div class="settings-row"><span class="settings-k">Name</span><span class="settings-v" id="profile-name">-</span></div>
-            <div class="settings-row"><span class="settings-k">Email</span><span class="settings-v" id="profile-email">-</span></div>
-            <div class="settings-row"><span class="settings-k">Grade</span><span class="settings-v" id="profile-grade">-</span></div>
-            <div class="settings-row"><span class="settings-k">Marketing emails</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-email"> Opt in</label></div>
-            <div class="settings-row"><span class="settings-k">SMS updates</span><label class="settings-switch"><input type="checkbox" id="opt-marketing-sms"> Opt in</label></div>
-            <div class="settings-row"><span class="settings-k">Product announcements</span><label class="settings-switch"><input type="checkbox" id="opt-product-news" checked> Opt in</label></div>
+        <div class="settings-section">
+          <div class="settings-section-hd">Profile</div>
+          <div class="settings-row"><span class="settings-k">Full Name</span><span class="settings-v" id="profile-name">-</span></div>
+          <div class="settings-row"><span class="settings-k">Email</span><span class="settings-v" id="profile-email">-</span></div>
+          <div class="settings-row"><span class="settings-k">Grade</span><span class="settings-v" id="profile-grade">-</span></div>
+          <div class="settings-row"><span class="settings-k">Target SAT Score</span><span class="settings-v">1500+</span></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-hd">Notifications</div>
+          <div class="settings-row"><span class="settings-k">Marketing emails</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-marketing-email"><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Opt in</span></label></div>
+          <div class="settings-row"><span class="settings-k">SMS updates</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-marketing-sms"><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Opt in</span></label></div>
+          <div class="settings-row"><span class="settings-k">Product announcements</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-product-news" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Opt in</span></label></div>
+          <div class="settings-row"><span class="settings-k">Study reminders</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-reminders" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Daily nudge</span></label></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-hd">Account</div>
+          <div class="settings-row"><span class="settings-k">Export my data</span><button class="btn-outline-dark">Download CSV</button></div>
+          <div class="settings-row"><span class="settings-k">Sign out</span><button class="btn-outline-dark" onclick="authAction()">Sign Out</button></div>
+          <div class="settings-row"><span class="settings-k">Delete account</span><button class="btn-danger">Delete Account</button></div>
           </div>
         </div>
       </div>
@@ -3563,20 +3698,25 @@ function renderDash(){
     const isTestUser = isTestUserEmail(S.user.email);
     if (S.isPremium) {
       statusBadge.classList.remove('free');
-      statusBadge.classList.add('paid');
-      statusText.textContent = isTestUser ? 'TEST USER' : 'PAID USER';
+      statusBadge.classList.add('pro');
+      statusText.textContent = isTestUser ? 'Test Plan' : 'Pro Plan';
       if (statusIcon) statusIcon.textContent = '✦';
     } else {
-      statusBadge.classList.remove('paid');
+      statusBadge.classList.remove('pro');
       statusBadge.classList.add('free');
-      statusText.textContent = isTestUser ? 'TEST USER' : 'FREE USER';
+      statusText.textContent = isTestUser ? 'Test Plan' : 'Free Plan';
       if (statusIcon) statusIcon.textContent = '•';
     }
   }
 
-  const dateEl = document.getElementById('d-date');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  const testsTakenEl = document.getElementById('d-count');
+  if (testsTakenEl) {
+    const now = new Date();
+    const monthCount = ss.filter((s) => {
+      const date = new Date(s.date);
+      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+    }).length;
+    testsTakenEl.textContent = String(monthCount);
   }
 
   const accountStatus = document.getElementById('profile-account-status');
@@ -3588,16 +3728,16 @@ function renderDash(){
   const profileBillingTiming = document.getElementById('profile-billing-timing');
   if (accountStatus) {
     if (isTestUserEmail(S.user.email)) {
-      accountStatus.textContent = S.isPremium ? 'TEST (PAID)' : 'TEST (FREE)';
+      accountStatus.textContent = S.isPremium ? 'TEST (PRO)' : 'TEST (FREE)';
     } else {
-      accountStatus.textContent = S.isPremium ? 'PAID' : 'FREE';
+      accountStatus.textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
     }
   }
   if (accountType) accountType.textContent = isTestUserEmail(S.user.email) ? 'Test user' : 'Standard user';
   if (profileName) profileName.textContent = S.user.name || '-';
   if (profileEmail) profileEmail.textContent = S.user.email || '-';
   if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
-  if (profilePlan) profilePlan.textContent = S.isPremium ? 'Paid' : 'Free';
+  if (profilePlan) profilePlan.textContent = S.isPremium ? 'Pro' : 'Free';
   if (profileBillingTiming) profileBillingTiming.textContent = getBillingTimingText();
   setAccountTab(S.accountTab || 'progress');
 
