@@ -28,8 +28,9 @@ function normalizeSecretKey(input) {
 }
 
 function toIso(input) {
-  if (!Number.isFinite(Number(input))) return null;
-  return new Date(Number(input) * 1000).toISOString();
+  const unixSeconds = Number(input);
+  if (!Number.isFinite(unixSeconds) || unixSeconds <= 0) return null;
+  return new Date(unixSeconds * 1000).toISOString();
 }
 
 async function getStripeSubscriptionDetails(secretKey, subscriptionId) {
