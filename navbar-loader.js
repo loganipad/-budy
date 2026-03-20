@@ -39,9 +39,9 @@
     }
   }
 
-  function customizeForAccountPage() {
+  function applyNavVariant() {
     var path = String(window.location.pathname || '').toLowerCase();
-    if (path !== '/my-account.html' && path !== '/my-account') return;
+    var isAccountPage = path === '/my-account.html' || path === '/my-account';
 
     var desktopWhy = document.getElementById('nav-link-why');
     var desktopFeatures = document.getElementById('nav-link-features');
@@ -52,19 +52,37 @@
     var mobilePricing = document.getElementById('nav-m-link-pricing');
     var mobileAccount = document.getElementById('nav-m-link-account');
 
+    if (isAccountPage) {
+      [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
+        if (!el) return;
+        el.style.display = 'none';
+      });
+
+      if (desktopAccount) {
+        desktopAccount.textContent = 'Home';
+        desktopAccount.setAttribute('href', '/');
+      }
+
+      if (mobileAccount) {
+        mobileAccount.textContent = 'Home';
+        mobileAccount.setAttribute('href', '/');
+      }
+      return;
+    }
+
     [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
       if (!el) return;
-      el.style.display = 'none';
+      el.style.display = '';
     });
 
     if (desktopAccount) {
-      desktopAccount.textContent = 'Home';
-      desktopAccount.setAttribute('href', '/');
+      desktopAccount.textContent = 'My Account';
+      desktopAccount.setAttribute('href', '/my-account.html');
     }
 
     if (mobileAccount) {
-      mobileAccount.textContent = 'Home';
-      mobileAccount.setAttribute('href', '/');
+      mobileAccount.textContent = 'My Account';
+      mobileAccount.setAttribute('href', '/my-account.html');
     }
   }
 
@@ -116,7 +134,7 @@
       .then(function (html) {
         slot.innerHTML = html;
         setNavFallbacks();
-        customizeForAccountPage();
+        applyNavVariant();
         syncNavAuthFallbackState();
         document.dispatchEvent(new CustomEvent('navbar:mounted'));
       })
