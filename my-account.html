@@ -148,30 +148,36 @@ button { font-family: inherit; cursor: pointer; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
 
 .acct-tabs {
-  display: flex;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
   margin-top: 24px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  overflow: auto;
+  max-width: 560px;
+  padding: 6px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  background: rgba(255,255,255,.03);
+  overflow: visible;
 }
 .acct-tab {
   height: 44px;
-  padding: 0 20px;
-  border-radius: 20px 20px 0 0;
+  width: 100%;
+  padding: 0 14px;
+  border-radius: 14px;
   font-size: .875rem;
   font-weight: 700;
   color: rgba(240,244,255,.38);
   background: transparent;
   border: 1px solid transparent;
-  border-bottom: none;
-  position: relative;
-  bottom: -1px;
+  white-space: nowrap;
+  transition: all .2s var(--ease);
 }
+.acct-tab:hover { color: rgba(240,244,255,.72); background: rgba(255,255,255,.06); }
 .acct-tab.active {
   color: #f0f4ff;
-  background: #1a2235;
-  border-color: rgba(255,255,255,.14);
-  border-bottom-color: #1a2235;
+  background: linear-gradient(180deg, rgba(59,130,246,.2), rgba(26,34,53,.95));
+  border-color: rgba(59,130,246,.45);
+  box-shadow: 0 6px 20px rgba(26,86,219,.25);
 }
 
 .dash-body { padding: 24px 0 60px; }
@@ -335,6 +341,7 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: 14px;
   padding: 12px 14px;
   font-size: .84rem;
+  margin-bottom: 16px;
 }
 
 #toasts {
@@ -366,6 +373,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 @media (max-width: 480px) {
   .dash-stats { grid-template-columns: 1fr; }
+  .acct-tab { font-size: .8rem; }
 }
 </style>
 </head>

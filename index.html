@@ -761,10 +761,10 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 #dash-screen .acct-status-icon{width:6px;height:6px;border-radius:50%;display:inline-block;background:currentColor;animation:acctPulse 1.5s ease infinite;line-height:1;text-indent:-9999px;overflow:hidden}
 @keyframes acctPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
 
-#dash-screen .acct-tabs{display:flex;gap:4px;margin-top:24px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:0;overflow:auto}
-#dash-screen .acct-tab{height:44px;padding:0 20px;border-radius:20px 20px 0 0;font-size:.875rem;font-weight:700;color:rgba(240,244,255,.38);background:transparent;border:1px solid transparent;border-bottom:none;transition:all .2s var(--ease);position:relative;bottom:-1px;white-space:nowrap}
-#dash-screen .acct-tab:hover{color:rgba(240,244,255,.65);background:rgba(255,255,255,.04)}
-#dash-screen .acct-tab.active{color:#f0f4ff;background:#1a2235;border-color:rgba(255,255,255,.14);border-bottom-color:#1a2235}
+#dash-screen .acct-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:24px;max-width:560px;padding:6px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.03);overflow:visible}
+#dash-screen .acct-tab{height:44px;width:100%;padding:0 14px;border-radius:14px;font-size:.875rem;font-weight:700;color:rgba(240,244,255,.38);background:transparent;border:1px solid transparent;transition:all .2s var(--ease);white-space:nowrap}
+#dash-screen .acct-tab:hover{color:rgba(240,244,255,.72);background:rgba(255,255,255,.06)}
+#dash-screen .acct-tab.active{color:#f0f4ff;background:linear-gradient(180deg,rgba(59,130,246,.2),rgba(26,34,53,.95));border-color:rgba(59,130,246,.45);box-shadow:0 6px 20px rgba(26,86,219,.25)}
 
 #dash-screen .dash-body{padding:24px 0 60px}
 #dash-screen .acct-pane{display:none}
@@ -844,7 +844,7 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 
 @media(max-width:980px){#dash-screen .dash-stats{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){#dash-screen .dash-grid{grid-template-columns:1fr}#dash-screen .dash-stats{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){#dash-screen .dash-stats{grid-template-columns:1fr}}
+@media(max-width:480px){#dash-screen .dash-stats{grid-template-columns:1fr}#dash-screen .acct-tab{font-size:.8rem}}
 
 /* ============================================================
    TOAST
