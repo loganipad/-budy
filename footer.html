@@ -1,8 +1,31 @@
 <style id="shared-footer-styles">
   footer.site-footer {
-    background: var(--ink-80, #1c2333);
+    background: linear-gradient(180deg, rgba(18, 26, 40, 0.94), rgba(10, 16, 28, 0.98));
     color: rgba(255, 255, 255, 0.45);
     padding: 56px 0 28px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  footer.site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 76% 52% at 50% -6%, rgba(26, 86, 219, 0.28) 0%, transparent 62%), radial-gradient(ellipse 38% 28% at 88% 86%, rgba(245, 158, 11, 0.1) 0%, transparent 58%);
+    pointer-events: none;
+  }
+
+  footer.site-footer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .site-footer .wrap {
     position: relative;
     z-index: 1;
   }

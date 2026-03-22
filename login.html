@@ -100,7 +100,8 @@ a { text-decoration: none; color: inherit; }
 
 /* ── AUTH CARD ── */
 .auth-card {
-  background: var(--white);
+  background: linear-gradient(180deg, rgba(22,32,51,.98) 0%, rgba(15,23,40,.98) 100%);
+  border: 1px solid rgba(255,255,255,.08);
   border-radius: var(--r-xl);
   box-shadow: var(--sh-xl), 0 0 0 1px rgba(255,255,255,.06);
   overflow: hidden;
@@ -110,7 +111,7 @@ a { text-decoration: none; color: inherit; }
 .auth-card-hd { padding: 36px 36px 0; text-align: center; }
 .auth-logo {
   display: flex; align-items: center; justify-content: center; gap: 9px;
-  font-family: var(--font); font-size: 1.35rem; font-weight: 800; color: var(--ink);
+  font-family: var(--font); font-size: 1.35rem; font-weight: 800; color: #f0f4ff;
   margin-bottom: 20px;
 }
 .auth-logo-mark {
@@ -122,23 +123,23 @@ a { text-decoration: none; color: inherit; }
 }
 .auth-card-hd h1 {
   font-family: var(--font); font-size: 1.5rem; font-weight: 800;
-  color: var(--ink); letter-spacing: -.025em; margin-bottom: 8px;
+  color: #f0f4ff; letter-spacing: -.025em; margin-bottom: 8px;
 }
-.auth-card-hd p { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+.auth-card-hd p { font-size: .875rem; color: rgba(240,244,255,.6); line-height: 1.6; }
 .auth-card-hd p strong { color: var(--brand); font-weight: 700; }
 
 /* Tabs */
 .auth-tabs {
   display: flex; margin: 24px 36px 0;
-  background: var(--bg); border-radius: var(--r-full); padding: 4px;
+  background: rgba(255,255,255,.05); border-radius: var(--r-full); padding: 4px;
 }
 .auth-tab {
   flex: 1; height: 38px; border-radius: var(--r-full);
-  font-size: .8375rem; font-weight: 700; color: var(--muted);
+  font-size: .8375rem; font-weight: 700; color: rgba(240,244,255,.45);
   background: transparent; border: none; cursor: pointer;
   transition: all .22s var(--ease); font-family: var(--font);
 }
-.auth-tab.active { background: var(--white); color: var(--ink); box-shadow: var(--sh-sm); }
+.auth-tab.active { background: rgba(255,255,255,.1); color: #f0f4ff; box-shadow: var(--sh-sm); }
 
 /* Card body */
 .auth-card-bd { padding: 28px 36px 0; }
@@ -147,22 +148,22 @@ a { text-decoration: none; color: inherit; }
 .fg { margin-bottom: 18px; position: relative; }
 .fg label {
   display: block; font-size: .775rem; font-weight: 700;
-  color: var(--slate); margin-bottom: 6px; letter-spacing: .01em;
+  color: rgba(240,244,255,.72); margin-bottom: 6px; letter-spacing: .01em;
 }
 .fi {
   width: 100%; height: 50px;
-  border: 1.5px solid var(--line); border-radius: var(--r-md);
+  border: 1.5px solid rgba(255,255,255,.12); border-radius: var(--r-md);
   padding: 0 16px; font-size: 16px; font-family: var(--font);
-  color: var(--ink); background: var(--white);
+  color: #f0f4ff; background: rgba(255,255,255,.05);
   transition: border-color .2s, box-shadow .2s; outline: none;
 }
 .fi:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(26,86,219,.12); }
-.fi:hover:not(:focus) { border-color: #b8c5d6; }
+.fi:hover:not(:focus) { border-color: rgba(255,255,255,.22); }
 .fi-pw { padding-right: 48px; }
 .eye-btn {
   position: absolute; right: 14px; bottom: 14px;
   width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
-  color: var(--muted); background: none; border: none; cursor: pointer;
+  color: rgba(240,244,255,.45); background: none; border: none; cursor: pointer;
   transition: color .15s; padding: 0;
 }
 .eye-btn:hover { color: var(--brand); }
@@ -200,20 +201,20 @@ a { text-decoration: none; color: inherit; }
 /* Divider */
 .auth-divider {
   display: flex; align-items: center; gap: 12px;
-  margin: 20px 0; color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+  margin: 20px 0; color: rgba(240,244,255,.42); font-size: .75rem; font-weight: 700; letter-spacing: .06em;
 }
-.auth-divider::before,.auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.auth-divider::before,.auth-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.1); }
 
 /* Google */
 .btn-google {
   width: 100%; height: 50px;
-  background: var(--white); color: var(--slate);
-  border: 1.5px solid var(--line); border-radius: var(--r-full);
+  background: rgba(255,255,255,.05); color: rgba(240,244,255,.72);
+  border: 1.5px solid rgba(255,255,255,.12); border-radius: var(--r-full);
   font-size: .9rem; font-weight: 700; cursor: pointer; font-family: var(--font);
   transition: all .2s var(--ease);
   display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-.btn-google:hover { border-color: var(--brand); color: var(--ink); background: var(--brand-pale); transform: translateY(-1px); }
+.btn-google:hover { border-color: var(--brand); color: #fff; background: rgba(26,86,219,.16); transform: translateY(-1px); }
 .google-icon { width: 18px; height: 18px; flex-shrink: 0; }
 
 /* Password strength */
@@ -228,16 +229,16 @@ a { text-decoration: none; color: inherit; }
 
 /* Card footer */
 .auth-card-ft { padding: 20px 36px 28px; }
-.auth-switch { text-align: center; font-size: .8375rem; color: var(--muted); }
+.auth-switch { text-align: center; font-size: .8375rem; color: rgba(240,244,255,.52); }
 .auth-switch a { color: var(--brand); font-weight: 700; transition: color .15s; }
 .auth-switch a:hover { color: var(--brand-d); }
 
 /* Error alert (Auth0 server errors) */
 .auth-alert {
   display: none; align-items: flex-start; gap: 10px;
-  background: #fff1f2; border: 1.5px solid #fecdd3;
+  background: rgba(225,29,72,.12); border: 1.5px solid rgba(244,63,94,.22);
   border-radius: var(--r-md); padding: 12px 16px;
-  margin-bottom: 18px; font-size: .8375rem; color: #9f1239; font-weight: 600;
+  margin-bottom: 18px; font-size: .8375rem; color: #fecdd3; font-weight: 600;
 }
 .auth-alert.show { display: flex; }
 .auth-alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
@@ -259,7 +260,7 @@ a { text-decoration: none; color: inherit; }
 }
 .auth-trust-item {
   display: flex; align-items: center; gap: 5px;
-  font-size: .72rem; font-weight: 600; color: rgba(255,255,255,.5);
+  font-size: .72rem; font-weight: 600; color: rgba(255,255,255,.58);
 }
 
 /* Form panels */
