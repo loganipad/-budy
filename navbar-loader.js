@@ -22,7 +22,10 @@
       '#nav .btn.btn-primary:hover{transform:none;}',
       '#nav #auth-btn,#nav #mobile-auth-link{visibility:hidden;}',
       '#nav.nav-auth-ready #auth-btn,#nav.nav-auth-ready #mobile-auth-link{visibility:visible;}',
+      '#nav.nav-account-mode .nav-right,#nav.nav-test-mode .nav-right{width:402px;max-width:100%;justify-content:flex-end;}',
       '#nav.nav-test-mode #nav-link-why,#nav.nav-test-mode #nav-link-features,#nav.nav-test-mode #nav-link-pricing,#nav.nav-test-mode #nav-m-link-why,#nav.nav-test-mode #nav-m-link-features,#nav.nav-test-mode #nav-m-link-pricing{display:none !important;}',
+      '#nav.nav-test-mode #nav-link-account,#nav.nav-test-mode #auth-btn,#nav.nav-test-mode .btn.btn-primary.btn-sm{display:inline-flex !important;}',
+      '#nav.nav-test-mode .mobile-menu-wrap{display:block !important;}',
       '#nav.nav-account-mode #nav-link-why,#nav.nav-account-mode #nav-link-features,#nav.nav-account-mode #nav-link-pricing,#nav.nav-account-mode #nav-m-link-why,#nav.nav-account-mode #nav-m-link-features,#nav.nav-account-mode #nav-m-link-pricing{display:none !important;}'
     ].join('');
 

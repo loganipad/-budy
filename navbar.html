@@ -196,6 +196,13 @@
     display: none !important;
   }
 
+  #nav.nav-account-mode .nav-right,
+  #nav.nav-test-mode .nav-right {
+    width: 402px;
+    max-width: 100%;
+    justify-content: flex-end;
+  }
+
   /* ── Test mode variant (only left 3 info buttons) ── */
   #nav.nav-test-mode #nav-link-why,
   #nav.nav-test-mode #nav-link-features,
@@ -204,6 +211,16 @@
   #nav.nav-test-mode #nav-m-link-features,
   #nav.nav-test-mode #nav-m-link-pricing {
     display: none !important;
+  }
+
+  #nav.nav-test-mode #nav-link-account,
+  #nav.nav-test-mode #auth-btn,
+  #nav.nav-test-mode .btn.btn-primary.btn-sm {
+    display: inline-flex !important;
+  }
+
+  #nav.nav-test-mode .mobile-menu-wrap {
+    display: block !important;
   }
 
   #nav .nav-link-hide { display: none; }
