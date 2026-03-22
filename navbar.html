@@ -61,8 +61,16 @@
     text-decoration: none;
   }
 
+  #nav .nav-logo-wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+    line-height: 1;
+  }
+
   #nav .nav-logo-study {
     color: #f59e0b;
+    margin-left: 0;
   }
 
   #nav .nav-logo-img {
@@ -241,7 +249,7 @@
   <div class="wrap nav-inner">
     <a href="/" class="nav-logo">
       <img src="/assets/budy-logo.png" alt="Budy logo" class="nav-logo-img">
-      Budy<span class="nav-logo-study">.Study</span>
+      <span class="nav-logo-wordmark">Budy<span class="nav-logo-study">.Study</span></span>
     </a>
     <div class="nav-right">
       <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide" id="nav-link-why">Why Budy?</a>
