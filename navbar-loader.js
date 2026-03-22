@@ -147,6 +147,8 @@
         setNavFallbacks();
         applyNavVariant();
         syncNavAuthFallbackState();
+        var navEl = document.getElementById('nav');
+        if (navEl) navEl.classList.add('nav-ready');
         document.dispatchEvent(new CustomEvent('navbar:mounted'));
       })
       .catch(function () {
