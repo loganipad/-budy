@@ -7,6 +7,7 @@
 <meta name="description" content="The easiest way to prep for the SAT and PSAT. Practice tests, instant scoring, and step-by-step help. Used by students accepted to top colleges.">
 
 <!-- PWA / App-ready meta -->
+  timerPaused: false,
 <meta name="theme-color" content="#0d1117">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,31 +15,74 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
 
+.tb-timer-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;background:transparent;color:var(--gold-l);cursor:pointer;transition:opacity .15s,transform .15s}
+.tb-timer-btn:hover{opacity:.85}
+.tb-timer-btn:active{transform:scale(.94)}
+.tb-timer-btn svg{width:14px;height:14px;display:block}
 <!-- Open Graph -->
+.tb-timer.warn .tb-timer-btn{color:#fca5a5}
 <meta property="og:title" content="Budy.Study — SAT & PSAT Prep">
 <meta property="og:description" content="Free SAT practice tests for 8th–10th graders. Instant scoring, AI explanations, score tracking.">
 <meta property="og:type" content="website">
+      <button class="tb-timer-btn" id="timer-toggle-btn" type="button" onclick="toggleTimerPause()" aria-label="Pause timer" title="Pause timer">
+        <svg id="timer-toggle-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+      </button>
 
 <!-- Inline PWA manifest -->
 <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Budy.Study&quot;,&quot;short_name&quot;:&quot;Budy.Study&quot;,&quot;description&quot;:&quot;SAT %26 PSAT Prep&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%230d1117&quot;,&quot;theme_color&quot;:&quot;%231a56db&quot;,&quot;orientation&quot;:&quot;portrait&quot;}">
 
+      S.timerPaused = false;
 <!-- Apple splash / icons (placeholders — replace with real assets for app store) -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231a56db'/%3E%3Cpath d='M90 30L42 58l48 24 48-24L90 30zM42 118l48 24 48-24M42 88l48 24 48-24' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+      updTimerPauseButton();
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <style>
 /* ============================================================
    TOKENS
-   ============================================================ */
+function runTimerLoop(){
+  clearTimer();
+  S.timer=setInterval(()=>{
+    if(S.timerPaused)return;
+    S.timeLeft--;
+    updTimerDisplay();
+    if(S.timeLeft<=0){
+      clearTimer();
+      S.timerPaused=false;
+      updTimerPauseButton();
+      toast('Time\'s up! Submitting your test.','wn',3000);
+      setTimeout(submitTest,2000)
+    }
+  },1000)
+}
+function startTimer(){S.timerPaused=false;updTimerPauseButton();updTimerDisplay();runTimerLoop()}
 :root {
+function toggleTimerPause(){
+  if(!S.testActive||S.timeLeft<=0)return;
+  S.timerPaused=!S.timerPaused;
+  if(S.timerPaused)clearTimer();
+  else runTimerLoop();
+  updTimerPauseButton();
+}
+function updTimerPauseButton(){
+  const btn=document.getElementById('timer-toggle-btn');
+  const icon=document.getElementById('timer-toggle-icon');
+  if(!btn||!icon)return;
+  const paused=Boolean(S.timerPaused);
+  btn.setAttribute('aria-label',paused?'Resume timer':'Pause timer');
+  btn.setAttribute('title',paused?'Resume timer':'Pause timer');
+  icon.innerHTML=paused
+    ? '<polygon points="8,6 19,12 8,18"></polygon>'
+    : '<rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect>';
+}
   --ink:       #0d1117;
   --ink-80:    #1c2333;
   --ink-60:    #2d3748;
   --slate:     #4a5568;
   --muted:     #718096;
-  --line:      #e2e8f0;
+  clearTimer();S.timerPaused=false;updTimerPauseButton();S.testActive=false;
   --bg:        #f7f8fc;
   --white:     #ffffff;
 
