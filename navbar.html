@@ -76,9 +76,32 @@
     font-family: 'Sora', system-ui, sans-serif;
     font-weight: 700;
     transition: all .2s cubic-bezier(0.16,1,0.3,1);
+    line-height: 1;
+    letter-spacing: .01em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  #nav .btn-sm { height: 40px; padding: 0 20px; font-size: .8375rem; }
+  #nav .btn-sm {
+    height: 40px;
+    min-height: 40px;
+    padding: 0 20px;
+    font-size: .8375rem;
+    font-weight: 700;
+  }
+
+  #nav #nav-link-why { min-width: 110px; }
+  #nav #nav-link-features { min-width: 106px; }
+  #nav #nav-link-pricing { min-width: 102px; }
+  #nav #nav-link-account,
+  #nav #auth-btn { min-width: 118px; }
+  #nav .btn.btn-primary.btn-sm { min-width: 146px; }
+
+  #nav #auth-btn,
+  #nav #mobile-auth-link { visibility: hidden; }
+
+  #nav.nav-auth-ready #auth-btn,
+  #nav.nav-auth-ready #mobile-auth-link { visibility: visible; }
 
   #nav .btn-ghost {
     background: transparent;
@@ -162,6 +185,15 @@
     background: #eff6ff;
   }
 
+  #nav.nav-account-mode #nav-link-why,
+  #nav.nav-account-mode #nav-link-features,
+  #nav.nav-account-mode #nav-link-pricing,
+  #nav.nav-account-mode #nav-m-link-why,
+  #nav.nav-account-mode #nav-m-link-features,
+  #nav.nav-account-mode #nav-m-link-pricing {
+    display: none !important;
+  }
+
   /* ── Test mode variant (only left 3 info buttons) ── */
   #nav.nav-test-mode #nav-link-account,
   #nav.nav-test-mode #auth-btn,
@@ -174,6 +206,7 @@
   #nav .mobile-menu-wrap { display: none; position: relative; }
   #nav .mobile-menu-btn {
     height: 40px;
+    min-height: 40px;
     padding: 0 14px;
     border-radius: 999px;
     font-size: .8125rem;

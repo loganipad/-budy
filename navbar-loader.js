@@ -1,4 +1,30 @@
 (function () {
+  var didMountNavbar = false;
+
+  function injectNavConsistencyStyles() {
+    if (document.getElementById('nav-consistency-overrides')) return;
+
+    var style = document.createElement('style');
+    style.id = 'nav-consistency-overrides';
+    style.textContent = [
+      '#nav .nav-inner{min-height:var(--shared-nav-h,64px);}',
+      '#nav .btn,#nav .mobile-menu-btn{font-synthesis-weight:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}',
+      '#nav .btn-sm,#nav .mobile-menu-btn{height:40px;min-height:40px;line-height:1;font-size:13.5px;font-weight:700;letter-spacing:.01em;}',
+      '#nav .btn-sm{padding:0 20px;}',
+      '#nav .mobile-menu-btn{padding:0 14px;}',
+      '#nav #nav-link-why{min-width:110px;}',
+      '#nav #nav-link-features{min-width:106px;}',
+      '#nav #nav-link-pricing{min-width:102px;}',
+      '#nav #nav-link-account,#nav #auth-btn{min-width:118px;}',
+      '#nav .btn.btn-primary.btn-sm{min-width:146px;}',
+      '#nav #auth-btn,#nav #mobile-auth-link{visibility:hidden;}',
+      '#nav.nav-auth-ready #auth-btn,#nav.nav-auth-ready #mobile-auth-link{visibility:visible;}',
+      '#nav.nav-account-mode #nav-link-why,#nav.nav-account-mode #nav-link-features,#nav.nav-account-mode #nav-link-pricing,#nav.nav-account-mode #nav-m-link-why,#nav.nav-account-mode #nav-m-link-features,#nav.nav-account-mode #nav-m-link-pricing{display:none !important;}'
+    ].join('');
+
+    document.head.appendChild(style);
+  }
+
   function getLocalAuthUser() {
     try {
       var raw = localStorage.getItem('budy_local_auth_user');
@@ -11,6 +37,7 @@
   }
 
   function syncNavAuthFallbackState() {
+    var nav = document.getElementById('nav');
     var authBtn = document.getElementById('auth-btn');
     var mobileAuth = document.getElementById('mobile-auth-link');
     if (!authBtn) return;
@@ -18,6 +45,7 @@
     if (typeof window.updateAuthUI === 'function') {
       try {
         window.updateAuthUI();
+        if (nav) nav.classList.add('nav-auth-ready');
         return;
       } catch (_) {}
     }
@@ -26,6 +54,7 @@
     var isLoggedIn = Boolean(localUser && localUser.accessToken);
     authBtn.textContent = isLoggedIn ? 'Log Out' : 'Log In';
     if (mobileAuth) mobileAuth.textContent = isLoggedIn ? 'Log Out' : 'Log In';
+    if (nav) nav.classList.add('nav-auth-ready');
 
     if (typeof window.handleAuthButton !== 'function') {
       window.handleAuthButton = function () {
@@ -42,28 +71,18 @@
   function applyNavVariant() {
     var path = String(window.location.pathname || '').toLowerCase();
     var isAccountPage = path === '/my-account.html' || path === '/my-account';
+    var isDarkPage = path === '/login.html' || path === '/login' || path === '/checkout.html' || path === '/checkout';
     var nav = document.getElementById('nav');
+    if (!nav) return;
 
-    var desktopWhy = document.getElementById('nav-link-why');
-    var desktopFeatures = document.getElementById('nav-link-features');
-    var desktopPricing = document.getElementById('nav-link-pricing');
     var desktopAccount = document.getElementById('nav-link-account');
-    var mobileWhy = document.getElementById('nav-m-link-why');
-    var mobileFeatures = document.getElementById('nav-m-link-features');
-    var mobilePricing = document.getElementById('nav-m-link-pricing');
     var mobileAccount = document.getElementById('nav-m-link-account');
 
+    nav.classList.toggle('nav-account-mode', isAccountPage);
+    nav.classList.toggle('nav-dark-mode', isDarkPage && !isAccountPage);
+    nav.classList.toggle('nav-default-mode', !isAccountPage && !isDarkPage);
+
     if (isAccountPage) {
-      if (nav) {
-        nav.classList.add('nav-account-mode');
-        nav.classList.remove('nav-default-mode');
-      }
-
-      [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
-        if (!el) return;
-        el.style.display = 'none';
-      });
-
       if (desktopAccount) {
         desktopAccount.textContent = 'Home';
         desktopAccount.setAttribute('href', '/');
@@ -75,16 +94,6 @@
       }
       return;
     }
-
-    if (nav) {
-      nav.classList.add('nav-default-mode');
-      nav.classList.remove('nav-account-mode');
-    }
-
-    [desktopWhy, desktopFeatures, desktopPricing, mobileWhy, mobileFeatures, mobilePricing].forEach(function (el) {
-      if (!el) return;
-      el.style.display = '';
-    });
 
     if (desktopAccount) {
       desktopAccount.textContent = 'My Account';
@@ -141,8 +150,12 @@
   }
 
   function mountNavbar() {
+    if (didMountNavbar) return;
+
     var slot = document.getElementById('navbar-slot');
     if (!slot) return;
+    didMountNavbar = true;
+    injectNavConsistencyStyles();
 
     // If the navbar is already inlined in the page, skip the fetch
     if (document.getElementById('nav')) {
@@ -170,9 +183,9 @@
       });
   }
 
+  // Run immediately for deferred scripts; retry on DOMContentLoaded if needed.
+  mountNavbar();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mountNavbar);
-  } else {
-    mountNavbar();
   }
 })();
