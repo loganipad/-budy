@@ -7,16 +7,15 @@
     left: 0;
     right: 0;
     z-index: 900;
-    height: var(--shared-nav-h);
     padding-top: env(safe-area-inset-top, 0px);
     height: calc(var(--shared-nav-h) + env(safe-area-inset-top, 0px));
-    background: rgba(255,255,255,.92);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(0,0,0,.06);
-    transition: box-shadow .3s;
+    background: linear-gradient(90deg, #040b18 0%, #091427 45%, #071225 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    backdrop-filter: blur(12px);
+    transition: box-shadow 0.2s ease;
   }
 
-  #nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,.09); }
+  #nav.scrolled { box-shadow: 0 6px 26px rgba(0, 0, 0, 0.34); }
 
   #nav .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 
@@ -28,17 +27,14 @@
   }
 
   #nav .nav-logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     font-family: 'Sora', system-ui, sans-serif;
     font-size: 1.3rem;
     font-weight: 800;
-    color: #1a56db;
+    color: #f3f7ff;
     text-decoration: none;
-    background: transparent;
-    border: none;
-    box-shadow: none;
   }
 
   #nav .nav-logo-img {
@@ -76,9 +72,9 @@
     text-decoration: none;
     font-family: 'Sora', system-ui, sans-serif;
     font-weight: 700;
-    transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     line-height: 1;
-    letter-spacing: .01em;
+    letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     transform: none;
@@ -88,7 +84,7 @@
     height: 40px;
     min-height: 40px;
     padding: 0 20px;
-    font-size: .8375rem;
+    font-size: 0.8375rem;
     font-weight: 700;
   }
 
@@ -106,135 +102,46 @@
   #nav.nav-auth-ready #mobile-auth-link { visibility: visible; }
 
   #nav .btn-ghost {
-    background: transparent;
-    color: #4a5568;
-    border: 2px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(240, 244, 255, 0.76);
+    border: 2px solid rgba(255, 255, 255, 0.14);
   }
 
-  #nav .btn-ghost:hover { border-color: #1a56db; color: #1a56db; background: #eff6ff; }
+  #nav .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.32);
+  }
 
   #nav .btn-primary {
     background: #1a56db;
     color: #fff;
-    box-shadow: 0 4px 20px rgba(26,86,219,.35);
+    box-shadow: 0 4px 20px rgba(26, 86, 219, 0.35);
   }
 
   #nav .btn-primary:hover {
     background: #1440b0;
     transform: none;
-    box-shadow: 0 8px 30px rgba(26,86,219,.45);
-  }
-
-  /* ── Dark mode variant (login, checkout) ── */
-  #nav.nav-dark-mode {
-    background: rgba(13,17,23,.82);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-  }
-
-  #nav.nav-dark-mode .nav-logo { color: #fff; }
-
-  #nav.nav-dark-mode .btn-ghost {
-    background: rgba(255,255,255,.08);
-    color: rgba(240,244,255,.7);
-    border: 2px solid rgba(255,255,255,.14);
-  }
-
-  #nav.nav-dark-mode .btn-ghost:hover {
-    background: rgba(255,255,255,.14);
-    color: #fff;
-    border-color: rgba(255,255,255,.3);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-btn {
-    border-color: rgba(255,255,255,.15);
-    background: rgba(255,255,255,.08);
-    color: rgba(240,244,255,.7);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-panel {
-    background: #1c2333;
-    border-color: rgba(255,255,255,.1);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-link {
-    color: rgba(240,244,255,.85);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-link:hover {
-    background: rgba(255,255,255,.06);
-  }
-
-  #nav.nav-dark-mode.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,.3); }
-
-  /* ── Account page variant ── */
-  #nav.nav-account-mode {
-    background: #ffffff;
-    backdrop-filter: none;
-  }
-
-  #nav.nav-account-mode #nav-link-account,
-  #nav.nav-account-mode #auth-btn {
-    background: transparent;
-    color: #4a5568;
-    border: 2px solid #e2e8f0;
-    border-radius: 999px;
-  }
-
-  #nav.nav-account-mode #nav-link-account:hover,
-  #nav.nav-account-mode #auth-btn:hover {
-    border-color: #1a56db;
-    color: #1a56db;
-    background: #eff6ff;
-  }
-
-  #nav.nav-account-mode #nav-link-why,
-  #nav.nav-account-mode #nav-link-features,
-  #nav.nav-account-mode #nav-link-pricing,
-  #nav.nav-account-mode #nav-m-link-why,
-  #nav.nav-account-mode #nav-m-link-features,
-  #nav.nav-account-mode #nav-m-link-pricing {
-    display: none !important;
-  }
-
-  #nav.nav-account-mode .nav-right,
-  #nav.nav-test-mode .nav-right {
-    width: 402px;
-    max-width: 100%;
-    justify-content: flex-end;
-  }
-
-  /* ── Test mode variant (only left 3 info buttons) ── */
-  #nav.nav-test-mode #nav-link-why,
-  #nav.nav-test-mode #nav-link-features,
-  #nav.nav-test-mode #nav-link-pricing,
-  #nav.nav-test-mode #nav-m-link-why,
-  #nav.nav-test-mode #nav-m-link-features,
-  #nav.nav-test-mode #nav-m-link-pricing {
-    display: none !important;
-  }
-
-  #nav.nav-test-mode #nav-link-account,
-  #nav.nav-test-mode #auth-btn,
-  #nav.nav-test-mode .btn.btn-primary.btn-sm {
-    display: inline-flex !important;
-  }
-
-  #nav.nav-test-mode .mobile-menu-wrap {
-    display: block !important;
+    box-shadow: 0 8px 30px rgba(26, 86, 219, 0.45);
   }
 
   #nav .nav-link-hide { display: none; }
-  #nav .mobile-menu-wrap { display: none; position: relative; }
+
+  #nav .mobile-menu-wrap {
+    display: none;
+    position: relative;
+  }
+
   #nav .mobile-menu-btn {
     height: 40px;
     min-height: 40px;
     padding: 0 14px;
     border-radius: 999px;
-    font-size: .8125rem;
+    font-size: 0.8125rem;
     font-weight: 700;
-    border: 2px solid rgba(13,17,23,.15);
-    background: #fff;
-    color: #0d1117;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(240, 244, 255, 0.76);
   }
 
   #nav .mobile-menu-panel {
@@ -242,10 +149,10 @@
     right: 0;
     top: 48px;
     min-width: 220px;
-    background: #fff;
-    border: 1px solid #e2e8f0;
+    background: #1c2333;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 14px;
-    box-shadow: 0 12px 48px rgba(0,0,0,.13);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.22);
     padding: 8px;
     display: none;
     z-index: 30;
@@ -257,19 +164,41 @@
     display: block;
     padding: 10px 12px;
     border-radius: 10px;
-    font-size: .875rem;
+    font-size: 0.875rem;
     font-weight: 700;
-    color: #0d1117;
+    color: rgba(240, 244, 255, 0.88);
     text-decoration: none;
   }
 
-  #nav .mobile-menu-link:hover { background: #f7f8fc; }
+  #nav .mobile-menu-link:hover { background: rgba(255, 255, 255, 0.06); }
 
-  @media(min-width:640px) {
+  #nav.nav-context-account #nav-link-why,
+  #nav.nav-context-account #nav-link-features,
+  #nav.nav-context-account #nav-link-pricing,
+  #nav.nav-context-account #nav-m-link-why,
+  #nav.nav-context-account #nav-m-link-features,
+  #nav.nav-context-account #nav-m-link-pricing,
+  #nav.nav-context-test #nav-link-why,
+  #nav.nav-context-test #nav-link-features,
+  #nav.nav-context-test #nav-link-pricing,
+  #nav.nav-context-test #nav-m-link-why,
+  #nav.nav-context-test #nav-m-link-features,
+  #nav.nav-context-test #nav-m-link-pricing {
+    display: none !important;
+  }
+
+  #nav.nav-context-account .nav-right,
+  #nav.nav-context-test .nav-right {
+    width: 402px;
+    max-width: 100%;
+    justify-content: flex-end;
+  }
+
+  @media (min-width: 640px) {
     #nav .nav-link-hide { display: inline-flex; }
   }
 
-  @media(max-width:860px) {
+  @media (max-width: 860px) {
     #nav .nav-right > .btn.btn-ghost.btn-sm:not(#auth-btn):not(.mobile-menu-btn),
     #nav .nav-right > #auth-btn,
     #nav .nav-right > .btn.btn-primary.btn-sm {
@@ -280,7 +209,7 @@
   }
 </style>
 
-<nav id="nav" aria-label="Main navigation">
+<nav id="nav" class="nav-context-default" aria-label="Main navigation">
   <div class="wrap nav-inner">
     <a href="/" class="nav-logo">
       <img src="/assets/budy-logo.png" alt="Budy logo" class="nav-logo-img">
