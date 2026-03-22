@@ -473,9 +473,9 @@ input,select{font-family:inherit}
 /* ============================================================
    FOOTER
    ============================================================ */
-footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:40px}
-.footer-brand-desc{font-size:.8375rem;line-height:1.65;margin-top:10px;max-width:260px}
+footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px;margin-top:28px}
+.footer-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:40px;margin-bottom:32px}
+.footer-brand-desc{font-size:.8375rem;line-height:1.65;margin-top:10px;max-width:360px}
 .footer-col h4{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:#fff;margin-bottom:14px}
 .footer-col ul{display:flex;flex-direction:column;gap:9px}
@@ -484,7 +484,8 @@ footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .footer-copy{font-size:.775rem}
-@media(max-width:640px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;gap:24px}}
+@media(max-width:560px){.footer-grid{grid-template-columns:1fr}.footer-bottom{justify-content:flex-start}.footer-copy{font-size:.74rem}}
 
 /* ============================================================
    MODALS
