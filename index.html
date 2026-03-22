@@ -3513,9 +3513,23 @@ function saveSession(r){
 
   saveSessionLocal(entry);
 }
+
+function getDemoSessions() {
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  return [
+    { date: new Date(now - 14 * day).toISOString(), section: 'english', total: 1210, correct: 35, total_q: 50, skillMap: {} },
+    { date: new Date(now - 10 * day).toISOString(), section: 'math', total: 1260, correct: 38, total_q: 50, skillMap: {} },
+    { date: new Date(now - 7 * day).toISOString(), section: 'english', total: 1320, correct: 41, total_q: 50, skillMap: {} },
+    { date: new Date(now - 4 * day).toISOString(), section: 'math', total: 1370, correct: 44, total_q: 50, skillMap: {} },
+    { date: new Date(now - 1 * day).toISOString(), section: 'full', total: 1410, correct: 46, total_q: 50, skillMap: {} }
+  ];
+}
+
 function getSessions(){
   if (S.isLoggedIn) return Array.isArray(S.sessionCache) ? S.sessionCache : [];
-  return getSessionsLocal();
+  const localSessions = getSessionsLocal();
+  return localSessions.length ? localSessions : getDemoSessions();
 }
 
 function saveSessionLocal(entry) {
