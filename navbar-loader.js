@@ -8,17 +8,21 @@
     style.id = 'nav-consistency-overrides';
     style.textContent = [
       '#nav .nav-inner{min-height:var(--shared-nav-h,64px);}',
+      '#nav .nav-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;}',
       '#nav .btn,#nav .mobile-menu-btn{font-synthesis-weight:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}',
+      '#nav .btn{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease;transform:none;}',
       '#nav .btn-sm,#nav .mobile-menu-btn{height:40px;min-height:40px;line-height:1;font-size:13.5px;font-weight:700;letter-spacing:.01em;}',
       '#nav .btn-sm{padding:0 20px;}',
       '#nav .mobile-menu-btn{padding:0 14px;}',
-      '#nav #nav-link-why{min-width:110px;}',
-      '#nav #nav-link-features{min-width:106px;}',
-      '#nav #nav-link-pricing{min-width:102px;}',
-      '#nav #nav-link-account,#nav #auth-btn{min-width:118px;}',
-      '#nav .btn.btn-primary.btn-sm{min-width:146px;}',
+      '#nav #nav-link-why{width:110px;}',
+      '#nav #nav-link-features{width:106px;}',
+      '#nav #nav-link-pricing{width:102px;}',
+      '#nav #nav-link-account,#nav #auth-btn{width:118px;}',
+      '#nav .btn.btn-primary.btn-sm{width:146px;}',
+      '#nav .btn.btn-primary:hover{transform:none;}',
       '#nav #auth-btn,#nav #mobile-auth-link{visibility:hidden;}',
       '#nav.nav-auth-ready #auth-btn,#nav.nav-auth-ready #mobile-auth-link{visibility:visible;}',
+      '#nav.nav-test-mode #nav-link-why,#nav.nav-test-mode #nav-link-features,#nav.nav-test-mode #nav-link-pricing,#nav.nav-test-mode #nav-m-link-why,#nav.nav-test-mode #nav-m-link-features,#nav.nav-test-mode #nav-m-link-pricing{display:none !important;}',
       '#nav.nav-account-mode #nav-link-why,#nav.nav-account-mode #nav-link-features,#nav.nav-account-mode #nav-link-pricing,#nav.nav-account-mode #nav-m-link-why,#nav.nav-account-mode #nav-m-link-features,#nav.nav-account-mode #nav-m-link-pricing{display:none !important;}'
     ].join('');
 
@@ -110,7 +114,25 @@
   window.setNavTestMode = function (enabled) {
     var nav = document.getElementById('nav');
     if (!nav) return;
-    nav.classList.toggle('nav-test-mode', !!enabled);
+    var desktopAccount = document.getElementById('nav-link-account');
+    var mobileAccount = document.getElementById('nav-m-link-account');
+    var isEnabled = !!enabled;
+
+    nav.classList.toggle('nav-test-mode', isEnabled);
+
+    if (isEnabled) {
+      if (desktopAccount) {
+        desktopAccount.textContent = 'Home';
+        desktopAccount.setAttribute('href', '/');
+      }
+      if (mobileAccount) {
+        mobileAccount.textContent = 'Home';
+        mobileAccount.setAttribute('href', '/');
+      }
+      return;
+    }
+
+    applyNavVariant();
   };
 
   function setNavFallbacks() {
