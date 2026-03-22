@@ -133,7 +133,9 @@ input,select{font-family:inherit}
 #landing-screen::before{
   content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:radial-gradient(ellipse 82% 54% at 50% -8%, rgba(26,86,219,.35) 0%, transparent 60%),
-    radial-gradient(ellipse 44% 34% at 88% 88%, rgba(245,158,11,.09) 0%, transparent 58%);
+    radial-gradient(ellipse 42% 30% at 16% 38%, rgba(37,99,235,.12) 0%, transparent 54%),
+    radial-gradient(ellipse 44% 34% at 88% 88%, rgba(245,158,11,.09) 0%, transparent 58%),
+    radial-gradient(ellipse 52% 36% at 72% 58%, rgba(245,158,11,.07) 0%, transparent 56%);
 }
 #landing-screen::after{
   content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
@@ -143,22 +145,8 @@ input,select{font-family:inherit}
 }
 .hero{
   padding:56px 0 64px;
-  background:var(--ink);
+  background:transparent;
   position:relative;overflow:hidden;
-}
-.hero::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 90% 70% at 50% -10%,rgba(26,86,219,.45) 0%,transparent 65%),
-    radial-gradient(ellipse 50% 40% at 85% 80%,rgba(245,158,11,.12) 0%,transparent 60%);
-}
-/* Subtle grid texture */
-.hero::after{
-  content:'';position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;
 }
 .hero-content{position:relative;z-index:1;text-align:center;max-width:680px;margin:0 auto}
 .hero-pill{display:inline-flex;align-items:center;gap:8px;
@@ -384,7 +372,7 @@ input,select{font-family:inherit}
 /* ============================================================
    PRICING  ← THE CENTREPIECE
    ============================================================ */
-.pricing{background:var(--ink);padding:96px 0}
+.pricing{background:transparent;padding:96px 0;position:relative}
 .pricing .sec-eyebrow{color:var(--gold-l)}
 .pricing .sec-eyebrow::before{background:var(--gold)}
 .pricing .sec-head{color:#fff}
