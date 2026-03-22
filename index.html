@@ -927,6 +927,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 /* Minimum 44×44px touch targets (Apple HIG) */
 .btn, button { min-height: 44px; }
 .qn-btn { min-width: 36px; min-height: 36px; }
+.q-nav .qn-grid { max-width: 164px; gap: 10px 8px; }
+.q-nav .qn-btn { width: 28px; min-width: 28px; height: 28px; min-height: 28px; }
 .faq-btn { min-height: 52px; }
 .flag-btn { min-height: 44px; }
 .modal-close { min-width: 44px; min-height: 44px; width: 44px; height: 44px; }
@@ -1526,10 +1528,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 <div id="test-screen" role="main">
   <div class="tb">
     <div class="tb-left">
-      <div class="tb-logo">
+      <a class="tb-logo" href="/" onclick="event.preventDefault();goLanding();">
         <img src="/assets/budy-logo.png" alt="Budy logo" class="tb-logo-img">
         <span class="tb-logo-wordmark">Budy<span class="tb-logo-study">.Study</span></span>
-      </div>
+      </a>
       <div class="tb-sec" id="tb-sec-lbl">Math</div>
     </div>
     <div class="tb-timer" id="tb-timer">
