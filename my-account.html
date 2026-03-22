@@ -263,6 +263,7 @@ button { font-family: inherit; cursor: pointer; }
 .sc-lo { background: rgba(245,158,11,.15); color: #fbbf24; }
 .empty-s { text-align: center; padding: 40px; color: rgba(240,244,255,.38); font-size: .875rem; }
 .empty-s-icon { font-size: 2rem; margin-bottom: 10px; }
+#score-chart { display: block; width: 100% !important; height: auto !important; max-height: 260px; }
 
 .billing-wrap, .settings-wrap { display: flex; flex-direction: column; gap: 14px; }
 .panel {
@@ -529,6 +530,10 @@ function setAccountTab(tab) {
     if (tabEl) tabEl.classList.toggle('active', name === tab);
     if (paneEl) paneEl.classList.toggle('active', name === tab);
   });
+
+  if (tab === 'progress' && S.chart) {
+    setTimeout(function () { if (S.chart) S.chart.resize(); }, 0);
+  }
 }
 
 function getLocalAuthUser() {
@@ -924,7 +929,13 @@ function renderDash() {
   document.getElementById('ch-empty').classList.add('hidden');
   document.getElementById('score-chart').style.display = '';
 
-  const scores = ss.map((s) => Number(s.total || 0));
+  const scores = ss.map((s) => Number(s.total || 0)).filter((n) => Number.isFinite(n) && n > 0);
+  if (!scores.length) {
+    document.getElementById('ch-empty').classList.remove('hidden');
+    document.getElementById('score-chart').style.display = 'none';
+    if (S.chart) { S.chart.destroy(); S.chart = null; }
+    return;
+  }
   document.getElementById('d-best').textContent = Math.max(...scores);
   document.getElementById('d-latest').textContent = scores[scores.length - 1];
 
@@ -942,6 +953,8 @@ function renderDash() {
     const d = new Date(s.date);
     return (d.getMonth() + 1) + '/' + d.getDate();
   });
+  const minScore = Math.max(200, Math.min.apply(null, scores) - 60);
+  const maxScore = Math.min(1600, Math.max.apply(null, scores) + 60);
 
   const ctx = document.getElementById('score-chart').getContext('2d');
   S.chart = new Chart(ctx, {
@@ -962,11 +975,12 @@ function renderDash() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: 2.25,
       plugins: { legend: { display: false } },
       scales: {
         x: { ticks: { color: 'rgba(240,244,255,.45)' }, grid: { color: 'rgba(255,255,255,.05)' } },
-        y: { ticks: { color: 'rgba(240,244,255,.45)' }, grid: { color: 'rgba(255,255,255,.05)' } }
+        y: { min: minScore, max: maxScore, ticks: { color: 'rgba(240,244,255,.45)' }, grid: { color: 'rgba(255,255,255,.05)' } }
       }
     }
   });
