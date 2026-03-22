@@ -583,7 +583,12 @@ input,select{font-family:inherit}
   padding:3px 10px;background:rgba(255,255,255,.08);border-radius:var(--r-full)}
 .tb-timer{font-family:var(--font-mono);font-size:1rem;font-weight:600;color:var(--gold-l);
   display:flex;align-items:center;gap:6px;position:absolute;left:50%;transform:translateX(-50%)}
+.tb-timer-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;background:transparent;color:var(--gold-l);cursor:pointer;transition:opacity .15s,transform .15s}
+.tb-timer-btn:hover{opacity:.85}
+.tb-timer-btn:active{transform:scale(.94)}
+.tb-timer-btn svg{width:14px;height:14px;display:block}
 .tb-timer.warn{color:#fca5a5;animation:pulse 1s ease-in-out infinite}
+.tb-timer.warn .tb-timer-btn{color:#fca5a5}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .tb-prog{width:80px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}
 .tb-prog-fill{height:100%;background:var(--brand-l);border-radius:2px;transition:width .4s}
@@ -1547,6 +1552,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="tb-timer" id="tb-timer">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <span id="timer-txt">35:00</span>
+      <button class="tb-timer-btn" id="timer-toggle-btn" type="button" onclick="toggleTimerPause()" aria-label="Pause timer" title="Pause timer">
+        <svg id="timer-toggle-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+      </button>
     </div>
     <div class="tb-right">
       <div class="tb-prog"><div class="tb-prog-fill" id="tb-prog-fill"></div></div>
@@ -2013,6 +2021,7 @@ const S = {
   landingTimer: null,
   landingTimeLeft: 30 * 60,
   timer: null,
+  timerPaused: false,
   timeLeft: 0,
   testActive: false,
 
@@ -3263,11 +3272,13 @@ function startTest() {
       S.answers    = {};
       S.flags      = new Set();
       S.curQ       = 0;
+      S.timerPaused = false;
       S.timeLeft   = getTestDurationSeconds(S.section, isPrem);
       S.testActive = true;
 
       const labels = { english:'Reading & Writing', math:'Math', full:'Full Test' };
       document.getElementById('tb-sec-lbl').textContent = labels[S.section] || S.section;
+      updTimerPauseButton();
       updTimerDisplay();
 
       setView('test');
@@ -3405,8 +3416,41 @@ function clearLandingTimer(){if(S.landingTimer){clearInterval(S.landingTimer);S.
 function updLandingTimerDisplay(){
   const el=document.getElementById('landing-phone-timer');if(el)el.textContent=`⏱ ${formatClock(S.landingTimeLeft)}`;
 }
-function startTimer(){clearTimer();updTimerDisplay();S.timer=setInterval(()=>{S.timeLeft--;updTimerDisplay();if(S.timeLeft<=0){clearTimer();toast('Time\'s up! Submitting your test.','wn',3000);setTimeout(submitTest,2000)}},1000)}
+function runTimerLoop(){
+  clearTimer();
+  S.timer=setInterval(()=>{
+    if(S.timerPaused)return;
+    S.timeLeft--;
+    updTimerDisplay();
+    if(S.timeLeft<=0){
+      clearTimer();
+      S.timerPaused=false;
+      updTimerPauseButton();
+      toast('Time\'s up! Submitting your test.','wn',3000);
+      setTimeout(submitTest,2000)
+    }
+  },1000)
+}
+function startTimer(){S.timerPaused=false;updTimerPauseButton();updTimerDisplay();runTimerLoop()}
 function clearTimer(){if(S.timer){clearInterval(S.timer);S.timer=null}}
+function toggleTimerPause(){
+  if(!S.testActive||S.timeLeft<=0)return;
+  S.timerPaused=!S.timerPaused;
+  if(S.timerPaused)clearTimer();
+  else runTimerLoop();
+  updTimerPauseButton();
+}
+function updTimerPauseButton(){
+  const btn=document.getElementById('timer-toggle-btn');
+  const icon=document.getElementById('timer-toggle-icon');
+  if(!btn||!icon)return;
+  const paused=Boolean(S.timerPaused);
+  btn.setAttribute('aria-label',paused?'Resume timer':'Pause timer');
+  btn.setAttribute('title',paused?'Resume timer':'Pause timer');
+  icon.innerHTML=paused
+    ? '<polygon points="8,6 19,12 8,18"></polygon>'
+    : '<rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect>';
+}
 function updTimerDisplay(){
   const el=document.getElementById('timer-txt');if(el)el.textContent=formatClock(S.timeLeft);
   const w=document.getElementById('tb-timer');if(w)w.classList.toggle('warn',S.timeLeft<=300&&S.timeLeft>0);
@@ -3419,7 +3463,7 @@ function confirmSubmit(){
   submitTest();
 }
 function submitTest(){
-  clearTimer();S.testActive=false;
+  clearTimer();S.timerPaused=false;updTimerPauseButton();S.testActive=false;
   const qs=S.questions;
   let correct=0,wrong=0,skipped=0;
   const skillMap={};
