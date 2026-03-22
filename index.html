@@ -1105,7 +1105,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="hero-phone">
       <div class="phone-bar">
         <span class="phone-logo">Budy.Study</span>
-        <span class="phone-timer">⏱ 29:14</span>
+        <span class="phone-timer" id="landing-phone-timer">⏱ 30:00</span>
       </div>
       <div class="phone-body">
         <div class="phone-q-label" id="demo-q-label">Math · Question 1 of 4</div>
@@ -1963,6 +1963,8 @@ const S = {
   answers: {},
   flags: new Set(),
   curQ: 0,
+  landingTimer: null,
+  landingTimeLeft: 30 * 60,
   timer: null,
   timeLeft: 0,
   testActive: false,
@@ -1984,6 +1986,29 @@ const S = {
 
 /* ── FREE TIER LIMITS ── */
 const FREE_Q = 10; // questions allowed on free tier
+const LANDING_TIMER_SECONDS = 30 * 60;
+const TEST_DURATION_SECONDS = {
+  english: { premium: 32 * 60, free: 12 * 60 },
+  math: { premium: 35 * 60, free: 12 * 60 },
+  full: { premium: 67 * 60, free: 12 * 60 }
+};
+
+function formatClock(totalSeconds) {
+  const safeSeconds = Math.max(0, Number(totalSeconds) || 0);
+  const minutes = Math.floor(safeSeconds / 60);
+  const seconds = safeSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function getTestDurationSeconds(section, isPremium) {
+  const tier = isPremium ? 'premium' : 'free';
+  return TEST_DURATION_SECONDS[section]?.[tier] ?? TEST_DURATION_SECONDS.math[tier];
+}
+
+function getTestDurationSummary(section, isPremium) {
+  const minutes = Math.round(getTestDurationSeconds(section, isPremium) / 60);
+  return isPremium ? `${minutes} min` : `~${minutes} min`;
+}
 
 function trackEvent(name, payload = {}) {
   const safeName = String(name || '').trim();
@@ -2467,6 +2492,9 @@ function setView(v) {
     else el.style.display = active ? 'block' : 'none';
   });
 
+  if (v === 'landing') startLandingTimer();
+  else clearLandingTimer();
+
   // Toggle navbar test mode (only left 3 buttons visible during test)
   if (typeof window.setNavTestMode === 'function') {
     window.setNavTestMode(v === 'test');
@@ -2659,12 +2687,11 @@ function obNext() {
     const gradeMap={8:'8th Grade',9:'9th Grade',10:'10th Grade',11:'11th Grade',12:'12th Grade'};
     const secNames={english:'Reading & Writing',math:'Math',full:'Full Test'};
     const qCounts={english:S.isPremium?27:FREE_Q, math:S.isPremium?22:FREE_Q, full:S.isPremium?49:FREE_Q};
-    const times={english:S.isPremium?'32 min':'~12 min', math:S.isPremium?'35 min':'~12 min', full:S.isPremium?'67 min':'~12 min'};
     document.getElementById('rb-name').textContent=S.user.name;
     document.getElementById('rb-grade').textContent=gradeMap[S.user.grade]||S.user.grade;
     document.getElementById('rb-sec').textContent=secNames[S.section];
     document.getElementById('rb-qcount').textContent=qCounts[S.section]+' questions'+(S.isPremium?'':' (free tier)');
-    document.getElementById('rb-time').textContent=times[S.section];
+    document.getElementById('rb-time').textContent=getTestDurationSummary(S.section, S.isPremium);
     obUpdateStep(3);
   } else {
     closeOnboard(); startTest();
@@ -3136,7 +3163,6 @@ function getPct(score,max){
 function startTest() {
   const isPrem = S.isPremium;
   const qLimits = { english: isPrem?27:FREE_Q, math: isPrem?22:FREE_Q, full: isPrem?49:FREE_Q };
-  const times   = { english: isPrem?32*60:12*60, math: isPrem?35*60:12*60, full: isPrem?67*60:12*60 };
   const limit   = qLimits[S.section];
 
   setView('loading');
@@ -3153,11 +3179,12 @@ function startTest() {
       S.answers    = {};
       S.flags      = new Set();
       S.curQ       = 0;
-      S.timeLeft   = times[S.section];
+      S.timeLeft   = getTestDurationSeconds(S.section, isPrem);
       S.testActive = true;
 
       const labels = { english:'Reading & Writing', math:'Math', full:'Full Test' };
       document.getElementById('tb-sec-lbl').textContent = labels[S.section] || S.section;
+      updTimerDisplay();
 
       setView('test');
 
@@ -3280,11 +3307,24 @@ function updFlag(){
 }
 
 /* ── TIMER ── */
+function startLandingTimer(){
+  clearLandingTimer();
+  S.landingTimeLeft = LANDING_TIMER_SECONDS;
+  updLandingTimerDisplay();
+  S.landingTimer = setInterval(()=>{
+    S.landingTimeLeft--;
+    updLandingTimerDisplay();
+    if(S.landingTimeLeft<=0)clearLandingTimer();
+  },1000)
+}
+function clearLandingTimer(){if(S.landingTimer){clearInterval(S.landingTimer);S.landingTimer=null}}
+function updLandingTimerDisplay(){
+  const el=document.getElementById('landing-phone-timer');if(el)el.textContent=`⏱ ${formatClock(S.landingTimeLeft)}`;
+}
 function startTimer(){clearTimer();updTimerDisplay();S.timer=setInterval(()=>{S.timeLeft--;updTimerDisplay();if(S.timeLeft<=0){clearTimer();toast('Time\'s up! Submitting your test.','wn',3000);setTimeout(submitTest,2000)}},1000)}
 function clearTimer(){if(S.timer){clearInterval(S.timer);S.timer=null}}
 function updTimerDisplay(){
-  const m=Math.floor(S.timeLeft/60),s=S.timeLeft%60;
-  const el=document.getElementById('timer-txt');if(el)el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el=document.getElementById('timer-txt');if(el)el.textContent=formatClock(S.timeLeft);
   const w=document.getElementById('tb-timer');if(w)w.classList.toggle('warn',S.timeLeft<=300&&S.timeLeft>0);
 }
 
