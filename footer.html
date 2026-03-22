@@ -21,6 +21,24 @@
     max-width: 260px;
   }
 
+  .site-footer .footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .site-footer .footer-logo-img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    flex-shrink: 0;
+  }
+
   .site-footer .footer-col h4 {
     font-size: 0.75rem;
     font-weight: 800;
@@ -77,12 +95,8 @@
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <div style="display:flex;align-items:center;gap:9px;font-size:1.3rem;font-weight:800;color:#fff">
-          <div class="nav-logo-mark" style="width:34px;height:34px;background:var(--brand, #1a56db);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2">
-              <path d="M10 2L2 7l8 4 8-4-8-5zM2 14l8 4 8-4M2 10.5l8 4 8-4"/>
-            </svg>
-          </div>
+        <div class="footer-logo">
+          <img src="/assets/budy-logo.png" alt="Budy logo" class="footer-logo-img">
           Budy.Study
         </div>
         <p class="footer-brand-desc">SAT & PSAT prep that actually works. Built for real students, not test prep nerds.</p>
