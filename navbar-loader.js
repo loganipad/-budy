@@ -7,6 +7,14 @@
     var style = document.createElement('style');
     style.id = 'nav-consistency-overrides';
     style.textContent = [
+      '#nav{background:rgba(13,17,23,.82)!important;border-bottom:1px solid rgba(255,255,255,.08)!important;backdrop-filter:blur(16px)!important;}',
+      '#nav .nav-logo{color:#fff !important;}',
+      '#nav .btn-ghost{background:rgba(255,255,255,.08)!important;color:rgba(240,244,255,.7)!important;border:2px solid rgba(255,255,255,.14)!important;}',
+      '#nav .btn-ghost:hover{background:rgba(255,255,255,.14)!important;color:#fff!important;border-color:rgba(255,255,255,.3)!important;}',
+      '#nav .mobile-menu-btn{border-color:rgba(255,255,255,.15)!important;background:rgba(255,255,255,.08)!important;color:rgba(240,244,255,.7)!important;}',
+      '#nav .mobile-menu-panel{background:#1c2333!important;border-color:rgba(255,255,255,.1)!important;}',
+      '#nav .mobile-menu-link{color:rgba(240,244,255,.85)!important;}',
+      '#nav .mobile-menu-link:hover{background:rgba(255,255,255,.06)!important;}',
       '#nav .nav-inner{min-height:var(--shared-nav-h,64px);}',
       '#nav .nav-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;}',
       '#nav .btn,#nav .mobile-menu-btn{font-synthesis-weight:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}',
@@ -22,11 +30,7 @@
       '#nav .btn.btn-primary:hover{transform:none;}',
       '#nav #auth-btn,#nav #mobile-auth-link{visibility:hidden;}',
       '#nav.nav-auth-ready #auth-btn,#nav.nav-auth-ready #mobile-auth-link{visibility:visible;}',
-      '#nav.nav-account-mode .nav-right,#nav.nav-test-mode .nav-right{width:402px;max-width:100%;justify-content:flex-end;}',
-      '#nav.nav-test-mode #nav-link-why,#nav.nav-test-mode #nav-link-features,#nav.nav-test-mode #nav-link-pricing,#nav.nav-test-mode #nav-m-link-why,#nav.nav-test-mode #nav-m-link-features,#nav.nav-test-mode #nav-m-link-pricing{display:none !important;}',
-      '#nav.nav-test-mode #nav-link-account,#nav.nav-test-mode #auth-btn,#nav.nav-test-mode .btn.btn-primary.btn-sm{display:inline-flex !important;}',
-      '#nav.nav-test-mode .mobile-menu-wrap{display:block !important;}',
-      '#nav.nav-account-mode #nav-link-why,#nav.nav-account-mode #nav-link-features,#nav.nav-account-mode #nav-link-pricing,#nav.nav-account-mode #nav-m-link-why,#nav.nav-account-mode #nav-m-link-features,#nav.nav-account-mode #nav-m-link-pricing{display:none !important;}'
+      '#nav .nav-right{width:auto;max-width:100%;}'
     ].join('');
 
     document.head.appendChild(style);
@@ -76,31 +80,14 @@
   }
 
   function applyNavVariant() {
-    var path = String(window.location.pathname || '').toLowerCase();
-    var isAccountPage = path === '/my-account.html' || path === '/my-account';
-    var isDarkPage = path === '/login.html' || path === '/login' || path === '/checkout.html' || path === '/checkout';
     var nav = document.getElementById('nav');
     if (!nav) return;
 
     var desktopAccount = document.getElementById('nav-link-account');
     var mobileAccount = document.getElementById('nav-m-link-account');
 
-    nav.classList.toggle('nav-account-mode', isAccountPage);
-    nav.classList.toggle('nav-dark-mode', isDarkPage && !isAccountPage);
-    nav.classList.toggle('nav-default-mode', !isAccountPage && !isDarkPage);
-
-    if (isAccountPage) {
-      if (desktopAccount) {
-        desktopAccount.textContent = 'Home';
-        desktopAccount.setAttribute('href', '/');
-      }
-
-      if (mobileAccount) {
-        mobileAccount.textContent = 'Home';
-        mobileAccount.setAttribute('href', '/');
-      }
-      return;
-    }
+    nav.classList.remove('nav-account-mode', 'nav-test-mode', 'nav-default-mode');
+    nav.classList.add('nav-dark-mode');
 
     if (desktopAccount) {
       desktopAccount.textContent = 'My Account';
@@ -113,29 +100,9 @@
     }
   }
 
-  // Toggle test mode on the navbar (only left 3 info buttons visible)
+  // Kept for compatibility with existing callers; navbar now remains static.
   window.setNavTestMode = function (enabled) {
-    var nav = document.getElementById('nav');
-    if (!nav) return;
-    var desktopAccount = document.getElementById('nav-link-account');
-    var mobileAccount = document.getElementById('nav-m-link-account');
-    var isEnabled = !!enabled;
-
-    nav.classList.toggle('nav-test-mode', isEnabled);
-
-    if (isEnabled) {
-      if (desktopAccount) {
-        desktopAccount.textContent = 'Home';
-        desktopAccount.setAttribute('href', '/');
-      }
-      if (mobileAccount) {
-        mobileAccount.textContent = 'Home';
-        mobileAccount.setAttribute('href', '/');
-      }
-      return;
-    }
-
-    applyNavVariant();
+    void enabled;
   };
 
   function setNavFallbacks() {
