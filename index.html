@@ -594,6 +594,18 @@ input,select{font-family:inherit}
 .leave-test-copy p{font-size:.9rem;line-height:1.65;color:rgba(240,244,255,.62)}
 .leave-test-note{margin-top:14px;padding:12px 14px;border-radius:16px;background:rgba(245,158,11,.1);
   border:1px solid rgba(245,158,11,.24);font-size:.8125rem;font-weight:700;color:#b45309}
+.action-confirm-modal{max-width:460px}
+.action-confirm-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--gold),#d97706);color:#0f1728;font-size:1.5rem;font-weight:900;
+  box-shadow:0 10px 28px rgba(245,158,11,.22);margin-bottom:16px}
+.action-confirm-copy p{font-size:.9rem;line-height:1.65;color:rgba(240,244,255,.62)}
+.action-confirm-note{margin-top:14px;padding:12px 14px;border-radius:16px;background:rgba(26,86,219,.12);
+  border:1px solid rgba(59,130,246,.24);font-size:.8125rem;font-weight:700;color:#93c5fd}
+.action-confirm-note.hidden{display:none}
+.action-confirm-confirm-btn.is-gold{background:var(--gold);color:var(--ink)}
+.action-confirm-confirm-btn.is-gold:hover{background:#fbbf24}
+.action-confirm-confirm-btn.is-danger{background:#7f1d1d;border-color:#be123c;color:#fff}
+.action-confirm-confirm-btn.is-danger:hover{background:#9f1239}
 
 /* ============================================================
    LOADING
@@ -1972,6 +1984,26 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   </div>
 </div>
 
+<div class="overlay" id="action-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="action-confirm-title" onclick="if(event.target===this)closeActionConfirm(false)">
+  <div class="modal action-confirm-modal">
+    <div class="modal-hd">
+      <div class="modal-hd-text"><p id="action-confirm-eyebrow" style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 6px">Before you continue</p><h2 id="action-confirm-title">Confirm action</h2></div>
+      <button class="modal-close" onclick="closeActionConfirm(false)" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="action-confirm-icon" id="action-confirm-icon">!</div>
+      <div class="action-confirm-copy">
+        <p id="action-confirm-body">Please review this action before continuing.</p>
+      </div>
+      <div class="action-confirm-note hidden" id="action-confirm-note"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" id="action-confirm-cancel-btn" onclick="closeActionConfirm(false)">Cancel</button>
+      <button class="btn btn-primary action-confirm-confirm-btn" id="action-confirm-confirm-btn" onclick="closeActionConfirm(true)">Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================================
      JAVASCRIPT
      ============================================================ -->
@@ -2018,6 +2050,8 @@ const LANDING_DEMO_QUESTIONS = [
     explanation: 'The second clause is an outcome of the first, so "As a result" fits best.'
   }
 ];
+
+let actionConfirmResolver = null;
 
 const BILLING_DISPLAY = {
   weekly: {
@@ -2638,6 +2672,54 @@ function requestLeaveTest(destination) {
   overlay.classList.add('open');
 }
 
+function closeActionConfirm(result) {
+  const overlay = document.getElementById('action-confirm-overlay');
+  if (overlay) overlay.classList.remove('open');
+  const resolver = actionConfirmResolver;
+  actionConfirmResolver = null;
+  if (resolver) resolver(Boolean(result));
+}
+
+function openActionConfirm(options) {
+  const overlay = document.getElementById('action-confirm-overlay');
+  if (!overlay) return Promise.resolve(false);
+
+  if (actionConfirmResolver) {
+    actionConfirmResolver(false);
+    actionConfirmResolver = null;
+  }
+
+  const config = options || {};
+  const eyebrow = document.getElementById('action-confirm-eyebrow');
+  const title = document.getElementById('action-confirm-title');
+  const body = document.getElementById('action-confirm-body');
+  const note = document.getElementById('action-confirm-note');
+  const icon = document.getElementById('action-confirm-icon');
+  const cancelBtn = document.getElementById('action-confirm-cancel-btn');
+  const confirmBtn = document.getElementById('action-confirm-confirm-btn');
+
+  if (eyebrow) eyebrow.textContent = config.eyebrow || 'Before you continue';
+  if (title) title.textContent = config.title || 'Confirm action';
+  if (body) body.textContent = config.body || 'Please review this action before continuing.';
+  if (note) {
+    note.textContent = config.note || '';
+    note.classList.toggle('hidden', !config.note);
+  }
+  if (icon) icon.textContent = config.icon || '!';
+  if (cancelBtn) cancelBtn.textContent = config.cancelText || 'Cancel';
+  if (confirmBtn) {
+    confirmBtn.textContent = config.confirmText || 'Continue';
+    confirmBtn.classList.remove('is-gold', 'is-danger');
+    if (config.tone === 'gold') confirmBtn.classList.add('is-gold');
+    if (config.tone === 'danger') confirmBtn.classList.add('is-danger');
+  }
+
+  overlay.classList.add('open');
+  return new Promise((resolve) => {
+    actionConfirmResolver = resolve;
+  });
+}
+
 function goLanding() {
   requestLeaveTest('landing');
 }
@@ -2993,7 +3075,16 @@ async function cancelSubscriptionNow() {
     return;
   }
 
-  const confirmed = window.confirm('Cancel your subscription immediately? Your premium access will end right away.');
+  const confirmed = await openActionConfirm({
+    eyebrow: 'Billing change',
+    title: 'Cancel Premium now?',
+    body: 'Your premium access will end immediately and your account will switch back to the free plan.',
+    note: 'This takes effect right away, so premium-only features lock again as soon as the cancellation finishes.',
+    icon: '$',
+    cancelText: 'Keep Premium',
+    confirmText: 'Cancel Now',
+    tone: 'danger'
+  });
   if (!confirmed) return;
 
   const btn = document.getElementById('billing-cancel-btn');
@@ -3497,9 +3588,21 @@ function updTimerDisplay(){
 }
 
 /* ── SUBMIT ── */
-function confirmSubmit(){
+async function confirmSubmit(){
   const un=S.questions.length-Object.keys(S.answers).length;
-  if(un>0){if(!confirm(`${un} question${un>1?'s':''} not answered. Submit anyway?`))return}
+  if(un>0){
+    const confirmed=await openActionConfirm({
+      eyebrow:'Submission check',
+      title:`${un} question${un>1?'s are':' is'} still blank`,
+      body:`You can go back and review those unanswered question${un>1?'s':''}, or submit now and score the test as it stands.`,
+      note:'Blank answers count as skipped on the final score report.',
+      icon:'?',
+      cancelText:'Keep Reviewing',
+      confirmText:'Submit Anyway',
+      tone:'gold'
+    });
+    if(!confirmed)return;
+  }
   submitTest();
 }
 function submitTest(){
@@ -3912,6 +4015,11 @@ function announce(msg){const e=document.getElementById('aria-live');e.textConten
 
 /* ── KEYBOARD ── */
 document.addEventListener('keydown',e=>{
+  const actionConfirmOverlay = document.getElementById('action-confirm-overlay');
+  if (actionConfirmOverlay && actionConfirmOverlay.classList.contains('open')) {
+    if (e.key === 'Escape') closeActionConfirm(false);
+    return;
+  }
   const leaveTestOverlay = document.getElementById('leave-test-overlay');
   if (leaveTestOverlay && leaveTestOverlay.classList.contains('open')) {
     if (e.key === 'Escape') closeLeaveTestModal();
@@ -3926,9 +4034,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft')goPrev();
   if(e.key==='f'||e.key==='F')toggleFlag();
 });
-
-/* ── BEFOREUNLOAD ── */
-window.addEventListener('beforeunload',e=>{if(S.testActive&&S.view==='test'){e.preventDefault();e.returnValue=''}});
 
 /* ── iOS KEYBOARD SCROLL FIX ──
    When the soft keyboard opens on iOS, it can scroll the fixed test footer

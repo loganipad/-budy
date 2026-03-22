@@ -373,6 +373,142 @@ button { font-family: inherit; cursor: pointer; }
 .toast.er { background: #e11d48; }
 .toast.wn { background: #d97706; color: #fff; }
 
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1800;
+  background: rgba(13,17,23,.74);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .24s var(--ease);
+}
+.confirm-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.confirm-modal {
+  width: 100%;
+  max-width: 460px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, #162033 0%, #0f1728 100%);
+  box-shadow: 0 26px 80px rgba(0,0,0,.42);
+  transform: translateY(18px) scale(.98);
+  transition: transform .3s var(--ease);
+}
+.confirm-overlay.open .confirm-modal {
+  transform: translateY(0) scale(1);
+}
+.confirm-hd {
+  padding: 28px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.confirm-kicker {
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  margin-bottom: 6px;
+}
+.confirm-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #f0f4ff;
+}
+.confirm-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(240,244,255,.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.confirm-close:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,.22);
+}
+.confirm-bd {
+  padding: 22px 28px;
+}
+.confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #0f1728;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 12px 30px rgba(245,158,11,.24);
+  margin-bottom: 16px;
+}
+.confirm-copy {
+  font-size: .92rem;
+  line-height: 1.65;
+  color: rgba(240,244,255,.68);
+}
+.confirm-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(225,29,72,.12);
+  border: 1px solid rgba(244,63,94,.24);
+  font-size: .8125rem;
+  font-weight: 700;
+  color: #fda4af;
+}
+.confirm-note.hidden {
+  display: none;
+}
+.confirm-ft {
+  padding: 0 28px 28px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.confirm-btn-secondary,
+.confirm-btn-primary {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: .84rem;
+  font-weight: 800;
+  transition: all .2s var(--ease);
+}
+.confirm-btn-secondary {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  color: rgba(240,244,255,.72);
+}
+.confirm-btn-secondary:hover {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+.confirm-btn-primary {
+  background: #7f1d1d;
+  border: 1px solid #be123c;
+  color: #fff;
+}
+.confirm-btn-primary:hover {
+  background: #9f1239;
+}
+
 @media (max-width: 980px) {
   .dash-stats { grid-template-columns: 1fr 1fr; }
 }
@@ -391,6 +527,27 @@ button { font-family: inherit; cursor: pointer; }
 <script src="/navbar-loader.js" defer></script>
 
 <div id="toasts"></div>
+
+<div id="account-confirm-overlay" class="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="account-confirm-title" onclick="if(event.target===this)closeAccountConfirm(false)">
+  <div class="confirm-modal">
+    <div class="confirm-hd">
+      <div>
+        <div class="confirm-kicker" id="account-confirm-kicker">Billing change</div>
+        <div class="confirm-title" id="account-confirm-title">Confirm action</div>
+      </div>
+      <button class="confirm-close" onclick="closeAccountConfirm(false)" aria-label="Close">✕</button>
+    </div>
+    <div class="confirm-bd">
+      <div class="confirm-icon" id="account-confirm-icon">$</div>
+      <div class="confirm-copy" id="account-confirm-body">Please review this action before continuing.</div>
+      <div class="confirm-note hidden" id="account-confirm-note"></div>
+    </div>
+    <div class="confirm-ft">
+      <button class="confirm-btn-secondary" id="account-confirm-cancel-btn" onclick="closeAccountConfirm(false)">Cancel</button>
+      <button class="confirm-btn-primary" id="account-confirm-confirm-btn" onclick="closeAccountConfirm(true)">Continue</button>
+    </div>
+  </div>
+</div>
 
 <div class="page">
   <div class="dash-hd">
@@ -511,6 +668,7 @@ const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
 
 let authClient = null;
+let accountConfirmResolver = null;
 
 const S = {
   user: { name: '', email: '', grade: '' },
@@ -535,6 +693,49 @@ function toast(msg, type = '', dur = 2800) {
   t.textContent = msg;
   c.appendChild(t);
   setTimeout(() => t.remove(), dur);
+}
+
+function closeAccountConfirm(result) {
+  const overlay = document.getElementById('account-confirm-overlay');
+  if (overlay) overlay.classList.remove('open');
+  const resolver = accountConfirmResolver;
+  accountConfirmResolver = null;
+  if (resolver) resolver(Boolean(result));
+}
+
+function openAccountConfirm(options) {
+  const overlay = document.getElementById('account-confirm-overlay');
+  if (!overlay) return Promise.resolve(false);
+
+  if (accountConfirmResolver) {
+    accountConfirmResolver(false);
+    accountConfirmResolver = null;
+  }
+
+  const config = options || {};
+  const kicker = document.getElementById('account-confirm-kicker');
+  const title = document.getElementById('account-confirm-title');
+  const icon = document.getElementById('account-confirm-icon');
+  const body = document.getElementById('account-confirm-body');
+  const note = document.getElementById('account-confirm-note');
+  const cancelBtn = document.getElementById('account-confirm-cancel-btn');
+  const confirmBtn = document.getElementById('account-confirm-confirm-btn');
+
+  if (kicker) kicker.textContent = config.kicker || 'Billing change';
+  if (title) title.textContent = config.title || 'Confirm action';
+  if (icon) icon.textContent = config.icon || '$';
+  if (body) body.textContent = config.body || 'Please review this action before continuing.';
+  if (note) {
+    note.textContent = config.note || '';
+    note.classList.toggle('hidden', !config.note);
+  }
+  if (cancelBtn) cancelBtn.textContent = config.cancelText || 'Cancel';
+  if (confirmBtn) confirmBtn.textContent = config.confirmText || 'Continue';
+
+  overlay.classList.add('open');
+  return new Promise((resolve) => {
+    accountConfirmResolver = resolve;
+  });
 }
 
 function isTestUserEmail(email) {
@@ -839,7 +1040,16 @@ async function cancelSubscriptionNow() {
     return;
   }
 
-  if (!window.confirm('Cancel your subscription immediately?')) return;
+  const confirmed = await openAccountConfirm({
+    kicker: 'Billing change',
+    title: 'Cancel Premium now?',
+    body: 'Your premium access ends immediately and your account switches back to the free plan as soon as this finishes.',
+    note: 'You can still reopen Stripe billing later, but this specific subscription ends right away.',
+    icon: '$',
+    cancelText: 'Keep Premium',
+    confirmText: 'Cancel Now'
+  });
+  if (!confirmed) return;
 
   const btn = document.getElementById('billing-cancel-btn');
   const original = btn.textContent;
@@ -1027,6 +1237,12 @@ async function boot() {
 }
 
 document.addEventListener('navbar:mounted', bindNavAuthButtonForState);
+document.addEventListener('keydown', function (event) {
+  const overlay = document.getElementById('account-confirm-overlay');
+  if (overlay && overlay.classList.contains('open') && event.key === 'Escape') {
+    closeAccountConfirm(false);
+  }
+});
 
 boot();
 </script>
