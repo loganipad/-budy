@@ -114,10 +114,12 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 20px;
 }
 .auth-logo-mark {
-  width: 38px; height: 38px; background: var(--brand); border-radius: 11px;
-  display: flex; align-items: center; justify-content: center;
+  width: 38px;
+  height: 38px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
 }
-.auth-logo-mark svg { width: 20px; height: 20px; }
 .auth-card-hd h1 {
   font-family: var(--font); font-size: 1.5rem; font-weight: 800;
   color: var(--ink); letter-spacing: -.025em; margin-bottom: 8px;
@@ -290,11 +292,7 @@ a { text-decoration: none; color: inherit; }
       <!-- Header -->
       <div class="auth-card-hd">
         <div class="auth-logo">
-          <div class="auth-logo-mark">
-            <svg viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2">
-              <path d="M10 2L2 7l8 4 8-4-8-5zM2 14l8 4 8-4M2 10.5l8 4 8-4"/>
-            </svg>
-          </div>
+          <img src="/assets/budy-logo.png" alt="Budy logo" class="auth-logo-mark">
           Budy.Study
         </div>
         <h1 id="card-title">Welcome back</h1>
