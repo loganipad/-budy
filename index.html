@@ -563,9 +563,12 @@ input,select{font-family:inherit}
    ============================================================ */
 #test-screen{position:fixed;inset:0;z-index:950;background:#fff;display:none}
 #test-screen.show{display:flex;flex-direction:column}
-.tb{height:58px;background:var(--ink-80);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:12px;flex-shrink:0;position:relative}
+.tb{height:66px;background:var(--ink-80);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:12px;flex-shrink:0;position:relative}
 .tb-left,.tb-right{display:flex;align-items:center;gap:12px;min-width:0}
-.tb-logo{font-size:.9rem;font-weight:800;color:#fff}
+.tb-logo{display:inline-flex;align-items:center;gap:8px;font-family:'Sora',system-ui,sans-serif;font-size:1.125rem;font-weight:800;color:#fff;line-height:1;text-decoration:none;min-width:0}
+.tb-logo-wordmark{display:inline-flex;align-items:baseline;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+.tb-logo-study{color:#f59e0b}
+.tb-logo-img{width:28px;height:28px;object-fit:contain;object-position:center;display:block;flex-shrink:0}
 .tb-sec{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.5);
   padding:3px 10px;background:rgba(255,255,255,.08);border-radius:var(--r-full)}
 .tb-timer{font-family:var(--font-mono);font-size:1rem;font-weight:600;color:var(--gold-l);
@@ -582,14 +585,14 @@ input,select{font-family:inherit}
   overflow-y:auto;overflow-x:hidden;padding:14px}
 .qn-title{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);margin-bottom:10px}
-.qn-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));justify-items:center;gap:8px 6px;width:100%;max-width:152px;margin:0 auto}
-.qn-btn{width:26px;min-width:26px;height:26px;min-height:26px;border-radius:7px;font-size:.7rem;font-weight:700;
-  cursor:pointer;border:none;transition:all .15s;
+.qn-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));justify-items:center;gap:10px 8px;width:100%;max-width:164px;margin:0 auto}
+.qn-btn{width:28px;min-width:28px;height:28px;min-height:28px;border-radius:8px;font-size:.7rem;font-weight:700;
+  cursor:pointer;border:none;box-sizing:border-box;transition:all .15s;
   background:var(--line);color:var(--slate)}
 .qn-btn.ans{background:rgba(26,86,219,.12);color:var(--brand)}
 .qn-btn.cur{background:var(--brand);color:#fff}
-.qn-btn.flag{background:#fef3c7;color:var(--amber);border:2px solid var(--amber)}
-.qn-legend{margin-top:16px;display:flex;flex-direction:column;gap:7px;max-width:152px;margin-left:auto;margin-right:auto}
+.qn-btn.flag{background:#fef3c7;color:var(--amber);outline:2px solid var(--amber);outline-offset:0}
+.qn-legend{margin-top:16px;display:flex;flex-direction:column;gap:7px;max-width:164px;margin-left:auto;margin-right:auto}
 .leg-row{display:flex;align-items:center;gap:7px;font-size:.7rem;color:var(--muted)}
 .leg-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
 
@@ -1523,7 +1526,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 <div id="test-screen" role="main">
   <div class="tb">
     <div class="tb-left">
-      <div class="tb-logo">Budy.Study</div>
+      <div class="tb-logo">
+        <img src="/assets/budy-logo.png" alt="Budy logo" class="tb-logo-img">
+        <span class="tb-logo-wordmark">Budy<span class="tb-logo-study">.Study</span></span>
+      </div>
       <div class="tb-sec" id="tb-sec-lbl">Math</div>
     </div>
     <div class="tb-timer" id="tb-timer">
