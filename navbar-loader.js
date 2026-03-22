@@ -137,6 +137,15 @@
     var slot = document.getElementById('navbar-slot');
     if (!slot) return;
 
+    // If the navbar is already inlined in the page, skip the fetch
+    if (document.getElementById('nav')) {
+      setNavFallbacks();
+      applyNavVariant();
+      syncNavAuthFallbackState();
+      document.dispatchEvent(new CustomEvent('navbar:mounted'));
+      return;
+    }
+
     fetch('/navbar.html', { cache: 'no-cache' })
       .then(function (res) {
         if (!res.ok) throw new Error('Failed to load navbar');
@@ -147,8 +156,6 @@
         setNavFallbacks();
         applyNavVariant();
         syncNavAuthFallbackState();
-        var navEl = document.getElementById('nav');
-        if (navEl) navEl.classList.add('nav-ready');
         document.dispatchEvent(new CustomEvent('navbar:mounted'));
       })
       .catch(function () {
