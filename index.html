@@ -582,11 +582,14 @@ input,select{font-family:inherit}
 .tb-sec{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.5);
   padding:3px 10px;background:rgba(255,255,255,.08);border-radius:var(--r-full)}
 .tb-timer{font-family:var(--font-mono);font-size:1rem;font-weight:600;color:var(--gold-l);
-  display:flex;align-items:center;gap:4px;position:absolute;left:50%;transform:translateX(-50%)}
-.tb-timer-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;background:transparent;color:var(--gold-l);cursor:pointer;transition:opacity .15s,transform .15s}
+  display:flex;align-items:center;gap:0;position:absolute;left:50%;transform:translateX(-50%)}
+.tb-timer-icon,.tb-timer-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex-shrink:0}
+.tb-timer-icon{margin-right:4px}
+#timer-txt{display:inline-block;min-width:5ch;text-align:center;margin-right:4px}
+.tb-timer-btn{padding:0;border:none;background:transparent;color:var(--gold-l);cursor:pointer;transition:opacity .15s,transform .15s}
 .tb-timer-btn:hover{opacity:.85}
 .tb-timer-btn:active{transform:scale(.94)}
-.tb-timer-btn svg{width:14px;height:14px;display:block}
+.tb-timer-icon svg,.tb-timer-btn svg{width:14px;height:14px;display:block}
 .tb-timer.warn{color:#fca5a5;animation:pulse 1s ease-in-out infinite}
 .tb-timer.warn .tb-timer-btn{color:#fca5a5}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
@@ -1550,7 +1553,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="tb-sec" id="tb-sec-lbl">Math</div>
     </div>
     <div class="tb-timer" id="tb-timer">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="tb-timer-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
       <span id="timer-txt">35:00</span>
       <button class="tb-timer-btn" id="timer-toggle-btn" type="button" onclick="toggleTimerPause()" aria-label="Pause timer" title="Pause timer">
         <svg id="timer-toggle-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
