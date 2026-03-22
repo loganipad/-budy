@@ -97,13 +97,6 @@
     }
   }
 
-  // Toggle test mode on the navbar (only left 3 info buttons visible)
-  window.setNavTestMode = function (enabled) {
-    var nav = document.getElementById('nav');
-    if (!nav) return;
-    nav.classList.toggle('nav-test-mode', !!enabled);
-  };
-
   function setNavFallbacks() {
     if (typeof window.toggleMobileMenu !== 'function') {
       window.toggleMobileMenu = function () {

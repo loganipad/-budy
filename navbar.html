@@ -8,8 +8,6 @@
     right: 0;
     z-index: 900;
     height: var(--shared-nav-h);
-    padding-top: env(safe-area-inset-top, 0px);
-    height: calc(var(--shared-nav-h) + env(safe-area-inset-top, 0px));
     background: rgba(255,255,255,.92);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(0,0,0,.06);
@@ -21,7 +19,7 @@
   #nav .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 
   #nav .nav-inner {
-    height: var(--shared-nav-h);
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -100,53 +98,7 @@
     box-shadow: 0 8px 30px rgba(26,86,219,.45);
   }
 
-  /* ── Dark mode variant (login, checkout) ── */
-  #nav.nav-dark-mode {
-    background: rgba(13,17,23,.82);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-  }
-
-  #nav.nav-dark-mode .nav-logo { color: #fff; }
-
-  #nav.nav-dark-mode .btn-ghost {
-    background: rgba(255,255,255,.08);
-    color: rgba(240,244,255,.7);
-    border: 2px solid rgba(255,255,255,.14);
-  }
-
-  #nav.nav-dark-mode .btn-ghost:hover {
-    background: rgba(255,255,255,.14);
-    color: #fff;
-    border-color: rgba(255,255,255,.3);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-btn {
-    border-color: rgba(255,255,255,.15);
-    background: rgba(255,255,255,.08);
-    color: rgba(240,244,255,.7);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-panel {
-    background: #1c2333;
-    border-color: rgba(255,255,255,.1);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-link {
-    color: rgba(240,244,255,.85);
-  }
-
-  #nav.nav-dark-mode .mobile-menu-link:hover {
-    background: rgba(255,255,255,.06);
-  }
-
-  #nav.nav-dark-mode.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,.3); }
-
-  /* ── Account page variant ── */
-  #nav.nav-account-mode {
-    background: #ffffff;
-    backdrop-filter: none;
-  }
-
+  /* Account page variant: make Home + Log In/Out pills cleaner and more visible */
   #nav.nav-account-mode #nav-link-account,
   #nav.nav-account-mode #auth-btn {
     background: transparent;
@@ -162,12 +114,9 @@
     background: #eff6ff;
   }
 
-  /* ── Test mode variant (only left 3 info buttons) ── */
-  #nav.nav-test-mode #nav-link-account,
-  #nav.nav-test-mode #auth-btn,
-  #nav.nav-test-mode .btn-primary,
-  #nav.nav-test-mode .mobile-menu-wrap {
-    display: none !important;
+  #nav.nav-account-mode {
+    background: #ffffff;
+    backdrop-filter: none;
   }
 
   #nav .nav-link-hide { display: none; }
