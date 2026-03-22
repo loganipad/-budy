@@ -84,8 +84,8 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--font-b);background:var(--white);color:var(--ink);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--ink);overscroll-behavior-y:none}
+body{font-family:var(--font-b);background:var(--ink);color:var(--ink);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
 img{display:block;max-width:100%}
 button{cursor:pointer;border:none;background:none;font-family:inherit}
 a{text-decoration:none;color:inherit}
@@ -129,6 +129,7 @@ input,select{font-family:inherit}
    HERO
    ============================================================ */
 #landing,#landing-screen{padding-top:var(--nav-h)}
+#landing-screen{background:var(--white)}
 .hero{
   padding:56px 0 64px;
   background:var(--ink);
@@ -3873,6 +3874,31 @@ document.addEventListener('click', e => {
   if (!panel || !wrap) return;
   if (!wrap.contains(e.target)) panel.classList.remove('open');
 });
+
+// Prevent pull-down overscroll when the page is already at the top.
+(function lockTopOverscroll() {
+  let touchStartY = 0;
+
+  window.addEventListener('touchstart', e => {
+    if (!e.touches || e.touches.length === 0) return;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (!e.touches || e.touches.length === 0) return;
+    const currentY = e.touches[0].clientY;
+    const pullingDown = currentY > touchStartY;
+    if (window.scrollY <= 0 && pullingDown) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener('wheel', e => {
+    if (window.scrollY <= 0 && e.deltaY < 0) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+})();
 </script>
 </body>
 </html>
