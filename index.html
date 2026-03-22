@@ -471,23 +471,6 @@ input,select{font-family:inherit}
 .faq-body-inner{padding:0 22px 18px;font-size:.875rem;color:var(--muted);line-height:1.7}
 
 /* ============================================================
-   FOOTER
-   ============================================================ */
-footer{background:var(--ink-80);color:rgba(255,255,255,.45);padding:56px 0 28px;margin-top:28px}
-.footer-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:40px;margin-bottom:32px}
-.footer-brand-desc{font-size:.8375rem;line-height:1.65;margin-top:10px;max-width:360px}
-.footer-col h4{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  color:#fff;margin-bottom:14px}
-.footer-col ul{display:flex;flex-direction:column;gap:9px}
-.footer-col a{font-size:.8375rem;transition:color .15s}
-.footer-col a:hover{color:#fff}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.footer-copy{font-size:.775rem}
-@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;gap:24px}}
-@media(max-width:560px){.footer-grid{grid-template-columns:1fr}.footer-bottom{justify-content:flex-start}.footer-copy{font-size:.74rem}}
-
-/* ============================================================
    MODALS
    ============================================================ */
 .overlay{position:fixed;inset:0;z-index:1000;background:rgba(13,17,23,.7);
@@ -1021,10 +1004,6 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   .faq-btn{font-size:.875rem;padding:16px 18px}
   .faq-body-inner{padding:0 18px 16px}
 
-  /* Footer single col */
-  .footer-grid{grid-template-columns:1fr}
-  footer{padding:40px 0 24px}
-
   /* Modal full-screen feel on small phones */
   .overlay{align-items:flex-end;padding:0}
   .modal{border-radius:var(--r-xl) var(--r-xl) 0 0;max-height:96vh;padding-bottom:var(--sab)}
@@ -1523,40 +1502,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="nav-logo" style="color:#fff">
-          <div class="nav-logo-mark"><svg viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2"><path d="M10 2L2 7l8 4 8-4-8-5zM2 14l8 4 8-4M2 10.5l8 4 8-4"/></svg></div>
-          Budy.Study
-        </div>
-        <p class="footer-brand-desc">SAT & PSAT prep that actually works. Built for real students, not test prep nerds.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <ul>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#solutions">Features</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="/my-account.html">My Account</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Privacy</a></li>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Budy.Study. Not affiliated with College Board®. SAT® is a registered trademark of College Board.</span>
-    </div>
-  </div>
-</footer>
+<div id="footer-slot"></div>
+<script src="/footer-loader.js" defer></script>
 
 </div><!-- /#landing-screen -->
 
