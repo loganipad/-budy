@@ -548,6 +548,16 @@ input,select{font-family:inherit}
 .paywall-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 .paywall-close:hover{color:var(--ink);border-color:#cbd5e1}
 
+/* Leave test modal */
+.leave-test-modal{max-width:440px}
+.leave-test-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--brand),#0f3ba8);color:#fff;font-size:1.5rem;
+  box-shadow:0 10px 28px rgba(26,86,219,.28);margin-bottom:16px}
+.leave-test-copy h2{font-size:1.25rem;font-weight:800;color:var(--ink);margin-bottom:8px}
+.leave-test-copy p{font-size:.9rem;line-height:1.65;color:var(--muted)}
+.leave-test-note{margin-top:14px;padding:12px 14px;border-radius:16px;background:rgba(245,158,11,.1);
+  border:1px solid rgba(245,158,11,.24);font-size:.8125rem;font-weight:700;color:#b45309}
+
 /* ============================================================
    LOADING
    ============================================================ */
@@ -1891,6 +1901,30 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 </div>
 
 <!-- ============================================================
+     LEAVE TEST MODAL
+     ============================================================ -->
+<div class="overlay" id="leave-test-overlay" role="dialog" aria-modal="true" aria-labelledby="leave-test-title" onclick="if(event.target===this)closeLeaveTestModal()">
+  <div class="modal leave-test-modal">
+    <div class="modal-hd">
+      <div class="modal-hd-text"><p style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 6px">Test in Progress</p><h2 id="leave-test-title">Leave the test?</h2></div>
+      <button class="modal-close" onclick="closeLeaveTestModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="leave-test-icon">⏱</div>
+      <div class="leave-test-copy">
+        <h2>Progress will be lost</h2>
+        <p>If you leave now, your current answers, flags, and remaining time for this practice test will be cleared.</p>
+      </div>
+      <div class="leave-test-note">Your timer is tied to this specific test section, so leaving starts over from the beginning next time.</div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeLeaveTestModal()">Stay in Test</button>
+      <button class="btn btn-primary" onclick="confirmLeaveTest()">Leave Test</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      JAVASCRIPT
      ============================================================ -->
 <script>
@@ -1994,7 +2028,8 @@ const S = {
   cancelAt: null,
   canceledAt: null,
   accountTab: 'progress',
-  checkoutSyncInProgress: false
+  checkoutSyncInProgress: false,
+  leaveTestDestination: 'landing'
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -2516,13 +2551,49 @@ function setView(v) {
   window.scrollTo(0, 0);
 }
 
-function goLanding() {
-  if (S.testActive) { if (!confirm('Leave the test? Progress will be lost.')) return; clearTimer(); S.testActive=false; }
+function closeLeaveTestModal() {
+  const overlay = document.getElementById('leave-test-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function confirmLeaveTest() {
+  const destination = S.leaveTestDestination || 'landing';
+  closeLeaveTestModal();
+  clearTimer();
+  S.testActive = false;
+
+  if (destination === 'dash') {
+    window.location.href = '/my-account.html';
+    return;
+  }
+
   setView('landing');
 }
+
+function requestLeaveTest(destination) {
+  if (!S.testActive) {
+    if (destination === 'dash') {
+      window.location.href = '/my-account.html';
+      return;
+    }
+    setView('landing');
+    return;
+  }
+
+  S.leaveTestDestination = destination;
+  const overlay = document.getElementById('leave-test-overlay');
+  if (!overlay) {
+    confirmLeaveTest();
+    return;
+  }
+  overlay.classList.add('open');
+}
+
+function goLanding() {
+  requestLeaveTest('landing');
+}
 function showDash() {
-  if (S.testActive) { if (!confirm('Leave the test?')) return; clearTimer(); S.testActive=false; }
-  window.location.href = '/my-account.html';
+  requestLeaveTest('dash');
 }
 
 /* ── NAV SCROLL ── */
@@ -3757,6 +3828,11 @@ function announce(msg){const e=document.getElementById('aria-live');e.textConten
 
 /* ── KEYBOARD ── */
 document.addEventListener('keydown',e=>{
+  const leaveTestOverlay = document.getElementById('leave-test-overlay');
+  if (leaveTestOverlay && leaveTestOverlay.classList.contains('open')) {
+    if (e.key === 'Escape') closeLeaveTestModal();
+    return;
+  }
   if(S.view!=='test')return;
   if(e.target.tagName==='INPUT')return;
   const q=S.questions[S.curQ];
