@@ -214,7 +214,7 @@ const state = {
 Dark background (`var(--ink)`) with subtle blue radial gradient at top and 40px grid texture overlay.
 
 ```
-[pill badge] NEW — 2025 Digital SAT Format
+[pill badge] NEW — 2026 Digital SAT Format
 
 # The fastest way to
 # practice for the SAT
@@ -316,7 +316,7 @@ For premium users, change to: "Keep your streak going" / "Pick your next test an
 
 #### Footer
 Dark background. 3 columns: Brand description | Product links (Features, Pricing, My Account) | Company links (Privacy Policy, Terms of Service, Contact).
-Bottom: "© 2025 Budy.Study. SAT® is a trademark of College Board. Not affiliated."
+Bottom: "© 2026 Budy.Study. SAT® is a trademark of College Board. Not affiliated."
 
 ---
 
