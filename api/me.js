@@ -78,14 +78,17 @@ export default async function handler(req, res) {
   const row = record.ok ? record.data : null;
 
   const dbStatus = row && row.subscription_status ? String(row.subscription_status).toLowerCase() : 'free';
+  const dbIsPremium = Boolean(row && row.is_premium);
   const stripeSecretKey = normalizeSecretKey(process.env.STRIPE_SECRET_KEY);
   const stripeDetails = await getStripeSubscriptionDetails(
     stripeSecretKey,
     row && row.stripe_subscription_id ? row.stripe_subscription_id : ''
   );
 
-  const status = stripeDetails && stripeDetails.status ? stripeDetails.status : dbStatus;
-  const isPremium = status === 'active' || status === 'trialing';
+  const status = stripeDetails && stripeDetails.status
+    ? stripeDetails.status
+    : (dbIsPremium && (!dbStatus || dbStatus === 'free') ? 'active' : dbStatus);
+  const isPremium = dbIsPremium || status === 'active' || status === 'trialing';
 
   return json(res, 200, {
     userId: auth.user.id,
