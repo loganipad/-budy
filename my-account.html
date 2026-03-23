@@ -1112,6 +1112,10 @@ function logout() {
 function renderDash() {
   const ss = Array.isArray(S.sessionCache) ? S.sessionCache : [];
 
+  if (typeof window.refreshNavbarState === 'function') {
+    window.refreshNavbarState();
+  }
+
   document.getElementById('dash-greet-name').textContent = S.user.name ? S.user.name : 'Student';
 
   const badge = document.getElementById('acct-status-badge');

@@ -41,6 +41,17 @@
     }
   }
 
+  function syncNavStartCtas() {
+    var state = window.S;
+    var isPremium = Boolean(state && state.isPremium);
+
+    document.querySelectorAll('[data-start-cta]').forEach(function (el) {
+      var freeText = el.getAttribute('data-free-text') || '';
+      var premiumText = el.getAttribute('data-premium-text') || freeText;
+      el.textContent = isPremium ? premiumText : freeText;
+    });
+  }
+
   function applyNavContext() {
     var nav = document.getElementById('nav');
     if (!nav) return;
@@ -64,6 +75,7 @@
     if (typeof window.updateAuthUI === 'function') {
       try {
         window.updateAuthUI();
+        syncNavStartCtas();
         nav.classList.add('nav-auth-ready');
         return;
       } catch (_) {}
@@ -103,6 +115,7 @@
     }
 
     nav.classList.add('nav-auth-ready');
+    syncNavStartCtas();
   }
 
   function setNavFallbacks() {
@@ -142,6 +155,7 @@
     setNavFallbacks();
     applyNavContext();
     syncNavAuthState();
+    syncNavStartCtas();
     document.dispatchEvent(new CustomEvent('navbar:mounted'));
   }
 
@@ -196,6 +210,7 @@
   window.refreshNavbarState = function () {
     applyNavContext();
     syncNavAuthState();
+    syncNavStartCtas();
   };
 
   mountNavbar();
