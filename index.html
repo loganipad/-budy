@@ -419,9 +419,11 @@ input,select{font-family:inherit}
 .price-tier{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:rgba(255,255,255,.5);margin-bottom:10px}
 .price-featured .price-tier{color:rgba(255,255,255,.8)}
+.price-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.56);margin-bottom:8px}
 .price-per-week{font-family:var(--font-h);font-size:2.5rem;font-weight:800;color:#fff;line-height:1}
 .price-per-week sup{font-size:1.1rem;vertical-align:super;font-weight:700}
-.price-billed{font-size:.8rem;color:rgba(255,255,255,.45);margin-top:6px}
+.price-unit{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.56);margin-top:8px}
+.price-billed{font-size:.8rem;color:rgba(255,255,255,.45);margin-top:8px}
 .price-billed strong{color:rgba(255,255,255,.75)}
 .price-divider{height:1px;background:rgba(255,255,255,.1);margin:24px 0}
 .price-features{display:flex;flex-direction:column;gap:11px;margin-bottom:28px}
@@ -1384,7 +1386,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <!-- FREE -->
       <div class="price-card">
         <div class="price-tier">Free</div>
+        <div class="price-label">Price</div>
         <div class="price-per-week"><sup>$</sup>0</div>
+        <div class="price-unit">Per Week</div>
         <div class="price-billed">Always free, no credit card</div>
         <div class="price-divider"></div>
         <div class="price-features">
@@ -1401,7 +1405,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <!-- WEEKLY -->
       <div class="price-card">
         <div class="price-tier" style="color:rgba(255,255,255,.8)">Weekly</div>
+        <div class="price-label">Price</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="weekly" data-rate="weekly">9.99</span></div>
+        <div class="price-unit">Per Week</div>
         <div class="price-billed" style="color:rgba(255,255,255,.65)">
           <strong style="color:#fff" id="weekly-bill-main">Billed weekly</strong> · Flexible anytime
         </div>
@@ -1418,7 +1424,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="price-card featured">
         <div class="best-badge">BEST VALUE</div>
         <div class="price-tier">Monthly</div>
+        <div class="price-label">Price</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="monthly" data-rate="weekly">4.99</span></div>
+        <div class="price-unit">Per Week</div>
         <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="monthly-bill-main">Billed $19.99/month</strong> · ~50% lower than weekly equivalent</div>
         <div class="price-divider"></div>
         <div class="price-features">
@@ -1432,7 +1440,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <!-- ANNUAL -->
       <div class="price-card">
         <div class="price-tier">Annual</div>
+        <div class="price-label">Price</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="annual" data-rate="weekly">2.31</span></div>
+        <div class="price-unit">Per Week</div>
         <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="annual-bill-main">Billed $119.99/year</strong> · Huge 50% off offer</div>
         <div class="price-divider"></div>
         <div class="price-features">
