@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 240" role="img" aria-labelledby="title desc">
+  <title id="title">Download on the App Store</title>
+  <desc id="desc">App Store download badge</desc>
+  <rect x="3" y="3" width="774" height="234" rx="28" fill="#000" stroke="#8d8d92" stroke-width="6"/>
+  <g fill="#fff">
+    <path d="M113 79c12-15 18-35 16-54-18 1-39 12-52 27-11 12-20 33-17 52 20 2 40-9 53-25z"/>
+    <path d="M173 124c-1-29 24-43 25-44-14-20-35-23-43-23-18-2-36 11-45 11-10 0-23-11-38-10-19 0-37 11-47 29-21 36-5 91 15 121 10 15 22 32 38 31 15-1 21-10 39-10 19 0 23 10 39 10 17 0 27-15 37-30 11-17 16-34 16-35-1 0-31-12-32-50z"/>
+  </g>
+  <g fill="#fff" font-family="Sora, Arial, sans-serif">
+    <text x="250" y="76" font-size="30" font-weight="600" letter-spacing="1.5">Download on the</text>
+    <text x="250" y="176" font-size="92" font-weight="500" letter-spacing="-1.5">App Store</text>
+  </g>
+</svg>
