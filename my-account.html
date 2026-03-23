@@ -84,6 +84,12 @@ button { font-family: inherit; cursor: pointer; }
   font-weight: 700;
   transition: all .2s var(--ease);
 }
+.ui-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: currentColor; }
+.ui-icon svg { width: 100%; height: 100%; display: block; }
+.ui-icon-sm { width: 14px; height: 14px; }
+.ui-icon-md { width: 18px; height: 18px; }
+.ui-icon-lg { width: 22px; height: 22px; }
+.ui-icon-xl { width: 26px; height: 26px; }
 .btn-sm { height: 38px; padding: 0 18px; font-size: .84rem; }
 .btn-ghost {
   background: rgba(255,255,255,.08);
@@ -104,7 +110,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .btn-gold:hover { background: var(--gold-l); }
 
-/* NAV — all styles handled by shared-navbar-styles in navbar.html */
+/* NAV styles handled by shared-navbar-styles in navbar.html */
 
 .page { position: relative; z-index: 1; }
 .dash-hd {
@@ -277,7 +283,7 @@ button { font-family: inherit; cursor: pointer; }
 .sc-mid { background: rgba(59,130,246,.18); color: #3b82f6; }
 .sc-lo { background: rgba(245,158,11,.15); color: #fbbf24; }
 .empty-s { text-align: center; padding: 40px; color: rgba(240,244,255,.38); font-size: .875rem; }
-.empty-s-icon { font-size: 2rem; margin-bottom: 10px; }
+.empty-s-icon { display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: rgba(240,244,255,.62); }
 #score-chart { display: block; width: 100% !important; height: auto !important; max-height: 260px; }
 
 .billing-wrap, .settings-wrap { display: flex; flex-direction: column; gap: 14px; }
@@ -535,10 +541,10 @@ button { font-family: inherit; cursor: pointer; }
         <div class="confirm-kicker" id="account-confirm-kicker">Billing change</div>
         <div class="confirm-title" id="account-confirm-title">Confirm action</div>
       </div>
-      <button class="confirm-close" onclick="closeAccountConfirm(false)" aria-label="Close">✕</button>
+      <button class="confirm-close" onclick="closeAccountConfirm(false)" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     </div>
     <div class="confirm-bd">
-      <div class="confirm-icon" id="account-confirm-icon">$</div>
+      <div class="confirm-icon" id="account-confirm-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-card"></use></svg></span></div>
       <div class="confirm-copy" id="account-confirm-body">Please review this action before continuing.</div>
       <div class="confirm-note hidden" id="account-confirm-note"></div>
     </div>
@@ -585,7 +591,7 @@ button { font-family: inherit; cursor: pointer; }
               <h3>Score History</h3>
               <span class="d-card-tag tag-brand">30 Days</span>
             </div>
-            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon">📊</div><p>Complete your first test to see your score chart.</p></div>
+            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></div><p>Complete your first test to see your score chart.</p></div>
             <canvas id="score-chart" height="220"></canvas>
           </div>
 
@@ -594,7 +600,7 @@ button { font-family: inherit; cursor: pointer; }
               <h3>Recent Tests</h3>
               <span class="d-card-tag tag-gold">Latest</span>
             </div>
-            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon">📝</div><p>No tests yet. Start one!</p></div>
+            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span></div><p>No tests yet. Start one!</p></div>
             <table class="sessions-tbl" id="sess-tbl">
               <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
               <tbody id="sess-tbody"></tbody>
@@ -670,6 +676,11 @@ const GRADE_KEY = 'budy_grade_pref';
 let authClient = null;
 let accountConfirmResolver = null;
 
+function accountSpriteIcon(name, className) {
+  const cls = className || 'ui-icon ui-icon-md';
+  return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-${name}"></use></svg></span>`;
+}
+
 const S = {
   user: { name: '', email: '', grade: '' },
   authViaLocal: false,
@@ -723,7 +734,7 @@ function openAccountConfirm(options) {
 
   if (kicker) kicker.textContent = config.kicker || 'Billing change';
   if (title) title.textContent = config.title || 'Confirm action';
-  if (icon) icon.textContent = config.icon || '$';
+  if (icon) icon.innerHTML = accountSpriteIcon(config.icon || 'card', 'ui-icon ui-icon-lg');
   if (body) body.textContent = config.body || 'Please review this action before continuing.';
   if (note) {
     note.textContent = config.note || '';
@@ -1045,7 +1056,7 @@ async function cancelSubscriptionNow() {
     title: 'Cancel Premium now?',
     body: 'Your premium access ends immediately and your account switches back to the free plan as soon as this finishes.',
     note: 'You can still reopen Stripe billing later, but this specific subscription ends right away.',
-    icon: '$',
+    icon: 'card',
     cancelText: 'Keep Premium',
     confirmText: 'Cancel Now'
   });
@@ -1101,7 +1112,7 @@ function logout() {
 function renderDash() {
   const ss = Array.isArray(S.sessionCache) ? S.sessionCache : [];
 
-  document.getElementById('dash-greet-name').textContent = S.user.name ? (S.user.name + ' 👋') : 'Student 👋';
+  document.getElementById('dash-greet-name').textContent = S.user.name ? S.user.name : 'Student';
 
   const badge = document.getElementById('acct-status-badge');
   const badgeText = document.getElementById('acct-status-text');

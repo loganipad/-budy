@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Budy.Study — SAT & PSAT Prep for Students</title>
+<title>Budy.Study | SAT & PSAT Prep for Students</title>
 <meta name="description" content="The easiest way to prep for the SAT and PSAT. Practice tests, instant scoring, and step-by-step help. Used by students accepted to top colleges.">
 
 <!-- PWA / App-ready meta -->
@@ -15,14 +15,14 @@
 <meta name="format-detection" content="telephone=no">
 
 <!-- Open Graph -->
-<meta property="og:title" content="Budy.Study — SAT & PSAT Prep">
+<meta property="og:title" content="Budy.Study | SAT & PSAT Prep">
 <meta property="og:description" content="Free SAT practice tests for 8th–10th graders. Instant scoring, AI explanations, score tracking.">
 <meta property="og:type" content="website">
 
 <!-- Inline PWA manifest -->
 <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Budy.Study&quot;,&quot;short_name&quot;:&quot;Budy.Study&quot;,&quot;description&quot;:&quot;SAT %26 PSAT Prep&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%230d1117&quot;,&quot;theme_color&quot;:&quot;%231a56db&quot;,&quot;orientation&quot;:&quot;portrait&quot;}">
 
-<!-- Apple splash / icons (placeholders — replace with real assets for app store) -->
+<!-- Apple splash / icons (placeholders, replace with real assets for app store) -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231a56db'/%3E%3Cpath d='M90 30L42 58l48 24 48-24L90 30zM42 118l48 24 48-24M42 88l48 24 48-24' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
@@ -122,8 +122,16 @@ input,select{font-family:inherit}
 
 .btn-sm{height:40px;padding:0 20px;font-size:.8375rem;border-radius:var(--r-full)}
 .btn-full{width:100%;height:56px;font-size:1rem}
+.ui-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;color:currentColor}
+.ui-icon svg{width:100%;height:100%;display:block}
+.ui-icon-xs{width:12px;height:12px}
+.ui-icon-sm{width:14px;height:14px}
+.ui-icon-md{width:18px;height:18px}
+.ui-icon-lg{width:22px;height:22px}
+.ui-icon-xl{width:26px;height:26px}
+.ui-inline{display:inline-flex;align-items:center;gap:8px}
 
-/* NAV — all styles handled by shared-navbar-styles in navbar.html */
+/* NAV styles handled by shared-navbar-styles in navbar.html */
 
 /* ============================================================
    HERO
@@ -289,7 +297,7 @@ input,select{font-family:inherit}
   user-select:none;
 }
 .school-logo-wrap:hover .school-logo-text{opacity:.9;-webkit-text-stroke:1.5px rgba(26,86,219,.6)}
-/* Shield SVG logos — purely decorative grayscale */
+/* Shield SVG logos, purely decorative grayscale */
 .school-shield{width:44px;height:52px;opacity:.28;filter:grayscale(1);flex-shrink:0}
 
 /* ============================================================
@@ -345,11 +353,11 @@ input,select{font-family:inherit}
   transition:all .25s var(--ease)}
 .feat-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);border-color:rgba(26,86,219,.15)}
 .feat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  font-size:1.25rem;margin-bottom:18px}
-.fi-blue{background:var(--brand-pale)}
-.fi-gold{background:var(--gold-pale)}
-.fi-green{background:var(--green-pale)}
-.fi-rose{background:var(--rose-pale)}
+  margin-bottom:18px}
+.fi-blue{background:var(--brand-pale);color:var(--brand)}
+.fi-gold{background:var(--gold-pale);color:var(--amber)}
+.fi-green{background:var(--green-pale);color:var(--green)}
+.fi-rose{background:var(--rose-pale);color:var(--rose)}
 .feat-card h3{font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--ink)}
 .feat-card p{font-size:.875rem;color:var(--muted);line-height:1.65}
 
@@ -433,7 +441,7 @@ input,select{font-family:inherit}
   font-weight:700;border-radius:var(--r-full);border:2px solid rgba(255,255,255,.2);
   font-size:.9rem;cursor:pointer;transition:all .2s;font-family:var(--font-h)}
 .btn-price-ghost:hover{border-color:rgba(255,255,255,.5);color:#fff}
-.price-note{text-align:center;margin-top:20px;font-size:.8125rem;color:rgba(255,255,255,.35)}
+.price-note{text-align:center;margin-top:20px;font-size:.8125rem;color:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;gap:8px}
 
 @media(max-width:1024px){
   .price-grid{grid-template-columns:repeat(2,1fr)}
@@ -464,7 +472,7 @@ input,select{font-family:inherit}
 .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
 .test-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;transition:all .22s var(--ease)}
 .test-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
-.test-stars{color:var(--gold);font-size:.875rem;margin-bottom:12px;letter-spacing:2px}
+.test-stars{color:var(--gold);display:flex;align-items:center;gap:4px;margin-bottom:12px}
 .test-body{font-size:.9rem;color:var(--slate);line-height:1.65;margin-bottom:18px;font-style:italic}
 .test-author{display:flex;align-items:center;gap:12px}
 .test-avi{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -557,7 +565,7 @@ input,select{font-family:inherit}
   cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:12px}
 .sec-opt:hover{border-color:var(--brand-l);background:rgba(26,86,219,.14)}
 .sec-opt.sel{border-color:var(--brand);background:rgba(26,86,219,.18)}
-.sec-opt-icon{font-size:1.25rem;flex-shrink:0;margin-top:1px}
+.sec-opt-icon{flex-shrink:0;margin-top:1px;color:#93c5fd}
 .sec-opt h4{font-size:.9375rem;font-weight:700;color:#f0f4ff;margin-bottom:3px}
 .sec-opt.sel h4{color:var(--brand)}
 .sec-opt p{font-size:.8125rem;color:rgba(240,244,255,.58)}
@@ -575,13 +583,13 @@ input,select{font-family:inherit}
 /* Paywall modal */
 .paywall-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--brand),#0f3ba8);
   border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;
-  font-size:2rem;margin:0 auto 20px;box-shadow:0 8px 24px rgba(26,86,219,.35)}
+  margin:0 auto 20px;box-shadow:0 8px 24px rgba(26,86,219,.35);color:#fff}
 .paywall-modal{text-align:center}
 .paywall-modal h2{font-size:1.375rem;font-weight:800;margin-bottom:10px}
 .paywall-modal p{font-size:.9rem;color:rgba(240,244,255,.62);line-height:1.65;margin-bottom:24px}
 .paywall-perks{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;text-align:left}
 .pw-perk{display:flex;align-items:center;gap:10px;font-size:.875rem;font-weight:600;color:#f0f4ff}
-.pw-perk-icon{font-size:1rem;width:28px;text-align:center}
+.pw-perk-icon{width:28px;display:inline-flex;align-items:center;justify-content:center;color:#fbbf24}
 .paywall-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(240,244,255,.62);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 .paywall-close:hover{color:#fff;border-color:rgba(255,255,255,.24)}
 
@@ -760,7 +768,7 @@ input,select{font-family:inherit}
 .ra-yours.ok{color:var(--green)}
 .ra-correct{color:var(--green);font-weight:700}
 
-/* Explanation — with paywall blur */
+/* Explanation with paywall blur */
 .exp-wrap{margin-top:10px;position:relative}
 .exp-btn{display:inline-flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:700;
   color:var(--brand);background:var(--brand-pale);border:none;border-radius:var(--r-full);
@@ -778,7 +786,7 @@ input,select{font-family:inherit}
 .exp-lock-overlay{
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:rgba(255,255,255,.75);backdrop-filter:blur(2px);border-radius:var(--r-md);gap:8px}
-.exp-lock-icon{font-size:1.375rem}
+.exp-lock-icon{display:inline-flex;align-items:center;justify-content:center;color:#fbbf24}
 .exp-lock-text{font-size:.8125rem;font-weight:700;color:var(--ink-60)}
 .exp-unlock-btn{font-size:.75rem;font-weight:800;color:var(--brand);background:var(--brand-pale);
   padding:4px 14px;border-radius:var(--r-full);border:none;cursor:pointer;
@@ -790,7 +798,7 @@ input,select{font-family:inherit}
   background:linear-gradient(135deg,var(--gold-pale),#fef9c3);border:1px solid #fde68a;
   border-radius:var(--r-lg);padding:18px 20px;margin-bottom:24px;
   display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.limit-banner-icon{font-size:1.5rem;flex-shrink:0}
+.limit-banner-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#b45309}
 .limit-banner-text h4{font-size:.9375rem;font-weight:800;color:var(--ink);margin-bottom:3px}
 .limit-banner-text p{font-size:.8125rem;color:var(--slate)}
 .limit-banner-actions{display:flex;gap:8px;margin-left:auto}
@@ -856,7 +864,7 @@ input,select{font-family:inherit}
 #dash-screen .sc-mid{background:rgba(59,130,246,.18);color:#3b82f6}
 #dash-screen .sc-lo{background:rgba(245,158,11,.15);color:#fbbf24}
 #dash-screen .empty-s{text-align:center;padding:40px;color:rgba(240,244,255,.38);font-size:.875rem}
-#dash-screen .empty-s-icon{font-size:2rem;margin-bottom:10px}
+#dash-screen .empty-s-icon{display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:rgba(240,244,255,.62)}
 #dash-screen #score-chart{display:block;width:100% !important;height:230px !important;max-height:230px}
 
 #dash-screen .expl-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.22);border:1px solid rgba(59,130,246,.3);border-radius:999px;padding:4px 12px;font-size:.7rem;font-weight:700;color:#3b82f6;letter-spacing:.03em}
@@ -987,7 +995,7 @@ body { overscroll-behavior: none; }
 /* Re-allow pan/zoom on scrollable containers */
 .q-main, .modal, .q-passage, #results-screen, #dash-screen { touch-action: pan-y; }
 
-/* Tap highlight — keep for accessibility, just make it subtle */
+/* Tap highlight, keep for accessibility, just make it subtle */
 * { -webkit-tap-highlight-color: rgba(26,86,219,.12); }
 button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,86,219,.08); }
 
@@ -1143,7 +1151,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   <section id="checkout-status" class="checkout-status pending hidden" role="status" aria-live="polite">
     <div class="checkout-status-top">
       <span class="checkout-status-chip" id="checkout-status-chip">Syncing</span>
-      <button class="checkout-status-close" onclick="dismissCheckoutStatus()" aria-label="Dismiss checkout status">✕</button>
+      <button class="checkout-status-close" onclick="dismissCheckoutStatus()" aria-label="Dismiss checkout status"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     </div>
     <h3 id="checkout-status-title">Activating Premium...</h3>
     <p id="checkout-status-body">We are syncing your payment with your account now.</p>
@@ -1160,9 +1168,9 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="hero-content">
       <div class="hero-pill"><span>NEW</span> 2026 SAT Blueprint</div>
       <h1>Score Higher on the<br><em>SAT & PSAT</em></h1>
-      <p class="hero-sub">Practice tests that actually feel like the real thing — with instant scoring and step-by-step help when you get stuck. Built for 8th, 9th, and 10th graders.</p>
+      <p class="hero-sub">Practice tests that actually feel like the real thing, with instant scoring and step-by-step help when you get stuck. Built for 8th, 9th, and 10th graders.</p>
       <div class="hero-actions">
-        <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Take a Free Practice Test →" data-premium-text="Start a Practice Test →">Take a Free Practice Test →</button>
+        <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Take a Free Practice Test" data-premium-text="Start a Practice Test">Take a Free Practice Test</button>
         <button class="btn btn-outline-white" onclick="scrollToSection('#pricing')" style="background:transparent;color:rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.3);height:52px;padding:0 28px;font-size:.9375rem;font-weight:700;border-radius:9999px;display:inline-flex;align-items:center;gap:8px;transition:all .2s;cursor:pointer">See Plans</button>
       </div>
       <div class="hero-proof">
@@ -1179,7 +1187,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="hero-phone">
       <div class="phone-bar">
         <span class="phone-logo">Budy.Study</span>
-        <span class="phone-timer" id="landing-phone-timer">⏱ 30:00</span>
+        <span class="phone-timer" id="landing-phone-timer">30:00</span>
       </div>
       <div class="phone-body">
         <div class="phone-q-label" id="demo-q-label">Math · Question 1 of 4</div>
@@ -1202,7 +1210,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
       <div class="impact-divider"></div>
       <div class="impact-copy">
-        <p>A higher SAT score doesn't just open doors — it <strong>pays for college</strong>. Our students have collectively earned over $40 million in merit scholarships by improving their scores with Budy.Study.</p>
+        <p>A higher SAT score doesn't just open doors. It <strong>pays for college</strong>. Our students have collectively earned over $40 million in merit scholarships by improving their scores with Budy.Study.</p>
       </div>
     </div>
   </div>
@@ -1210,10 +1218,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 
 <!-- UNIVERSITY CREDIBILITY STRIP -->
 <section class="cred-section">
-  <div class="cred-label">Over $40,000,000 in scholarships won — at schools like these</div>
+  <div class="cred-label">Over $40,000,000 in scholarships won at schools like these</div>
   <div class="marquee-outer">
     <div class="marquee-track" id="marquee-track">
-      <!-- Set 1 — Ivy League + Top Tech + Business -->
+      <!-- Set 1: Ivy League + Top Tech + Business -->
       <div class="school-logo-wrap"><span class="school-logo-text">MIT</span></div>
       <div class="school-logo-wrap"><span class="school-logo-text">Stanford</span></div>
       <div class="school-logo-wrap"><span class="school-logo-text">Harvard</span></div>
@@ -1242,7 +1250,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="school-logo-wrap"><span class="school-logo-text">Boston University</span></div>
       <div class="school-logo-wrap"><span class="school-logo-text">Purdue</span></div>
       <div class="school-logo-wrap"><span class="school-logo-text">Rice University</span></div>
-      <!-- Set 2 — exact duplicate for seamless infinite loop -->
+      <!-- Set 2: exact duplicate for seamless infinite loop -->
       <div class="school-logo-wrap"><span class="school-logo-text">MIT</span></div>
       <div class="school-logo-wrap"><span class="school-logo-text">Stanford</span></div>
       <div class="school-logo-wrap"><span class="school-logo-text">Harvard</span></div>
@@ -1285,34 +1293,34 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     </div>
     <div class="feat-grid">
       <div class="feat-card">
-        <div class="feat-icon fi-blue">🎯</div>
+        <div class="feat-icon fi-blue"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-target"></use></svg></span></div>
         <h3>Real SAT-Style Questions</h3>
-        <p>Every question follows the actual College Board format for reading, writing, and math — the same skills tested on test day.</p>
+        <p>Every question follows the actual College Board format for reading, writing, and math, with the same skills tested on test day.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon fi-gold">⚡</div>
+        <div class="feat-icon fi-gold"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bolt"></use></svg></span></div>
         <h3>Instant Score & Feedback</h3>
-        <p>See your score the second you finish. Know exactly which questions you got right and wrong — no waiting, no guessing.</p>
+        <p>See your score the second you finish. Know exactly which questions you got right and wrong, with no waiting and no guessing.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon fi-green">📈</div>
+        <div class="feat-icon fi-green"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></div>
         <h3>Track Your Progress</h3>
         <p>Every test you take gets saved. Watch your score go up over time and see which subjects are your strongest.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon fi-rose">💡</div>
+        <div class="feat-icon fi-rose"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span></div>
         <h3>Step-by-Step Explanations</h3>
         <p>Missed a question? Premium members get a clear, easy-to-understand explanation for every single answer.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon fi-blue">📱</div>
+        <div class="feat-icon fi-blue"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-device"></use></svg></span></div>
         <h3>Works on Any Device</h3>
-        <p>Practice on your phone, tablet, or computer. Budy.Study works anywhere — even in the car on the way to school.</p>
+        <p>Practice on your phone, tablet, or computer. Budy.Study works anywhere, even in the car on the way to school.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon fi-gold">🏆</div>
+        <div class="feat-icon fi-gold"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-trophy"></use></svg></span></div>
         <h3>Grade-Appropriate Difficulty</h3>
-        <p>Questions are calibrated for 8th, 9th, and 10th graders. Start where you are — we'll push you to where you want to be.</p>
+        <p>Questions are calibrated for 8th, 9th, and 10th graders. Start where you are, and we will push you to where you want to be.</p>
       </div>
     </div>
   </div>
@@ -1329,7 +1337,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="how-step">
         <div class="how-num">1</div>
         <h3>Tell Us About You</h3>
-        <p>Enter your name and pick which section you want to practice — reading, math, or both.</p>
+        <p>Enter your name and pick which section you want to practice: reading, math, or both.</p>
       </div>
       <div class="how-step">
         <div class="how-num">2</div>
@@ -1369,15 +1377,15 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="price-card">
         <div class="price-tier">Free</div>
         <div class="price-per-week"><sup>$</sup>0</div>
-        <div class="price-billed">Always free — no credit card</div>
+        <div class="price-billed">Always free, no credit card</div>
         <div class="price-divider"></div>
         <div class="price-features">
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>10 practice questions per test</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Instant score after each test</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Basic score history</div>
-          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Answer explanations 🔒</div>
-          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Full 27–49 question tests 🔒</div>
-          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Unlimited tries 🔒</div>
+          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Answer explanations <span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span></div>
+          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Full 27-49 question tests <span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span></div>
+          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Unlimited tries <span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span></div>
         </div>
         <button class="btn-price-ghost" onclick="openOnboard()" data-start-cta data-free-text="Start for Free" data-premium-text="Start Test">Start for Free</button>
       </div>
@@ -1427,7 +1435,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <button class="btn-price-ghost" onclick="selectPlan('annual');openPaywall('annual')">Choose Annual</button>
       </div>
     </div>
-    <p class="price-note">💳 Secure checkout · Cancel any time · 7-day money-back guarantee</p>
+    <p class="price-note"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-card"></use></svg></span>Secure checkout · Cancel any time · 7-day money-back guarantee</p>
   </div>
 </section>
 
@@ -1440,7 +1448,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     </div>
     <div class="test-grid">
       <div class="test-card">
-        <div class="test-stars">★★★★★</div>
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
         <p class="test-body">"I went from a 1050 to 1280 before junior year. The explanations actually told me WHY I got it wrong instead of just showing the answer."</p>
         <div class="test-author">
           <div class="test-avi" style="background:var(--brand)">AK</div>
@@ -1448,7 +1456,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         </div>
       </div>
       <div class="test-card">
-        <div class="test-stars">★★★★★</div>
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
         <p class="test-body">"I used Budy.Study every night for two weeks before the PSAT. My score jumped way more than I expected. Getting into AP English now!"</p>
         <div class="test-author">
           <div class="test-avi" style="background:#7c3aed">SM</div>
@@ -1456,7 +1464,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         </div>
       </div>
       <div class="test-card">
-        <div class="test-stars">★★★★★</div>
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
         <p class="test-body">"I'm in 8th grade and already practicing for high school SATs. My parents love that I can show them my progress chart."</p>
         <div class="test-author">
           <div class="test-avi" style="background:var(--green)">JL</div>
@@ -1464,15 +1472,15 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         </div>
       </div>
       <div class="test-card">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-body">"My son was really stressed about the SAT. After a month of Budy.Study he was way more confident. He scored a 1390 — higher than we hoped!"</p>
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
+        <p class="test-body">"My son was really stressed about the SAT. After a month of Budy.Study he was way more confident. He scored a 1390, higher than we hoped!"</p>
         <div class="test-author">
           <div class="test-avi" style="background:var(--rose)">PR</div>
           <div><div class="test-name">Priya R.</div><div class="test-meta">Parent · Son scored 1390</div></div>
         </div>
       </div>
       <div class="test-card">
-        <div class="test-stars">★★★★★</div>
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
         <p class="test-body">"The daily mini-quizzes fixed my weakest math topics. I finally stopped guessing on linear models."</p>
         <div class="test-author">
           <div class="test-avi" style="background:#0ea5e9">NT</div>
@@ -1480,7 +1488,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         </div>
       </div>
       <div class="test-card">
-        <div class="test-stars">★★★★★</div>
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
         <p class="test-body">"The explanation mode feels like tutoring. I can see exactly why each wrong answer is tempting."</p>
         <div class="test-author">
           <div class="test-avi" style="background:#8b5cf6">ES</div>
@@ -1501,32 +1509,32 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     </div>
     <div class="solution-grid">
       <div class="solution-card">
-        <h3>📚 SAT / PSAT Test Prep</h3>
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-book"></use></svg></span>SAT / PSAT Test Prep</span></h3>
         <p>Adaptive section plans that focus on your biggest score-impact gaps first.</p>
         <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
       </div>
       <div class="solution-card">
-        <h3>🗂 Wrong-Answer Flashcards</h3>
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-cards"></use></svg></span>Wrong-Answer Flashcards</span></h3>
         <p>Turn misses into printable flashcards with fold and cut guides for fast review.</p>
         <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
       </div>
       <div class="solution-card">
-        <h3>🧪 Extra Quizzes</h3>
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flask"></use></svg></span>Extra Quizzes</span></h3>
         <p>Auto-generated mini quizzes from weak skills so practice stays targeted.</p>
         <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
       </div>
       <div class="solution-card">
-        <h3>🤖 AI Deep-Dive Explanations</h3>
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-robot"></use></svg></span>AI Deep-Dive Explanations</span></h3>
         <p>Animated explanation flow showing why each distractor fails and what wins.</p>
         <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
       </div>
       <div class="solution-card">
-        <h3>📈 Test / Score Analytics</h3>
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span>Test / Score Analytics</span></h3>
         <p>Track score trend, pacing, and skill-level movement over time.</p>
         <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
       </div>
       <div class="solution-card blank">
-        <h3>🧩 Coming Soon</h3>
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-puzzle"></use></svg></span>Coming Soon</span></h3>
         <p>Reserved slot for the next premium solution module.</p>
         <div class="solution-preview">Preview placeholder</div>
       </div>
@@ -1539,7 +1547,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   <div class="wrap-sm">
     <h2 id="landing-cta-title">Start your first free test right now</h2>
     <p id="landing-cta-sub">No account needed. No credit card. Just pick your section and go.</p>
-    <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Take a Free Practice Test →" data-premium-text="Start a Practice Test →">Take a Free Practice Test →</button>
+    <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Take a Free Practice Test" data-premium-text="Start a Practice Test">Take a Free Practice Test</button>
   </div>
 </section>
 
@@ -1553,19 +1561,19 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-btn" onclick="faq(this)">Is the free test actually free? <span class="faq-arrow">▾</span></button>
-        <div class="faq-body"><div class="faq-body-inner">100% free — no credit card, no account, nothing to download. You get a 10-question practice test, your score, and a review of your answers. Upgrading to Premium unlocks full-length tests, explanations, and unlimited tries.</div></div>
+        <div class="faq-body"><div class="faq-body-inner">100% free, with no credit card, no account, and nothing to download. You get a 10-question practice test, your score, and a review of your answers. Upgrading to Premium unlocks full-length tests, explanations, and unlimited tries.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" onclick="faq(this)">What grade is this for? <span class="faq-arrow">▾</span></button>
-        <div class="faq-body"><div class="faq-body-inner">Budy.Study is built for 8th, 9th, and 10th graders. 8th graders use it to get ahead before high school. 9th and 10th graders use it to prepare for the PSAT and eventually the SAT. Questions are calibrated to your level — not too easy, not overwhelming.</div></div>
+        <div class="faq-body"><div class="faq-body-inner">Budy.Study is built for 8th, 9th, and 10th graders. 8th graders use it to get ahead before high school. 9th and 10th graders use it to prepare for the PSAT and eventually the SAT. Questions are calibrated to your level, not too easy and not overwhelming.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" onclick="faq(this)">How is this different from other test prep? <span class="faq-arrow">▾</span></button>
-        <div class="faq-body"><div class="faq-body-inner">Most test prep is either boring workbooks or expensive tutors. Budy.Study gives you real test-like questions on your phone, instant scores, and explanations that actually explain things in plain English — not SAT-speak. Plus your progress is saved so you can see yourself improving.</div></div>
+        <div class="faq-body"><div class="faq-body-inner">Most test prep is either boring workbooks or expensive tutors. Budy.Study gives you real test-like questions on your phone, instant scores, and explanations that actually explain things in plain English, not SAT-speak. Plus your progress is saved so you can see yourself improving.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" onclick="faq(this)">Can I cancel my subscription? <span class="faq-arrow">▾</span></button>
-        <div class="faq-body"><div class="faq-body-inner">Yes — cancel any time, no questions asked. We also offer a 7-day money-back guarantee. If you sign up and don't love it, just email us and we'll refund you.</div></div>
+        <div class="faq-body"><div class="faq-body-inner">Yes, you can cancel any time with no questions asked. We also offer a 7-day money-back guarantee. If you sign up and don't love it, just email us and we'll refund you.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" onclick="faq(this)">Do I need to download an app? <span class="faq-arrow">▾</span></button>
@@ -1627,12 +1635,12 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <main class="q-main" id="q-main"></main>
   </div>
   <div class="test-ft">
-    <button class="flag-btn" id="flag-btn" onclick="toggleFlag()"><span id="flag-icon">⚑</span><span id="flag-lbl">Flag</span></button>
+    <button class="flag-btn" id="flag-btn" onclick="toggleFlag()"><span class="ui-icon ui-icon-sm" id="flag-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flag"></use></svg></span><span id="flag-lbl">Flag</span></button>
     <div class="test-nav-btns">
       <button class="btn btn-ghost btn-sm" id="prev-btn" onclick="goPrev()">← Prev</button>
       <span class="test-prog-txt" id="test-prog-txt"></span>
       <button class="btn btn-primary btn-sm" id="next-btn" onclick="goNext()">Next →</button>
-      <button class="btn btn-sm hidden" id="submit-btn" style="background:var(--green);color:#fff;font-weight:800;border-radius:9999px;padding:0 20px" onclick="confirmSubmit()">Submit ✓</button>
+      <button class="btn btn-sm hidden" id="submit-btn" style="background:var(--green);color:#fff;font-weight:800;border-radius:9999px;padding:0 20px" onclick="confirmSubmit()">Submit</button>
     </div>
   </div>
 </div>
@@ -1648,16 +1656,16 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="res-score-card">
       <div class="big-num bl" id="big-score">0</div>
       <div class="score-lbl" id="score-lbl">Score</div>
-      <div class="pct-badge" id="pct-badge">—</div>
+      <div class="pct-badge" id="pct-badge">-</div>
       <div class="score-ticks">
-        <div><div class="score-tick-n" id="r-correct">—</div><div class="score-tick-l">Correct</div></div>
-        <div><div class="score-tick-n" id="r-wrong" style="color:var(--rose)">—</div><div class="score-tick-l">Wrong</div></div>
-        <div><div class="score-tick-n" id="r-skip" style="color:var(--muted)">—</div><div class="score-tick-l">Skipped</div></div>
+        <div><div class="score-tick-n" id="r-correct">-</div><div class="score-tick-l">Correct</div></div>
+        <div><div class="score-tick-n" id="r-wrong" style="color:var(--rose)">-</div><div class="score-tick-l">Wrong</div></div>
+        <div><div class="score-tick-n" id="r-skip" style="color:var(--muted)">-</div><div class="score-tick-l">Skipped</div></div>
       </div>
     </div>
     <div class="res-content" style="padding:0">
       <div id="free-limit-banner" class="limit-banner hidden">
-        <div class="limit-banner-icon">🔒</div>
+        <div class="limit-banner-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span></div>
         <div class="limit-banner-text">
           <h4>You used your free 10-question test!</h4>
           <p>Unlock full-length tests (27–49 questions), explanations, and unlimited tries with Premium.</p>
@@ -1668,11 +1676,11 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
       <div class="res-grid">
         <div class="res-card">
-          <h3>📊 Skill Breakdown</h3>
+          <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span>Skill Breakdown</span></h3>
           <div id="skill-bars"></div>
         </div>
         <div class="res-card">
-          <h3>📈 Summary</h3>
+          <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span>Summary</span></h3>
           <div id="perf-summary" style="font-size:.875rem;color:var(--slate);line-height:1.7"></div>
         </div>
       </div>
@@ -1683,7 +1691,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="res-actions">
         <button class="btn btn-primary" onclick="openOnboard()">Take Another Test</button>
         <a class="btn btn-ghost" href="/my-account.html">My Account</a>
-        <button class="btn btn-ghost" onclick="downloadReport()">⬇ Report</button>
+        <button class="btn btn-ghost" onclick="downloadReport()"><span class="ui-inline"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-download"></use></svg></span>Report</span></button>
       </div>
     </div>
   </div>
@@ -1720,20 +1728,20 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
     <div class="wrap">
       <div class="acct-pane active" id="acct-pane-progress" role="tabpanel">
         <div class="dash-stats">
-          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v pos" id="d-best">—</div><div class="d-stat-sub">All-time SAT</div></div>
-          <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">—</div><div class="d-stat-sub">Most recent</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v pos" id="d-best">-</div><div class="d-stat-sub">All-time SAT</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">-</div><div class="d-stat-sub">Most recent</div></div>
           <div class="d-stat"><div class="d-stat-lbl">Last 7 Days</div><div class="d-stat-v neu" id="d-week-imp">+0</div><div class="d-stat-sub">Score improvement</div></div>
           <div class="d-stat"><div class="d-stat-lbl">Tests Taken</div><div class="d-stat-v" id="d-count">0</div><div class="d-stat-sub">This month</div></div>
         </div>
         <div class="dash-grid">
           <div class="d-card">
             <div class="d-card-hd"><h3>Score History</h3><span class="d-card-tag tag-brand">30 Days</span></div>
-            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon">📊</div><p>Complete your first test to see your score chart.</p></div>
+            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></div><p>Complete your first test to see your score chart.</p></div>
             <canvas id="score-chart" height="230"></canvas>
           </div>
           <div class="d-card">
             <div class="d-card-hd"><h3>Recent Tests</h3><span class="d-card-tag tag-gold">Latest</span></div>
-            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon">📝</div><p>No tests yet. Start one!</p></div>
+            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span></div><p>No tests yet. Start one!</p></div>
             <table class="sessions-tbl" id="sess-tbl">
               <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
               <tbody id="sess-tbody"></tbody>
@@ -1789,10 +1797,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
                 <div class="plan-label">Pro Plan</div>
                 <div class="plan-name" style="color:#3b82f6">$50<span style="font-size:1rem;color:rgba(240,244,255,.38)">/month</span></div>
                 <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
-                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Unlimited test attempts</div>
-                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Full AI explanations on every question</div>
-                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Score analytics and progress charts</div>
-                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span style="color:#10b981">✓</span> Printable flashcard generator</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Unlimited test attempts</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Full AI explanations on every question</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Score analytics and progress charts</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Printable flashcard generator</div>
                 </div>
               </div>
               <svg width="64" height="64" viewBox="0 0 100 100" fill="none" style="flex-shrink:0" aria-hidden="true">
@@ -1852,7 +1860,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   <div class="modal">
     <div class="modal-hd">
       <div class="modal-hd-text"><h2 id="ob-title">Let's set up your test</h2><p id="ob-sub">Step 1 of 3</p></div>
-      <button class="modal-close" onclick="closeOnboard()" aria-label="Close">✕</button>
+      <button class="modal-close" onclick="closeOnboard()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     </div>
     <div class="modal-bd">
       <div class="step-dots"><div class="step-dot on" id="sd1"></div><div class="step-dot" id="sd2"></div><div class="step-dot" id="sd3"></div></div>
@@ -1877,16 +1885,16 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <p style="font-size:.875rem;color:var(--muted);margin-bottom:14px">What do you want to practice today?</p>
         <div class="sec-pick">
           <div class="sec-opt" onclick="pickSec('english',this)">
-            <div class="sec-opt-icon">📖</div>
-            <div><h4>Reading & Writing</h4><p>Grammar, passages, and vocabulary — 10 questions free, 27 with Premium</p></div>
+            <div class="sec-opt-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-book"></use></svg></span></div>
+            <div><h4>Reading & Writing</h4><p>Grammar, passages, and vocabulary. 10 questions free, 27 with Premium.</p></div>
           </div>
           <div class="sec-opt" onclick="pickSec('math',this)">
-            <div class="sec-opt-icon">🔢</div>
-            <div><h4>Math</h4><p>Algebra, geometry, and data — 10 questions free, 22 with Premium</p></div>
+            <div class="sec-opt-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-calculator"></use></svg></span></div>
+            <div><h4>Math</h4><p>Algebra, geometry, and data. 10 questions free, 22 with Premium.</p></div>
           </div>
           <div class="sec-opt" onclick="pickSec('full',this)" id="sec-full-opt">
-            <div class="sec-opt-icon">📋</div>
-            <div><h4>Full Test 🔒 Premium</h4><p>Both sections — 49 questions, 67 minutes</p></div>
+            <div class="sec-opt-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-clipboard"></use></svg></span></div>
+            <div><h4>Full Test <span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span> Premium</h4><p>Both sections. 49 questions, 67 minutes.</p></div>
           </div>
         </div>
       </div>
@@ -1894,13 +1902,13 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <!-- Step 3 -->
       <div id="ob-s3" class="hidden">
         <div class="ready-box">
-          <div class="rb-row"><span class="rb-lbl">Name</span><span class="rb-val" id="rb-name">—</span></div>
-          <div class="rb-row"><span class="rb-lbl">Grade</span><span class="rb-val" id="rb-grade">—</span></div>
-          <div class="rb-row"><span class="rb-lbl">Section</span><span class="rb-val"><span class="rb-chip" id="rb-sec">—</span></span></div>
-          <div class="rb-row"><span class="rb-lbl">Questions</span><span class="rb-val" id="rb-qcount">—</span></div>
-          <div class="rb-row"><span class="rb-lbl">Time</span><span class="rb-val" id="rb-time">—</span></div>
+          <div class="rb-row"><span class="rb-lbl">Name</span><span class="rb-val" id="rb-name">-</span></div>
+          <div class="rb-row"><span class="rb-lbl">Grade</span><span class="rb-val" id="rb-grade">-</span></div>
+          <div class="rb-row"><span class="rb-lbl">Section</span><span class="rb-val"><span class="rb-chip" id="rb-sec">-</span></span></div>
+          <div class="rb-row"><span class="rb-lbl">Questions</span><span class="rb-val" id="rb-qcount">-</span></div>
+          <div class="rb-row"><span class="rb-lbl">Time</span><span class="rb-val" id="rb-time">-</span></div>
         </div>
-        <div class="tip"><strong>💡 Tip:</strong> Find a quiet spot. Treat this like the real thing — your practice score will be much more useful!</div>
+        <div class="tip"><strong><span class="ui-inline"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span>Tip:</span></strong> Find a quiet spot. Treat this like the real thing, and your practice score will be much more useful.</div>
       </div>
     </div>
     <div class="modal-ft">
@@ -1915,16 +1923,16 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
      ============================================================ -->
 <div class="overlay" id="paywall-overlay" role="dialog" aria-modal="true">
   <div class="modal paywall-modal-shell">
-    <button class="paywall-close" onclick="closePaywall()" aria-label="Close">✕</button>
+    <button class="paywall-close" onclick="closePaywall()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     <div class="modal-bd" style="padding:22px 22px 12px">
       <div class="paywall-modal">
-        <div class="paywall-icon" style="width:58px;height:58px;font-size:1.5rem;margin-bottom:14px">🚀</div>
+        <div class="paywall-icon" style="width:58px;height:58px;margin-bottom:14px"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-rocket"></use></svg></span></div>
         <h2 style="font-size:1.2rem;margin-bottom:6px">Unlock Budy.Study Premium</h2>
         <p id="paywall-msg" style="font-size:.84rem;line-height:1.55;margin-bottom:14px">Full tests, instant AI explanations, and smarter score growth.</p>
         <div class="paywall-perks">
-          <div class="pw-perk"><span class="pw-perk-icon">📋</span> Full 27–49 question practice tests</div>
-          <div class="pw-perk"><span class="pw-perk-icon">💡</span> AI deep-dive explanations</div>
-          <div class="pw-perk"><span class="pw-perk-icon">📊</span> Score analytics and progress tracking</div>
+          <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-clipboard"></use></svg></span></span> Full 27-49 question practice tests</div>
+          <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span></span> AI deep-dive explanations</div>
+          <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></span> Score analytics and progress tracking</div>
         </div>
         <!-- Inline pricing in paywall -->
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
@@ -1950,7 +1958,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
             <div style="font-size:.75rem;color:var(--muted);margin-top:3px">~$2.31/week · 50% off annual offer</div>
           </button>
         </div>
-        <button class="btn btn-primary btn-full" id="pw-cta-btn" onclick="handlePurchase()">Start Premium →</button>
+        <button class="btn btn-primary btn-full" id="pw-cta-btn" onclick="handlePurchase()">Start Premium</button>
         <p style="font-size:.72rem;color:var(--muted);margin-top:10px">7-day money-back guarantee · Cancel any time</p>
       </div>
     </div>
@@ -1967,10 +1975,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   <div class="modal leave-test-modal">
     <div class="modal-hd">
       <div class="modal-hd-text"><p style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 6px">Test in Progress</p><h2 id="leave-test-title">Leave the test?</h2></div>
-      <button class="modal-close" onclick="closeLeaveTestModal()" aria-label="Close">✕</button>
+      <button class="modal-close" onclick="closeLeaveTestModal()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     </div>
     <div class="modal-bd">
-      <div class="leave-test-icon">⏱</div>
+      <div class="leave-test-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span></div>
       <div class="leave-test-copy">
         <h2>Progress will be lost</h2>
         <p>If you leave now, your current answers, flags, and remaining time for this practice test will be cleared.</p>
@@ -1988,10 +1996,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   <div class="modal action-confirm-modal">
     <div class="modal-hd">
       <div class="modal-hd-text"><p id="action-confirm-eyebrow" style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 6px">Before you continue</p><h2 id="action-confirm-title">Confirm action</h2></div>
-      <button class="modal-close" onclick="closeActionConfirm(false)" aria-label="Close">✕</button>
+      <button class="modal-close" onclick="closeActionConfirm(false)" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     </div>
     <div class="modal-bd">
-      <div class="action-confirm-icon" id="action-confirm-icon">!</div>
+      <div class="action-confirm-icon" id="action-confirm-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-warning"></use></svg></span></div>
       <div class="action-confirm-copy">
         <p id="action-confirm-body">Please review this action before continuing.</p>
       </div>
@@ -2052,6 +2060,11 @@ const LANDING_DEMO_QUESTIONS = [
 ];
 
 let actionConfirmResolver = null;
+
+function spriteIcon(name, className) {
+  const cls = className || 'ui-icon ui-icon-md';
+  return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-${name}"></use></svg></span>`;
+}
 
 const BILLING_DISPLAY = {
   weekly: {
@@ -2602,10 +2615,10 @@ const PLANS = {
 function setView(v) {
   S.view = v;
 
-  // Landing — show/hide with display style
+  // Landing show/hide with display style
   document.getElementById('landing-screen').style.display = v === 'landing' ? '' : 'none';
 
-  // All full-screen panels — force display directly, don't rely on class alone
+  // All full-screen panels force display directly, don't rely on class alone
   const panels = {
     'loading': document.getElementById('loading-screen'),
     'test':    document.getElementById('test-screen'),
@@ -2705,7 +2718,7 @@ function openActionConfirm(options) {
     note.textContent = config.note || '';
     note.classList.toggle('hidden', !config.note);
   }
-  if (icon) icon.textContent = config.icon || '!';
+  if (icon) icon.innerHTML = spriteIcon(config.icon || 'warning', 'ui-icon ui-icon-lg');
   if (cancelBtn) cancelBtn.textContent = config.cancelText || 'Cancel';
   if (confirmBtn) {
     confirmBtn.textContent = config.confirmText || 'Continue';
@@ -2879,8 +2892,8 @@ function obUpdateStep(step) {
   });
   document.getElementById('ob-back').style.display=step>1?'':'none';
   const btn=document.getElementById('ob-next');
-  if(step===3){btn.textContent='🚀 Start Test';btn.style.background='var(--green)';btn.style.boxShadow='0 4px 20px rgba(5,150,105,.35)'}
-  else{btn.textContent='Continue →';btn.style.background='';btn.style.boxShadow=''}
+  if(step===3){btn.textContent='Start Test';btn.style.background='var(--green)';btn.style.boxShadow='0 4px 20px rgba(5,150,105,.35)'}
+  else{btn.textContent='Continue';btn.style.background='';btn.style.boxShadow=''}
   const subs=['Step 1 of 3','Step 2 of 3','Ready to go!'];
   document.getElementById('ob-sub').textContent=subs[step-1];
   const titles=['Let\'s set up your test','Choose a section','You\'re all set!'];
@@ -2891,7 +2904,7 @@ function obNext() {
   if (S.obStep===1) {
     const name=document.getElementById('ob-name').value.trim();
     const grade=document.getElementById('ob-grade').value;
-    if (!name){toast('Enter your name first 👋','wn');return}
+    if (!name){toast('Enter your name first.','wn');return}
     if (!grade){toast('Please pick your grade','wn');return}
     S.user.name=name; S.user.grade=grade;
     obUpdateStep(2);
@@ -3080,7 +3093,7 @@ async function cancelSubscriptionNow() {
     title: 'Cancel Premium now?',
     body: 'Your premium access will end immediately and your account will switch back to the free plan.',
     note: 'This takes effect right away, so premium-only features lock again as soon as the cancellation finishes.',
-    icon: '$',
+    icon: 'card',
     cancelText: 'Keep Premium',
     confirmText: 'Cancel Now',
     tone: 'danger'
@@ -3159,7 +3172,7 @@ const ENG_Q = [
    options:['A) Quantified','B) Restrained and deliberate','C) Musical in rhythm','D) Mathematically exact'],
    answer:'B'},
   {id:'e3',type:'mc',section:'english',skill:'Central Ideas',
-   passage:'Behavioral economists have shown that humans are not the rational actors classical economics assumes. People feel the pain of losing $100 more than the pleasure of gaining $100. They are influenced by irrelevant numbers and overestimate small probabilities. These biases are not random — they are predictable and consistent.',
+  passage:'Behavioral economists have shown that humans are not the rational actors classical economics assumes. People feel the pain of losing $100 more than the pleasure of gaining $100. They are influenced by irrelevant numbers and overestimate small probabilities. These biases are not random. They are predictable and consistent.',
    question:'What is the central idea of this passage?',
    options:['A) Humans always make poor decisions','B) Loss aversion is the most important bias','C) Human decision-making deviates from rationality in predictable ways','D) Classical economics must be abandoned'],
    answer:'C'},
@@ -3174,7 +3187,7 @@ const ENG_Q = [
    options:['A) Similarly','B) Therefore','C) However','D) In other words'],
    answer:'C'},
   {id:'e6',type:'mc',section:'english',skill:'Inference',
-   passage:'Despite producing celebrated novels since 1992, Elena Ferrante has kept her identity completely secret. She gives interviews only by email and never appears publicly. Critics have speculated she may be a translator, professor, or even a male writer — though Ferrante says gender is irrelevant to the work.',
+  passage:'Despite producing celebrated novels since 1992, Elena Ferrante has kept her identity completely secret. She gives interviews only by email and never appears publicly. Critics have speculated she may be a translator, professor, or even a male writer, though Ferrante says gender is irrelevant to the work.',
    question:'What can be inferred about why Ferrante says gender is irrelevant?',
    options:['A) She wants to confirm she is male','B) She is redirecting attention from biography to the writing itself','C) She believes female authors cannot achieve recognition','D) She is unaware speculation exists'],
    answer:'B'},
@@ -3184,7 +3197,7 @@ const ENG_Q = [
    options:['A) The companys\' policy changed it\'s approach.','B) The company\'s policy changed its approach.','C) The companies policy changed its\' approach.','D) The company\'s policy changed it\'s approach.'],
    answer:'B'},
   {id:'e8',type:'mc',section:'english',skill:'Command of Evidence',
-   passage:'Dr. Osei claims: "Students who take music lessons before age 10 show higher math performance." A critic says this may reflect selection bias — families who afford music lessons may also provide other academic advantages.',
+  passage:'Dr. Osei claims: "Students who take music lessons before age 10 show higher math performance." A critic says this may reflect selection bias because families who afford music lessons may also provide other academic advantages.',
    question:'Which study design best addresses the critic\'s concern?',
    options:['A) Survey adult musicians about childhood math scores','B) Randomly assign similar-background children to music or non-music groups and track math performance','C) Interview parents of high-achieving math students','D) Analyze music school enrollment by zip code'],
    answer:'B'},
@@ -3199,12 +3212,12 @@ const ENG_Q = [
    options:['A) Problem then solution','B) Original claim, counter-claim, then supporting evidence','C) Chronological narrative','D) Comparison of two civilizations'],
    answer:'B'},
   {id:'e11',type:'mc',section:'english',skill:'Words in Context',
-   passage:'The new bridge was lauded for its elegance, but engineers quietly worried about its structural redundancy — or rather, the lack of it. A single point of failure in the cable arrangement could, under certain loads, trigger failures across the entire span.',
+  passage:'The new bridge was lauded for its elegance, but engineers quietly worried about its structural redundancy, or rather, the lack of it. A single point of failure in the cable arrangement could, under certain loads, trigger failures across the entire span.',
    question:'As used here, "redundancy" refers to:',
    options:['A) Unnecessary repetition','B) Backup systems that maintain safety if one component fails','C) Excess weight in the design','D) The bridge\'s decorative elements'],
    answer:'B'},
   {id:'e12',type:'mc',section:'english',skill:'Inference',
-   passage:'Early jazz musicians in New Orleans improvised not just musically but socially — playing everything from funeral processions to dance halls. They had to read audiences instantly, shifting tempo and feel within a single song. This sensitivity to context may explain why jazz developed such a rich vocabulary for musical conversation between performers.',
+  passage:'Early jazz musicians in New Orleans improvised not just musically but socially, playing everything from funeral processions to dance halls. They had to read audiences instantly, shifting tempo and feel within a single song. This sensitivity to context may explain why jazz developed such a rich vocabulary for musical conversation between performers.',
    question:'What does the passage imply about the relationship between jazz musicians\' social environment and their music?',
    options:['A) Jazz developed mainly from the funeral tradition','B) Playing in diverse settings built improvisational skills that shaped the music','C) The venues were considered disreputable','D) Jazz musicians were socially isolated'],
    answer:'B'},
@@ -3240,7 +3253,7 @@ const ENG_Q = [
    options:['A) Minimum wages should be abolished','B) Minimum wage effects depend on context and resist simple generalization','C) Fast-food is immune to wage increases','D) Manufacturing is always hurt by wage policy'],
    answer:'B'},
   {id:'e19',type:'mc',section:'english',skill:'Inference',
-   passage:'In the 1950s, American supermarkets offered trading stamps — redeemable coupons given with purchases. At their peak, more stamps were printed than postage stamps. By the 1980s they had largely vanished, replaced by credit card rewards and frequent flyer miles — different mechanisms serving the same psychological function.',
+  passage:'In the 1950s, American supermarkets offered trading stamps, redeemable coupons given with purchases. At their peak, more stamps were printed than postage stamps. By the 1980s they had largely vanished, replaced by credit card rewards and frequent flyer miles, different mechanisms serving the same psychological function.',
    question:'The author\'s final observation implies that:',
    options:['A) Trading stamps were better than loyalty programs','B) The desire for consumer rewards is a persistent feature of human behavior','C) Credit cards were invented to replace trading stamps','D) Frequent flyer miles are less effective'],
    answer:'B'},
@@ -3459,7 +3472,7 @@ function updQNav(){
 function renderQ(idx){
   S.curQ=idx;
   const q=S.questions[idx];
-  const sec=q.section==='math'?'🔢 Math':'📖 Reading & Writing';
+  const sec=q.section==='math'?'Math':'Reading & Writing';
   let html=`<div class="q-hd"><div class="q-badge">${sec} · Q${idx+1} of ${S.questions.length}</div><div class="q-skill">${q.skill||''}</div></div>`;
   if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
   html+=`<div class="q-text">${q.question}</div>`;
@@ -3523,7 +3536,7 @@ function goPrev(){goQ(Math.max(S.curQ-1,0))}
 /* ── FLAG ── */
 function toggleFlag(){
   if(S.flags.has(S.curQ)){S.flags.delete(S.curQ);toast('Flag removed')}
-  else{S.flags.add(S.curQ);toast('Question flagged ⚑','wn')}
+  else{S.flags.add(S.curQ);toast('Question flagged.','wn')}
   updFlag();updQNav();
 }
 function updFlag(){
@@ -3596,7 +3609,7 @@ async function confirmSubmit(){
       title:`${un} question${un>1?'s are':' is'} still blank`,
       body:`You can go back and review those unanswered question${un>1?'s':''}, or submit now and score the test as it stands.`,
       note:'Blank answers count as skipped on the final score report.',
-      icon:'?',
+      icon:'warning',
       cancelText:'Keep Reviewing',
       confirmText:'Submit Anyway',
       tone:'gold'
@@ -3674,14 +3687,14 @@ function renderResults(r){
   const pctCor=Math.round(r.correct/r.total_q*100);
   let sum=`<p>You answered <strong>${r.correct} of ${r.total_q}</strong> questions correctly (${pctCor}%).</p>`;
   if(r.section==='full')sum+=`<p style="margin-top:10px">R&W: <strong>${r.engSc}</strong> · Math: <strong>${r.mathSc}</strong></p>`;
-  if(r.isFree)sum+=`<p style="margin-top:10px;color:var(--brand);font-weight:700">🔒 Upgrade to Premium for a full 27–49 question test and detailed explanations!</p>`;
+  if(r.isFree)sum+=`<p style="margin-top:10px;color:var(--brand);font-weight:700">${spriteIcon('lock','ui-icon ui-icon-sm')} Upgrade to Premium for a full 27-49 question test and detailed explanations.</p>`;
   document.getElementById('perf-summary').innerHTML=sum;
 
   // Review
   const rv=document.getElementById('review-list');rv.innerHTML='';
   r.questions.forEach((q,i)=>{
     const st=!q.userAnswer?'s':q.isCorrect?'c':'w';
-    const badge={c:'Correct ✓',w:'Wrong ✗',s:'Skipped'}[st];
+    const badge={c:'Correct',w:'Wrong',s:'Skipped'}[st];
     const cls={c:'c',w:'w',s:'s'}[st];
     const shortQ=q.question.length>100?q.question.slice(0,100)+'…':q.question;
     const div=document.createElement('div');div.className='review-item';
@@ -3703,22 +3716,22 @@ function renderResults(r){
 function buildExpSection(i, q, wrap) {
   if (!S.isPremium) {
     // Show locked blur
-    const fakeExp = `The correct answer is ${q.answer} because this question tests ${q.skill}. To get this type of question right, you need to carefully analyze the ${q.section==='math'?'equation and apply the relevant formula':'passage and identify the key supporting evidence'}. Remember that on the SAT, the correct answer is always directly supported by the text or mathematical logic — never your outside knowledge.`;
+    const fakeExp = `The correct answer is ${q.answer} because this question tests ${q.skill}. To get this type of question right, you need to carefully analyze the ${q.section==='math'?'equation and apply the relevant formula':'passage and identify the key supporting evidence'}. Remember that on the SAT, the correct answer is always directly supported by the text or mathematical logic, never your outside knowledge.`;
     wrap.innerHTML=`<div class="exp-locked">
       <div class="exp-locked-preview">${fakeExp}</div>
       <div class="exp-lock-overlay">
-        <div class="exp-lock-icon">🔒</div>
+        <div class="exp-lock-icon">${spriteIcon('lock','ui-icon ui-icon-md')}</div>
         <div class="exp-lock-text">Explanation locked</div>
         <button class="exp-unlock-btn" onclick="openPaywall('results')">Unlock with Premium</button>
       </div>
     </div>`;
   } else {
-    wrap.innerHTML=`<button class="exp-btn" id="exp-btn-${i}" onclick="getExp(${i},this)">💡 See Explanation</button><div id="exp-box-${i}" class="exp-box" style="display:none"></div>`;
+    wrap.innerHTML=`<button class="exp-btn" id="exp-btn-${i}" onclick="getExp(${i},this)">${spriteIcon('bulb','ui-icon ui-icon-sm')} See Explanation</button><div id="exp-box-${i}" class="exp-box" style="display:none"></div>`;
   }
 }
 
 function getExp(i, btn) {
-  btn.disabled=true;btn.textContent='⏳ Loading…';
+  btn.disabled=true;btn.textContent='Loading...';
   const q=S.results.questions[i];
   const exps={
     'Linear Equations':`To solve this, isolate x by applying inverse operations to both sides. ${q.answer===q.userAnswer?'You got it right!':'Work step by step and check your arithmetic.'}`,
@@ -3752,7 +3765,7 @@ function animScore(el,target,max){
 function downloadReport(){
   if(!S.results){toast('No results yet','wn');return}
   const r=S.results;
-  const text=`BUDY.STUDY PRACTICE TEST REPORT\n============================\nStudent: ${S.user.name||'Student'}\nDate: ${new Date(r.date).toLocaleDateString()}\nSection: ${r.section}\n\nSCORE: ${r.total} / ${r.section==='full'?1600:800}\nCorrect: ${r.correct}/${r.total_q}\nPercentile: ~${getPct(r.total,r.section==='full'?1600:800)}\n\nSKILL BREAKDOWN\n${Object.entries(r.skillMap).map(([s,d])=>`${s}: ${d.correct}/${d.total} (${Math.round(d.correct/d.total*100)}%)`).join('\n')}\n\nBudy.Study — budy.study\nSAT® is a trademark of College Board. Not affiliated.`;
+  const text=`BUDY.STUDY PRACTICE TEST REPORT\n============================\nStudent: ${S.user.name||'Student'}\nDate: ${new Date(r.date).toLocaleDateString()}\nSection: ${r.section}\n\nSCORE: ${r.total} / ${r.section==='full'?1600:800}\nCorrect: ${r.correct}/${r.total_q}\nPercentile: ~${getPct(r.total,r.section==='full'?1600:800)}\n\nSKILL BREAKDOWN\n${Object.entries(r.skillMap).map(([s,d])=>`${s}: ${d.correct}/${d.total} (${Math.round(d.correct/d.total*100)}%)`).join('\n')}\n\nBudy.Study | budy.study\nSAT® is a trademark of College Board. Not affiliated.`;
   const b=new Blob([text],{type:'text/plain'});const u=URL.createObjectURL(b);
   const a=document.createElement('a');a.href=u;a.download=`BudyStudy_${S.user.name||'Report'}.txt`;a.click();URL.revokeObjectURL(u);
   toast('Report downloaded!','ok');
@@ -3902,12 +3915,12 @@ function renderDash(){
       statusBadge.classList.remove('free');
       statusBadge.classList.add('pro');
       statusText.textContent = isTestUser ? 'Test Plan' : 'Pro Plan';
-      if (statusIcon) statusIcon.textContent = '✦';
+      if (statusIcon) statusIcon.textContent = '';
     } else {
       statusBadge.classList.remove('pro');
       statusBadge.classList.add('free');
       statusText.textContent = isTestUser ? 'Test Plan' : 'Free Plan';
-      if (statusIcon) statusIcon.textContent = '•';
+      if (statusIcon) statusIcon.textContent = '';
     }
   }
 
@@ -3956,7 +3969,7 @@ function renderDash(){
   }
 
   if(!ss.length){
-    ['d-best','d-latest'].forEach(id=>document.getElementById(id).textContent='—');
+    ['d-best','d-latest'].forEach(id=>document.getElementById(id).textContent='-');
     document.getElementById('sess-empty').classList.remove('hidden');
     document.getElementById('sess-tbl').style.display='none';
     document.getElementById('ch-empty').classList.remove('hidden');
@@ -4004,8 +4017,8 @@ function confetti(){
 /* ── TOAST ── */
 function toast(msg,type='',dur=3000){
   const c=document.getElementById('toasts');const t=document.createElement('div');
-  t.className=`toast ${type}`;const ico={ok:'✓',er:'✕',wn:'⚠','':'ℹ'}[type]||'ℹ';
-  t.innerHTML=`<span>${ico}</span>${msg}`;c.appendChild(t);
+  t.className=`toast ${type}`;const ico={ok:'check',er:'x',wn:'warning','':'info'}[type]||'info';
+  t.innerHTML=`${spriteIcon(ico,'ui-icon ui-icon-sm')}<span>${msg}</span>`;c.appendChild(t);
   const rm=()=>{t.classList.add('out');setTimeout(()=>t.remove(),280)};
   setTimeout(rm,dur);t.addEventListener('click',rm);
 }
@@ -4108,7 +4121,7 @@ async function init() {
     window.history.replaceState({}, document.title, nextUrl);
   }
 
-  /* $40M animated counter — triggers when scrolled into view */
+  /* $40M animated counter, triggers when scrolled into view */
   const counterEl = document.getElementById('impact-counter');
   if (counterEl) {
     const target = 40000000;

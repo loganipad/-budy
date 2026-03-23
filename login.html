@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Budy.Study — Log In</title>
+<title>Budy.Study | Log In</title>
 <meta name="theme-color" content="#0d1117">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Auth0 Universal Login SDK — REQUIRED, do not remove -->
+<!-- Auth0 Universal Login SDK, REQUIRED, do not remove -->
 <script src="https://cdn.auth0.com/ulp/react-components/1.48.1/auth0-acul-js.production.min.js"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 
@@ -76,7 +76,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 a { text-decoration: none; color: inherit; }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 
-/* NAV — all styles handled by shared-navbar-styles in navbar.html */
+/* NAV styles handled by shared-navbar-styles in navbar.html */
 
 /* ── PAGE BODY ── */
 .page-body {
@@ -140,6 +140,10 @@ a { text-decoration: none; color: inherit; }
   transition: all .22s var(--ease); font-family: var(--font);
 }
 .auth-tab.active { background: rgba(255,255,255,.1); color: #f0f4ff; box-shadow: var(--sh-sm); }
+.ui-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: currentColor; }
+.ui-icon svg { width: 100%; height: 100%; display: block; }
+.ui-icon-sm { width: 14px; height: 14px; }
+.ui-icon-md { width: 18px; height: 18px; }
 
 /* Card body */
 .auth-card-bd { padding: 28px 36px 0; }
@@ -241,7 +245,7 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 18px; font-size: .8375rem; color: #fecdd3; font-weight: 600;
 }
 .auth-alert.show { display: flex; }
-.auth-alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.auth-alert-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; color: #fecdd3; }
 
 /* Loading */
 .btn-auth.loading { opacity: .7; pointer-events: none; }
@@ -310,7 +314,7 @@ a { text-decoration: none; color: inherit; }
       <div class="form-panel active" id="panel-login">
         <div class="auth-card-bd">
           <div class="auth-alert" id="login-alert">
-            <span class="auth-alert-icon">⚠</span>
+            <span class="auth-alert-icon"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-warning"></use></svg></span></span>
             <span id="login-alert-msg">Wrong email or password. Please try again.</span>
           </div>
           <div class="fg">
@@ -348,7 +352,7 @@ a { text-decoration: none; color: inherit; }
       <div class="form-panel" id="panel-signup">
         <div class="auth-card-bd">
           <div class="auth-alert" id="signup-alert">
-            <span class="auth-alert-icon">⚠</span>
+            <span class="auth-alert-icon"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-warning"></use></svg></span></span>
             <span id="signup-alert-msg">Something went wrong. Please try again.</span>
           </div>
           <div class="name-row">
@@ -459,7 +463,7 @@ a { text-decoration: none; color: inherit; }
 
 <script>
 /* ================================================================
-   AUTH0 UNIVERSAL LOGIN — ACUL JS SDK INTEGRATION
+  AUTH0 UNIVERSAL LOGIN, ACUL JS SDK INTEGRATION
    Docs: https://auth0.com/docs/customize/universal-login-pages/advanced-customization
    ================================================================ */
 
@@ -561,7 +565,7 @@ function switchTab(tab) {
     tabs.style.display = '';
   } else if (tab === 'signup') {
     title.textContent = 'Create your account';
-    sub.innerHTML = 'Start free — no credit card needed';
+    sub.innerHTML = 'Start free, no credit card needed';
     tabs.style.display = '';
   } else {
     title.textContent = 'Reset your password';
@@ -708,7 +712,7 @@ function checkStrength(val) {
 }
 
 /* ================================================================
-   SUBMIT HANDLERS — wired to Auth0 ACUL SDK
+  SUBMIT HANDLERS wired to Auth0 ACUL SDK
    ================================================================ */
 
 async function submitLogin() {
