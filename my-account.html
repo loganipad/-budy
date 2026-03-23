@@ -785,6 +785,17 @@ function clearLocalAuthUser() {
   localStorage.removeItem(LOCAL_AUTH_KEY);
 }
 
+function publishNavbarState() {
+  if (typeof window.setNavbarState === 'function') {
+    window.setNavbarState({
+      isLoggedIn: Boolean(S.isLoggedIn),
+      isPremium: Boolean(S.isPremium)
+    });
+  } else if (typeof window.refreshNavbarState === 'function') {
+    window.refreshNavbarState();
+  }
+}
+
 function bindNavAuthButtonForState() {
   const btn = document.getElementById('auth-btn');
   if (!btn) return;
@@ -796,6 +807,8 @@ function bindNavAuthButtonForState() {
     btn.textContent = 'Log In';
     btn.onclick = function () { window.location.href = '/login.html'; };
   }
+
+  publishNavbarState();
 }
 
 async function initAuth() {
@@ -1114,9 +1127,7 @@ function logout() {
 function renderDash() {
   const ss = Array.isArray(S.sessionCache) ? S.sessionCache : [];
 
-  if (typeof window.refreshNavbarState === 'function') {
-    window.refreshNavbarState();
-  }
+  publishNavbarState();
 
   document.getElementById('dash-greet-name').textContent = S.user.name ? S.user.name : 'Student';
 

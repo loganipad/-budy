@@ -2173,6 +2173,17 @@ function trackEvent(name, payload = {}) {
 }
 
 /* ── AUTH ── */
+function publishNavbarState() {
+  if (typeof window.setNavbarState === 'function') {
+    window.setNavbarState({
+      isLoggedIn: Boolean(S.isLoggedIn),
+      isPremium: Boolean(S.isPremium)
+    });
+  } else if (typeof window.refreshNavbarState === 'function') {
+    window.refreshNavbarState();
+  }
+}
+
 function updateAuthUI() {
   const btn = document.getElementById('auth-btn');
   if (!btn) return;
@@ -2181,6 +2192,7 @@ function updateAuthUI() {
   const mobileAuth = document.getElementById('mobile-auth-link');
   if (mobileAuth) mobileAuth.textContent = nextLabel;
   syncStartCtaLabels();
+  publishNavbarState();
 }
 
 function syncStartCtaLabels() {

@@ -2,6 +2,7 @@
   var didMountNavbar = false;
   var didBindScroll = false;
   var NAV_CACHE_KEY = 'budy_navbar_html_v3';
+  var NAV_STATE_KEY = 'budy_navbar_state_v1';
 
   function getPath() {
     return String(window.location.pathname || '/').toLowerCase();
@@ -26,6 +27,58 @@
     }
   }
 
+  function readStoredNavState() {
+    try {
+      var raw = localStorage.getItem(NAV_STATE_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function writeStoredNavState(state) {
+    try {
+      localStorage.setItem(NAV_STATE_KEY, JSON.stringify({
+        isLoggedIn: Boolean(state && state.isLoggedIn),
+        isPremium: Boolean(state && state.isPremium)
+      }));
+    } catch (_) {}
+  }
+
+  function getRuntimeNavState() {
+    var localUser = getLocalAuthUser();
+    var stored = readStoredNavState();
+    var explicit = window.__BUDY_NAVBAR_STATE && typeof window.__BUDY_NAVBAR_STATE === 'object'
+      ? window.__BUDY_NAVBAR_STATE
+      : {};
+    var pageState = window.S && typeof window.S === 'object'
+      ? window.S
+      : {};
+
+    var isLoggedIn = typeof explicit.isLoggedIn === 'boolean'
+      ? explicit.isLoggedIn
+      : (typeof pageState.isLoggedIn === 'boolean'
+        ? pageState.isLoggedIn
+        : (typeof stored.isLoggedIn === 'boolean'
+          ? stored.isLoggedIn
+          : Boolean(localUser && (localUser.accessToken || localUser.sub))));
+
+    var isPremium = typeof explicit.isPremium === 'boolean'
+      ? explicit.isPremium
+      : (typeof pageState.isPremium === 'boolean'
+        ? pageState.isPremium
+        : (typeof stored.isPremium === 'boolean'
+          ? stored.isPremium
+          : false));
+
+    return {
+      isLoggedIn: Boolean(isLoggedIn),
+      isPremium: Boolean(isPremium)
+    };
+  }
+
   function updateAccountLink(isHome) {
     var desktopAccount = document.getElementById('nav-link-account');
     var mobileAccount = document.getElementById('nav-m-link-account');
@@ -42,8 +95,8 @@
   }
 
   function syncNavStartCtas() {
-    var state = window.S;
-    var isPremium = Boolean(state && state.isPremium);
+    var state = getRuntimeNavState();
+    var isPremium = Boolean(state.isPremium);
     var nextLabel = isPremium ? 'Start Test' : 'Start Free Test';
 
     document.querySelectorAll('[data-start-cta]').forEach(function (el) {
@@ -82,17 +135,8 @@
     var mobileAuth = document.getElementById('mobile-auth-link');
     if (!authBtn || !nav) return;
 
-    if (typeof window.updateAuthUI === 'function') {
-      try {
-        window.updateAuthUI();
-        syncNavStartCtas();
-        nav.classList.add('nav-auth-ready');
-        return;
-      } catch (_) {}
-    }
-
-    var localUser = getLocalAuthUser();
-    var isLoggedIn = Boolean(localUser && (localUser.accessToken || localUser.sub));
+    var state = getRuntimeNavState();
+    var isLoggedIn = Boolean(state.isLoggedIn);
     var nextLabel = isLoggedIn ? 'Log Out' : 'Log In';
 
     authBtn.textContent = nextLabel;
@@ -221,6 +265,26 @@
     applyNavContext();
     syncNavAuthState();
     syncNavStartCtas();
+  };
+
+  window.setNavbarState = function (nextState) {
+    var current = getRuntimeNavState();
+    var merged = {
+      isLoggedIn: typeof nextState?.isLoggedIn === 'boolean' ? nextState.isLoggedIn : current.isLoggedIn,
+      isPremium: typeof nextState?.isPremium === 'boolean' ? nextState.isPremium : current.isPremium
+    };
+
+    window.__BUDY_NAVBAR_STATE = merged;
+    writeStoredNavState(merged);
+    window.refreshNavbarState();
+  };
+
+  window.clearNavbarState = function () {
+    window.__BUDY_NAVBAR_STATE = { isLoggedIn: false, isPremium: false };
+    try {
+      localStorage.removeItem(NAV_STATE_KEY);
+    } catch (_) {}
+    window.refreshNavbarState();
   };
 
   mountNavbar();
