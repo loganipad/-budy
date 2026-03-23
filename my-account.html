@@ -697,6 +697,8 @@ const S = {
   chart: null
 };
 
+window.S = S;
+
 function toast(msg, type = '', dur = 2800) {
   const c = document.getElementById('toasts');
   const t = document.createElement('div');
