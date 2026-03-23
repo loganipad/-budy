@@ -1404,8 +1404,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="price-card">
         <div class="price-tier" style="color:rgba(255,255,255,.8)">Weekly</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="weekly" data-rate="weekly">9.99</span></div>
-        <div class="price-unit">Per Week</div>
-        <div class="price-billed" style="color:rgba(255,255,255,.65)">
+        <div class="price-unit" id="weekly-price-unit">Per Week</div>
+        <div class="price-billed" id="weekly-price-billed" style="color:rgba(255,255,255,.65)">
           <strong style="color:#fff" id="weekly-bill-main">Billed weekly</strong> · Flexible anytime
         </div>
         <div class="price-divider"></div>
@@ -1422,8 +1422,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <div class="best-badge">BEST VALUE</div>
         <div class="price-tier">Monthly</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="monthly" data-rate="weekly">4.99</span></div>
-        <div class="price-unit">Per Week</div>
-        <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="monthly-bill-main">Billed $19.99/month</strong> · ~50% lower than weekly equivalent</div>
+        <div class="price-unit" id="monthly-price-unit">Per Week</div>
+        <div class="price-billed" id="monthly-price-billed"><strong style="color:rgba(255,255,255,.8)" id="monthly-bill-main">Billed $19.99/month</strong> · ~50% lower than weekly equivalent</div>
         <div class="price-divider"></div>
         <div class="price-features">
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Most popular everyday plan</div>
@@ -1437,8 +1437,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="price-card">
         <div class="price-tier">Annual</div>
         <div class="price-per-week"><sup>$</sup><span data-plan="annual" data-rate="weekly">2.31</span></div>
-        <div class="price-unit">Per Week</div>
-        <div class="price-billed"><strong style="color:rgba(255,255,255,.8)" id="annual-bill-main">Billed $119.99/year</strong> · Huge 50% off offer</div>
+        <div class="price-unit" id="annual-price-unit">Per Week</div>
+        <div class="price-billed" id="annual-price-billed"><strong style="color:rgba(255,255,255,.8)" id="annual-bill-main">Billed $119.99/year</strong> · Huge 50% off offer</div>
         <div class="price-divider"></div>
         <div class="price-features">
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Lowest long-term cost</div>
@@ -2793,9 +2793,22 @@ function updatePriceDisplay(plan) {
     if (!planKey || !BILLING_DISPLAY[planKey]) return;
     el.textContent = BILLING_DISPLAY[planKey][mode];
   });
+  const weeklyUnit = document.getElementById('weekly-price-unit');
+  const monthlyUnit = document.getElementById('monthly-price-unit');
+  const annualUnit = document.getElementById('annual-price-unit');
+  const weeklyBilledWrap = document.getElementById('weekly-price-billed');
+  const monthlyBilledWrap = document.getElementById('monthly-price-billed');
+  const annualBilledWrap = document.getElementById('annual-price-billed');
   const weeklyBill = document.getElementById('weekly-bill-main');
   const monthlyBill = document.getElementById('monthly-bill-main');
   const annualBill = document.getElementById('annual-bill-main');
+  const unitLabel = mode === 'weekly' ? 'Per Week' : 'Per Month';
+  if (weeklyUnit) weeklyUnit.textContent = unitLabel;
+  if (monthlyUnit) monthlyUnit.textContent = unitLabel;
+  if (annualUnit) annualUnit.textContent = unitLabel;
+  if (weeklyBilledWrap) weeklyBilledWrap.hidden = mode !== 'weekly';
+  if (monthlyBilledWrap) monthlyBilledWrap.hidden = mode !== 'weekly';
+  if (annualBilledWrap) annualBilledWrap.hidden = mode !== 'weekly';
   if (weeklyBill) weeklyBill.textContent = mode === 'weekly' ? 'Billed weekly' : 'Billed $39.96/month equivalent';
   if (monthlyBill) monthlyBill.textContent = mode === 'weekly' ? 'Billed $19.99/month' : 'Billed monthly';
   if (annualBill) annualBill.textContent = mode === 'weekly' ? 'Billed $119.99/year' : 'Billed $10.00/month equivalent';
