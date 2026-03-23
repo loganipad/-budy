@@ -533,6 +533,10 @@ input,select{font-family:inherit}
 .modal-ft{padding:0 28px 28px;display:flex;justify-content:flex-end;gap:10px}
 .modal .btn-ghost{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14);color:rgba(240,244,255,.74)}
 .modal .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.26);color:#fff}
+.modal-eyebrow-inline{display:inline-flex;align-items:center;gap:8px;color:inherit}
+.modal-eyebrow-inline svg{width:14px;height:14px;display:block;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.modal-actions-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));justify-content:stretch}
+.modal-actions-even .btn{width:100%;min-height:46px;justify-content:center;padding-inline:14px;text-align:center}
 
 /* Onboarding step dots */
 .step-dots{display:flex;gap:6px;margin-bottom:24px}
@@ -591,15 +595,22 @@ input,select{font-family:inherit}
 .paywall-close:hover{color:#fff;border-color:rgba(255,255,255,.24)}
 
 /* Leave test modal */
-.leave-test-modal{max-width:440px}
-.leave-test-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--brand),#0f3ba8);color:#fff;font-size:1.5rem;
-  box-shadow:0 10px 28px rgba(26,86,219,.28);margin-bottom:16px}
+.leave-test-modal{max-width:396px}
+.leave-test-modal .modal-hd,
+.action-confirm-modal.is-compact .modal-hd{padding:24px 24px 0}
+.leave-test-modal .modal-bd,
+.action-confirm-modal.is-compact .modal-bd{padding:14px 24px 18px}
+.leave-test-modal .modal-ft,
+.action-confirm-modal.is-compact .modal-ft{padding:0 24px 24px}
+.leave-test-modal .modal-hd-text p,
+.action-confirm-modal.is-compact .modal-hd-text p{margin:0}
 .leave-test-copy h2{font-size:1.25rem;font-weight:800;color:#f0f4ff;margin-bottom:8px}
 .leave-test-copy p{font-size:.9rem;line-height:1.65;color:rgba(240,244,255,.62)}
-.leave-test-note{margin-top:14px;padding:12px 14px;border-radius:16px;background:rgba(245,158,11,.1);
-  border:1px solid rgba(245,158,11,.24);font-size:.8125rem;font-weight:700;color:#b45309}
+.leave-test-copy .leave-test-alert-title{display:flex;align-items:center;justify-content:center;gap:12px;color:#fca5a5;text-align:center}
+.leave-test-copy .leave-test-alert{width:24px;height:24px;border-radius:999px;border:1.5px solid rgba(244,63,94,.72);display:inline-flex;align-items:center;justify-content:center;
+  color:#fb7185;font-size:.95rem;font-weight:900;line-height:1;flex-shrink:0}
 .action-confirm-modal{max-width:460px}
+.action-confirm-modal.is-compact{max-width:404px}
 .action-confirm-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,var(--gold),#d97706);color:#0f1728;font-size:1.5rem;font-weight:900;
   box-shadow:0 10px 28px rgba(245,158,11,.22);margin-bottom:16px}
@@ -607,6 +618,7 @@ input,select{font-family:inherit}
 .action-confirm-note{margin-top:14px;padding:12px 14px;border-radius:16px;background:rgba(26,86,219,.12);
   border:1px solid rgba(59,130,246,.24);font-size:.8125rem;font-weight:700;color:#93c5fd}
 .action-confirm-note.hidden{display:none}
+.action-confirm-icon.hidden,.action-confirm-close.hidden{display:none}
 .action-confirm-confirm-btn.is-gold{background:var(--gold);color:var(--ink)}
 .action-confirm-confirm-btn.is-gold:hover{background:#fbbf24}
 .action-confirm-confirm-btn.is-danger{background:#7f1d1d;border-color:#be123c;color:#fff}
@@ -1971,19 +1983,16 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 <div class="overlay" id="leave-test-overlay" role="dialog" aria-modal="true" aria-labelledby="leave-test-title" onclick="if(event.target===this)closeLeaveTestModal()">
   <div class="modal leave-test-modal">
     <div class="modal-hd">
-      <div class="modal-hd-text"><p style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 6px">Test in Progress</p><h2 id="leave-test-title">Leave the test?</h2></div>
-      <button class="modal-close" onclick="closeLeaveTestModal()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
+      <div class="modal-hd-text"><p style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 6px"><span class="modal-eyebrow-inline"><span>Test In Progress</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l2.5 2.5"></path></svg></span></p><h2 id="leave-test-title">Leave The Test?</h2></div>
     </div>
     <div class="modal-bd">
-      <div class="leave-test-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span></div>
       <div class="leave-test-copy">
-        <h2>Progress will be lost</h2>
+        <h2 class="leave-test-alert-title"><span class="leave-test-alert" aria-hidden="true">!</span><span>Progress Will Be Lost</span><span class="leave-test-alert" aria-hidden="true">!</span></h2>
         <p>If you leave now, your current answers, flags, and remaining time for this practice test will be cleared.</p>
       </div>
-      <div class="leave-test-note">Your timer is tied to this specific test section, so leaving starts over from the beginning next time.</div>
     </div>
-    <div class="modal-ft">
-      <button class="btn btn-ghost" onclick="closeLeaveTestModal()">Stay in Test</button>
+    <div class="modal-ft modal-actions-even">
+      <button class="btn btn-ghost" onclick="closeLeaveTestModal()">Stay In Test</button>
       <button class="btn btn-primary" onclick="confirmLeaveTest()">Leave Test</button>
     </div>
   </div>
@@ -1993,7 +2002,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   <div class="modal action-confirm-modal">
     <div class="modal-hd">
       <div class="modal-hd-text"><p id="action-confirm-eyebrow" style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 6px">Before you continue</p><h2 id="action-confirm-title">Confirm action</h2></div>
-      <button class="modal-close" onclick="closeActionConfirm(false)" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
+      <button class="modal-close action-confirm-close" id="action-confirm-close" onclick="closeActionConfirm(false)" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
     </div>
     <div class="modal-bd">
       <div class="action-confirm-icon" id="action-confirm-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-warning"></use></svg></span></div>
@@ -2002,7 +2011,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       </div>
       <div class="action-confirm-note hidden" id="action-confirm-note"></div>
     </div>
-    <div class="modal-ft">
+    <div class="modal-ft modal-actions-even" id="action-confirm-actions">
       <button class="btn btn-ghost" id="action-confirm-cancel-btn" onclick="closeActionConfirm(false)">Cancel</button>
       <button class="btn btn-primary action-confirm-confirm-btn" id="action-confirm-confirm-btn" onclick="closeActionConfirm(true)">Continue</button>
     </div>
@@ -2705,6 +2714,8 @@ function openActionConfirm(options) {
   const body = document.getElementById('action-confirm-body');
   const note = document.getElementById('action-confirm-note');
   const icon = document.getElementById('action-confirm-icon');
+  const closeBtn = document.getElementById('action-confirm-close');
+  const modal = overlay.querySelector('.action-confirm-modal');
   const cancelBtn = document.getElementById('action-confirm-cancel-btn');
   const confirmBtn = document.getElementById('action-confirm-confirm-btn');
 
@@ -2715,7 +2726,12 @@ function openActionConfirm(options) {
     note.textContent = config.note || '';
     note.classList.toggle('hidden', !config.note);
   }
-  if (icon) icon.innerHTML = spriteIcon(config.icon || 'warning', 'ui-icon ui-icon-lg');
+  if (icon) {
+    icon.innerHTML = spriteIcon(config.icon || 'warning', 'ui-icon ui-icon-lg');
+    icon.classList.toggle('hidden', config.showIcon === false);
+  }
+  if (closeBtn) closeBtn.classList.toggle('hidden', config.showClose === false);
+  if (modal) modal.classList.toggle('is-compact', Boolean(config.compact));
   if (cancelBtn) cancelBtn.textContent = config.cancelText || 'Cancel';
   if (confirmBtn) {
     confirmBtn.textContent = config.confirmText || 'Continue';
@@ -3602,13 +3618,15 @@ async function confirmSubmit(){
   const un=S.questions.length-Object.keys(S.answers).length;
   if(un>0){
     const confirmed=await openActionConfirm({
-      eyebrow:'Submission check',
+      eyebrow:'Submit Test Incomplete',
       title:`${un} question${un>1?'s are':' is'} still blank`,
       body:`You can go back and review those unanswered question${un>1?'s':''}, or submit now and score the test as it stands.`,
-      note:'Blank answers count as skipped on the final score report.',
       icon:'warning',
-      cancelText:'Keep Reviewing',
-      confirmText:'Submit Anyway',
+      showIcon:false,
+      showClose:false,
+      compact:true,
+      cancelText:'Review Again',
+      confirmText:'Submit Anyways',
       tone:'gold'
     });
     if(!confirmed)return;
