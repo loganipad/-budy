@@ -110,6 +110,6 @@
     <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
   </symbol>
   <symbol id="icon-star" viewBox="0 0 24 24">
-    <path d="M12 3l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.5l-5.7 3 1.1-6.3L2.8 9.7l6.4-.9L12 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+    <path d="M12 3l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.5l-5.7 3 1.1-6.3L2.8 9.7l6.4-.9L12 3z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
   </symbol>
 </svg>
