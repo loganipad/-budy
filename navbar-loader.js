@@ -1,7 +1,7 @@
 (function () {
   var didMountNavbar = false;
   var didBindScroll = false;
-  var NAV_CACHE_KEY = 'budy_navbar_html_v2';
+  var NAV_CACHE_KEY = 'budy_navbar_html_v3';
 
   function getPath() {
     return String(window.location.pathname || '/').toLowerCase();
@@ -44,11 +44,21 @@
   function syncNavStartCtas() {
     var state = window.S;
     var isPremium = Boolean(state && state.isPremium);
+    var nextLabel = isPremium ? 'Start Test' : 'Start Free Test';
 
     document.querySelectorAll('[data-start-cta]').forEach(function (el) {
       var freeText = el.getAttribute('data-free-text') || '';
       var premiumText = el.getAttribute('data-premium-text') || freeText;
       el.textContent = isPremium ? premiumText : freeText;
+    });
+
+    var nav = document.getElementById('nav');
+    if (!nav) return;
+
+    nav.querySelectorAll('button[onclick="openOnboard()"], button[onclick="openOnboard();"]').forEach(function (el) {
+      if (!el.hasAttribute('data-start-cta')) {
+        el.textContent = nextLabel;
+      }
     });
   }
 
