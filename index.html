@@ -111,6 +111,22 @@ input,select{font-family:inherit}
 .btn-primary{background:var(--brand);color:#fff;height:52px;padding:0 28px;font-size:.9375rem;
   box-shadow:0 4px 20px rgba(26,86,219,.35);}
 .btn-primary:hover{background:var(--brand-d);transform:translateY(-1px);box-shadow:0 8px 30px rgba(26,86,219,.45)}
+.home-study-nav #auth-btn{
+  background:#1a56db;
+  color:#fff;
+  border-color:#1a56db;
+  box-shadow:0 4px 20px rgba(26,86,219,.35);
+}
+.home-study-nav #auth-btn:hover{
+  background:#1440b0;
+  color:#fff;
+  border-color:#1440b0;
+}
+.home-study-nav #mobile-auth-link{
+  background:#1a56db;
+  color:#fff;
+}
+.home-study-nav #mobile-auth-link:hover{background:#1440b0}
 
 .btn-cta{background:var(--gold);color:var(--ink);height:60px;padding:0 40px;font-size:1.0625rem;
   box-shadow:0 6px 24px rgba(245,158,11,.4);}
@@ -2194,13 +2210,38 @@ function publishNavbarState() {
 
 function updateAuthUI() {
   const btn = document.getElementById('auth-btn');
-  if (!btn) return;
-  const nextLabel = S.isLoggedIn ? 'Log Out' : 'Log In';
-  btn.textContent = nextLabel;
+  if (btn) {
+    const nextLabel = S.isLoggedIn ? 'Log Out' : 'Log In';
+    btn.textContent = nextLabel;
+  }
   const mobileAuth = document.getElementById('mobile-auth-link');
-  if (mobileAuth) mobileAuth.textContent = nextLabel;
+  if (mobileAuth) mobileAuth.textContent = S.isLoggedIn ? 'Log Out' : 'Log In';
   syncStartCtaLabels();
   publishNavbarState();
+  applyHomeStudyNavOverride();
+}
+
+function applyHomeStudyNavOverride() {
+  const nav = document.getElementById('nav');
+  if (!nav) return;
+  nav.classList.add('home-study-nav');
+
+  const authBtn = document.getElementById('auth-btn');
+  if (authBtn) {
+    authBtn.textContent = 'Study';
+    authBtn.onclick = () => { window.location.href = '/study.html'; };
+  }
+
+  const mobileAuth = document.getElementById('mobile-auth-link');
+  if (mobileAuth) {
+    mobileAuth.textContent = 'Study';
+    mobileAuth.setAttribute('href', '/study.html');
+    mobileAuth.onclick = (event) => {
+      event.preventDefault();
+      closeMobileMenu();
+      window.location.href = '/study.html';
+    };
+  }
 }
 
 function syncStartCtaLabels() {
@@ -4147,6 +4188,7 @@ async function init() {
   attachDemoSwipe();
   attachRipple();
   updateAuthUI();
+  document.addEventListener('navbar:mounted', applyHomeStudyNavOverride);
   try {
     await initAuth();
     await refreshPremiumStatus();

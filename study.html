@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study | Study Planner Prototype</title>
+<meta name="description" content="Build a personalized SAT or PSAT study plan based on grade level, confidence, and current understanding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0d1117;
+  --ink-80:#151d2d;
+  --panel:rgba(20,29,45,.82);
+  --panel-strong:#1b2538;
+  --line:rgba(255,255,255,.1);
+  --text:#f8fafc;
+  --muted:rgba(240,244,255,.66);
+  --brand:#1a56db;
+  --brand-d:#1440b0;
+  --gold:#f59e0b;
+  --green:#10b981;
+  --rose:#f43f5e;
+  --radius-lg:28px;
+  --radius-md:18px;
+  --radius-sm:12px;
+  --shadow:0 24px 80px rgba(0,0,0,.28);
+  --font-h:'Sora',system-ui,sans-serif;
+  --font-b:'Sora',system-ui,sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{
+  font-family:var(--font-b);
+  background:
+    radial-gradient(circle at top left, rgba(26,86,219,.26), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(245,158,11,.12), transparent 28%),
+    linear-gradient(180deg, #0b1018 0%, #111827 54%, #0b1018 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+
+.study-shell{padding-top:112px;padding-bottom:88px}
+.wrap{width:min(1120px,calc(100% - 40px));margin:0 auto}
+
+.study-hero{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:28px;
+  align-items:stretch;
+  margin-bottom:32px;
+}
+
+.hero-panel,
+.study-card,
+.result-card,
+.timeline-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(14px);
+}
+
+.hero-panel{
+  border-radius:36px;
+  padding:36px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-panel::before{
+  content:'';
+  position:absolute;
+  inset:auto -20% -40% auto;
+  width:280px;
+  height:280px;
+  background:radial-gradient(circle, rgba(26,86,219,.26), transparent 68%);
+}
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border-radius:999px;
+  padding:8px 14px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.09);
+  color:rgba(255,255,255,.82);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+
+.study-hero h1{
+  font-family:var(--font-h);
+  font-size:clamp(2.2rem,5vw,4.3rem);
+  line-height:1.02;
+  letter-spacing:-.04em;
+  margin-bottom:16px;
+}
+
+.study-hero h1 span{color:var(--gold)}
+.hero-copy{max-width:620px;color:var(--muted);font-size:1.03rem;line-height:1.75;margin-bottom:28px}
+
+.hero-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hero-point{
+  border-radius:20px;
+  padding:18px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+.hero-point strong{display:block;font-size:1.2rem;margin-bottom:6px}
+.hero-point span{display:block;color:var(--muted);font-size:.84rem;line-height:1.55}
+
+.hero-preview{
+  border-radius:32px;
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.lane-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border-radius:999px;
+  background:rgba(26,86,219,.16);
+  color:#dbeafe;
+  width:max-content;
+  padding:8px 14px;
+  border:1px solid rgba(59,130,246,.3);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+
+.hero-preview h2{font-size:1.42rem;line-height:1.2}
+.hero-preview p{color:var(--muted);line-height:1.7}
+
+.preview-list{display:grid;gap:12px}
+.preview-item{
+  border-radius:18px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  padding:16px;
+}
+.preview-item strong{display:block;font-size:.9rem;margin-bottom:6px}
+.preview-item span{display:block;color:var(--muted);font-size:.84rem;line-height:1.55}
+
+.study-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px}
+.study-card,.result-card,.timeline-card{border-radius:28px;padding:28px}
+
+.study-card h2,.result-card h2,.timeline-card h2{
+  font-size:1.45rem;
+  margin-bottom:10px;
+}
+
+.section-copy{color:var(--muted);font-size:.94rem;line-height:1.7;margin-bottom:22px}
+
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.84rem;font-weight:700;letter-spacing:.03em;margin-bottom:10px;color:rgba(255,255,255,.92)}
+
+.select,
+.name-input{
+  width:100%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  border-radius:16px;
+  min-height:54px;
+  padding:0 16px;
+  outline:none;
+}
+
+.select option{color:#0d1117}
+
+.option-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.option-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.choice-btn{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.86);
+  border-radius:18px;
+  padding:14px 12px;
+  text-align:left;
+  min-height:74px;
+  transition:border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.choice-btn strong{display:block;font-size:.92rem;margin-bottom:4px}
+.choice-btn span{display:block;font-size:.78rem;color:var(--muted);line-height:1.45}
+.choice-btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.24)}
+.choice-btn.active{
+  background:rgba(26,86,219,.18);
+  border-color:rgba(59,130,246,.6);
+  box-shadow:0 10px 24px rgba(26,86,219,.2);
+}
+
+.build-btn{
+  width:100%;
+  min-height:56px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg, #1a56db 0%, #2563eb 100%);
+  color:#fff;
+  font-weight:800;
+  font-size:.98rem;
+  box-shadow:0 16px 34px rgba(26,86,219,.3);
+}
+
+.build-btn:hover{background:linear-gradient(135deg, #1440b0 0%, #1a56db 100%)}
+
+.result-card{display:flex;flex-direction:column;gap:18px}
+.result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.result-badge{
+  border-radius:999px;
+  padding:8px 12px;
+  background:rgba(245,158,11,.16);
+  border:1px solid rgba(245,158,11,.34);
+  color:#fde68a;
+  font-size:.78rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+.result-summary{font-size:1.02rem;line-height:1.8;color:rgba(255,255,255,.88)}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat-card{
+  border-radius:20px;
+  padding:16px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+.stat-card strong{display:block;font-size:1.1rem;margin-bottom:6px}
+.stat-card span{display:block;color:var(--muted);font-size:.82rem;line-height:1.45}
+
+.plan-list,.timeline-list{display:grid;gap:12px}
+.plan-item,.timeline-step{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:start;
+  border-radius:18px;
+  padding:15px 16px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.plan-mark,.timeline-mark{
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  font-size:.8rem;
+  font-weight:800;
+  flex-shrink:0;
+}
+
+.plan-mark{background:rgba(16,185,129,.18);color:#6ee7b7}
+.timeline-mark{background:rgba(244,63,94,.16);color:#fda4af}
+.plan-item strong,.timeline-step strong{display:block;font-size:.92rem;margin-bottom:5px}
+.plan-item span,.timeline-step span{display:block;font-size:.82rem;line-height:1.55;color:var(--muted)}
+
+.result-empty{
+  border-radius:22px;
+  padding:22px;
+  background:rgba(255,255,255,.04);
+  border:1px dashed rgba(255,255,255,.16);
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.study-footer-note{margin-top:16px;color:rgba(240,244,255,.55);font-size:.78rem;line-height:1.65}
+
+@media (max-width: 980px){
+  .study-hero,.study-grid{grid-template-columns:1fr}
+}
+
+@media (max-width: 720px){
+  .hero-panel,.hero-preview,.study-card,.result-card,.timeline-card{padding:22px}
+  .hero-points,.stat-grid,.option-grid,.option-grid.two{grid-template-columns:1fr}
+  .study-shell{padding-top:96px}
+}
+</style>
+</head>
+<body>
+  <div id="navbar-slot"></div>
+  <script src="/navbar-loader.js" defer></script>
+
+  <main class="study-shell">
+    <div class="wrap">
+      <section class="study-hero">
+        <div class="hero-panel">
+          <div class="eyebrow">Study Prototype</div>
+          <h1>Build a smarter <span>SAT / PSAT</span> prep path.</h1>
+          <p class="hero-copy">This prototype asks about your grade, target test, and current comfort level, then builds a first-pass study lane with the right pacing, subject order, and starter moves.</p>
+          <div class="hero-points">
+            <div class="hero-point">
+              <strong>Grade-aware</strong>
+              <span>Shifts the plan depending on whether you are still building foundations or pushing for a score jump.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Skill-based</strong>
+              <span>Uses your reading and math confidence to decide where to start instead of forcing the same sequence on everyone.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Prototype plan</strong>
+              <span>Outputs a suggested lane, weekly rhythm, and first three moves you can expand into a full study system later.</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-preview">
+          <div class="lane-chip">Adaptive Study Flow</div>
+          <h2>What this version already does</h2>
+          <p>It turns a short questionnaire into a prep recommendation for PSAT or SAT, with a level-aware study sequence and a weekly structure.</p>
+          <div class="preview-list">
+            <div class="preview-item">
+              <strong>Foundation lane</strong>
+              <span>For earlier grades or lower confidence. Starts with skill repair, pacing basics, and low-pressure reps.</span>
+            </div>
+            <div class="preview-item">
+              <strong>Builder lane</strong>
+              <span>For students with mixed understanding. Balances concept cleanup with timed practice and review.</span>
+            </div>
+            <div class="preview-item">
+              <strong>Score climb lane</strong>
+              <span>For stronger students. Pushes timed sections, mistake pattern tracking, and high-yield refinement.</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="study-grid">
+        <section class="study-card">
+          <h2>Your Questionnaire</h2>
+          <p class="section-copy">Answer a few quick questions. The prototype will shape your first study lane based on grade, target exam, confidence, and time available each week.</p>
+
+          <div class="field">
+            <label for="study-name">First name</label>
+            <input id="study-name" class="name-input" type="text" maxlength="40" placeholder="e.g. Alex">
+          </div>
+
+          <div class="field">
+            <label for="study-grade">Grade</label>
+            <select id="study-grade" class="select">
+              <option value="">Select your grade</option>
+              <option value="8">8th Grade</option>
+              <option value="9">9th Grade</option>
+              <option value="10">10th Grade</option>
+              <option value="11">11th Grade</option>
+              <option value="12">12th Grade</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Target exam</label>
+            <div class="option-grid" data-group="exam">
+              <button class="choice-btn" type="button" data-value="psat"><strong>PSAT</strong><span>Early score building and confidence before the SAT.</span></button>
+              <button class="choice-btn" type="button" data-value="sat"><strong>SAT</strong><span>Higher-stakes prep and more aggressive pacing.</span></button>
+              <button class="choice-btn" type="button" data-value="both"><strong>Both</strong><span>Build PSAT readiness while laying SAT foundations.</span></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Reading &amp; writing comfort</label>
+            <div class="option-grid" data-group="reading">
+              <button class="choice-btn" type="button" data-value="low"><strong>Needs work</strong><span>I miss grammar rules and struggle to explain passage choices.</span></button>
+              <button class="choice-btn" type="button" data-value="mid"><strong>Mixed</strong><span>Some sections feel good, but accuracy is inconsistent.</span></button>
+              <button class="choice-btn" type="button" data-value="high"><strong>Strong</strong><span>I usually understand the questions and want sharper speed.</span></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Math comfort</label>
+            <div class="option-grid" data-group="math">
+              <button class="choice-btn" type="button" data-value="low"><strong>Needs work</strong><span>Algebra and data questions still slow me down.</span></button>
+              <button class="choice-btn" type="button" data-value="mid"><strong>Mixed</strong><span>I can solve a lot, but timing and careless misses hurt me.</span></button>
+              <button class="choice-btn" type="button" data-value="high"><strong>Strong</strong><span>I want harder reps and better consistency under time.</span></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Weekly study time</label>
+            <div class="option-grid two" data-group="time">
+              <button class="choice-btn" type="button" data-value="light"><strong>2 to 3 hours</strong><span>Short, efficient blocks during the week.</span></button>
+              <button class="choice-btn" type="button" data-value="steady"><strong>4 to 5 hours</strong><span>Enough time for drills plus one timed set.</span></button>
+              <button class="choice-btn" type="button" data-value="heavy"><strong>6+ hours</strong><span>Room for deeper review and full timed work.</span></button>
+              <button class="choice-btn" type="button" data-value="weekend"><strong>Mostly weekends</strong><span>Longer sessions packed into fewer days.</span></button>
+            </div>
+          </div>
+
+          <button class="build-btn" id="build-study-btn" type="button">Build My Study Plan</button>
+          <p class="study-footer-note">Prototype note: this is an early version intended to prove the flow, recommendation logic, and page direction before connecting it to real question sets and score history.</p>
+        </section>
+
+        <section class="result-card">
+          <div class="result-header">
+            <div>
+              <h2 id="result-title">Your recommended lane</h2>
+              <p class="section-copy" id="result-sub">Complete the questionnaire to generate a study path.</p>
+            </div>
+            <div class="result-badge" id="result-badge">Waiting</div>
+          </div>
+
+          <div class="result-empty" id="result-empty">Once you answer the questionnaire, this panel will recommend the best starting lane, subject emphasis, study rhythm, and first actions for a PSAT/SAT prep prototype.</div>
+
+          <div id="result-body" style="display:none">
+            <p class="result-summary" id="result-summary"></p>
+
+            <div class="stat-grid">
+              <div class="stat-card">
+                <strong id="stat-focus">-</strong>
+                <span>Primary study focus</span>
+              </div>
+              <div class="stat-card">
+                <strong id="stat-rhythm">-</strong>
+                <span>Weekly rhythm</span>
+              </div>
+              <div class="stat-card">
+                <strong id="stat-track">-</strong>
+                <span>Recommended track</span>
+              </div>
+            </div>
+
+            <div>
+              <h2 style="font-size:1.08rem;margin-bottom:12px">First three moves</h2>
+              <div class="plan-list" id="plan-list"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="timeline-card" style="margin-top:24px">
+        <h2>How the prototype thinks</h2>
+        <p class="section-copy">This page uses simple rule-based logic right now: grade determines pacing pressure, your reading and math confidence determine emphasis, and time available shapes the weekly cadence.</p>
+        <div class="timeline-list">
+          <div class="timeline-step">
+            <div class="timeline-mark">1</div>
+            <div><strong>Map the student</strong><span>Identify grade level, test target, and subject confidence to estimate whether the student needs foundation work, balanced prep, or timed optimization.</span></div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-mark">2</div>
+            <div><strong>Choose a lane</strong><span>Set a prep lane like Foundation, Builder, or Score Climb based on how early the student is starting and how confident they feel today.</span></div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-mark">3</div>
+            <div><strong>Generate next actions</strong><span>Produce a weekly rhythm, a first-skill focus, and the first few concrete moves needed to begin study without overwhelm.</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-slot"></div>
+  <script src="/footer-loader.js" defer></script>
+  <script>
+    const STUDY_STORAGE_KEY = 'budy_study_profile_v1';
+    const GRADE_PREF_KEY = 'budy_grade_pref';
+    const state = {
+      exam: '',
+      reading: '',
+      math: '',
+      time: ''
+    };
+
+    const GROUPS = ['exam', 'reading', 'math', 'time'];
+    const SCORE_MAP = { low: 0, mid: 1, high: 2 };
+
+    function setActiveChoice(group, value) {
+      state[group] = value;
+      document.querySelectorAll('[data-group="' + group + '"] .choice-btn').forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === value);
+      });
+    }
+
+    function bindChoiceGroups() {
+      GROUPS.forEach((group) => {
+        document.querySelectorAll('[data-group="' + group + '"] .choice-btn').forEach((button) => {
+          button.addEventListener('click', () => setActiveChoice(group, button.dataset.value || ''));
+        });
+      });
+    }
+
+    function getGradeLabel(grade) {
+      const map = { '8': '8th Grade', '9': '9th Grade', '10': '10th Grade', '11': '11th Grade', '12': '12th Grade' };
+      return map[String(grade || '')] || 'your grade';
+    }
+
+    function buildPlan() {
+      const name = String(document.getElementById('study-name').value || '').trim();
+      const grade = String(document.getElementById('study-grade').value || '');
+      if (!grade || !state.exam || !state.reading || !state.math || !state.time) {
+        alert('Please complete the questionnaire first.');
+        return;
+      }
+
+      const readingScore = SCORE_MAP[state.reading] ?? 1;
+      const mathScore = SCORE_MAP[state.math] ?? 1;
+      const averageScore = (readingScore + mathScore) / 2;
+      const isEarlyPrep = grade === '8' || grade === '9';
+      const target = state.exam === 'both' ? 'PSAT-to-SAT bridge' : state.exam.toUpperCase();
+
+      let lane = 'Builder';
+      let laneBadge = 'Balanced';
+      let focus = 'Split reading and math evenly';
+      let rhythm = '3 focused sessions';
+      let track = 'Core';
+      let summary = '';
+      let steps = [];
+
+      if (averageScore <= 0.5 || (isEarlyPrep && averageScore < 1)) {
+        lane = 'Foundation Lane';
+        laneBadge = 'Foundation';
+        focus = readingScore < mathScore ? 'Reading & writing basics first' : 'Math fundamentals first';
+        rhythm = state.time === 'light' ? '3 short sessions' : '4 guided sessions';
+        track = isEarlyPrep ? 'PSAT readiness' : 'SAT foundations';
+        summary = (name ? name + ', t' : 'T') + 'his plan starts with calmer skill-building for ' + getGradeLabel(grade) + ' so you can stack accuracy before heavy timed pressure. The goal is to make core question types feel normal, not rushed.';
+        steps = [
+          ['Rebuild the weak side', 'Start with untimed drills in the lower-confidence subject so every miss turns into a clear rule or pattern.'],
+          ['Add light timed reps', 'Once accuracy improves, add short timed sets to build pacing without overwhelming the session.'],
+          ['Reflect after each block', 'Log what type of question caused the miss so the next session starts with a fix, not a guess.']
+        ];
+      } else if (averageScore >= 1.5 && !isEarlyPrep) {
+        lane = 'Score Climb Lane';
+        laneBadge = 'Advanced';
+        focus = readingScore < mathScore ? 'Sharpen passage speed and evidence questions' : 'Sharpen algebra speed and hard multi-step math';
+        rhythm = state.time === 'heavy' ? '5 sessions + 1 timed section' : '4 sessions + 1 timed section';
+        track = target === 'SAT' ? 'SAT push' : 'Upper-track hybrid';
+        summary = (name ? name + ', y' : 'Y') + 'ou already have decent footing, so this lane pushes score growth through timed sections, pattern review, and sharper correction loops instead of basic concept review.';
+        steps = [
+          ['Run one timed section weekly', 'Use one higher-pressure block each week to expose pacing leaks and decision mistakes.'],
+          ['Tag every miss by pattern', 'Separate content misses from rushing, misreads, and second-guessing so your review is targeted.'],
+          ['Push your stronger side last', 'Spend early energy on the weaker section, then finish with confidence-building reps in the stronger one.']
+        ];
+      } else {
+        lane = 'Builder Lane';
+        laneBadge = 'Builder';
+        focus = readingScore < mathScore ? 'Lift verbal consistency while keeping math warm' : 'Lift math consistency while keeping verbal warm';
+        rhythm = state.time === 'weekend' ? '2 long blocks + 1 reset review' : '4 balanced sessions';
+        track = isEarlyPrep ? 'PSAT builder' : 'SAT builder';
+        summary = (name ? name + ', t' : 'T') + 'his lane balances concept cleanup with timed work so you improve understanding and confidence at the same time. It is the best fit when your scores feel mixed rather than clearly low or clearly advanced.';
+        steps = [
+          ['Open with the weaker section', 'Spend the first session of the week on the subject where accuracy feels shakier.'],
+          ['Add one mixed timed block', 'Blend both sections into one timed block so transitions stop feeling abrupt.'],
+          ['Review before adding volume', 'Only increase workload after you can explain why your recent misses happened.']
+        ];
+      }
+
+      if (state.exam === 'psat' && Number(grade) <= 9) {
+        summary += ' Because you are targeting the PSAT earlier, the plan keeps pressure lower and focuses on clean foundations first.';
+      }
+      if (state.exam === 'both') {
+        summary += ' Since you want both PSAT and SAT readiness, the plan starts broad now and gets stricter with timing later.';
+      }
+
+      localStorage.setItem(STUDY_STORAGE_KEY, JSON.stringify({
+        name,
+        grade,
+        exam: state.exam,
+        reading: state.reading,
+        math: state.math,
+        time: state.time
+      }));
+      localStorage.setItem(GRADE_PREF_KEY, grade);
+
+      renderPlan({ lane, laneBadge, focus, rhythm, track, summary, steps, target });
+    }
+
+    function renderPlan(plan) {
+      document.getElementById('result-title').textContent = plan.lane;
+      document.getElementById('result-sub').textContent = 'Built for ' + plan.target + ' prep';
+      document.getElementById('result-badge').textContent = plan.laneBadge;
+      document.getElementById('result-summary').textContent = plan.summary;
+      document.getElementById('stat-focus').textContent = plan.focus;
+      document.getElementById('stat-rhythm').textContent = plan.rhythm;
+      document.getElementById('stat-track').textContent = plan.track;
+
+      const planList = document.getElementById('plan-list');
+      planList.innerHTML = plan.steps.map((step, index) => {
+        return '<div class="plan-item"><div class="plan-mark">' + (index + 1) + '</div><div><strong>' + step[0] + '</strong><span>' + step[1] + '</span></div></div>';
+      }).join('');
+
+      document.getElementById('result-empty').style.display = 'none';
+      document.getElementById('result-body').style.display = 'block';
+    }
+
+    function hydrateSavedProfile() {
+      const savedGrade = localStorage.getItem(GRADE_PREF_KEY);
+      if (savedGrade) document.getElementById('study-grade').value = savedGrade;
+
+      try {
+        const raw = localStorage.getItem(STUDY_STORAGE_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved !== 'object') return;
+        if (saved.name) document.getElementById('study-name').value = saved.name;
+        if (saved.grade) document.getElementById('study-grade').value = saved.grade;
+        GROUPS.forEach((group) => {
+          if (saved[group]) setActiveChoice(group, saved[group]);
+        });
+      } catch (_) {}
+    }
+
+    document.getElementById('build-study-btn').addEventListener('click', buildPlan);
+    bindChoiceGroups();
+    hydrateSavedProfile();
+  </script>
+</body>
+</html>
