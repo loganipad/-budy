@@ -2964,6 +2964,7 @@ function renderDemoControls() {
   const doneBtn = document.getElementById('demo-done-btn');
   if (!dots || !doneBtn) return;
 
+  const currentIndex = Number(S.demoIndex) || 0;
   const answeredCount = LANDING_DEMO_QUESTIONS.filter((_, i) => Boolean(S.demoAnswers[i])).length;
   const allAnswered = answeredCount === LANDING_DEMO_QUESTIONS.length;
 
@@ -2983,7 +2984,7 @@ function renderDemoControls() {
     const dot = document.createElement('button');
     dot.type = 'button';
     dot.className = 'prog-dot';
-    if (i === index) dot.classList.add('cur');
+    if (i === currentIndex) dot.classList.add('cur');
     else if (S.demoStatus[i] === 'correct') dot.classList.add('done');
     else if (S.demoStatus[i] === 'wrong') dot.classList.add('wrong');
     dot.textContent = String(i + 1);
