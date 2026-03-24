@@ -229,6 +229,11 @@ input,select{font-family:inherit}
 .phone-demo-grading-title{font-size:.84rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .phone-demo-grading-copy{font-size:.75rem;line-height:1.55;color:var(--slate);max-width:210px}
 @keyframes demoSpin{to{transform:rotate(360deg)}}
+.phone-demo-analytics-celebrate{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#f6f8fc}
+.phone-demo-analytics-icon{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:#e0ecff;color:var(--brand);flex-shrink:0}
+.phone-demo-analytics-icon svg{width:16px;height:16px;display:block}
+.phone-demo-analytics-message{font-size:.73rem;line-height:1.5;color:var(--slate)}
+.phone-demo-analytics-message strong{display:block;font-size:.78rem;color:var(--ink);margin-bottom:2px}
 .phone-demo-analytics-title{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .phone-demo-analytics-copy{font-size:.72rem;line-height:1.45;color:var(--slate)}
 .phone-analytics-bars{display:flex;flex-direction:column;gap:12px}
@@ -1259,7 +1264,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         </div>
         <div class="phone-demo-analytics" id="demo-analytics">
           <div class="phone-demo-analytics-title">Test Analytics</div>
-          <div class="phone-demo-analytics-copy">Demo test limited information. These bars preview proficiency only after every question has an answer.</div>
+          <div class="phone-demo-analytics-celebrate">
+            <span class="phone-demo-analytics-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-book"></use></svg></span>
+            <div class="phone-demo-analytics-message"><strong id="demo-analytics-rating">Nice work finishing the demo.</strong><span id="demo-analytics-copy">You completed the set and unlocked your skill snapshot.</span></div>
+          </div>
           <div class="phone-analytics-bars">
             <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">English</div><div class="phone-analytics-score" id="demo-analytics-english-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill english" id="demo-analytics-english"></div></div></div>
             <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">Math</div><div class="phone-analytics-score" id="demo-analytics-math-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill math" id="demo-analytics-math"></div></div></div>
@@ -3062,6 +3070,20 @@ function renderDemoAnalytics() {
   const english = scoreFor(englishIds);
   const math = scoreFor(mathIds);
   const overall = Math.round((Object.values(S.demoStatus).filter((status) => status === 'correct').length / LANDING_DEMO_QUESTIONS.length) * 100);
+  const rating = document.getElementById('demo-analytics-rating');
+  const copy = document.getElementById('demo-analytics-copy');
+
+  if (rating) {
+    if (overall >= 75) rating.textContent = 'Strong job finishing the demo.';
+    else if (overall >= 50) rating.textContent = 'Good work completing the demo.';
+    else rating.textContent = 'Nice effort finishing the demo.';
+  }
+
+  if (copy) {
+    if (overall >= 75) copy.textContent = 'You are showing solid early proficiency. Keep going and build on this momentum.';
+    else if (overall >= 50) copy.textContent = 'You are building real progress. A few more reps can turn this into stronger consistency.';
+    else copy.textContent = 'You finished the set and that matters. This snapshot gives you a starting point to improve from.';
+  }
 
   [
     ['english', english],
