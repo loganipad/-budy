@@ -84,12 +84,12 @@
     var mobileAccount = document.getElementById('nav-m-link-account');
 
     if (desktopAccount) {
-      desktopAccount.textContent = isHome ? 'Home' : 'My Account';
+      desktopAccount.textContent = isHome ? 'Home' : 'Dashboard';
       desktopAccount.setAttribute('href', isHome ? '/' : '/my-account.html');
     }
 
     if (mobileAccount) {
-      mobileAccount.textContent = isHome ? 'Home' : 'My Account';
+      mobileAccount.textContent = isHome ? 'Home' : 'Dashboard';
       mobileAccount.setAttribute('href', isHome ? '/' : '/my-account.html');
     }
   }
