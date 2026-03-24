@@ -217,22 +217,30 @@ input,select{font-family:inherit}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-#demo-stage,.phone-demo-analytics{transition:opacity .24s var(--ease),transform .24s var(--ease)}
+#demo-stage,.phone-demo-analytics,.phone-demo-grading{transition:opacity .24s var(--ease),transform .24s var(--ease)}
 #demo-stage{opacity:1;transform:translateY(0)}
 .phone-demo-analytics{position:absolute;left:20px;right:20px;top:20px;display:flex;flex-direction:column;gap:12px;padding-top:2px;opacity:0;transform:translateY(8px);pointer-events:none}
+.phone-demo-grading{position:absolute;left:20px;right:20px;top:20px;bottom:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;transform:translateY(8px);pointer-events:none;text-align:center}
 .phone-body.analytics-active #demo-stage{opacity:0;transform:translateY(-8px);pointer-events:none}
 .phone-body.analytics-active .phone-demo-analytics{opacity:1;transform:translateY(0);pointer-events:auto}
+.phone-body.grading-active #demo-stage,.phone-body.grading-active .phone-demo-analytics{opacity:0;transform:translateY(-8px);pointer-events:none}
+.phone-body.grading-active .phone-demo-grading{opacity:1;transform:translateY(0);pointer-events:auto}
+.phone-demo-spinner{width:34px;height:34px;border-radius:999px;border:3px solid #dbe4f0;border-top-color:#2563eb;animation:demoSpin .8s linear infinite}
+.phone-demo-grading-title{font-size:.84rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.phone-demo-grading-copy{font-size:.75rem;line-height:1.55;color:var(--slate);max-width:210px}
+@keyframes demoSpin{to{transform:rotate(360deg)}}
 .phone-demo-analytics-title{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .phone-demo-analytics-copy{font-size:.72rem;line-height:1.45;color:var(--slate)}
-.phone-analytics-bars{display:flex;flex-direction:column;gap:10px}
-.phone-analytics-row{display:grid;grid-template-columns:58px 1fr 34px;gap:8px;align-items:center}
-.phone-analytics-row span{font-size:.68rem;font-weight:800;color:var(--slate);text-transform:uppercase;letter-spacing:.05em}
-.phone-analytics-track{height:9px;border-radius:999px;background:#dbe4f0;overflow:hidden}
+.phone-analytics-bars{display:flex;flex-direction:column;gap:12px}
+.phone-analytics-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:12px;background:#f6f8fc}
+.phone-analytics-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.phone-analytics-label{font-size:.68rem;font-weight:800;color:var(--slate);text-transform:uppercase;letter-spacing:.05em}
+.phone-analytics-score{font-size:.7rem;font-weight:800;color:var(--muted);text-align:right}
+.phone-analytics-track{width:100%;height:14px;border-radius:999px;background:#dbe4f0;overflow:hidden}
 .phone-analytics-fill{height:100%;width:0;border-radius:999px;transition:width .55s var(--ease)}
 .phone-analytics-fill.english{background:#f43f5e}
 .phone-analytics-fill.math{background:#10b981}
 .phone-analytics-fill.overall{background:#2563eb}
-.phone-analytics-score{font-size:.68rem;font-weight:800;color:var(--muted);text-align:right}
 .phone-prog-row{padding:14px 20px 20px;display:flex;align-items:center;gap:10px}
 .phone-prog{flex:1;display:flex;justify-content:center;gap:7px}
 .phone-prog.phone-prog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -1253,10 +1261,15 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="phone-demo-analytics-title">Test Analytics</div>
           <div class="phone-demo-analytics-copy">Demo test limited information. These bars preview proficiency only after every question has an answer.</div>
           <div class="phone-analytics-bars">
-            <div class="phone-analytics-row"><span>English</span><div class="phone-analytics-track"><div class="phone-analytics-fill english" id="demo-analytics-english"></div></div><div class="phone-analytics-score" id="demo-analytics-english-score">0%</div></div>
-            <div class="phone-analytics-row"><span>Math</span><div class="phone-analytics-track"><div class="phone-analytics-fill math" id="demo-analytics-math"></div></div><div class="phone-analytics-score" id="demo-analytics-math-score">0%</div></div>
-            <div class="phone-analytics-row"><span>Overall</span><div class="phone-analytics-track"><div class="phone-analytics-fill overall" id="demo-analytics-overall"></div></div><div class="phone-analytics-score" id="demo-analytics-overall-score">0%</div></div>
+            <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">English</div><div class="phone-analytics-score" id="demo-analytics-english-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill english" id="demo-analytics-english"></div></div></div>
+            <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">Math</div><div class="phone-analytics-score" id="demo-analytics-math-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill math" id="demo-analytics-math"></div></div></div>
+            <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">Overall</div><div class="phone-analytics-score" id="demo-analytics-overall-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill overall" id="demo-analytics-overall"></div></div></div>
           </div>
+        </div>
+        <div class="phone-demo-grading" id="demo-grading">
+          <div class="phone-demo-spinner" aria-hidden="true"></div>
+          <div class="phone-demo-grading-title">Grading Test</div>
+          <div class="phone-demo-grading-copy">Scoring your demo and preparing limited analytics...</div>
         </div>
       </div>
       <div class="phone-prog-row">
@@ -2194,7 +2207,8 @@ const S = {
   accountTab: 'progress',
   checkoutSyncInProgress: false,
   leaveTestDestination: 'landing',
-  demoCompleted: false
+  demoCompleted: false,
+  demoGrading: false
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -2912,8 +2926,9 @@ function renderLandingDemo(index) {
   if (!label || !text || !opts || !exp || !dots || !phoneBody) return;
 
   phoneBody.classList.toggle('analytics-active', Boolean(S.demoCompleted));
+  phoneBody.classList.toggle('grading-active', Boolean(S.demoGrading));
   renderDemoControls();
-  if (S.demoCompleted) return;
+  if (S.demoCompleted || S.demoGrading) return;
 
   label.textContent = q.section.toUpperCase() + ' · QUESTION ' + (index + 1) + ' OF ' + LANDING_DEMO_QUESTIONS.length;
   text.textContent = q.question;
@@ -2968,6 +2983,13 @@ function renderDemoControls() {
   const answeredCount = LANDING_DEMO_QUESTIONS.filter((_, i) => Boolean(S.demoAnswers[i])).length;
   const allAnswered = answeredCount === LANDING_DEMO_QUESTIONS.length;
 
+  if (S.demoGrading) {
+    dots.className = 'phone-prog';
+    dots.innerHTML = '';
+    doneBtn.hidden = true;
+    return;
+  }
+
   if (S.demoCompleted) {
     dots.className = 'phone-prog phone-prog-actions';
     dots.innerHTML = [
@@ -3019,9 +3041,14 @@ function attachDemoSwipe() {
 function completeDemoTest() {
   const allAnswered = LANDING_DEMO_QUESTIONS.every((_, i) => Boolean(S.demoAnswers[i]));
   if (!allAnswered) return;
-  S.demoCompleted = true;
+  S.demoGrading = true;
   renderLandingDemo(S.demoIndex);
-  renderDemoAnalytics();
+  setTimeout(() => {
+    S.demoGrading = false;
+    S.demoCompleted = true;
+    renderLandingDemo(S.demoIndex);
+    renderDemoAnalytics();
+  }, 1400);
 }
 
 function renderDemoAnalytics() {
@@ -3054,6 +3081,7 @@ function renderDemoAnalytics() {
 }
 
 function retryDemoTest() {
+  S.demoGrading = false;
   S.demoCompleted = false;
   S.demoIndex = 0;
   S.demoAnswers = {};
