@@ -1242,7 +1242,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="hero-proof">
         <div class="hero-proof-item"><div class="hero-proof-n">+190</div><div class="hero-proof-l">Avg. score increase</div></div>
         <div class="hero-proof-divider"></div>
-        <div class="hero-proof-item"><div class="hero-proof-n">52K+</div><div class="hero-proof-l">Students trained</div></div>
+        <div class="hero-proof-item"><div class="hero-proof-n" id="hero-user-counter">49,100</div><div class="hero-proof-l">Students trained</div></div>
         <div class="hero-proof-divider"></div>
         <div class="hero-proof-item"><div class="hero-proof-n">$0-$100,000</div><div class="hero-proof-l">In scholarships available</div></div>
       </div>
@@ -4416,6 +4416,33 @@ async function init() {
       // Fallback: run immediately
       counterEl.textContent = finalCounterLabel;
     }
+  }
+
+  /* Hero user counter, grows from this request timestamp */
+  const heroUserCounterEl = document.getElementById('hero-user-counter');
+  if (heroUserCounterEl) {
+    const baseUsers = 49100;
+    const counterStart = new Date('2026-03-23T22:48:42-0700').getTime();
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const msPerWeek = 7 * msPerDay;
+
+    const formatExactNumber = n => Math.max(baseUsers, Math.floor(n)).toLocaleString('en-US');
+
+    const getCurrentUserCount = () => {
+      const elapsedMs = Math.max(0, Date.now() - counterStart);
+      const elapsedDays = elapsedMs / msPerDay;
+      const elapsedWeeks = elapsedMs / msPerWeek;
+      const weeklyGrowth = baseUsers * Math.pow(1.01, elapsedWeeks);
+      const dailyGrowth = 200 * elapsedDays;
+      return weeklyGrowth + dailyGrowth;
+    };
+
+    const updateHeroUserCounter = () => {
+      heroUserCounterEl.textContent = formatExactNumber(getCurrentUserCount());
+    };
+
+    updateHeroUserCounter();
+    setInterval(updateHeroUserCounter, 1000);
   }
 
   /* Register service worker for PWA offline support */
