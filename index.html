@@ -271,7 +271,6 @@ input,select{font-family:inherit}
    ============================================================ */
 .impact-band {
   background: transparent;
-  border-top: 1px solid rgba(255,255,255,.08);
   border-bottom: 1px solid rgba(255,255,255,.08);
   padding: 48px 0;
   position: relative;
@@ -1245,7 +1244,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <div class="hero-proof-divider"></div>
         <div class="hero-proof-item"><div class="hero-proof-n">52K+</div><div class="hero-proof-l">Students trained</div></div>
         <div class="hero-proof-divider"></div>
-        <div class="hero-proof-item"><div class="hero-proof-n">$40M+</div><div class="hero-proof-l">In scholarships won</div></div>
+        <div class="hero-proof-item"><div class="hero-proof-n">Up to $100,000</div><div class="hero-proof-l">In scholarships available</div></div>
       </div>
     </div>
     <!-- Phone mockup -->
@@ -1287,17 +1286,17 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   </div>
 </section>
 
-<!-- $40M SCHOLARSHIP IMPACT BANNER -->
+<!-- SCHOLARSHIP IMPACT BANNER -->
 <div class="impact-band">
   <div class="wrap">
     <div class="impact-inner">
       <div class="impact-stat">
         <div class="impact-num" id="impact-counter">$0</div>
-        <div class="impact-lbl">in scholarships won by Budy.Study students</div>
+        <div class="impact-lbl">in scholarship potential for high scorers</div>
       </div>
       <div class="impact-divider"></div>
       <div class="impact-copy">
-        <p>A higher SAT score doesn't just open doors. It <strong>pays for college</strong>. Our students have collectively earned over $40 million in merit scholarships by improving their scores with Budy.Study.</p>
+        <p>A higher SAT score doesn't just open doors. It <strong>can change your cost of college</strong>. Strong applicants can qualify for <strong>up to $100,000</strong> in merit scholarships depending on the school, score gains, and academic profile.</p>
       </div>
     </div>
   </div>
@@ -1305,7 +1304,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 
 <!-- UNIVERSITY CREDIBILITY STRIP -->
 <section class="cred-section">
-  <div class="cred-label">Over $40,000,000 in scholarships won at schools like these</div>
+  <div class="cred-label">Up to $100,000 in scholarships at schools like these</div>
   <div class="marquee-outer">
     <div class="marquee-track" id="marquee-track">
       <!-- Set 1: Ivy League + Top Tech + Business -->
@@ -4374,16 +4373,14 @@ async function init() {
     window.history.replaceState({}, document.title, nextUrl);
   }
 
-  /* $40M animated counter, triggers when scrolled into view */
+  /* Scholarship counter, triggers when scrolled into view */
   const counterEl = document.getElementById('impact-counter');
   if (counterEl) {
-    const target = 40000000;
+    const target = 100000;
     let started = false;
 
     const formatDollar = n => {
-      if (n >= 1000000) return '$' + (n / 1000000).toFixed(n >= 10000000 ? 0 : 1) + 'M';
-      if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
-      return '$' + n;
+      return '$' + Math.round(n).toLocaleString('en-US');
     };
 
     const runCounter = () => {
