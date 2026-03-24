@@ -206,10 +206,7 @@ input,select{font-family:inherit}
 .phone-bar{background:var(--ink-80);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
 .phone-logo{font-size:.8rem;font-weight:800;color:#fff}
 .phone-timer{font-family:var(--font-mono);font-size:.8125rem;color:var(--gold-l);font-weight:600}
-.phone-body{padding:20px;min-height:292px;position:relative}
-.phone-stage{transition:opacity .24s var(--ease),transform .24s var(--ease)}
-.phone-stage.fade-out{opacity:0;transform:translateY(8px)}
-.phone-stage.hidden{display:none}
+.phone-body{padding:20px;position:relative}
 .phone-q-label{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .phone-q{font-size:.875rem;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:16px}
 .phone-opts{display:flex;flex-direction:column;gap:8px}
@@ -220,32 +217,37 @@ input,select{font-family:inherit}
 .phone-opt.wrong{border-color:var(--rose);background:var(--rose-pale);color:var(--rose);animation:demoPulse .35s var(--ease)}
 .phone-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
-.phone-prog{padding:14px 20px 20px;display:flex;justify-content:center;align-items:center;gap:7px}
+#demo-stage,.phone-demo-analytics{transition:opacity .24s var(--ease),transform .24s var(--ease)}
+#demo-stage{opacity:1;transform:translateY(0)}
+.phone-demo-analytics{position:absolute;left:20px;right:20px;top:20px;display:flex;flex-direction:column;gap:12px;padding-top:2px;opacity:0;transform:translateY(8px);pointer-events:none}
+.phone-body.analytics-active #demo-stage{opacity:0;transform:translateY(-8px);pointer-events:none}
+.phone-body.analytics-active .phone-demo-analytics{opacity:1;transform:translateY(0);pointer-events:auto}
+.phone-demo-analytics-title{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.phone-demo-analytics-copy{font-size:.72rem;line-height:1.45;color:var(--slate)}
+.phone-analytics-bars{display:flex;flex-direction:column;gap:10px}
+.phone-analytics-row{display:grid;grid-template-columns:58px 1fr 34px;gap:8px;align-items:center}
+.phone-analytics-row span{font-size:.68rem;font-weight:800;color:var(--slate);text-transform:uppercase;letter-spacing:.05em}
+.phone-analytics-track{height:9px;border-radius:999px;background:#dbe4f0;overflow:hidden}
+.phone-analytics-fill{height:100%;width:0;border-radius:999px;transition:width .55s var(--ease)}
+.phone-analytics-fill.english{background:#f43f5e}
+.phone-analytics-fill.math{background:#10b981}
+.phone-analytics-fill.overall{background:#2563eb}
+.phone-analytics-score{font-size:.68rem;font-weight:800;color:var(--muted);text-align:right}
+.phone-prog-row{padding:14px 20px 20px;display:flex;align-items:center;gap:10px}
+.phone-prog{flex:1;display:flex;justify-content:center;gap:7px}
+.phone-prog.phone-prog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .prog-dot{width:28px;height:28px;border-radius:7px;background:var(--line);color:var(--slate);cursor:pointer;transition:transform .15s var(--ease),background .2s var(--ease),color .2s var(--ease);opacity:1;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:800;border:none}
 .prog-dot.done{background:var(--green);color:#fff}
 .prog-dot.cur{background:var(--brand);color:#fff;transform:translateY(0)}
 .prog-dot.wrong{background:var(--rose);color:#fff}
 .prog-dot:active{transform:scale(.94)}
-.prog-done,.phone-cta-mini{min-height:30px;border:none;border-radius:999px;font-size:.72rem;font-weight:800;cursor:pointer;transition:transform .15s var(--ease),opacity .15s var(--ease),background .18s var(--ease),color .18s var(--ease)}
-.prog-done{min-width:74px;padding:0 14px;background:rgba(148,163,184,.18);color:rgba(100,116,139,.92)}
-.prog-done.ready{background:var(--brand);color:#fff}
-.prog-done:active,.phone-cta-mini:active{transform:scale(.97)}
-.phone-cta-mini{flex:1;max-width:122px}
-.phone-cta-mini.retry{background:var(--brand);color:#fff}
-.phone-cta-mini.full{background:var(--gold);color:var(--ink)}
-.phone-analytics{opacity:0;transform:translateY(8px)}
-.phone-analytics.show{opacity:1;transform:translateY(0)}
-.phone-analytics-title{font-size:.84rem;font-weight:800;color:var(--ink);margin-bottom:4px}
-.phone-analytics-sub{font-size:.72rem;line-height:1.5;color:var(--muted);margin-bottom:14px}
-.phone-analytics-bars{display:flex;flex-direction:column;gap:12px}
-.phone-analytics-row{display:grid;grid-template-columns:54px 1fr 34px;gap:10px;align-items:center}
-.phone-analytics-name{font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-60)}
-.phone-analytics-track{height:10px;border-radius:999px;background:#dbe4f0;overflow:hidden}
-.phone-analytics-fill{height:100%;width:0;border-radius:999px;transition:width .55s var(--ease)}
-.phone-analytics-fill.english{background:#ef4444}
-.phone-analytics-fill.math{background:#22c55e}
-.phone-analytics-fill.overall{background:#2563eb}
-.phone-analytics-score{font-size:.72rem;font-weight:800;color:var(--slate);text-align:right}
+.phone-done-btn,.phone-action-btn{min-height:32px;border:none;border-radius:10px;font-size:.72rem;font-weight:800;cursor:pointer;transition:transform .15s var(--ease),background .18s var(--ease),color .18s var(--ease),opacity .18s var(--ease)}
+.phone-done-btn:active,.phone-action-btn:active{transform:scale(.97)}
+.phone-done-btn{min-width:70px;padding:0 14px;background:#d9e0ea;color:#7b8797}
+.phone-done-btn.ready{background:#2563eb;color:#fff}
+.phone-done-btn:disabled{cursor:not-allowed}
+.phone-action-btn.retry{background:#1a56db;color:#fff}
+.phone-action-btn.full{background:var(--gold);color:#fff}
 .phone-exp{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:.72rem;line-height:1.45;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
 .phone-exp.show{opacity:1;transform:translateY(0)}
 .phone-exp.good{border-left-color:var(--green);background:var(--green-pale)}
@@ -1241,35 +1243,26 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <span class="phone-timer" id="landing-phone-timer">30:00</span>
       </div>
       <div class="phone-body">
-        <div class="phone-stage" id="demo-question-shell">
+        <div id="demo-stage">
           <div class="phone-q-label" id="demo-q-label">Math · Question 1 of 4</div>
           <div class="phone-q" id="demo-q-text">Loading question...</div>
           <div class="phone-opts" id="demo-opts"></div>
           <div class="phone-exp" id="demo-exp"></div>
         </div>
-        <div class="phone-analytics phone-stage hidden" id="demo-analytics">
-          <div class="phone-analytics-title">Test Analytics</div>
-          <div class="phone-analytics-sub">Demo test limited information.</div>
+        <div class="phone-demo-analytics" id="demo-analytics">
+          <div class="phone-demo-analytics-title">Test Analytics</div>
+          <div class="phone-demo-analytics-copy">Demo test limited information. These bars preview proficiency only after every question has an answer.</div>
           <div class="phone-analytics-bars">
-            <div class="phone-analytics-row">
-              <div class="phone-analytics-name">English</div>
-              <div class="phone-analytics-track"><div class="phone-analytics-fill english" id="demo-analytics-english"></div></div>
-              <div class="phone-analytics-score" id="demo-analytics-english-score">0%</div>
-            </div>
-            <div class="phone-analytics-row">
-              <div class="phone-analytics-name">Math</div>
-              <div class="phone-analytics-track"><div class="phone-analytics-fill math" id="demo-analytics-math"></div></div>
-              <div class="phone-analytics-score" id="demo-analytics-math-score">0%</div>
-            </div>
-            <div class="phone-analytics-row">
-              <div class="phone-analytics-name">Overall</div>
-              <div class="phone-analytics-track"><div class="phone-analytics-fill overall" id="demo-analytics-overall"></div></div>
-              <div class="phone-analytics-score" id="demo-analytics-overall-score">0%</div>
-            </div>
+            <div class="phone-analytics-row"><span>English</span><div class="phone-analytics-track"><div class="phone-analytics-fill english" id="demo-analytics-english"></div></div><div class="phone-analytics-score" id="demo-analytics-english-score">0%</div></div>
+            <div class="phone-analytics-row"><span>Math</span><div class="phone-analytics-track"><div class="phone-analytics-fill math" id="demo-analytics-math"></div></div><div class="phone-analytics-score" id="demo-analytics-math-score">0%</div></div>
+            <div class="phone-analytics-row"><span>Overall</span><div class="phone-analytics-track"><div class="phone-analytics-fill overall" id="demo-analytics-overall"></div></div><div class="phone-analytics-score" id="demo-analytics-overall-score">0%</div></div>
           </div>
         </div>
       </div>
-      <div class="phone-prog" id="demo-dots"></div>
+      <div class="phone-prog-row">
+        <div class="phone-prog" id="demo-dots"></div>
+        <button type="button" class="phone-done-btn" id="demo-done-btn" onclick="completeDemoTest()" disabled>Done</button>
+      </div>
     </div>
   </div>
 </section>
@@ -2106,7 +2099,6 @@ const CHECKOUT_SYNC_DELAY_MS = 2500;
 const LANDING_DEMO_QUESTIONS = [
   {
     section: 'Math',
-    bucket: 'math',
     question: 'If a tutoring app has 120 users and grows by 25%, how many users does it have now?',
     choices: ['130', '140', '150', '160'],
     answer: 'C',
@@ -2114,7 +2106,6 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'SAT Reading Demo',
-    bucket: 'english',
     question: 'A passage says a scientist repeated an experiment three times with the same result. The best inference is:',
     choices: ['The result may be reliable', 'The experiment is definitely perfect', 'The scientist is biased', 'No conclusion can be made'],
     answer: 'A',
@@ -2122,7 +2113,6 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'SAT Math Demo',
-    bucket: 'math',
     question: 'What is the slope of a line through points (2, 4) and (6, 12)?',
     choices: ['1', '2', '3', '4'],
     answer: 'B',
@@ -2130,7 +2120,6 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'Writing Demo',
-    bucket: 'english',
     question: 'Choose the best transition: "The class practiced daily. _____, scores improved by 18%."',
     choices: ['However', 'For example', 'As a result', 'Meanwhile'],
     answer: 'C',
@@ -2197,7 +2186,6 @@ const S = {
   demoIndex: 0,
   demoAnswers: {},
   demoStatus: {},
-  demoComplete: false,
   subscriptionStatus: 'free',
   cancelAtPeriodEnd: false,
   currentPeriodEnd: null,
@@ -2205,7 +2193,8 @@ const S = {
   canceledAt: null,
   accountTab: 'progress',
   checkoutSyncInProgress: false,
-  leaveTestDestination: 'landing'
+  leaveTestDestination: 'landing',
+  demoCompleted: false
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -2919,14 +2908,12 @@ function renderLandingDemo(index) {
   const opts = document.getElementById('demo-opts');
   const exp = document.getElementById('demo-exp');
   const dots = document.getElementById('demo-dots');
-  const questionShell = document.getElementById('demo-question-shell');
-  const analytics = document.getElementById('demo-analytics');
-  if (!label || !text || !opts || !exp || !dots || !questionShell || !analytics) return;
+  const phoneBody = document.querySelector('.phone-body');
+  if (!label || !text || !opts || !exp || !dots || !phoneBody) return;
 
-  S.demoComplete = false;
-  questionShell.classList.remove('hidden', 'fade-out');
-  analytics.classList.add('hidden');
-  analytics.classList.remove('show');
+  phoneBody.classList.toggle('analytics-active', Boolean(S.demoCompleted));
+  renderDemoControls();
+  if (S.demoCompleted) return;
 
   label.textContent = q.section.toUpperCase() + ' · QUESTION ' + (index + 1) + ' OF ' + LANDING_DEMO_QUESTIONS.length;
   text.textContent = q.question;
@@ -2964,36 +2951,34 @@ function renderLandingDemo(index) {
 
       exp.className = 'phone-exp show ' + (isCorrect ? 'good' : 'bad');
       exp.textContent = (isCorrect ? 'Correct. ' : 'Not quite. ') + q.explanation;
-      renderLandingDemoControls();
+      renderDemoControls();
     };
     opts.appendChild(btn);
   });
 
-  renderLandingDemoControls();
+  renderDemoControls();
 }
 
-function renderLandingDemoControls() {
+function renderDemoControls() {
   const dots = document.getElementById('demo-dots');
-  if (!dots) return;
-  dots.innerHTML = '';
+  const doneBtn = document.getElementById('demo-done-btn');
+  if (!dots || !doneBtn) return;
 
-  if (S.demoComplete) {
-    const retryBtn = document.createElement('button');
-    retryBtn.type = 'button';
-    retryBtn.className = 'phone-cta-mini retry';
-    retryBtn.textContent = 'Retry';
-    retryBtn.onclick = resetLandingDemo;
-    dots.appendChild(retryBtn);
+  const answeredCount = LANDING_DEMO_QUESTIONS.filter((_, i) => Boolean(S.demoAnswers[i])).length;
+  const allAnswered = answeredCount === LANDING_DEMO_QUESTIONS.length;
 
-    const fullBtn = document.createElement('button');
-    fullBtn.type = 'button';
-    fullBtn.className = 'phone-cta-mini full';
-    fullBtn.textContent = 'Full Test';
-    fullBtn.onclick = function () { openOnboard(); };
-    dots.appendChild(fullBtn);
+  if (S.demoCompleted) {
+    dots.className = 'phone-prog phone-prog-actions';
+    dots.innerHTML = [
+      '<button type="button" class="phone-action-btn retry" onclick="retryDemoTest()">Retry</button>',
+      '<button type="button" class="phone-action-btn full" onclick="openOnboard()">Full Test</button>'
+    ].join('');
+    doneBtn.hidden = true;
     return;
   }
 
+  dots.className = 'phone-prog';
+  dots.innerHTML = '';
   LANDING_DEMO_QUESTIONS.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.type = 'button';
@@ -3007,95 +2992,9 @@ function renderLandingDemoControls() {
     dots.appendChild(dot);
   });
 
-  const doneBtn = document.createElement('button');
-  doneBtn.type = 'button';
-  doneBtn.className = 'prog-done';
-  doneBtn.textContent = 'Done';
-  if (landingDemoAllAnswered()) doneBtn.classList.add('ready');
-  doneBtn.onclick = function () {
-    if (landingDemoAllAnswered()) {
-      openLandingDemoAnalytics();
-      return;
-    }
-    const exp = document.getElementById('demo-exp');
-    if (exp) {
-      exp.className = 'phone-exp show bad';
-      exp.textContent = 'Answer all four demo questions to unlock the analytics preview.';
-    }
-  };
-  dots.appendChild(doneBtn);
-}
-
-function landingDemoAllAnswered() {
-  return LANDING_DEMO_QUESTIONS.every((_, index) => Boolean(S.demoStatus[index]));
-}
-
-function getLandingDemoAnalytics() {
-  const buckets = {
-    english: { total: 0, correct: 0 },
-    math: { total: 0, correct: 0 }
-  };
-
-  LANDING_DEMO_QUESTIONS.forEach((question, index) => {
-    const bucket = question.bucket === 'math' ? 'math' : 'english';
-    buckets[bucket].total += 1;
-    if (S.demoStatus[index] === 'correct') buckets[bucket].correct += 1;
-  });
-
-  const totalCorrect = Object.values(buckets).reduce((sum, item) => sum + item.correct, 0);
-  const totalQuestions = LANDING_DEMO_QUESTIONS.length;
-
-  return {
-    english: Math.round((buckets.english.correct / Math.max(1, buckets.english.total)) * 100),
-    math: Math.round((buckets.math.correct / Math.max(1, buckets.math.total)) * 100),
-    overall: Math.round((totalCorrect / Math.max(1, totalQuestions)) * 100)
-  };
-}
-
-function openLandingDemoAnalytics() {
-  if (S.demoComplete || !landingDemoAllAnswered()) return;
-
-  S.demoComplete = true;
-  const questionShell = document.getElementById('demo-question-shell');
-  const analytics = document.getElementById('demo-analytics');
-  if (!questionShell || !analytics) return;
-
-  const scores = getLandingDemoAnalytics();
-  const englishBar = document.getElementById('demo-analytics-english');
-  const mathBar = document.getElementById('demo-analytics-math');
-  const overallBar = document.getElementById('demo-analytics-overall');
-  const englishScore = document.getElementById('demo-analytics-english-score');
-  const mathScore = document.getElementById('demo-analytics-math-score');
-  const overallScore = document.getElementById('demo-analytics-overall-score');
-
-  if (englishBar) englishBar.style.width = '0%';
-  if (mathBar) mathBar.style.width = '0%';
-  if (overallBar) overallBar.style.width = '0%';
-  if (englishScore) englishScore.textContent = scores.english + '%';
-  if (mathScore) mathScore.textContent = scores.math + '%';
-  if (overallScore) overallScore.textContent = scores.overall + '%';
-
-  questionShell.classList.add('fade-out');
-  window.setTimeout(() => {
-    questionShell.classList.add('hidden');
-    analytics.classList.remove('hidden');
-    window.requestAnimationFrame(() => analytics.classList.add('show'));
-    window.setTimeout(() => {
-      if (englishBar) englishBar.style.width = scores.english + '%';
-      if (mathBar) mathBar.style.width = scores.math + '%';
-      if (overallBar) overallBar.style.width = scores.overall + '%';
-    }, 70);
-  }, 180);
-
-  renderLandingDemoControls();
-}
-
-function resetLandingDemo() {
-  S.demoIndex = 0;
-  S.demoAnswers = {};
-  S.demoStatus = {};
-  S.demoComplete = false;
-  renderLandingDemo(0);
+  doneBtn.hidden = false;
+  doneBtn.disabled = !allAnswered;
+  doneBtn.classList.toggle('ready', allAnswered);
 }
 
 function attachDemoSwipe() {
@@ -3108,13 +3007,57 @@ function attachDemoSwipe() {
   }, { passive: true });
   shell.addEventListener('touchend', e => {
     if (!e.changedTouches || !e.changedTouches.length) return;
-    if (S.demoComplete) return;
     const endX = e.changedTouches[0].clientX;
     const delta = endX - startX;
     if (Math.abs(delta) < 36) return;
     if (delta < 0) renderLandingDemo((S.demoIndex + 1) % LANDING_DEMO_QUESTIONS.length);
     else renderLandingDemo((S.demoIndex - 1 + LANDING_DEMO_QUESTIONS.length) % LANDING_DEMO_QUESTIONS.length);
   }, { passive: true });
+}
+
+function completeDemoTest() {
+  const allAnswered = LANDING_DEMO_QUESTIONS.every((_, i) => Boolean(S.demoAnswers[i]));
+  if (!allAnswered) return;
+  S.demoCompleted = true;
+  renderLandingDemo(S.demoIndex);
+  renderDemoAnalytics();
+}
+
+function renderDemoAnalytics() {
+  const mathIds = [0, 2];
+  const englishIds = [1, 3];
+  const scoreFor = (ids) => {
+    const correct = ids.filter((id) => S.demoStatus[id] === 'correct').length;
+    return Math.round((correct / ids.length) * 100);
+  };
+
+  const english = scoreFor(englishIds);
+  const math = scoreFor(mathIds);
+  const overall = Math.round((Object.values(S.demoStatus).filter((status) => status === 'correct').length / LANDING_DEMO_QUESTIONS.length) * 100);
+
+  [
+    ['english', english],
+    ['math', math],
+    ['overall', overall]
+  ].forEach(([key, value]) => {
+    const fill = document.getElementById('demo-analytics-' + key);
+    const score = document.getElementById('demo-analytics-' + key + '-score');
+    if (fill) {
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        fill.style.width = value + '%';
+      });
+    }
+    if (score) score.textContent = value + '%';
+  });
+}
+
+function retryDemoTest() {
+  S.demoCompleted = false;
+  S.demoIndex = 0;
+  S.demoAnswers = {};
+  S.demoStatus = {};
+  renderLandingDemo(0);
 }
 
 /* ── ONBOARDING ── */
