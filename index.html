@@ -4377,27 +4377,31 @@ async function init() {
   const counterEl = document.getElementById('impact-counter');
   if (counterEl) {
     const target = 100000;
+    const finalCounterLabel = '$100K';
     let started = false;
 
     const formatDollar = n => {
+      if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
       return '$' + Math.round(n).toLocaleString('en-US');
     };
 
     const runCounter = () => {
       if (started) return;
       started = true;
-      const duration = 2200;
+      const duration = 2600;
       let startTime = null;
       const step = ts => {
         if (!startTime) startTime = ts;
         const elapsed = ts - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // Ease out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
+        // Ease in-out for a smoother start and finish.
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
         const current = Math.round(eased * target);
         counterEl.textContent = formatDollar(current);
         if (progress < 1) requestAnimationFrame(step);
-        else counterEl.textContent = '$40M+';
+        else counterEl.textContent = finalCounterLabel;
       };
       requestAnimationFrame(step);
     };
@@ -4410,7 +4414,7 @@ async function init() {
       obs.observe(counterEl);
     } else {
       // Fallback: run immediately
-      counterEl.textContent = '$40M+';
+      counterEl.textContent = finalCounterLabel;
     }
   }
 
