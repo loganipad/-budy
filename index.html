@@ -2965,10 +2965,6 @@ function renderLandingDemo(index) {
       exp.className = 'phone-exp show ' + (isCorrect ? 'good' : 'bad');
       exp.textContent = (isCorrect ? 'Correct. ' : 'Not quite. ') + q.explanation;
       renderLandingDemoControls();
-
-      if (landingDemoAllAnswered()) {
-        window.setTimeout(openLandingDemoAnalytics, 380);
-      }
     };
     opts.appendChild(btn);
   });
