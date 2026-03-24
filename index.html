@@ -2955,6 +2955,10 @@ function attachDemoSwipe() {
 
 /* ── ONBOARDING ── */
 function openOnboard() {
+  if (!S.isLoggedIn) {
+    window.location.href = '/login.html';
+    return;
+  }
   S.obStep=1; S.obSection=null;
   document.getElementById('ob-name').value=S.user.name||'';
   document.getElementById('ob-grade').value=S.user.grade||'';

@@ -187,7 +187,8 @@
 
     if (typeof window.openOnboard !== 'function') {
       window.openOnboard = function () {
-        window.location.href = '/';
+        var state = getRuntimeNavState();
+        window.location.href = state.isLoggedIn ? '/' : '/login.html';
       };
     }
 
