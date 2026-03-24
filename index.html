@@ -3048,6 +3048,7 @@ function attachDemoSwipe() {
 function completeDemoTest() {
   const allAnswered = LANDING_DEMO_QUESTIONS.every((_, i) => Boolean(S.demoAnswers[i]));
   if (!allAnswered) return;
+  clearLandingTimer();
   S.demoGrading = true;
   renderLandingDemo(S.demoIndex);
   setTimeout(() => {
@@ -3102,6 +3103,7 @@ function renderDemoAnalytics() {
 }
 
 function retryDemoTest() {
+  startLandingTimer();
   S.demoGrading = false;
   S.demoCompleted = false;
   S.demoIndex = 0;
