@@ -4438,7 +4438,7 @@ async function init() {
     };
 
     const updateHeroUserCounter = () => {
-      heroUserCounterEl.textContent = formatExactNumber(getCurrentUserCount());
+      heroUserCounterEl.textContent = formatExactNumber(getCurrentUserCount()) + '+';
     };
 
     updateHeroUserCounter();
