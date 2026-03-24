@@ -223,6 +223,12 @@ input,select{font-family:inherit}
 .prog-dot.cur{background:var(--brand);color:#fff;transform:translateY(0)}
 .prog-dot.wrong{background:var(--rose);color:#fff}
 .prog-dot:active{transform:scale(.94)}
+.phone-demo-actions{display:flex;gap:10px;padding:0 20px 10px}
+.phone-demo-btn{flex:1;min-height:38px;border:none;border-radius:999px;font-size:.76rem;font-weight:800;cursor:pointer;transition:transform .15s var(--ease),opacity .15s var(--ease)}
+.phone-demo-btn:active{transform:scale(.97)}
+.phone-demo-btn.analytics{background:#e0ecff;color:var(--brand)}
+.phone-demo-btn.submit{background:var(--green);color:#fff}
+.phone-demo-note{padding:0 20px 20px;font-size:.72rem;line-height:1.45;color:var(--muted);text-align:center}
 .phone-exp{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:.72rem;line-height:1.45;background:var(--bg);border-left:3px solid var(--line);color:var(--slate);opacity:0;transform:translateY(4px);transition:all .22s var(--ease)}
 .phone-exp.show{opacity:1;transform:translateY(0)}
 .phone-exp.good{border-left-color:var(--green);background:var(--green-pale)}
@@ -1209,8 +1215,6 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <div class="hero-proof-item"><div class="hero-proof-n">52K+</div><div class="hero-proof-l">Students trained</div></div>
         <div class="hero-proof-divider"></div>
         <div class="hero-proof-item"><div class="hero-proof-n">$40M+</div><div class="hero-proof-l">In scholarships won</div></div>
-        <div class="hero-proof-divider"></div>
-        <div class="hero-proof-item"><div class="hero-proof-n">Free</div><div class="hero-proof-l">To start today</div></div>
       </div>
     </div>
     <!-- Phone mockup -->
@@ -1226,6 +1230,11 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <div class="phone-exp" id="demo-exp"></div>
       </div>
       <div class="phone-prog" id="demo-dots"></div>
+      <div class="phone-demo-actions">
+        <button type="button" class="phone-demo-btn analytics" onclick="showDemoActionNotice('analytics')">Test Analytics</button>
+        <button type="button" class="phone-demo-btn submit" onclick="showDemoActionNotice('submit')">Submit</button>
+      </div>
+      <div class="phone-demo-note" id="demo-action-note">Demo test limited information.</div>
     </div>
   </div>
 </section>
@@ -2061,7 +2070,7 @@ const CHECKOUT_SYNC_DELAY_MS = 2500;
 
 const LANDING_DEMO_QUESTIONS = [
   {
-    section: 'PSAT Skills Demo',
+    section: 'Math',
     question: 'If a tutoring app has 120 users and grows by 25%, how many users does it have now?',
     choices: ['130', '140', '150', '160'],
     answer: 'C',
@@ -2952,6 +2961,16 @@ function attachDemoSwipe() {
     if (delta < 0) renderLandingDemo((S.demoIndex + 1) % LANDING_DEMO_QUESTIONS.length);
     else renderLandingDemo((S.demoIndex - 1 + LANDING_DEMO_QUESTIONS.length) % LANDING_DEMO_QUESTIONS.length);
   }, { passive: true });
+}
+
+function showDemoActionNotice(type) {
+  const note = document.getElementById('demo-action-note');
+  if (!note) return;
+  if (type === 'analytics') {
+    note.textContent = 'Demo analytics shows limited information for pacing, score trend, and question accuracy.';
+    return;
+  }
+  note.textContent = 'Demo submit is limited information only and does not save a real test attempt.';
 }
 
 /* ── ONBOARDING ── */
