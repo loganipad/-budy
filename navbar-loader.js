@@ -12,6 +12,10 @@
     return path === '/my-account.html' || path === '/my-account';
   }
 
+  function isLandingPage(path) {
+    return path === '/' || path === '/index.html' || path === '/index';
+  }
+
   function isTestContext() {
     return Boolean(document.body && document.body.classList.contains('test-active'));
   }
@@ -133,16 +137,36 @@
     var mobileAuth = document.getElementById('mobile-auth-link');
     if (!authBtn || !nav) return;
 
+    var path = getPath();
     var state = getRuntimeNavState();
     var isLoggedIn = Boolean(state.isLoggedIn);
-    var nextLabel = isLoggedIn ? 'Log Out' : 'Log In';
+    var isLanding = isLandingPage(path);
+    var nextLabel = isLanding ? 'Study' : (isLoggedIn ? 'Log Out' : 'Log In');
+    var authHref = isLanding ? (isLoggedIn ? '/study.html' : '/login.html') : '/login.html';
 
     authBtn.textContent = nextLabel;
+    authBtn.onclick = function () {
+      if (isLanding) {
+        window.location.href = authHref;
+        return;
+      }
+      if (typeof window.handleAuthButton === 'function') {
+        window.handleAuthButton();
+      }
+    };
+
     if (mobileAuth) {
       mobileAuth.textContent = nextLabel;
-      mobileAuth.setAttribute('href', '/login.html');
+      mobileAuth.setAttribute('href', authHref);
       mobileAuth.onclick = function (event) {
         event.preventDefault();
+        if (isLanding) {
+          if (typeof window.closeMobileMenu === 'function') {
+            window.closeMobileMenu();
+          }
+          window.location.href = authHref;
+          return;
+        }
         if (typeof window.handleAuthButton === 'function') {
           window.handleAuthButton();
         }
