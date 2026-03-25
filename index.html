@@ -956,7 +956,15 @@ input,select{font-family:inherit}
 #dash-screen .sc-lo{background:rgba(245,158,11,.15);color:#fbbf24}
 #dash-screen .empty-s{text-align:center;padding:40px;color:rgba(240,244,255,.38);font-size:.875rem}
 #dash-screen .empty-s-icon{display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:rgba(240,244,255,.62)}
+#dash-screen .score-chart-wrap{position:relative}
 #dash-screen #score-chart{display:block;width:100% !important;height:230px !important;max-height:230px}
+#dash-screen .score-hover-card{position:absolute;left:0;top:0;min-width:188px;padding:12px 14px;border-radius:18px;background:linear-gradient(180deg,rgba(12,18,32,.96),rgba(17,25,42,.96));border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 44px rgba(0,0,0,.34);pointer-events:none;opacity:0;transform:translate(-50%,-100%) translateY(6px);transition:opacity .14s ease,transform .14s ease;z-index:3}
+#dash-screen .score-hover-card.show{opacity:1;transform:translate(-50%,-100%) translateY(-4px)}
+#dash-screen .score-hover-date{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.48);margin-bottom:10px}
+#dash-screen .score-hover-row{display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:.8rem;color:rgba(240,244,255,.72);padding:4px 0}
+#dash-screen .score-hover-row strong{font-size:.85rem;color:#f0f4ff}
+#dash-screen .score-hover-row.total{margin-top:4px;padding-top:9px;border-top:1px solid rgba(255,255,255,.08)}
+#dash-screen .score-hover-row.total strong{color:#fbbf24}
 
 #dash-screen .expl-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.22);border:1px solid rgba(59,130,246,.3);border-radius:999px;padding:4px 12px;font-size:.7rem;font-weight:700;color:var(--brand);letter-spacing:.03em}
 #dash-screen .billing-wrap{display:flex;flex-direction:column;gap:14px}
@@ -1852,7 +1860,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
           <div class="d-card">
             <div class="d-card-hd"><h3>Score History</h3><span class="d-card-tag tag-brand">30 Days</span></div>
             <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></div><p>Complete your first test to see your score chart.</p></div>
-            <canvas id="score-chart" height="230"></canvas>
+            <div class="score-chart-wrap">
+              <canvas id="score-chart" height="230"></canvas>
+              <div class="score-hover-card" id="score-hover-card" aria-hidden="true"></div>
+            </div>
           </div>
           <div class="d-card">
             <div class="d-card-hd"><h3>Recent Tests</h3><span class="d-card-tag tag-gold">Latest</span></div>
@@ -4056,7 +4067,14 @@ function saveSession(r){
     total: r.total,
     correct: r.correct,
     total_q: r.total_q,
-    skillMap: r.skillMap || {}
+    skillMap: {
+      ...(r.skillMap || {}),
+      __scoreSummary: {
+        english: Number(r.engSc || 0),
+        math: Number(r.mathSc || 0),
+        total: Number(r.total || 0)
+      }
+    }
   };
 
   if (S.isLoggedIn) {
@@ -4072,12 +4090,110 @@ function getDemoSessions() {
   const now = Date.now();
   const day = 24 * 60 * 60 * 1000;
   return [
-    { date: new Date(now - 14 * day).toISOString(), section: 'english', total: 1210, correct: 35, total_q: 50, skillMap: {} },
-    { date: new Date(now - 10 * day).toISOString(), section: 'math', total: 1260, correct: 38, total_q: 50, skillMap: {} },
-    { date: new Date(now - 7 * day).toISOString(), section: 'english', total: 1320, correct: 41, total_q: 50, skillMap: {} },
-    { date: new Date(now - 4 * day).toISOString(), section: 'math', total: 1370, correct: 44, total_q: 50, skillMap: {} },
-    { date: new Date(now - 1 * day).toISOString(), section: 'full', total: 1410, correct: 46, total_q: 50, skillMap: {} }
+    { date: new Date(now - 14 * day).toISOString(), section: 'english', total: 1210, correct: 35, total_q: 50, skillMap: { __scoreSummary: { english: 1210, math: 0, total: 1210 } } },
+    { date: new Date(now - 10 * day).toISOString(), section: 'math', total: 1260, correct: 38, total_q: 50, skillMap: { __scoreSummary: { english: 0, math: 1260, total: 1260 } } },
+    { date: new Date(now - 7 * day).toISOString(), section: 'english', total: 1320, correct: 41, total_q: 50, skillMap: { __scoreSummary: { english: 1320, math: 0, total: 1320 } } },
+    { date: new Date(now - 4 * day).toISOString(), section: 'math', total: 1370, correct: 44, total_q: 50, skillMap: { __scoreSummary: { english: 0, math: 1370, total: 1370 } } },
+    { date: new Date(now - 1 * day).toISOString(), section: 'full', total: 1410, correct: 46, total_q: 50, skillMap: { __scoreSummary: { english: 700, math: 710, total: 1410 } } }
   ];
+}
+
+function getScoreSummaryValue(source, keys) {
+  if (!source || typeof source !== 'object') return null;
+  for (const key of keys) {
+    const value = Number(source[key]);
+    if (Number.isFinite(value) && value > 0) return Math.round(value);
+  }
+  return null;
+}
+
+function getSectionPerformanceSummary(skillMap) {
+  const summary = {
+    english: { correct: 0, total: 0 },
+    math: { correct: 0, total: 0 }
+  };
+
+  Object.values(skillMap || {}).forEach((item) => {
+    if (!item || typeof item !== 'object') return;
+    const section = String(item.section || '').toLowerCase();
+    if (section !== 'english' && section !== 'math') return;
+    summary[section].correct += Number(item.correct) || 0;
+    summary[section].total += Number(item.total) || 0;
+  });
+
+  return summary;
+}
+
+function estimateSectionScore(correct, total) {
+  if (!total) return null;
+  const pct = Math.max(0, Math.min(1, (Number(correct) || 0) / total));
+  return Math.round(200 + (pct * 600));
+}
+
+function getSessionScoreBreakdown(session) {
+  const skillMap = session && session.skillMap && typeof session.skillMap === 'object' ? session.skillMap : {};
+  const scoreSummary = skillMap.__scoreSummary && typeof skillMap.__scoreSummary === 'object' ? skillMap.__scoreSummary : skillMap;
+  const total = getScoreSummaryValue(scoreSummary, ['total', 'totalScore']) || Math.round(Number(session && session.total) || 0) || null;
+  let english = getScoreSummaryValue(scoreSummary, ['english', 'englishScore', 'readingWriting', 'readingWritingScore', 'rw']);
+  let math = getScoreSummaryValue(scoreSummary, ['math', 'mathScore']);
+
+  if (english == null || math == null) {
+    const sectionSummary = getSectionPerformanceSummary(skillMap);
+    if (english == null) english = estimateSectionScore(sectionSummary.english.correct, sectionSummary.english.total);
+    if (math == null) math = estimateSectionScore(sectionSummary.math.correct, sectionSummary.math.total);
+  }
+
+  const section = String(session && session.section || '').toLowerCase();
+  if (section === 'english' && english == null) english = total;
+  if (section === 'math' && math == null) math = total;
+  if (section === 'full' && total != null) {
+    if (english == null && math != null) english = Math.max(200, total - math);
+    if (math == null && english != null) math = Math.max(200, total - english);
+  }
+
+  return { english, math, total };
+}
+
+function formatScoreHistoryValue(value) {
+  return Number.isFinite(value) && value > 0 ? String(Math.round(value)) : '—';
+}
+
+function renderScoreHistoryHover(context) {
+  const chart = context && context.chart;
+  const tooltip = context && context.tooltip;
+  if (!chart) return;
+
+  const wrap = chart.canvas && chart.canvas.parentElement;
+  const card = wrap ? wrap.querySelector('.score-hover-card') : null;
+  if (!wrap || !card) return;
+
+  if (!tooltip || tooltip.opacity === 0 || !tooltip.dataPoints || !tooltip.dataPoints.length) {
+    card.classList.remove('show');
+    return;
+  }
+
+  const point = tooltip.dataPoints[0];
+  const session = Array.isArray(chart.$sessionRows) ? chart.$sessionRows[point.dataIndex] : null;
+  if (!session) {
+    card.classList.remove('show');
+    return;
+  }
+
+  const breakdown = getSessionScoreBreakdown(session);
+  card.innerHTML = `
+    <div class="score-hover-date">${new Date(session.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+    <div class="score-hover-row"><span>Math</span><strong>${formatScoreHistoryValue(breakdown.math)}</strong></div>
+    <div class="score-hover-row"><span>English</span><strong>${formatScoreHistoryValue(breakdown.english)}</strong></div>
+    <div class="score-hover-row total"><span>Total</span><strong>${formatScoreHistoryValue(breakdown.total)}</strong></div>
+  `;
+
+  card.classList.add('show');
+  const pad = 14;
+  const half = card.offsetWidth / 2;
+  const left = Math.max(half + pad, Math.min(tooltip.caretX, wrap.clientWidth - half - pad));
+  const top = Math.max(card.offsetHeight + 12, tooltip.caretY - 10);
+  card.style.left = `${left}px`;
+  card.style.top = `${top}px`;
 }
 
 function getSessions(){
@@ -4276,10 +4392,11 @@ function renderDash(){
   const maxScore = Math.min(1600, Math.max(...scores) + 60);
   S.chart=new Chart(document.getElementById('score-chart').getContext('2d'),{
     type:'line',
-    data:{labels,datasets:[{label:'Score',data:scores,borderColor:'#1a56db',backgroundColor:'rgba(26,86,219,.07)',borderWidth:2.5,pointBackgroundColor:'#1a56db',pointRadius:5,fill:true,tension:.4}]},
-    options:{responsive:true,maintainAspectRatio:true,aspectRatio:2.25,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1117',titleColor:'#fff',bodyColor:'rgba(255,255,255,.7)',padding:10,cornerRadius:8}},
+    data:{labels,datasets:[{label:'Score',data:scores,borderColor:'#1a56db',backgroundColor:'rgba(26,86,219,.07)',borderWidth:2.5,pointBackgroundColor:'#1a56db',pointRadius:5,pointHoverRadius:7,pointHitRadius:22,fill:true,tension:.4}]},
+    options:{responsive:true,maintainAspectRatio:true,aspectRatio:2.25,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{enabled:false,external:renderScoreHistoryHover}},
       scales:{y:{min:minScore,max:maxScore,grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#718096',font:{size:11}}},x:{grid:{display:false},ticks:{color:'#718096',font:{size:11}}}}}
   });
+  S.chart.$sessionRows = ss;
 }
 
 /* ── CONFETTI ── */
