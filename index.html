@@ -24,6 +24,52 @@
 
 <!-- Apple splash / icons (placeholders, replace with real assets for app store) -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231a56db'/%3E%3Cpath d='M90 30L42 58l48 24 48-24L90 30zM42 118l48 24 48-24M42 88l48 24 48-24' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>
+  (() => {
+    const isLandingPage = window.location.pathname === '/' || window.location.pathname.endsWith('/index.html');
+    const scrollKey = 'budy_landing_scroll_y';
+    let savedScrollY = 0;
+
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    if (isLandingPage) {
+      try {
+        savedScrollY = Math.max(0, parseInt(sessionStorage.getItem(scrollKey) || '0', 10) || 0);
+      } catch (_) {
+        savedScrollY = 0;
+      }
+
+      if (savedScrollY > 0) {
+        document.documentElement.style.visibility = 'hidden';
+      }
+    }
+
+    const saveScrollPosition = () => {
+      if (!isLandingPage) return;
+      try {
+        sessionStorage.setItem(scrollKey, String(Math.max(0, window.scrollY || window.pageYOffset || 0)));
+      } catch (_) {}
+    };
+
+    window.__budyRestoreLandingScroll = () => {
+      if (!isLandingPage) return;
+      const targetY = savedScrollY;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, targetY);
+      requestAnimationFrame(() => {
+        window.scrollTo(0, targetY);
+        document.documentElement.style.visibility = '';
+        document.documentElement.style.scrollBehavior = '';
+      });
+    };
+
+    window.addEventListener('scroll', saveScrollPosition, { passive: true });
+    window.addEventListener('pagehide', saveScrollPosition);
+    window.addEventListener('beforeunload', saveScrollPosition);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -2809,7 +2855,8 @@ const PLANS = {
 };
 
 /* ── VIEWS ── */
-function setView(v) {
+function setView(v, options = {}) {
+  const preserveScroll = Boolean(options.preserveScroll);
   S.view = v;
 
   // Landing show/hide with display style
@@ -2841,7 +2888,9 @@ function setView(v) {
     window.setNavTestMode(v === 'test');
   }
 
-  window.scrollTo(0, 0);
+  if (!preserveScroll) {
+    window.scrollTo(0, 0);
+  }
 }
 
 function closeLeaveTestModal() {
@@ -4525,7 +4574,10 @@ window.addEventListener('beforeinstallprompt', e => {
 
 /* ── INIT ── */
 async function init() {
-  setView('landing');
+  setView('landing', { preserveScroll: true });
+  if (typeof window.__budyRestoreLandingScroll === 'function') {
+    window.__budyRestoreLandingScroll();
+  }
   window.addEventListener('scroll', () => {
     const nav = document.getElementById('nav');
     if (nav) nav.classList.toggle('scrolled', scrollY > 20);
