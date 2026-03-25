@@ -230,11 +230,156 @@ button { font-family: inherit; cursor: pointer; }
   grid-template-columns: 2fr 1fr;
   gap: 14px;
 }
+.progress-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(0, 1.55fr);
+  gap: 14px;
+  margin-top: 14px;
+}
 .d-card {
   background: #1a2235;
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 28px;
   padding: 22px;
+}
+.streak-card {
+  position: relative;
+  overflow: hidden;
+}
+.streak-card::after {
+  content: '';
+  position: absolute;
+  top: -36px;
+  right: -22px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,.18) 0%, rgba(245,158,11,0) 70%);
+  pointer-events: none;
+}
+.streak-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.streak-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  background: rgba(245,158,11,.14);
+  border: 1px solid rgba(245,158,11,.2);
+  box-shadow: 0 14px 26px rgba(245,158,11,.12);
+}
+.streak-value {
+  font-size: clamp(2.1rem, 5vw, 2.8rem);
+  line-height: .95;
+  font-weight: 800;
+  color: #f0f4ff;
+}
+.streak-copy {
+  margin-top: 6px;
+  font-size: .82rem;
+  color: rgba(240,244,255,.58);
+}
+.streak-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.streak-metric {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+}
+.streak-metric span {
+  display: block;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(240,244,255,.38);
+  margin-bottom: 8px;
+}
+.streak-metric strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f0f4ff;
+}
+.streak-meta {
+  margin-top: 14px;
+  font-size: .82rem;
+  color: rgba(240,244,255,.52);
+}
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.achievement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 124px;
+  padding: 16px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.028));
+  border: 1px solid rgba(255,255,255,.08);
+}
+.achievement-item.unlocked {
+  border-color: rgba(245,158,11,.28);
+  box-shadow: 0 18px 38px rgba(11,15,24,.2);
+}
+.achievement-item.locked {
+  opacity: .72;
+}
+.achievement-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: rgba(240,244,255,.52);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.achievement-item.unlocked .achievement-icon {
+  color: #fbbf24;
+  background: rgba(245,158,11,.14);
+  border-color: rgba(245,158,11,.18);
+}
+.achievement-body {
+  min-width: 0;
+}
+.achievement-title {
+  font-size: .9rem;
+  font-weight: 800;
+  color: #f0f4ff;
+}
+.achievement-copy {
+  margin-top: 4px;
+  font-size: .78rem;
+  color: rgba(240,244,255,.54);
+  line-height: 1.55;
+}
+.achievement-progress {
+  margin-top: 10px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(240,244,255,.38);
+}
+.achievement-item.unlocked .achievement-progress {
+  color: #10b981;
 }
 .d-card-hd {
   display: flex;
@@ -562,14 +707,17 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (max-width: 980px) {
   .dash-stats { grid-template-columns: 1fr 1fr; }
+  .progress-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
   .dash-grid { grid-template-columns: 1fr; }
   .dash-stats { grid-template-columns: 1fr 1fr; }
+  .achievement-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .dash-stats { grid-template-columns: 1fr; }
   .acct-tab { font-size: .8rem; }
+  .streak-metrics { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -655,6 +803,41 @@ button { font-family: inherit; cursor: pointer; }
             </table>
           </div>
         </div>
+
+        <div class="progress-grid">
+          <div class="d-card streak-card">
+            <div class="d-card-hd">
+              <h3>Login Streaks</h3>
+              <span class="d-card-tag tag-gold" id="login-streak-tag">Keep Going</span>
+            </div>
+            <div class="streak-hero">
+              <div class="streak-badge"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bolt"></use></svg></span></div>
+              <div>
+                <div class="streak-value" id="login-streak-current">0 days</div>
+                <div class="streak-copy" id="login-streak-copy">Log in consistently to build momentum.</div>
+              </div>
+            </div>
+            <div class="streak-metrics">
+              <div class="streak-metric">
+                <span>Longest Run</span>
+                <strong id="login-streak-longest">0 days</strong>
+              </div>
+              <div class="streak-metric">
+                <span>Last 7 Days</span>
+                <strong id="login-streak-week">0 active days</strong>
+              </div>
+            </div>
+            <div class="streak-meta" id="login-streak-last">No login activity yet.</div>
+          </div>
+
+          <div class="d-card">
+            <div class="d-card-hd">
+              <h3>Achievements</h3>
+              <span class="d-card-tag tag-brand" id="achievement-count">0 / 4 unlocked</span>
+            </div>
+            <div class="achievement-grid" id="achievement-grid"></div>
+          </div>
+        </div>
       </div>
 
       <div class="acct-pane" id="acct-pane-billing" role="tabpanel">
@@ -720,6 +903,7 @@ const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
+const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
 
 let authClient = null;
 let accountConfirmResolver = null;
@@ -741,6 +925,7 @@ const S = {
   currentPeriodEnd: null,
   cancelAt: null,
   canceledAt: null,
+  loginDays: [],
   sessionCache: [],
   chart: null
 };
@@ -831,6 +1016,209 @@ function getLocalAuthUser() {
 
 function clearLocalAuthUser() {
   localStorage.removeItem(LOCAL_AUTH_KEY);
+}
+
+function padDayValue(value) {
+  return String(value).padStart(2, '0');
+}
+
+function getLocalDayKey(dateInput) {
+  const date = dateInput ? new Date(dateInput) : new Date();
+  if (Number.isNaN(date.getTime())) return '';
+  return [date.getFullYear(), padDayValue(date.getMonth() + 1), padDayValue(date.getDate())].join('-');
+}
+
+function parseLocalDayKey(dayKey) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dayKey || ''))) return null;
+  const parts = String(dayKey).split('-').map(Number);
+  return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function sortUniqueDayKeys(dayKeys) {
+  return [...new Set((Array.isArray(dayKeys) ? dayKeys : []).filter(Boolean))].sort();
+}
+
+function getRelativeDayKey(offset) {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + offset);
+  return getLocalDayKey(date);
+}
+
+function getDashboardIdentityKey() {
+  if (S.authUserId) return 'user:' + S.authUserId;
+  if (S.user.email) return 'email:' + String(S.user.email).trim().toLowerCase();
+  return 'demo';
+}
+
+function getLoginActivityStore() {
+  try {
+    const raw = localStorage.getItem(LOGIN_STREAK_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveLoginActivityStore(store) {
+  try {
+    localStorage.setItem(LOGIN_STREAK_KEY, JSON.stringify(store));
+  } catch {
+    // No-op.
+  }
+}
+
+function getDemoLoginDaySeed() {
+  return [-6, -5, -4, -2, -1, 0].map(getRelativeDayKey);
+}
+
+function recordLoginActivity() {
+  const identityKey = getDashboardIdentityKey();
+  const store = getLoginActivityStore();
+  const existingDays = sortUniqueDayKeys(store[identityKey]);
+  const seedDays = existingDays.length ? existingDays : (!S.isLoggedIn ? getDemoLoginDaySeed() : []);
+  const todayKey = getLocalDayKey();
+  const mergedDays = sortUniqueDayKeys(seedDays.concat(todayKey)).slice(-365);
+  store[identityKey] = mergedDays;
+  saveLoginActivityStore(store);
+  S.loginDays = mergedDays;
+}
+
+function diffLocalDayKeys(fromDay, toDay) {
+  const fromDate = parseLocalDayKey(fromDay);
+  const toDate = parseLocalDayKey(toDay);
+  if (!fromDate || !toDate) return null;
+  return Math.round((toDate.getTime() - fromDate.getTime()) / 86400000);
+}
+
+function formatDayCount(count, suffix) {
+  const total = Number(count) || 0;
+  const unit = suffix || 'day';
+  return total + ' ' + unit + (total === 1 ? '' : 's');
+}
+
+function getLoginStreakStats(dayKeys) {
+  const ordered = sortUniqueDayKeys(dayKeys);
+  if (!ordered.length) {
+    return { current: 0, longest: 0, activeWeek: 0, lastActiveLabel: 'No login activity yet.' };
+  }
+
+  let longest = 1;
+  let running = 1;
+  for (let index = 1; index < ordered.length; index += 1) {
+    const diff = diffLocalDayKeys(ordered[index - 1], ordered[index]);
+    running = diff === 1 ? running + 1 : 1;
+    if (running > longest) longest = running;
+  }
+
+  let current = 1;
+  for (let index = ordered.length - 1; index > 0; index -= 1) {
+    const diff = diffLocalDayKeys(ordered[index - 1], ordered[index]);
+    if (diff === 1) current += 1;
+    else break;
+  }
+
+  const todayKey = getLocalDayKey();
+  const weekCutoff = new Date();
+  weekCutoff.setHours(12, 0, 0, 0);
+  weekCutoff.setDate(weekCutoff.getDate() - 6);
+  const activeWeek = ordered.filter((dayKey) => {
+    const dt = parseLocalDayKey(dayKey);
+    return dt && dt.getTime() >= weekCutoff.getTime();
+  }).length;
+  const lastActiveDay = ordered[ordered.length - 1];
+  const lastActiveDiff = diffLocalDayKeys(lastActiveDay, todayKey);
+
+  let lastActiveLabel = 'Last active ' + parseLocalDayKey(lastActiveDay).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  if (lastActiveDiff === 0) lastActiveLabel = 'Logged in today.';
+  else if (lastActiveDiff === 1) lastActiveLabel = 'Last active yesterday.';
+
+  return { current, longest, activeWeek, lastActiveLabel };
+}
+
+function getAchievementCards(metrics) {
+  return [
+    {
+      icon: 'rocket',
+      title: 'First Test',
+      copy: 'Complete your first scored practice test.',
+      unlocked: metrics.totalTests >= 1,
+      progress: metrics.totalTests >= 1 ? 'Unlocked' : '0 / 1 complete'
+    },
+    {
+      icon: 'bolt',
+      title: '3-Day Streak',
+      copy: 'Log in 3 days in a row to build study consistency.',
+      unlocked: metrics.streak.longest >= 3,
+      progress: metrics.streak.longest >= 3 ? 'Unlocked' : Math.min(metrics.streak.current, 3) + ' / 3 days'
+    },
+    {
+      icon: 'trophy',
+      title: '1400 Club',
+      copy: 'Reach a 1400 or higher on any scored test.',
+      unlocked: metrics.bestScore >= 1400,
+      progress: metrics.bestScore >= 1400 ? 'Unlocked' : (metrics.bestScore > 0 ? metrics.bestScore + ' / 1400 best' : 'No score yet')
+    },
+    {
+      icon: 'chart',
+      title: 'Five-Test Run',
+      copy: 'Complete five practice tests to build a solid trendline.',
+      unlocked: metrics.totalTests >= 5,
+      progress: metrics.totalTests >= 5 ? 'Unlocked' : Math.min(metrics.totalTests, 5) + ' / 5 tests'
+    }
+  ];
+}
+
+function renderAchievements(metrics) {
+  const achievementGrid = document.getElementById('achievement-grid');
+  const achievementCount = document.getElementById('achievement-count');
+  if (!achievementGrid || !achievementCount) return;
+
+  const cards = getAchievementCards(metrics);
+  const unlockedCount = cards.filter((card) => card.unlocked).length;
+  achievementCount.textContent = unlockedCount + ' / ' + cards.length + ' unlocked';
+  achievementGrid.innerHTML = cards.map((card) => {
+    const stateClass = card.unlocked ? 'unlocked' : 'locked';
+    return '<div class="achievement-item ' + stateClass + '">' +
+      '<div class="achievement-icon">' + accountSpriteIcon(card.icon, 'ui-icon ui-icon-md') + '</div>' +
+      '<div class="achievement-body">' +
+        '<div class="achievement-title">' + card.title + '</div>' +
+        '<div class="achievement-copy">' + card.copy + '</div>' +
+        '<div class="achievement-progress">' + card.progress + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderLoginStreak(metrics) {
+  const currentEl = document.getElementById('login-streak-current');
+  const copyEl = document.getElementById('login-streak-copy');
+  const longestEl = document.getElementById('login-streak-longest');
+  const weekEl = document.getElementById('login-streak-week');
+  const lastEl = document.getElementById('login-streak-last');
+  const tagEl = document.getElementById('login-streak-tag');
+  if (!currentEl || !copyEl || !longestEl || !weekEl || !lastEl || !tagEl) return;
+
+  currentEl.textContent = formatDayCount(metrics.streak.current);
+  longestEl.textContent = formatDayCount(metrics.streak.longest);
+  weekEl.textContent = formatDayCount(metrics.streak.activeWeek, 'active day');
+  lastEl.textContent = metrics.streak.lastActiveLabel;
+
+  if (metrics.streak.current >= 5) {
+    tagEl.textContent = 'Locked In';
+    copyEl.textContent = 'You are on a strong streak. Keep opening Budy.Study daily.';
+  } else if (metrics.streak.current >= 3) {
+    tagEl.textContent = 'On Fire';
+    copyEl.textContent = 'Consistency is stacking up. One login at a time.';
+  } else if (metrics.streak.current >= 1) {
+    tagEl.textContent = 'Keep Going';
+    copyEl.textContent = 'Return tomorrow to extend your streak.';
+  } else {
+    tagEl.textContent = 'Start Today';
+    copyEl.textContent = 'Log in consistently to build momentum.';
+  }
 }
 
 function publishNavbarState() {
@@ -1022,6 +1410,7 @@ function setDemoDashboardState() {
   S.currentPeriodEnd = null;
   S.cancelAt = null;
   S.canceledAt = null;
+  S.loginDays = getDemoLoginDaySeed();
   S.sessionCache = [
     { date: '2026-03-07T10:00:00.000Z', section: 'english', total: 1310, correct: 39, total_q: 50, skillMap: { __scoreSummary: { english: 1310, math: 0, total: 1310 } } },
     { date: '2026-03-10T10:00:00.000Z', section: 'math', total: 1290, correct: 37, total_q: 50, skillMap: { __scoreSummary: { english: 0, math: 1290, total: 1290 } } },
@@ -1271,7 +1660,9 @@ function logout() {
 }
 
 function renderDash() {
-  const ss = Array.isArray(S.sessionCache) ? S.sessionCache : [];
+  const ss = Array.isArray(S.sessionCache)
+    ? [...S.sessionCache].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    : [];
 
   publishNavbarState();
 
@@ -1317,6 +1708,18 @@ function renderDash() {
   weekEl.classList.remove('pos', 'neg', 'neu');
   weekEl.classList.add(weekImp > 0 ? 'pos' : weekImp < 0 ? 'neg' : 'neu');
 
+  const scores = ss.map((s) => Number(s.total || 0)).filter((n) => Number.isFinite(n) && n > 0);
+  const metrics = {
+    totalTests: ss.length,
+    bestScore: scores.length ? Math.max(...scores) : 0,
+    latestScore: scores.length ? scores[scores.length - 1] : 0,
+    weekImp,
+    monthCount,
+    streak: getLoginStreakStats(S.loginDays)
+  };
+  renderLoginStreak(metrics);
+  renderAchievements(metrics);
+
   if (!ss.length) {
     document.getElementById('d-best').textContent = '-';
     document.getElementById('d-latest').textContent = '-';
@@ -1333,7 +1736,6 @@ function renderDash() {
   document.getElementById('ch-empty').classList.add('hidden');
   document.getElementById('score-chart').style.display = '';
 
-  const scores = ss.map((s) => Number(s.total || 0)).filter((n) => Number.isFinite(n) && n > 0);
   if (!scores.length) {
     document.getElementById('ch-empty').classList.remove('hidden');
     document.getElementById('score-chart').style.display = 'none';
@@ -1405,6 +1807,7 @@ async function boot() {
     document.getElementById('logged-out-notice').classList.remove('hidden');
     document.getElementById('logged-out-notice').textContent = 'Viewing demo dashboard. Log in to see your real account data.';
     setDemoDashboardState();
+    recordLoginActivity();
     renderDash();
     setAccountTab('progress');
     bindNavAuthButtonForState();
@@ -1414,6 +1817,7 @@ async function boot() {
   document.getElementById('logged-out-notice').classList.add('hidden');
   await refreshPremiumStatus();
   await hydrateSessions();
+  recordLoginActivity();
   renderDash();
 }
 
