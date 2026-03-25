@@ -1496,7 +1496,7 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
       <div class="price-card">
         <div class="price-tier">Free</div>
         <div class="price-per-week"><sup>$</sup>0</div>
-        <div class="price-unit">Per Week</div>
+        <div class="price-unit" id="free-price-unit">Per Week</div>
         <div class="price-billed">Always free, no credit card</div>
         <div class="price-divider"></div>
         <div class="price-features">
@@ -2934,6 +2934,7 @@ function updatePriceDisplay(plan) {
     if (!planKey || !BILLING_DISPLAY[planKey]) return;
     el.textContent = BILLING_DISPLAY[planKey][mode];
   });
+  const freeUnit = document.getElementById('free-price-unit');
   const weeklyUnit = document.getElementById('weekly-price-unit');
   const monthlyUnit = document.getElementById('monthly-price-unit');
   const annualUnit = document.getElementById('annual-price-unit');
@@ -2944,6 +2945,7 @@ function updatePriceDisplay(plan) {
   const monthlyBill = document.getElementById('monthly-bill-main');
   const annualBill = document.getElementById('annual-bill-main');
   const unitLabel = mode === 'weekly' ? 'Per Week' : 'Per Month';
+  if (freeUnit) freeUnit.textContent = unitLabel;
   if (weeklyUnit) weeklyUnit.textContent = unitLabel;
   if (monthlyUnit) monthlyUnit.textContent = unitLabel;
   if (annualUnit) annualUnit.textContent = unitLabel;
