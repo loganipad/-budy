@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Budy.Study | Study Planner Prototype</title>
 <meta name="description" content="Build a personalized SAT or PSAT study plan based on grade level, confidence, and current understanding.">
+<script>
+  (function enforceStudyAccess() {
+    const LOCAL_AUTH_KEY = 'budy_local_auth_user';
+    const hasLocalUser = Boolean(localStorage.getItem(LOCAL_AUTH_KEY));
+    const hasAuth0Session = Object.keys(localStorage).some((key) => key.startsWith('@@auth0spajs@@') && Boolean(localStorage.getItem(key)));
+    if (!hasLocalUser && !hasAuth0Session) {
+      window.location.replace('/login.html');
+    }
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
 <style>
