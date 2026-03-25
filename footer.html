@@ -1,31 +1,42 @@
 <style id="shared-footer-styles">
   footer.site-footer {
     background: transparent;
-    color: rgba(255, 255, 255, 0.45);
-    padding: 56px 0 28px;
+    color: rgba(255, 255, 255, 0.56);
+    padding: 72px 0 30px;
     position: relative;
     z-index: 1;
   }
 
+  .site-footer .footer-shell {
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding-top: 28px;
+  }
+
   .site-footer .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
+    grid-template-columns: minmax(0, 1.5fr) minmax(160px, 0.8fr) minmax(160px, 0.8fr);
+    gap: 36px;
+    align-items: start;
+    margin-bottom: 34px;
+  }
+
+  .site-footer .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .site-footer .footer-brand-desc {
-    font-size: 0.8375rem;
+    font-size: 0.8875rem;
     line-height: 1.65;
-    margin-top: 10px;
-    max-width: 260px;
+    max-width: 280px;
   }
 
   .site-footer .footer-logo {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    font-size: 1.3rem;
+    gap: 10px;
+    font-size: 1.35rem;
     font-weight: 800;
     color: #fff;
   }
@@ -41,44 +52,41 @@
   }
 
   .site-footer .footer-logo-img {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
     object-position: center;
     display: block;
     flex-shrink: 0;
   }
 
+  .site-footer .footer-brand-tag {
+    font-size: 0.79rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
   .site-footer .footer-col h4 {
-    font-size: 0.75rem;
+    font-size: 0.77rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #fff;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .site-footer .footer-col ul {
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 10px;
     list-style: none;
   }
 
-  .site-footer .footer-store-badge {
-    display: inline-flex;
-    margin-top: 20px;
-  }
-
-  .site-footer .footer-store-badge img {
-    display: block;
-    width: 165px;
-    max-width: 100%;
-    height: auto;
-  }
-
   .site-footer .footer-col a {
-    font-size: 0.8375rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.62);
     transition: color 0.15s;
   }
 
@@ -87,66 +95,204 @@
   }
 
   .site-footer .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    padding-top: 24px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-end;
     flex-wrap: wrap;
+    gap: 24px;
+    padding-top: 8px;
+  }
+
+  .site-footer .footer-socials {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .site-footer .footer-social-row {
+    display: flex;
     gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .site-footer .footer-social {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: transform 0.18s, border-color 0.18s, background 0.18s;
+  }
+
+  .site-footer .footer-social:hover {
+    transform: translateY(-1px);
+    border-color: rgba(245, 158, 11, 0.5);
+    background: rgba(245, 158, 11, 0.12);
   }
 
   .site-footer .footer-copy {
     font-size: 0.775rem;
-    text-align: center;
+    max-width: 360px;
+    line-height: 1.6;
+  }
+
+  .site-footer .footer-store-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .site-footer .footer-store-link {
+    min-width: 168px;
+    height: 54px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.94rem;
+    font-weight: 700;
+    transition: transform 0.18s, border-color 0.18s, background 0.18s;
+  }
+
+  .site-footer .footer-store-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.34);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .site-footer .footer-store-icon {
+    width: 19px;
+    height: 19px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .site-footer .footer-store-icon svg {
+    width: 19px;
+    height: 19px;
+    display: block;
+  }
+
+  .site-footer .footer-store-text {
+    letter-spacing: -0.01em;
   }
 
   @media (max-width: 640px) {
     .site-footer .footer-grid {
       grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .site-footer .footer-bottom {
+      align-items: flex-start;
+    }
+
+    .site-footer .footer-store-row {
+      justify-content: flex-start;
     }
   }
 
   @media (max-width: 560px) {
+    footer.site-footer {
+      padding: 64px 0 28px;
+    }
+
     .site-footer .footer-grid {
       grid-template-columns: 1fr;
+    }
+
+    .site-footer .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .site-footer .footer-store-link {
+      min-width: 154px;
     }
   }
 </style>
 
 <footer class="site-footer">
   <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-logo">
-          <img src="/assets/budy-logo.png" alt="Budy logo" class="footer-logo-img">
-          <span class="footer-logo-wordmark">Budy<span class="footer-logo-study">.Study</span></span>
+    <div class="footer-shell">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="/assets/budy-logo.png" alt="Budy logo" class="footer-logo-img">
+            <span class="footer-logo-wordmark">Budy<span class="footer-logo-study">.Study</span></span>
+          </div>
+          <div class="footer-brand-tag">SAT &amp; PSAT Prep</div>
+          <p class="footer-brand-desc">SAT &amp; PSAT prep that actually works. Built for real students who want faster score gains and cleaner feedback.</p>
         </div>
-        <p class="footer-brand-desc">SAT & PSAT prep that actually works. Built for real students, not test prep nerds.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <ul>
-          <li><a href="/#features">Features</a></li>
-          <li><a href="/#pricing">Pricing</a></li>
-          <li><a href="/">My Progress</a></li>
-        </ul>
-        <div class="footer-store-badge">
-          <img src="/assets/app-store-badge.png" alt="Download on the App Store">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="/my-account.html">Account</a></li>
+            <li><a href="/#questions">Score Guarantee</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/about">About</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
         </div>
       </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="/about">About</a></li>
-          <li><a href="/privacy">Privacy</a></li>
-          <li><a href="/terms">Terms</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
+
+      <div class="footer-bottom">
+        <div class="footer-socials">
+          <div class="footer-social-row" aria-label="Social media links">
+            <a class="footer-social" href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">YT</a>
+            <a class="footer-social" href="https://www.instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">IG</a>
+            <a class="footer-social" href="https://www.tiktok.com" target="_blank" rel="noreferrer" aria-label="TikTok">TT</a>
+          </div>
+          <span class="footer-copy">© 2026 Budy.Study. Not affiliated with College Board®. SAT® is a registered trademark of College Board.</span>
+        </div>
+
+        <div class="footer-store-row">
+          <a class="footer-store-link" href="#" aria-label="Download on the App Store">
+            <span class="footer-store-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15.2 5.2c-.7.8-1.1 1.8-1 2.9 1.1.1 2.2-.4 2.9-1.2.7-.8 1.1-1.8 1-2.9-1.1-.1-2.2.4-2.9 1.2z"/>
+                <path d="M12.7 8.6c-1.5 0-2.2.8-3.3.8-1.2 0-1.9-.8-3.2-.8-1.6 0-3.3 1-4.1 2.7-1.8 3.2-.4 7.9 1.3 10.3.8 1.2 1.8 2.5 3.2 2.4 1.3-.1 1.8-.8 3.3-.8 1.5 0 1.9.8 3.3.8 1.4 0 2.3-1.2 3.2-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.6-1-2.6-4 0-2.5 2-3.7 2.1-3.8-1.2-1.8-3-2-3.6-2-.5 0-1.8.4-2.9.4z"/>
+              </svg>
+            </span>
+            <span class="footer-store-text">App Store</span>
+          </a>
+          <a class="footer-store-link" href="#" aria-label="Get it on Google Play">
+            <span class="footer-store-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4l10.5 8L4 20z"/>
+                <path d="M14.5 12L18 8.8"/>
+                <path d="M14.5 12L18 15.2"/>
+                <path d="M18 8.8c1.4.9 2.2 1.5 2.2 3.2S19.4 14.3 18 15.2"/>
+              </svg>
+            </span>
+            <span class="footer-store-text">Google Play</span>
+          </a>
+        </div>
       </div>
-    </div>
-    <div class="footer-bottom">
-      <span class="footer-copy">© 2026 Budy.Study. Not affiliated with College Board®. SAT® is a registered trademark of College Board.</span>
     </div>
   </div>
 </footer>
