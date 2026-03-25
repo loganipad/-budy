@@ -149,46 +149,34 @@
     isolation: isolate;
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   #nav .btn-ghost.nav-progress-pill::before {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 2px;
-    bottom: 2px;
-    width: min(calc(100% - 4px), var(--nav-pill-fill, 0%));
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--nav-pill-fill, 0%);
     border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.14) 58%, rgba(255, 255, 255, 0.08) 100%);
+    background: rgba(255, 255, 255, 0.2);
     transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
     z-index: -1;
   }
 
   #nav .btn-ghost.nav-progress-pill::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    bottom: 2px;
-    width: 32px;
-    left: clamp(2px, calc(var(--nav-pill-fill, 0%) - 16px), calc(100% - 34px));
-    border-radius: 999px;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 45%, transparent 72%);
-    opacity: var(--nav-pill-glow, 0);
-    transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
-    pointer-events: none;
-    z-index: -1;
+    display: none;
   }
 
   #nav .btn-ghost.nav-progress-pill.nav-progress-active {
     color: #ffffff;
     border-color: rgba(255, 255, 255, 0.28);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 20px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   }
 
   #nav .btn-ghost.nav-progress-pill.nav-progress-active::before,
   #nav .btn-ghost.nav-progress-pill.nav-progress-complete::before {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.18) 58%, rgba(255, 255, 255, 0.1) 100%);
+    background: rgba(255, 255, 255, 0.28);
   }
 
   #nav .btn-ghost.nav-progress-pill.nav-progress-complete {
