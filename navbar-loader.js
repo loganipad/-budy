@@ -1,8 +1,14 @@
 (function () {
   var didMountNavbar = false;
   var didBindScroll = false;
+  var didBindResize = false;
   var NAV_CACHE_KEY = 'budy_navbar_html_v4';
   var NAV_STATE_KEY = 'budy_navbar_state_v1';
+  var NAV_PROGRESS_ITEMS = [
+    { linkId: 'nav-link-why', sectionId: 'features' },
+    { linkId: 'nav-link-pricing', sectionId: 'pricing' },
+    { linkId: 'nav-link-features', sectionId: 'solutions' }
+  ];
 
   function getPath() {
     return String(window.location.pathname || '/').toLowerCase();
@@ -117,6 +123,47 @@
     });
   }
 
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function clearNavProgress() {
+    NAV_PROGRESS_ITEMS.forEach(function (item) {
+      var link = document.getElementById(item.linkId);
+      if (link) link.style.setProperty('--nav-pill-fill', '0%');
+    });
+  }
+
+  function updateNavProgress() {
+    var nav = document.getElementById('nav');
+    if (!nav) return;
+
+    if (!isLandingPage(getPath()) || nav.classList.contains('nav-context-account') || nav.classList.contains('nav-context-test')) {
+      clearNavProgress();
+      return;
+    }
+
+    var navHeight = nav.offsetHeight || 64;
+    var anchorY = window.scrollY + navHeight + Math.max(window.innerHeight * 0.14, 32);
+
+    NAV_PROGRESS_ITEMS.forEach(function (item) {
+      var link = document.getElementById(item.linkId);
+      var section = document.getElementById(item.sectionId);
+      if (!link || !section) return;
+
+      var sectionTop = section.offsetTop;
+      var sectionBottom = sectionTop + section.offsetHeight;
+      var progress = clamp((anchorY - sectionTop) / Math.max(sectionBottom - sectionTop, 1), 0, 1);
+      link.style.setProperty('--nav-pill-fill', (progress * 100).toFixed(1) + '%');
+    });
+  }
+
+  function refreshNavChrome() {
+    var nav = document.getElementById('nav');
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+    updateNavProgress();
+  }
+
   function applyNavContext() {
     var nav = document.getElementById('nav');
     if (!nav) return;
@@ -217,15 +264,16 @@
     }
 
     if (!didBindScroll) {
-      window.addEventListener('scroll', function () {
-        var nav = document.getElementById('nav');
-        if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
-      });
+      window.addEventListener('scroll', refreshNavChrome);
       didBindScroll = true;
     }
 
-    var navNow = document.getElementById('nav');
-    if (navNow) navNow.classList.toggle('scrolled', window.scrollY > 20);
+    if (!didBindResize) {
+      window.addEventListener('resize', refreshNavChrome);
+      didBindResize = true;
+    }
+
+    refreshNavChrome();
   }
 
   function postMount() {
@@ -233,6 +281,7 @@
     applyNavContext();
     syncNavAuthState();
     syncNavStartCtas();
+    updateNavProgress();
     document.dispatchEvent(new CustomEvent('navbar:mounted'));
   }
 
@@ -288,6 +337,7 @@
     applyNavContext();
     syncNavAuthState();
     syncNavStartCtas();
+    updateNavProgress();
   };
 
   window.setNavbarState = function (nextState) {

@@ -143,6 +143,25 @@
     border: 2px solid rgba(255, 255, 255, 0.14);
   }
 
+  #nav .btn-ghost.nav-progress-pill {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  #nav .btn-ghost.nav-progress-pill::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    width: var(--nav-pill-fill, 0%);
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
+    transition: width 0.22s ease;
+    z-index: -1;
+  }
+
   #nav .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
@@ -252,9 +271,9 @@
       <span class="nav-logo-wordmark">Budy<span class="nav-logo-study">.Study</span></span>
     </a>
     <div class="nav-right">
-      <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide" id="nav-link-why">Why Budy?</a>
-      <a href="/#pricing" class="btn btn-ghost btn-sm nav-link-hide" id="nav-link-pricing">Pricing</a>
-      <a href="/#solutions" class="btn btn-ghost btn-sm nav-link-hide" id="nav-link-features">Features</a>
+      <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-why">Why Budy?</a>
+      <a href="/#pricing" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-pricing">Pricing</a>
+      <a href="/#solutions" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-features">Features</a>
       <a class="btn btn-ghost btn-sm" href="/my-account.html" id="nav-link-account">Dashboard</a>
       <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()">Log In</button>
       <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test">Start Test</button>
