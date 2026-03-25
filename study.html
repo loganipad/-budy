@@ -747,9 +747,27 @@ button,input,select{font:inherit}
       document.getElementById('stat-track').textContent = plan.track;
 
       const planList = document.getElementById('plan-list');
-      planList.innerHTML = plan.steps.map((step, index) => {
-        return '<div class="plan-item"><div class="plan-mark">' + (index + 1) + '</div><div><strong>' + step[0] + '</strong><span>' + step[1] + '</span></div></div>';
-      }).join('');
+      planList.replaceChildren();
+      plan.steps.forEach((step, index) => {
+        const item = document.createElement('div');
+        item.className = 'plan-item';
+
+        const mark = document.createElement('div');
+        mark.className = 'plan-mark';
+        mark.textContent = String(index + 1);
+
+        const body = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = step[0];
+        const detail = document.createElement('span');
+        detail.textContent = step[1];
+
+        body.appendChild(title);
+        body.appendChild(detail);
+        item.appendChild(mark);
+        item.appendChild(body);
+        planList.appendChild(item);
+      });
 
       document.getElementById('result-empty').style.display = 'none';
       document.getElementById('result-body').style.display = 'block';

@@ -1370,17 +1370,37 @@ function renderAchievements(cards) {
 
   const unlockedCount = cards.filter((card) => card.unlocked).length;
   achievementCount.textContent = unlockedCount + ' / ' + cards.length + ' unlocked';
-  achievementGrid.innerHTML = cards.map((card) => {
-    const stateClass = card.unlocked ? 'unlocked' : 'locked';
-    return '<div class="achievement-item ' + stateClass + '">' +
-      '<div class="achievement-icon">' + accountSpriteIcon(card.icon, 'ui-icon ui-icon-md') + '</div>' +
-      '<div class="achievement-body">' +
-        '<div class="achievement-title">' + card.title + '</div>' +
-        '<div class="achievement-copy">' + card.copy + '</div>' +
-        '<div class="achievement-progress">' + card.progress + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  achievementGrid.replaceChildren();
+  cards.forEach((card) => {
+    const item = document.createElement('div');
+    item.className = 'achievement-item ' + (card.unlocked ? 'unlocked' : 'locked');
+
+    const icon = document.createElement('div');
+    icon.className = 'achievement-icon';
+    icon.innerHTML = accountSpriteIcon(card.icon, 'ui-icon ui-icon-md');
+
+    const body = document.createElement('div');
+    body.className = 'achievement-body';
+
+    const title = document.createElement('div');
+    title.className = 'achievement-title';
+    title.textContent = card.title;
+
+    const copy = document.createElement('div');
+    copy.className = 'achievement-copy';
+    copy.textContent = card.copy;
+
+    const progress = document.createElement('div');
+    progress.className = 'achievement-progress';
+    progress.textContent = card.progress;
+
+    body.appendChild(title);
+    body.appendChild(copy);
+    body.appendChild(progress);
+    item.appendChild(icon);
+    item.appendChild(body);
+    achievementGrid.appendChild(item);
+  });
 }
 
 function renderLoginStreak(metrics) {
@@ -1693,12 +1713,31 @@ function renderScoreHistoryHover(context) {
   }
 
   const breakdown = getSessionScoreBreakdown(session);
-  card.innerHTML = `
-    <div class="score-hover-date">${new Date(session.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-    <div class="score-hover-row"><span>Math</span><strong>${formatScoreHistoryValue(breakdown.math)}</strong></div>
-    <div class="score-hover-row"><span>English</span><strong>${formatScoreHistoryValue(breakdown.english)}</strong></div>
-    <div class="score-hover-row total"><span>Total</span><strong>${formatScoreHistoryValue(breakdown.total)}</strong></div>
-  `;
+  card.replaceChildren();
+
+  const dateRow = document.createElement('div');
+  dateRow.className = 'score-hover-date';
+  dateRow.textContent = new Date(session.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  card.appendChild(dateRow);
+
+  [
+    ['Math', formatScoreHistoryValue(breakdown.math), false],
+    ['English', formatScoreHistoryValue(breakdown.english), false],
+    ['Total', formatScoreHistoryValue(breakdown.total), true]
+  ].forEach(([label, value, isTotal]) => {
+    const row = document.createElement('div');
+    row.className = 'score-hover-row' + (isTotal ? ' total' : '');
+
+    const name = document.createElement('span');
+    name.textContent = label;
+
+    const strong = document.createElement('strong');
+    strong.textContent = value;
+
+    row.appendChild(name);
+    row.appendChild(strong);
+    card.appendChild(row);
+  });
 
   card.classList.add('show');
   const pad = 14;
@@ -1939,12 +1978,33 @@ function renderDash() {
   document.getElementById('d-latest').textContent = scores[scores.length - 1];
 
   const tb = document.getElementById('sess-tbody');
-  tb.innerHTML = '';
+  tb.replaceChildren();
   [...ss].reverse().slice(0, 8).forEach((s) => {
     const pct = s.total_q ? Math.round((s.correct / s.total_q) * 100) : 0;
     const cls = s.total >= 700 ? 'sc-hi' : s.total >= 500 ? 'sc-mid' : 'sc-lo';
     const section = s.section === 'full' ? 'Full' : s.section === 'english' ? 'R&W' : 'Math';
-    tb.innerHTML += '<tr><td>' + new Date(s.date).toLocaleDateString() + '</td><td>' + section + '</td><td><span class="sc-pill ' + cls + '">' + s.total + '</span></td><td>' + pct + '%</td></tr>';
+
+    const tr = document.createElement('tr');
+    const dateTd = document.createElement('td');
+    dateTd.textContent = new Date(s.date).toLocaleDateString();
+
+    const sectionTd = document.createElement('td');
+    sectionTd.textContent = section;
+
+    const scoreTd = document.createElement('td');
+    const scorePill = document.createElement('span');
+    scorePill.className = 'sc-pill ' + cls;
+    scorePill.textContent = String(s.total);
+    scoreTd.appendChild(scorePill);
+
+    const pctTd = document.createElement('td');
+    pctTd.textContent = pct + '%';
+
+    tr.appendChild(dateTd);
+    tr.appendChild(sectionTd);
+    tr.appendChild(scoreTd);
+    tr.appendChild(pctTd);
+    tb.appendChild(tr);
   });
 
   if (S.chart) S.chart.destroy();

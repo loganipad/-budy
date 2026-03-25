@@ -4284,12 +4284,31 @@ function renderScoreHistoryHover(context) {
   }
 
   const breakdown = getSessionScoreBreakdown(session);
-  card.innerHTML = `
-    <div class="score-hover-date">${new Date(session.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-    <div class="score-hover-row"><span>Math</span><strong>${formatScoreHistoryValue(breakdown.math)}</strong></div>
-    <div class="score-hover-row"><span>English</span><strong>${formatScoreHistoryValue(breakdown.english)}</strong></div>
-    <div class="score-hover-row total"><span>Total</span><strong>${formatScoreHistoryValue(breakdown.total)}</strong></div>
-  `;
+  card.replaceChildren();
+
+  const dateRow = document.createElement('div');
+  dateRow.className = 'score-hover-date';
+  dateRow.textContent = new Date(session.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  card.appendChild(dateRow);
+
+  [
+    ['Math', formatScoreHistoryValue(breakdown.math), false],
+    ['English', formatScoreHistoryValue(breakdown.english), false],
+    ['Total', formatScoreHistoryValue(breakdown.total), true]
+  ].forEach(([label, value, isTotal]) => {
+    const row = document.createElement('div');
+    row.className = 'score-hover-row' + (isTotal ? ' total' : '');
+
+    const name = document.createElement('span');
+    name.textContent = label;
+
+    const strong = document.createElement('strong');
+    strong.textContent = value;
+
+    row.appendChild(name);
+    row.appendChild(strong);
+    card.appendChild(row);
+  });
 
   card.classList.add('show');
   const pad = 14;
@@ -4483,11 +4502,31 @@ function renderDash(){
   document.getElementById('d-best').textContent=Math.max(...scores);
   document.getElementById('d-latest').textContent=scores[scores.length-1];
 
-  const tb=document.getElementById('sess-tbody');tb.innerHTML='';
+  const tb=document.getElementById('sess-tbody');tb.replaceChildren();
   [...ss].reverse().slice(0,8).forEach(s=>{
     const pct = s.total_q > 0 ? Math.round((s.correct / s.total_q) * 100) : 0;
     const cls=s.total>=700?'sc-hi':s.total>=500?'sc-mid':'sc-lo';
-    tb.innerHTML+=`<tr><td>${new Date(s.date).toLocaleDateString()}</td><td>${s.section==='full'?'Full':s.section==='english'?'R&W':'Math'}</td><td><span class="sc-pill ${cls}">${s.total}</span></td><td>${pct}%</td></tr>`;
+    const tr = document.createElement('tr');
+    const dateTd = document.createElement('td');
+    dateTd.textContent = new Date(s.date).toLocaleDateString();
+
+    const sectionTd = document.createElement('td');
+    sectionTd.textContent = s.section==='full' ? 'Full' : s.section==='english' ? 'R&W' : 'Math';
+
+    const scoreTd = document.createElement('td');
+    const scorePill = document.createElement('span');
+    scorePill.className = `sc-pill ${cls}`;
+    scorePill.textContent = String(s.total);
+    scoreTd.appendChild(scorePill);
+
+    const pctTd = document.createElement('td');
+    pctTd.textContent = `${pct}%`;
+
+    tr.appendChild(dateTd);
+    tr.appendChild(sectionTd);
+    tr.appendChild(scoreTd);
+    tr.appendChild(pctTd);
+    tb.appendChild(tr);
   });
 
   if(S.chart)S.chart.destroy();
@@ -4516,7 +4555,13 @@ function confetti(){
 function toast(msg,type='',dur=3000){
   const c=document.getElementById('toasts');const t=document.createElement('div');
   t.className=`toast ${type}`;const ico={ok:'check',er:'x',wn:'warning','':'info'}[type]||'info';
-  t.innerHTML=`${spriteIcon(ico,'ui-icon ui-icon-sm')}<span>${msg}</span>`;c.appendChild(t);
+  const iconWrap = document.createElement('span');
+  iconWrap.innerHTML = spriteIcon(ico,'ui-icon ui-icon-sm');
+  const msgWrap = document.createElement('span');
+  msgWrap.textContent = msg;
+  t.appendChild(iconWrap.firstElementChild);
+  t.appendChild(msgWrap);
+  c.appendChild(t);
   const rm=()=>{t.classList.add('out');setTimeout(()=>t.remove(),280)};
   setTimeout(rm,dur);t.addEventListener('click',rm);
 }
