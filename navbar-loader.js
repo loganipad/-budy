@@ -209,8 +209,14 @@
     var study = isStudyPage(path);
     var test = isTestContext() || nav.classList.contains('nav-context-test');
 
-    nav.classList.remove('nav-context-default', 'nav-context-account', 'nav-context-study', 'nav-context-test');
-    nav.classList.add(test ? 'nav-context-test' : (study ? 'nav-context-study' : (account ? 'nav-context-account' : 'nav-context-default')));
+    nav.classList.remove('nav-context-home', 'nav-context-default', 'nav-context-account', 'nav-context-study', 'nav-context-test');
+    nav.classList.add(
+      test
+        ? 'nav-context-test'
+        : (isLandingPage(path)
+          ? 'nav-context-home'
+          : (study ? 'nav-context-study' : (account ? 'nav-context-account' : 'nav-context-default')))
+    );
 
     updateAccountLink(account || test);
     updateStudyLink(study);
