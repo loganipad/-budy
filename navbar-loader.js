@@ -22,6 +22,10 @@
     return path === '/' || path === '/index.html' || path === '/index';
   }
 
+  function isStudyPage(path) {
+    return path === '/study.html' || path === '/study';
+  }
+
   function isTestContext() {
     return Boolean(document.body && document.body.classList.contains('test-active'));
   }
@@ -101,6 +105,21 @@
     if (mobileAccount) {
       mobileAccount.textContent = isHome ? 'Home' : 'Dashboard';
       mobileAccount.setAttribute('href', isHome ? '/' : '/my-account.html');
+    }
+  }
+
+  function updateStudyLink(isStudy) {
+    var desktopHome = document.getElementById('nav-link-why');
+    var mobileHome = document.getElementById('nav-m-link-why');
+
+    if (desktopHome) {
+      desktopHome.textContent = isStudy ? 'Home' : 'Why Budy?';
+      desktopHome.setAttribute('href', isStudy ? '/' : '/#features');
+    }
+
+    if (mobileHome) {
+      mobileHome.textContent = isStudy ? 'Home' : 'Why Budy?';
+      mobileHome.setAttribute('href', isStudy ? '/' : '/#features');
     }
   }
 
@@ -187,12 +206,14 @@
 
     var path = getPath();
     var account = isAccountPage(path);
+    var study = isStudyPage(path);
     var test = isTestContext() || nav.classList.contains('nav-context-test');
 
-    nav.classList.remove('nav-context-default', 'nav-context-account', 'nav-context-test');
-    nav.classList.add(test ? 'nav-context-test' : (account ? 'nav-context-account' : 'nav-context-default'));
+    nav.classList.remove('nav-context-default', 'nav-context-account', 'nav-context-study', 'nav-context-test');
+    nav.classList.add(test ? 'nav-context-test' : (study ? 'nav-context-study' : (account ? 'nav-context-account' : 'nav-context-default')));
 
     updateAccountLink(account || test);
+    updateStudyLink(study);
   }
 
   function syncNavAuthState() {
