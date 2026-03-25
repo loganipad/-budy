@@ -467,7 +467,7 @@ input,select{font-family:inherit}
 .billing-toggle{
   display:inline-flex;align-items:center;gap:0;
   background:rgba(255,255,255,.08);border-radius:var(--r-full);
-  padding:4px;margin:32px 0 0;
+  padding:4px;margin:0;
 }
 .billing-toggle label{
   padding:9px 22px;border-radius:var(--r-full);font-size:.8375rem;font-weight:700;
@@ -479,7 +479,11 @@ input,select{font-family:inherit}
 .billing-toggle input#b-trial:checked + label{background:var(--gold);color:#fff;box-shadow:0 8px 24px rgba(245,158,11,.28)}
 .save-chip{display:inline-block;background:var(--gold);color:var(--ink);font-size:.7rem;
   font-weight:800;padding:2px 8px;border-radius:20px;margin-left:6px}
-.pricing-toggle-row{display:flex;justify-content:flex-start}
+.pricing-toggle-row{
+  display:flex;justify-content:center;align-items:center;gap:18px;
+  flex-wrap:wrap;margin-top:32px;
+}
+.billing-toggle-trial-wrap{margin-left:10px}
 
 .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;align-items:start}
 .price-card{
@@ -1172,8 +1176,10 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
   .hero-phone{max-width:100%;border-radius:20px;margin-top:32px}
 
   /* Billing toggle wraps on very small screens */
+  .pricing-toggle-row{gap:12px}
   .billing-toggle{flex-wrap:wrap;gap:4px;border-radius:16px}
   .billing-toggle label{padding:8px 12px;font-size:.75rem}
+  .billing-toggle-trial-wrap{margin-left:0}
 
   /* Sections less padding */
   .section{padding:60px 0}
@@ -1496,6 +1502,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <label for="b-weekly">Show Weekly Rates</label>
         <input type="radio" name="billing" id="b-monthly" value="monthly">
         <label for="b-monthly">Show Monthly Rates</label>
+      </div>
+      <div class="billing-toggle billing-toggle-trial-wrap">
         <input type="radio" name="billing" id="b-trial" value="trial">
         <label for="b-trial" class="billing-toggle-trial">Free Trial</label>
       </div>
