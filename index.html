@@ -1290,8 +1290,25 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
         <div class="hero-proof-divider"></div>
         <div class="hero-proof-item"><div class="hero-proof-n">$0-$100,000</div><div class="hero-proof-l">Avg. full-ride scholarship</div></div>
         <div class="hero-proof-divider"></div>
-        <div class="hero-proof-item"><div class="hero-proof-n" id="hero-user-counter">49,100</div><div class="hero-proof-l">Students trained</div></div>
+        <div class="hero-proof-item"><div class="hero-proof-n" id="hero-user-counter"></div><div class="hero-proof-l">Students trained</div></div>
       </div>
+      <script>
+        (() => {
+          const heroUserCounterEl = document.getElementById('hero-user-counter');
+          if (!heroUserCounterEl) return;
+          const baseUsers = 49100;
+          const counterStart = new Date('2026-03-23T22:48:42-0700').getTime();
+          const msPerDay = 24 * 60 * 60 * 1000;
+          const msPerWeek = 7 * msPerDay;
+          const elapsedMs = Math.max(0, Date.now() - counterStart);
+          const elapsedDays = elapsedMs / msPerDay;
+          const elapsedWeeks = elapsedMs / msPerWeek;
+          const weeklyGrowth = baseUsers * Math.pow(1.01, elapsedWeeks);
+          const dailyGrowth = 200 * elapsedDays;
+          const currentUsers = Math.max(baseUsers, Math.floor(weeklyGrowth + dailyGrowth));
+          heroUserCounterEl.textContent = currentUsers.toLocaleString('en-US') + '+';
+        })();
+      </script>
     </div>
     <!-- Phone mockup -->
     <div class="hero-phone">
