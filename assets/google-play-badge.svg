@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 284" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 237" role="img" aria-labelledby="title desc">
   <title id="title">Get it on Google Play</title>
   <desc id="desc">Google Play badge</desc>
-  <rect x="4" y="4" width="952" height="276" rx="34" fill="#12110d" stroke="#9f9f9f" stroke-width="5.5"/>
+  <rect x="3" y="3" width="794" height="231" rx="30" fill="#12110d" stroke="#a6a6a6" stroke-width="5"/>
 
-  <g transform="translate(70 50)">
-    <path d="M0 0v170l84-85L0 0Z" fill="#5c7cc4"/>
-    <path d="M0 0l82 82 67-40L19 0H0Z" fill="#3db445"/>
-    <path d="M149 42 82 82l66 42 46-24c15-8 24-16 24-18s-9-11-24-18l-45-22Z" fill="#ffbe0b"/>
-    <path d="M82 82 0 170h19l129-76-66-12Z" fill="#f7302e"/>
+  <g transform="translate(58 43)">
+    <path d="M0 0v122l61-61L0 0Z" fill="#5c7cc4"/>
+    <path d="M0 0l61 61 48-29L14 0H0Z" fill="#3db445"/>
+    <path d="M109 32 61 61l48 31 33-18c12-6 18-11 18-13s-6-8-18-14l-33-15Z" fill="#ffbe0b"/>
+    <path d="M61 61 0 122h14l95-56-48-5Z" fill="#f7302e"/>
   </g>
 
   <g fill="#fff" font-family="Arial, Helvetica, sans-serif">
-    <text x="290" y="94" font-size="63" font-weight="500" letter-spacing="1.4">GET IT ON</text>
-    <text x="288" y="210" font-size="121" font-weight="400" letter-spacing="-3">Google Play</text>
+    <text x="223" y="74" font-size="43" font-weight="500" letter-spacing="1.2">GET IT ON</text>
+    <text x="221" y="170" font-size="82" font-weight="400" letter-spacing="-2.2">Google Play</text>
   </g>
 </svg>
