@@ -1,6 +1,6 @@
 (function () {
   var didMountFooter = false;
-  var FOOTER_CACHE_KEY = 'budy_footer_html_v8';
+  var FOOTER_CACHE_KEY = 'budy_footer_html_v10';
 
   function mountFooter() {
     if (didMountFooter) return;
