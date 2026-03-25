@@ -147,6 +147,9 @@
     position: relative;
     overflow: hidden;
     isolation: isolate;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   #nav .btn-ghost.nav-progress-pill::before {
@@ -157,9 +160,40 @@
     bottom: 2px;
     width: var(--nav-pill-fill, 0%);
     border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
-    transition: width 0.22s ease;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.14) 58%, rgba(255, 255, 255, 0.08) 100%);
+    transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
     z-index: -1;
+  }
+
+  #nav .btn-ghost.nav-progress-pill::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 32px;
+    left: calc(var(--nav-pill-fill, 0%) - 16px);
+    border-radius: 999px;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 45%, transparent 72%);
+    opacity: var(--nav-pill-glow, 0);
+    transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  #nav .btn-ghost.nav-progress-pill.nav-progress-active {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  #nav .btn-ghost.nav-progress-pill.nav-progress-active::before,
+  #nav .btn-ghost.nav-progress-pill.nav-progress-complete::before {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.18) 58%, rgba(255, 255, 255, 0.1) 100%);
+  }
+
+  #nav .btn-ghost.nav-progress-pill.nav-progress-complete {
+    color: rgba(255, 255, 255, 0.92);
+    border-color: rgba(255, 255, 255, 0.22);
   }
 
   #nav .btn-ghost:hover {

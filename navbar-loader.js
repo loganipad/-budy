@@ -130,7 +130,10 @@
   function clearNavProgress() {
     NAV_PROGRESS_ITEMS.forEach(function (item) {
       var link = document.getElementById(item.linkId);
-      if (link) link.style.setProperty('--nav-pill-fill', '0%');
+      if (!link) return;
+      link.style.setProperty('--nav-pill-fill', '0%');
+      link.style.setProperty('--nav-pill-glow', '0');
+      link.classList.remove('nav-progress-active', 'nav-progress-complete');
     });
   }
 
@@ -145,6 +148,17 @@
 
     var navHeight = nav.offsetHeight || 64;
     var anchorY = window.scrollY + navHeight + Math.max(window.innerHeight * 0.14, 32);
+    var activeSectionId = '';
+
+    NAV_PROGRESS_ITEMS.forEach(function (item) {
+      var section = document.getElementById(item.sectionId);
+      if (!section) return;
+      var sectionTop = section.offsetTop;
+      var sectionBottom = sectionTop + section.offsetHeight;
+      if (anchorY >= sectionTop && anchorY < sectionBottom) {
+        activeSectionId = item.sectionId;
+      }
+    });
 
     NAV_PROGRESS_ITEMS.forEach(function (item) {
       var link = document.getElementById(item.linkId);
@@ -155,6 +169,9 @@
       var sectionBottom = sectionTop + section.offsetHeight;
       var progress = clamp((anchorY - sectionTop) / Math.max(sectionBottom - sectionTop, 1), 0, 1);
       link.style.setProperty('--nav-pill-fill', (progress * 100).toFixed(1) + '%');
+      link.style.setProperty('--nav-pill-glow', progress > 0.02 ? '1' : '0');
+      link.classList.toggle('nav-progress-active', activeSectionId === item.sectionId);
+      link.classList.toggle('nav-progress-complete', progress >= 0.999);
     });
   }
 
