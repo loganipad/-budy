@@ -19,6 +19,7 @@ const requiredHtmlFiles = [
 ];
 const observabilitySnippet = '<script src="/assets/observability.js" defer></script>';
 const jsFiles = [];
+const testFiles = [];
 
 function walk(dirPath) {
   for (const entry of readdirSync(dirPath)) {
@@ -36,6 +37,10 @@ function walk(dirPath) {
 
     if (fullPath.endsWith('.js') || fullPath.endsWith('.mjs')) {
       jsFiles.push(fullPath);
+    }
+
+    if (fullPath.endsWith('.test.mjs')) {
+      testFiles.push(fullPath);
     }
   }
 }
@@ -64,4 +69,8 @@ for (const file of jsFiles) {
   execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' });
 }
 
-console.log(`Validated ${requiredHtmlFiles.length} pages and ${jsFiles.length} JavaScript files.`);
+if (testFiles.length) {
+  execFileSync(process.execPath, ['--test', ...testFiles], { stdio: 'inherit' });
+}
+
+console.log(`Validated ${requiredHtmlFiles.length} pages, ${jsFiles.length} JavaScript files, and ${testFiles.length} test files.`);

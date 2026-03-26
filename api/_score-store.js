@@ -1,3 +1,5 @@
+import { buildCreateAttemptPayload, buildListAttemptsPath } from './_score-store-core.mjs';
+
 function getConfig() {
   const baseUrl = process.env.SUPABASE_URL || '';
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -53,28 +55,23 @@ async function request(path, options) {
 }
 
 export async function listAttemptsByUserId(userId, limit = 100) {
-  const id = String(userId || '').trim();
-  if (!id) return { ok: false, error: 'Missing user id.' };
+  let path;
+  try {
+    path = buildListAttemptsPath(userId, limit);
+  } catch (error) {
+    return { ok: false, error: error && error.message ? error.message : 'Missing user id.' };
+  }
 
-  const safeLimit = Math.max(1, Math.min(Number(limit) || 100, 500));
-  const path = `/rest/v1/user_test_attempts?user_id=eq.${encodeURIComponent(id)}&select=id,user_id,section,total_score,correct_count,total_questions,skill_breakdown,source,created_at&order=created_at.asc&limit=${safeLimit}`;
   return request(path, { method: 'GET' });
 }
 
 export async function createAttempt(input) {
-  const userId = String(input && input.userId ? input.userId : '').trim();
-  if (!userId) return { ok: false, error: 'Missing user id.' };
-
-  const payload = {
-    user_id: userId,
-    section: input && input.section ? String(input.section) : 'unknown',
-    total_score: Number.isFinite(Number(input && input.totalScore)) ? Number(input.totalScore) : 0,
-    correct_count: Number.isFinite(Number(input && input.correctCount)) ? Number(input.correctCount) : 0,
-    total_questions: Number.isFinite(Number(input && input.totalQuestions)) ? Number(input.totalQuestions) : 0,
-    skill_breakdown: input && input.skillBreakdown && typeof input.skillBreakdown === 'object' ? input.skillBreakdown : {},
-    source: input && input.source ? String(input.source) : 'web',
-    created_at: input && input.createdAt ? String(input.createdAt) : new Date().toISOString()
-  };
+  let payload;
+  try {
+    payload = buildCreateAttemptPayload(input);
+  } catch (error) {
+    return { ok: false, error: error && error.message ? error.message : 'Missing user id.' };
+  }
 
   const path = '/rest/v1/user_test_attempts';
   return request(path, {
