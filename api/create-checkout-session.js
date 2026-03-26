@@ -1,4 +1,5 @@
 import { resolveAuthUser } from './_auth.js';
+import { withApiErrorBoundary } from './_observability.js';
 
 const PLAN_TO_ENV = {
   weekly: 'STRIPE_PRICE_ID_WEEKLY',
@@ -131,7 +132,7 @@ function humanizeStripeError(err) {
   return err && err.message ? err.message : 'Unable to create checkout session.';
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return json(res, 405, { error: 'Method Not Allowed' });
@@ -183,3 +184,5 @@ export default async function handler(req, res) {
     return json(res, 500, { error: humanizeStripeError(err) });
   }
 }
+
+export default withApiErrorBoundary('api/create-checkout-session', handler);

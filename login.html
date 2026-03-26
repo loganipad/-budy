@@ -11,6 +11,7 @@
 <!-- Auth0 Universal Login SDK, REQUIRED, do not remove -->
 <script src="https://cdn.auth0.com/ulp/react-components/1.48.1/auth0-acul-js.production.min.js"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<script src="/assets/observability.js" defer></script>
 
 <style>
 :root {
@@ -279,7 +280,7 @@ a { text-decoration: none; color: inherit; }
 }
 </style>
 </head>
-<body>
+<body data-page-type="login">
 
 <div id="navbar-slot"></div>
 <script src="/navbar-loader.js" defer></script>

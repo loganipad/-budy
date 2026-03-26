@@ -1,4 +1,5 @@
 import { resolveAuthUser } from './_auth.js';
+import { withApiErrorBoundary } from './_observability.js';
 import { getSubscriptionByUserId } from './_subscription-store.js';
 
 function getAllowedOrigins() {
@@ -111,7 +112,7 @@ function humanizeStripeError(err) {
   return err && err.message ? err.message : 'Unable to create billing portal session.';
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return json(res, 405, { error: 'Method Not Allowed' });
@@ -155,3 +156,5 @@ export default async function handler(req, res) {
     return json(res, 500, { error: humanizeStripeError(err) });
   }
 }
+
+export default withApiErrorBoundary('api/create-billing-portal-session', handler);

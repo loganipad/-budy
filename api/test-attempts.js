@@ -1,4 +1,5 @@
 import { resolveAuthUser } from './_auth.js';
+import { withApiErrorBoundary } from './_observability.js';
 import { createAttempt, listAttemptsByUserId } from './_score-store.js';
 
 function json(res, status, payload) {
@@ -18,7 +19,7 @@ function normalizeAttemptRow(row) {
   };
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');
     return json(res, 405, { error: 'Method Not Allowed' });
@@ -60,3 +61,5 @@ export default async function handler(req, res) {
   const createdRow = Array.isArray(createResult.data) ? createResult.data[0] || null : null;
   return json(res, 201, { attempt: normalizeAttemptRow(createdRow) });
 }
+
+export default withApiErrorBoundary('api/test-attempts', handler);

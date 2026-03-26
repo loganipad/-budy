@@ -5,6 +5,7 @@ import {
   markEventProcessed,
   upsertSubscription
 } from './_subscription-store.js';
+import { withApiErrorBoundary } from './_observability.js';
 
 export const config = {
   api: {
@@ -136,7 +137,7 @@ async function handleSubscriptionChanged(event) {
   return { ok: true, userId };
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return json(res, 405, { error: 'Method Not Allowed' });
@@ -187,3 +188,5 @@ export default async function handler(req, res) {
     return json(res, 500, { error: message });
   }
 }
+
+export default withApiErrorBoundary('api/stripe-webhook', handler);

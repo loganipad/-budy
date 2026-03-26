@@ -1,4 +1,5 @@
 import { resolveAuthUser } from './_auth.js';
+import { withApiErrorBoundary } from './_observability.js';
 import { getSubscriptionByUserId } from './_subscription-store.js';
 
 function json(res, status, payload) {
@@ -59,7 +60,7 @@ async function getStripeSubscriptionDetails(secretKey, subscriptionId) {
   }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return json(res, 405, { error: 'Method Not Allowed' });
@@ -102,3 +103,5 @@ export default async function handler(req, res) {
     hasStore: !record.disabled
   });
 }
+
+export default withApiErrorBoundary('api/me', handler);

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study | Page Not Found</title>
+<meta name="description" content="The page you requested does not exist. Return to Budy.Study to keep practicing for the SAT and PSAT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/assets/observability.js" defer></script>
+<style>
+:root {
+  --bg: #09101a;
+  --panel: rgba(13, 20, 32, 0.78);
+  --line: rgba(255, 255, 255, 0.1);
+  --text: #f8fafc;
+  --muted: rgba(226, 232, 240, 0.76);
+  --brand: #1a56db;
+  --gold: #f59e0b;
+  --shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+  --font: 'Sora', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(26, 86, 219, 0.35), transparent 30%),
+    radial-gradient(circle at 82% 80%, rgba(245, 158, 11, 0.18), transparent 28%),
+    linear-gradient(180deg, #07101a 0%, #0e1724 55%, #07101a 100%);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.shell {
+  width: min(720px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+  padding: 40px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+h1 {
+  font-size: clamp(2.6rem, 9vw, 5.1rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  margin: 22px 0 16px;
+}
+
+p {
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), #0f3eab);
+  box-shadow: 0 18px 38px rgba(26, 86, 219, 0.28);
+}
+
+.btn-secondary {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.code {
+  display: inline-flex;
+  margin-top: 28px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding: 28px 22px;
+    border-radius: 24px;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+</style>
+</head>
+<body data-page-type="not-found">
+  <main class="shell">
+    <div class="eyebrow">404 Error</div>
+    <h1>Wrong turn.</h1>
+    <p>The page you asked for is not here. Head back to the main site, open the study dashboard, or jump straight into practice.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/">Go Home</a>
+      <a class="btn btn-secondary" href="/study">Open Study Page</a>
+    </div>
+    <div class="code">BUDY.STUDY / 404</div>
+  </main>
+</body>
+</html>
