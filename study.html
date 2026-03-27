@@ -17,7 +17,9 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <script src="/assets/observability.js" defer></script>
+<link rel="stylesheet" href="/assets/review-bank.css">
 <style>
 :root {
   --ink:#0d1117;
@@ -537,6 +539,34 @@ button,input,select{font:inherit}
         </section>
       </section>
 
+      <section class="study-section">
+        <div class="study-section-head">
+          <div class="eyebrow">Review Bank</div>
+          <h2>Build a timed test from your flagged and missed questions</h2>
+          <p class="section-copy">Filter your saved question bank by flagged items, wrong answers, or both. Narrow it to one testing date or use all-time history, preview similar questions, and build a review test with SAT-style timing before you start.</p>
+        </div>
+
+        <div class="review-bank-shell" id="study-review-bank">
+          <div class="review-bank-toolbar">
+            <div class="review-bank-filter-group">
+              <label class="review-bank-check"><input type="checkbox" data-review-filter="flagged"> <span>Flagged</span></label>
+              <label class="review-bank-check"><input type="checkbox" data-review-filter="wrong"> <span>Wrong Answers</span></label>
+              <label class="review-bank-check"><input type="checkbox" data-review-filter="include-similar"> <span>Include similar questions</span></label>
+              <label class="review-bank-select-wrap">Date
+                <select class="review-bank-select" data-review-filter="date"></select>
+              </label>
+            </div>
+            <div class="review-bank-filter-group">
+              <div class="review-bank-count" data-review-count>0 questions</div>
+              <button class="review-bank-launch" type="button" data-review-launch disabled>Build review test</button>
+            </div>
+          </div>
+
+          <div class="review-bank-empty hidden" data-review-empty>Finish a test, flag a question, or miss one to start building this review bank.</div>
+          <div class="review-bank-list" data-review-list></div>
+        </div>
+      </section>
+
       <section class="timeline-card" style="margin-top:24px">
         <h2>How the prototype thinks</h2>
         <p class="section-copy">This page uses simple rule-based logic right now: grade determines pacing pressure, your reading and math confidence determine emphasis, and time available shapes the weekly cadence.</p>
@@ -625,9 +655,26 @@ button,input,select{font:inherit}
 
   <div id="footer-slot"></div>
   <script src="/footer-loader.js" defer></script>
+  <script src="/assets/review-bank.js"></script>
   <script>
     const STUDY_STORAGE_KEY = 'budy_study_profile_v1';
     const GRADE_PREF_KEY = 'budy_grade_pref';
+    const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
+    const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
+    const AUTH0_REDIRECT_URI = window.location.origin;
+    const LOCAL_AUTH_KEY = 'budy_local_auth_user';
+    const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
+
+    let reviewAuthClient = null;
+    const reviewData = {
+      isLoggedIn: false,
+      authViaLocal: false,
+      authUserId: '',
+      user: { name: '', email: '' },
+      sessionCache: [],
+      savedQuestionsCache: []
+    };
+
     const state = {
       exam: '',
       reading: '',
@@ -637,6 +684,151 @@ button,input,select{font:inherit}
 
     const GROUPS = ['exam', 'reading', 'math', 'time'];
     const SCORE_MAP = { low: 0, mid: 1, high: 2 };
+
+    function getLocalAuthUser() {
+      try {
+        const raw = localStorage.getItem(LOCAL_AUTH_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function getSavedQuestionsLocal() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(SAVED_QUESTIONS_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    async function initReviewAuth() {
+      const localUser = getLocalAuthUser();
+
+      if (window.auth0 && window.auth0.createAuth0Client) {
+        reviewAuthClient = await window.auth0.createAuth0Client({
+          domain: AUTH0_DOMAIN,
+          clientId: AUTH0_CLIENT_ID,
+          authorizationParams: { redirect_uri: AUTH0_REDIRECT_URI },
+          cacheLocation: 'localstorage',
+          useRefreshTokens: true,
+          useRefreshTokensFallback: true
+        });
+
+        try {
+          const isAuthenticated = await reviewAuthClient.isAuthenticated();
+          if (isAuthenticated) {
+            reviewData.isLoggedIn = true;
+            const user = await reviewAuthClient.getUser();
+            if (user && user.sub) reviewData.authUserId = String(user.sub);
+            if (user && user.name) reviewData.user.name = user.name;
+            if (user && user.email) reviewData.user.email = user.email;
+            return;
+          }
+        } catch (_) {}
+      }
+
+      if (localUser) {
+        reviewData.isLoggedIn = true;
+        reviewData.authViaLocal = true;
+        if (localUser.sub) reviewData.authUserId = String(localUser.sub);
+        if (localUser.name) reviewData.user.name = localUser.name;
+        if (localUser.email) reviewData.user.email = localUser.email;
+      }
+    }
+
+    async function getReviewAccessToken() {
+      if (!reviewData.isLoggedIn) return '';
+
+      if (reviewData.authViaLocal) {
+        const localUser = getLocalAuthUser();
+        return localUser && localUser.accessToken ? String(localUser.accessToken) : '';
+      }
+
+      if (!reviewAuthClient) return '';
+      try {
+        const token = await reviewAuthClient.getTokenSilently({
+          authorizationParams: { scope: 'openid profile email' }
+        });
+        return token || '';
+      } catch (_) {
+        return '';
+      }
+    }
+
+    async function hydrateReviewSessions() {
+      const token = await getReviewAccessToken();
+      if (!token) {
+        reviewData.sessionCache = [];
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/test-attempts', {
+          method: 'GET',
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          reviewData.sessionCache = [];
+          return;
+        }
+
+        const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+        reviewData.sessionCache = attempts.map((item) => ({
+          date: item.date,
+          section: item.section,
+          total: Number(item.total || 0),
+          correct: Number(item.correct || 0),
+          total_q: Number(item.total_q || 0)
+        }));
+      } catch (_) {
+        reviewData.sessionCache = [];
+      }
+    }
+
+    async function hydrateReviewSavedQuestions() {
+      const token = await getReviewAccessToken();
+      if (!token) {
+        reviewData.savedQuestionsCache = getSavedQuestionsLocal();
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/saved-questions', {
+          method: 'GET',
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          reviewData.savedQuestionsCache = getSavedQuestionsLocal();
+          return;
+        }
+
+        reviewData.savedQuestionsCache = Array.isArray(data && data.questions) ? data.questions : [];
+      } catch (_) {
+        reviewData.savedQuestionsCache = getSavedQuestionsLocal();
+      }
+    }
+
+    function mountStudyReviewBank() {
+      if (!window.BudyReviewBank) return;
+      window.BudyReviewBank.mount({
+        root: document.getElementById('study-review-bank'),
+        getSavedQuestions: function () { return reviewData.savedQuestionsCache; },
+        getSessions: function () { return reviewData.sessionCache; },
+        testUrl: '/?review=1'
+      });
+    }
+
+    async function bootStudyReviewBank() {
+      await initReviewAuth();
+      await Promise.all([hydrateReviewSessions(), hydrateReviewSavedQuestions()]);
+      mountStudyReviewBank();
+    }
 
     function setActiveChoice(group, value) {
       state[group] = value;
@@ -794,6 +986,7 @@ button,input,select{font:inherit}
     document.getElementById('build-study-btn').addEventListener('click', buildPlan);
     bindChoiceGroups();
     hydrateSavedProfile();
+    void bootStudyReviewBank();
   </script>
 </body>
 </html>

@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <script src="/assets/observability.js" defer></script>
+<link rel="stylesheet" href="/assets/review-bank.css">
 <style>
 :root {
   --ink: #0d1117;
@@ -943,6 +944,7 @@ button { font-family: inherit; cursor: pointer; }
 
       <div class="acct-tabs" role="tablist">
         <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab">My Progress</button>
+        <button class="acct-tab" id="acct-tab-study" onclick="setAccountTab('study')" role="tab">Study</button>
         <button class="acct-tab" id="acct-tab-achievements" onclick="setAccountTab('achievements')" role="tab">Achievements</button>
         <button class="acct-tab" id="acct-tab-billing" onclick="setAccountTab('billing')" role="tab">Billing</button>
         <button class="acct-tab" id="acct-tab-settings" onclick="setAccountTab('settings')" role="tab">Settings</button>
@@ -1028,6 +1030,43 @@ button { font-family: inherit; cursor: pointer; }
           </div>
           <div id="saved-questions-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flag"></use></svg></span></div><p>Flag questions during a test or miss one, and it will appear here for later review.</p></div>
           <div class="saved-question-list" id="saved-question-list"></div>
+        </div>
+      </div>
+
+      <div class="acct-pane" id="acct-pane-study" role="tabpanel">
+        <div class="dash-section-head">
+          <div>
+            <span class="dash-section-kicker">Review Lab</span>
+            <h2>Flagged and missed question bank</h2>
+          </div>
+          <p class="dash-section-note">Filter the bank by flagged questions, wrong answers, or both. Narrow it to a specific test date or use all-time history, then build a timed review test with optional similar-question top-ups.</p>
+        </div>
+
+        <div class="d-card">
+          <div class="d-card-hd">
+            <h3>Review Question Bank</h3>
+            <span class="d-card-tag tag-brand">Timed Review</span>
+          </div>
+
+          <div class="review-bank-shell" id="account-review-bank">
+            <div class="review-bank-toolbar">
+              <div class="review-bank-filter-group">
+                <label class="review-bank-check"><input type="checkbox" data-review-filter="flagged"> <span>Flagged</span></label>
+                <label class="review-bank-check"><input type="checkbox" data-review-filter="wrong"> <span>Wrong Answers</span></label>
+                <label class="review-bank-check"><input type="checkbox" data-review-filter="include-similar"> <span>Include similar questions</span></label>
+                <label class="review-bank-select-wrap">Date
+                  <select class="review-bank-select" data-review-filter="date"></select>
+                </label>
+              </div>
+              <div class="review-bank-filter-group">
+                <div class="review-bank-count" data-review-count>0 questions</div>
+                <button class="review-bank-launch" type="button" data-review-launch disabled>Build review test</button>
+              </div>
+            </div>
+
+            <div class="review-bank-empty hidden" data-review-empty>No saved questions match the current filters yet.</div>
+            <div class="review-bank-list" data-review-list></div>
+          </div>
         </div>
       </div>
 
@@ -1130,6 +1169,7 @@ button { font-family: inherit; cursor: pointer; }
 <div id="footer-slot"></div>
 <script src="/footer-loader.js" defer></script>
 <script src="/assets/score-utils.js"></script>
+<script src="/assets/review-bank.js"></script>
 
 <script>
 'use strict';
@@ -1145,6 +1185,7 @@ const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
 
 let authClient = null;
 let accountConfirmResolver = null;
+let reviewBankController = null;
 
 function accountSpriteIcon(name, className) {
   const cls = className || 'ui-icon ui-icon-md';
@@ -1230,15 +1271,33 @@ function isTestUserEmail(email) {
 
 function setAccountTab(tab) {
   S.accountTab = tab;
-  ['progress', 'achievements', 'billing', 'settings'].forEach((name) => {
+  ['progress', 'study', 'achievements', 'billing', 'settings'].forEach((name) => {
     const tabEl = document.getElementById('acct-tab-' + name);
     const paneEl = document.getElementById('acct-pane-' + name);
     if (tabEl) tabEl.classList.toggle('active', name === tab);
     if (paneEl) paneEl.classList.toggle('active', name === tab);
   });
 
+  const hash = tab === 'progress' ? '' : '#' + tab;
+  window.history.replaceState({}, document.title, window.location.pathname + hash);
+
   if (tab === 'progress' && S.chart) {
     setTimeout(function () { if (S.chart) S.chart.resize(); }, 0);
+  }
+}
+
+function mountReviewBank() {
+  if (!window.BudyReviewBank) return;
+  if (!reviewBankController) {
+    reviewBankController = window.BudyReviewBank.mount({
+      root: document.getElementById('account-review-bank'),
+      getSavedQuestions: function () { return getSavedQuestionsForDashboard(); },
+      getSessions: function () { return Array.isArray(S.sessionCache) ? S.sessionCache : []; },
+      notify: function (message, tone) { toast(message, tone === 'er' ? 'er' : tone === 'wn' ? 'wn' : '', 3600); },
+      testUrl: '/?review=1'
+    });
+  } else if (typeof reviewBankController.refresh === 'function') {
+    reviewBankController.refresh();
   }
 }
 
@@ -2167,6 +2226,7 @@ function renderDash() {
   renderLoginStreak(metrics);
   renderAchievements(achievementCards);
   renderSavedQuestions();
+  mountReviewBank();
 
   if (!ss.length) {
     document.getElementById('d-best').textContent = '-';
@@ -2278,7 +2338,7 @@ async function boot() {
     setDemoDashboardState();
     recordLoginActivity();
     renderDash();
-    setAccountTab('progress');
+    setAccountTab(window.location.hash === '#study' ? 'study' : 'progress');
     bindNavAuthButtonForState();
     return;
   }
@@ -2289,6 +2349,7 @@ async function boot() {
   await hydrateSavedQuestions();
   recordLoginActivity();
   renderDash();
+  setAccountTab(window.location.hash === '#study' ? 'study' : (S.accountTab || 'progress'));
 }
 
 document.addEventListener('navbar:mounted', bindNavAuthButtonForState);

@@ -22,6 +22,7 @@ const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
+const REVIEW_TEST_STORAGE_KEY = 'budy_review_test_v1';
 const ADMIN_PREMIUM_EMAILS = [];
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
@@ -128,7 +129,8 @@ const S = {
   checkoutSyncInProgress: false,
   leaveTestDestination: 'landing',
   demoCompleted: false,
-  demoGrading: false
+  demoGrading: false,
+  customTestLabel: ''
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -155,6 +157,78 @@ function getTestDurationSeconds(section, isPremium) {
 function getTestDurationSummary(section, isPremium) {
   const minutes = Math.round(getTestDurationSeconds(section, isPremium) / 60);
   return isPremium ? `${minutes} min` : `~${minutes} min`;
+}
+
+function getQueuedReviewTest() {
+  try {
+    const raw = localStorage.getItem(REVIEW_TEST_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearQueuedReviewTest() {
+  try {
+    localStorage.removeItem(REVIEW_TEST_STORAGE_KEY);
+  } catch {}
+}
+
+function getSectionDisplayLabel(section, customLabel) {
+  if (customLabel) return customLabel;
+  if (section === 'full') return 'Full Test';
+  if (section === 'english') return 'Reading & Writing';
+  if (section === 'math') return 'Math';
+  return section || 'Practice Test';
+}
+
+function beginPreparedTestSession({ questions, section, timeLimitSeconds, label }) {
+  S.questions = Array.isArray(questions) ? questions : [];
+  S.answers = {};
+  S.flags = new Set();
+  S.curQ = 0;
+  S.timerPaused = false;
+  S.timeLeft = Math.max(60, Number(timeLimitSeconds) || 0);
+  S.testActive = true;
+  S.section = section;
+  S.customTestLabel = label || '';
+
+  document.getElementById('tb-sec-lbl').textContent = getSectionDisplayLabel(section, label);
+  updTimerPauseButton();
+  updTimerDisplay();
+
+  setView('test');
+  requestAnimationFrame(() => {
+    buildQNav();
+    renderQ(0);
+    startTimer();
+  });
+}
+
+async function launchQueuedReviewTestIfPresent() {
+  const config = getQueuedReviewTest();
+  clearQueuedReviewTest();
+
+  if (!config || !Array.isArray(config.questions) || !config.questions.length) {
+    toast('That review test was not available anymore. Build it again from the Study section.', 'wn', 4200);
+    return false;
+  }
+
+  const normalizedSection = config.section === 'english' || config.section === 'math' || config.section === 'full'
+    ? config.section
+    : 'full';
+
+  setView('loading');
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  beginPreparedTestSession({
+    questions: config.questions,
+    section: normalizedSection,
+    timeLimitSeconds: config.timeLimitSeconds,
+    label: config.label || 'Review Test'
+  });
+  return true;
 }
 
 function trackEvent(name, payload = {}) {
@@ -1510,6 +1584,7 @@ function startTest() {
   const isPrem = S.isPremium;
   const qLimits = { english: isPrem?27:FREE_Q, math: isPrem?22:FREE_Q, full: isPrem?49:FREE_Q };
   const limit   = qLimits[S.section];
+  S.customTestLabel = '';
 
   setView('loading');
 
@@ -1517,27 +1592,11 @@ function startTest() {
   setTimeout(async ()=>{
     try {
       const questions = await buildQuestionSet(S.section, limit);
-
-      S.questions  = questions;
-      S.answers    = {};
-      S.flags      = new Set();
-      S.curQ       = 0;
-      S.timerPaused = false;
-      S.timeLeft   = getTestDurationSeconds(S.section, isPrem);
-      S.testActive = true;
-
-      const labels = { english:'Reading & Writing', math:'Math', full:'Full Test' };
-      document.getElementById('tb-sec-lbl').textContent = labels[S.section] || S.section;
-      updTimerPauseButton();
-      updTimerDisplay();
-
-      setView('test');
-
-      // Wait one frame after the test screen is visible before touching DOM inside it
-      requestAnimationFrame(()=>{
-        buildQNav();
-        renderQ(0);
-        startTimer();
+      beginPreparedTestSession({
+        questions,
+        section: S.section,
+        timeLimitSeconds: getTestDurationSeconds(S.section, isPrem),
+        label: ''
       });
 
     } catch(err) {
@@ -1755,6 +1814,7 @@ function submitTest(){
     if(sec==='english'){engSc=sc;total=sc}else{mathSc=sc;total=sc}
   }
   S.results={section:sec,total,engSc,mathSc,correct,wrong,skipped,total_q:qs.length,skillMap,
+    customLabel:S.customTestLabel || '',
     questions:qs.map((q,i)=>({...q,userAnswer:S.answers[i],isCorrect:S.answers[i]?(q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===S.answers[i].toString()):S.answers[i]===q.answer):false})),
     date:new Date().toISOString(),isFree:!S.isPremium};
   saveSession(S.results);
@@ -1765,12 +1825,13 @@ function submitTest(){
 /* ── RESULTS ── */
 function renderResults(r){
   const max=r.section==='full'?1600:800;
+  const displayLabel = getSectionDisplayLabel(r.section, r.customLabel);
   document.getElementById('res-headline').textContent=`${S.user.name||'Your'} Results`;
-  document.getElementById('res-subline').textContent=`${r.section==='full'?'Full Test':r.section==='english'?'Reading & Writing':'Math'} · ${new Date(r.date).toLocaleDateString()}`;
+  document.getElementById('res-subline').textContent=`${displayLabel} · ${new Date(r.date).toLocaleDateString()}`;
   document.getElementById('r-correct').textContent=r.correct;
   document.getElementById('r-wrong').textContent=r.wrong;
   document.getElementById('r-skip').textContent=r.skipped;
-  document.getElementById('score-lbl').textContent=r.section==='full'?'Combined SAT Score':r.section==='english'?'Reading & Writing Score':'Math Score';
+  document.getElementById('score-lbl').textContent=r.customLabel ? 'Review Test Score' : (r.section==='full'?'Combined SAT Score':r.section==='english'?'Reading & Writing Score':'Math Score');
   document.getElementById('pct-badge').textContent=`~${getPct(r.total,max)} percentile`;
 
   const col=r.total>=700||r.section==='full'&&r.total>=1400?'gr':r.total>=500||r.section==='full'&&r.total>=1000?'bl':'or';
@@ -2517,6 +2578,15 @@ async function init() {
   await handleCheckoutReturn();
 
   const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.get('review') === '1') {
+    searchParams.delete('review');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+    const launched = await launchQueuedReviewTestIfPresent();
+    if (launched) return;
+  }
+
   if (searchParams.get('billing') === 'return') {
     await refreshPremiumStatus();
     toast('Returned from billing portal.', 'ok', 3600);
