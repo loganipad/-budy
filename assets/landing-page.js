@@ -1337,215 +1337,12 @@ async function cancelSubscriptionNow() {
 }
 
 /* ── QUESTIONS ── */
-const ENG_Q = [
-  {id:'e1',type:'mc',section:'english',skill:'Inference',
-   passage:'The discovery of ancient cave paintings in southern France revealed that Paleolithic humans had a remarkable capacity for abstract thought. The paintings depict animals with anatomical accuracy and motion, created using mineral pigments applied with brushes and blow tubes. Archaeologists note that artists returned to the same sites over generations, suggesting early cultural transmission.',
-   question:'Which inference is best supported by the passage?',
-   options:['A) Cave paintings were made for religious purposes','B) Paleolithic humans passed artistic traditions across generations','C) Blow tubes indicate formal art training','D) Animals were depicted as hunting guides'],
-   answer:'B'},
-  {id:'e2',type:'mc',section:'english',skill:'Words in Context',
-   passage:'The senator\'s speech was notable for its measured tone. Rather than using incendiary rhetoric, she chose language that was precise without being cold, acknowledging complexity rather than reducing the issue to talking points.',
-   question:'As used in the passage, "measured" most nearly means:',
-   options:['A) Quantified','B) Restrained and deliberate','C) Musical in rhythm','D) Mathematically exact'],
-   answer:'B'},
-  {id:'e3',type:'mc',section:'english',skill:'Central Ideas',
-  passage:'Behavioral economists have shown that humans are not the rational actors classical economics assumes. People feel the pain of losing $100 more than the pleasure of gaining $100. They are influenced by irrelevant numbers and overestimate small probabilities. These biases are not random. They are predictable and consistent.',
-   question:'What is the central idea of this passage?',
-   options:['A) Humans always make poor decisions','B) Loss aversion is the most important bias','C) Human decision-making deviates from rationality in predictable ways','D) Classical economics must be abandoned'],
-   answer:'C'},
-  {id:'e4',type:'mc',section:'english',skill:'Grammar',
-   passage:null,
-   question:'Choose the grammatically correct sentence:',
-   options:['A) The collection of rare books are housed in a vault.','B) The collection of rare books is housed in a vault.','C) The collection of rare books have been housed in a vault.','D) The collection of rare books were housed in a vault.'],
-   answer:'B'},
-  {id:'e5',type:'mc',section:'english',skill:'Transitions',
-   passage:null,
-   question:'Choose the best transition: "Early studies suggested caffeine impairs memory. _____, more recent research found no significant effect."',
-   options:['A) Similarly','B) Therefore','C) However','D) In other words'],
-   answer:'C'},
-  {id:'e6',type:'mc',section:'english',skill:'Inference',
-  passage:'Despite producing celebrated novels since 1992, Elena Ferrante has kept her identity completely secret. She gives interviews only by email and never appears publicly. Critics have speculated she may be a translator, professor, or even a male writer, though Ferrante says gender is irrelevant to the work.',
-   question:'What can be inferred about why Ferrante says gender is irrelevant?',
-   options:['A) She wants to confirm she is male','B) She is redirecting attention from biography to the writing itself','C) She believes female authors cannot achieve recognition','D) She is unaware speculation exists'],
-   answer:'B'},
-  {id:'e7',type:'mc',section:'english',skill:'Punctuation',
-   passage:null,
-   question:'Which sentence uses apostrophes correctly?',
-   options:['A) The companys\' policy changed it\'s approach.','B) The company\'s policy changed its approach.','C) The companies policy changed its\' approach.','D) The company\'s policy changed it\'s approach.'],
-   answer:'B'},
-  {id:'e8',type:'mc',section:'english',skill:'Command of Evidence',
-  passage:'Dr. Osei claims: "Students who take music lessons before age 10 show higher math performance." A critic says this may reflect selection bias because families who afford music lessons may also provide other academic advantages.',
-   question:'Which study design best addresses the critic\'s concern?',
-   options:['A) Survey adult musicians about childhood math scores','B) Randomly assign similar-background children to music or non-music groups and track math performance','C) Interview parents of high-achieving math students','D) Analyze music school enrollment by zip code'],
-   answer:'B'},
-  {id:'e9',type:'mc',section:'english',skill:'Parallel Structure',
-   passage:null,
-   question:'Which version uses parallel structure correctly? "The policy requires employees to submit reports weekly, attending monthly reviews, and that they complete training."',
-   options:['A) to submit reports weekly, to attend monthly reviews, and to complete training','B) submitting reports weekly, attending monthly reviews, and completing training','C) Both A and B are correct','D) Neither corrects the error'],
-   answer:'C'},
-  {id:'e10',type:'mc',section:'english',skill:'Text Structure',
-   passage:'Historians long assumed the Bronze Age Collapse (~1200 BCE) had a single cause. Recent scholarship challenges this, pointing to a "perfect storm": climate change, drought, seismic activity, and trade disruption. New paleoclimatic data from the Eastern Mediterranean strongly supports a prolonged drought matching the collapse timeline.',
-   question:'How is this passage structured?',
-   options:['A) Problem then solution','B) Original claim, counter-claim, then supporting evidence','C) Chronological narrative','D) Comparison of two civilizations'],
-   answer:'B'},
-  {id:'e11',type:'mc',section:'english',skill:'Words in Context',
-  passage:'The new bridge was lauded for its elegance, but engineers quietly worried about its structural redundancy, or rather, the lack of it. A single point of failure in the cable arrangement could, under certain loads, trigger failures across the entire span.',
-   question:'As used here, "redundancy" refers to:',
-   options:['A) Unnecessary repetition','B) Backup systems that maintain safety if one component fails','C) Excess weight in the design','D) The bridge\'s decorative elements'],
-   answer:'B'},
-  {id:'e12',type:'mc',section:'english',skill:'Inference',
-  passage:'Early jazz musicians in New Orleans improvised not just musically but socially, playing everything from funeral processions to dance halls. They had to read audiences instantly, shifting tempo and feel within a single song. This sensitivity to context may explain why jazz developed such a rich vocabulary for musical conversation between performers.',
-   question:'What does the passage imply about the relationship between jazz musicians\' social environment and their music?',
-   options:['A) Jazz developed mainly from the funeral tradition','B) Playing in diverse settings built improvisational skills that shaped the music','C) The venues were considered disreputable','D) Jazz musicians were socially isolated'],
-   answer:'B'},
-  {id:'e13',type:'mc',section:'english',skill:'Rhetorical Synthesis',
-   passage:'A student argues that urban green spaces improve mental health. She has: (1) A meta-analysis of 47 studies showing parks reduce anxiety by 18%. (2) Surveys showing residents near parks report higher life satisfaction. (3) A report that wealthy neighborhoods have 3x more green space than low-income ones.',
-   question:'Which sources best support the student\'s central argument?',
-   options:['A) Sources 1 and 2 only','B) Source 3 only','C) Sources 2 and 3 only','D) All three equally'],
-   answer:'A'},
-  {id:'e14',type:'mc',section:'english',skill:'Pronoun Reference',
-   passage:null,
-   question:'Which revision best fixes the ambiguity? "When the director spoke to the actor, he seemed nervous."',
-   options:['A) When the director spoke to the actor, they seemed nervous.','B) The director seemed nervous when speaking to the actor.','C) When the director spoke to the actor, the director seemed nervous.','D) Both B and C fix the ambiguity.'],
-   answer:'D'},
-  {id:'e15',type:'mc',section:'english',skill:'Run-on Sentences',
-   passage:null,
-   question:'Which version correctly fixes this run-on? "The glacier retreated in the 20th century this exposed new land scientists are studying."',
-   options:['A) The glacier retreated, this exposed new land scientists are studying.','B) The glacier retreated in the 20th century; this exposed new land scientists are studying.','C) The glacier retreated in the 20th century, this exposed new land.','D) The glacier retreated: this exposed new land scientists studying it.'],
-   answer:'B'},
-  // Extra for premium full tests
-  {id:'e16',type:'mc',section:'english',skill:'Purpose',
-   passage:'The city planning memo stated: "Stakeholder concerns have been reviewed. The department has determined the public benefit of reduced traffic substantially outweighs disruption to affected residents." Local residents disputed this, calling the process "anything but careful."',
-   question:'What is the primary purpose of including the residents\' response?',
-   options:['A) To prove the city was wrong','B) To show the memo\'s language was disputed by those most affected','C) To argue transit corridors are harmful','D) To provide a legal counterargument'],
-   answer:'B'},
-  {id:'e17',type:'mc',section:'english',skill:'Colon Usage',
-   passage:null,
-   question:'Which sentence uses a colon correctly?',
-   options:['A) The researcher identified three variables: temperature, humidity, and pressure.','B) The researcher: identified temperature, humidity, and pressure.','C) The researcher identified: three variables temperature humidity pressure.','D) Three variables were: temperature, humidity, and pressure.'],
-   answer:'A'},
-  {id:'e18',type:'mc',section:'english',skill:'Central Ideas',
-   passage:'Economists debate whether minimum wage increases cause unemployment. Classical theory says yes. But empirical research is inconsistent: fast-food industries often show minimal job losses after increases while some manufacturing sectors do show effects. The variation likely reflects differences in industry structure and automation potential.',
-   question:'What is the central idea?',
-   options:['A) Minimum wages should be abolished','B) Minimum wage effects depend on context and resist simple generalization','C) Fast-food is immune to wage increases','D) Manufacturing is always hurt by wage policy'],
-   answer:'B'},
-  {id:'e19',type:'mc',section:'english',skill:'Inference',
-  passage:'In the 1950s, American supermarkets offered trading stamps, redeemable coupons given with purchases. At their peak, more stamps were printed than postage stamps. By the 1980s they had largely vanished, replaced by credit card rewards and frequent flyer miles, different mechanisms serving the same psychological function.',
-   question:'The author\'s final observation implies that:',
-   options:['A) Trading stamps were better than loyalty programs','B) The desire for consumer rewards is a persistent feature of human behavior','C) Credit cards were invented to replace trading stamps','D) Frequent flyer miles are less effective'],
-   answer:'B'},
-  {id:'e20',type:'mc',section:'english',skill:'Modifiers',
-   passage:null,
-   question:'Which revision best corrects this error? "Having studied for six hours, the exam felt easy to Maya."',
-   options:['A) Having studied for six hours, the exam was easy.','B) The exam felt easy after Maya studied for six hours.','C) Maya, having studied six hours, found the exam easy.','D) Both B and C are correct.'],
-   answer:'D'},
-  {id:'e21',type:'mc',section:'english',skill:'Data Interpretation',
-   passage:'A researcher recorded tree canopy coverage in five neighborhoods: Ashford (42%), Birchwood (18%), Culver Heights (61%), Downtown (7%), and Elmwood (38%). The researcher hypothesized that canopy correlates with median household income.',
-   question:'Which finding would WEAKEN the hypothesis?',
-   options:['A) Birchwood has lower canopy and lower income than Ashford','B) Elmwood has moderate canopy and moderate income','C) A high-income neighborhood has significantly lower canopy than a middle-income one','D) Downtown\'s canopy decreased over the past decade'],
-   answer:'C'},
-  {id:'e22',type:'mc',section:'english',skill:'Inference',
-   passage:'A longitudinal study tracking 1,400 adults over 25 years found that those with strong social connections showed 34% lower cognitive decline. Researchers cautioned, however, that the relationship may not be purely causal: people with better cognitive health may be better at maintaining social networks, confounding the interpretation.',
-   question:'What is the researchers\' main concern about the finding?',
-   options:['A) The sample size is too small','B) Correlation between social connection and cognitive health might run in both directions','C) Social connection is impossible to measure','D) 25 years is insufficient'],
-   answer:'B'},
-  {id:'e23',type:'mc',section:'english',skill:'Grammar',
-   passage:null,
-   question:'Which sentence is grammatically correct?',
-   options:['A) Neither the students nor the teacher were prepared for the power outage.','B) Neither the students nor the teacher was prepared for the power outage.','C) Neither the students nor the teacher are prepared for the power outage.','D) Neither the students nor the teacher have been prepared for the power outage.'],
-   answer:'B'},
-  {id:'e24',type:'mc',section:'english',skill:'Evidence',
-   passage:null,
-   question:'"Social media doesn\'t cause depression; depressed people use social media more." What study best tests this claim?',
-   options:['A) Cross-sectional survey of social media users\' depression scores','B) Longitudinal study measuring depression before and after social media adoption','C) Experiment where participants avoid social media for 30 days','D) Meta-analysis of all social media studies'],
-   answer:'B'},
-  {id:'e25',type:'mc',section:'english',skill:'Words in Context',
-   passage:'The documentary pulled no punches in its portrayal of the oil industry, laying bare the financial arrangements between lobbyists and regulatory officials that had remained opaque to the public for decades.',
-   question:'As used here, "opaque" most nearly means:',
-   options:['A) Dark in color','B) Hidden from understanding','C) Covered with oil','D) Mathematically complex'],
-   answer:'B'},
-  {id:'e26',type:'mc',section:'english',skill:'Rhetorical Purpose',
-   passage:null,
-   question:'A student argues libraries should expand digital lending. Which best introduces a counterargument to address?',
-   options:['A) Libraries have served communities for centuries.','B) Publishers argue digital lending threatens author royalties.','C) Digital books work on many devices.','D) Younger readers prefer digital formats.'],
-   answer:'B'},
-  {id:'e27',type:'mc',section:'english',skill:'Transitions',
-   passage:null,
-   question:'Choose the best transition: "The protein structure had been theorized for decades. _____, no lab successfully synthesized it until 2023."',
-   options:['A) Consequently','B) In addition','C) Nevertheless','D) For example'],
-   answer:'C'}
-];
-
-const MATH_Q = [
-  {id:'m1',type:'mc',section:'math',skill:'Linear Equations',passage:null,
-   question:'If 5x − 3 = 2x + 12, what is x?',
-   options:['A) 3','B) 5','C) 6','D) 9'],answer:'B'},
-  {id:'m2',type:'mc',section:'math',skill:'Systems of Equations',passage:null,
-   question:'In the system 2x + y = 10 and x − y = 2, what is y?',
-   options:['A) 1','B) 2','C) 4','D) 6'],answer:'C'},
-  {id:'m3',type:'mc',section:'math',skill:'Quadratic Equations',passage:null,
-   question:'What are the solutions to x² − 5x + 6 = 0?',
-   options:['A) x=1 and x=6','B) x=2 and x=3','C) x=−2 and x=−3','D) x=−1 and x=6'],answer:'B'},
-  {id:'m4',type:'mc',section:'math',skill:'Ratios & Proportions',passage:null,
-   question:'A recipe uses 3 cups of flour for 24 cookies. How many cups for 40 cookies?',
-   options:['A) 4','B) 4.5','C) 5','D) 6'],answer:'C'},
-  {id:'m5',type:'mc',section:'math',skill:'Percentages',passage:null,
-   question:'A $120 jacket is 35% off. What is the sale price?',
-   options:['A) $42','B) $72','C) $78','D) $85'],answer:'C'},
-  {id:'m6',type:'spr',section:'math',skill:'Linear Equations',passage:null,
-   question:'If 4(x + 3) = 44, what is x?',
-   options:null,answer:'8',acceptableAnswers:['8']},
-  {id:'m7',type:'mc',section:'math',skill:'Functions',passage:null,
-   question:'If f(x) = 3x² − 2x + 1, what is f(−2)?',
-   options:['A) 17','B) 9','C) −7','D) 5'],answer:'A'},
-  {id:'m8',type:'mc',section:'math',skill:'Data Analysis',passage:null,
-   question:'Dataset: 12, 15, 18, 21, 24, 27, 30. What is the median?',
-   options:['A) 18','B) 20','C) 21','D) 22'],answer:'C'},
-  {id:'m9',type:'mc',section:'math',skill:'Geometry',passage:null,
-   question:'A circle has radius 7. What is its area? (π ≈ 3.14)',
-   options:['A) 43.96','B) 153.86','C) 43.98','D) 44'],answer:'B'},
-  {id:'m10',type:'mc',section:'math',skill:'Inequalities',passage:null,
-   question:'Which value of x satisfies 3x − 7 > 14?',
-   options:['A) 5','B) 6','C) 7','D) 8'],answer:'D'},
-  {id:'m11',type:'mc',section:'math',skill:'Exponents',passage:null,
-   question:'Simplify: (2³)² × 2⁻¹',
-   options:['A) 16','B) 32','C) 64','D) 128'],answer:'B'},
-  {id:'m12',type:'mc',section:'math',skill:'Word Problems',passage:null,
-   question:'Train A: 60 mph. Train B: 80 mph, departs 30 min later, same direction. How many hours after Train A departs does Train B catch up?',
-   options:['A) 1.5','B) 2','C) 2.5','D) 3'],answer:'B'},
-  {id:'m13',type:'spr',section:'math',skill:'Algebra',passage:null,
-   question:'If x/4 + x/6 = 5, what is x?',
-   options:null,answer:'12',acceptableAnswers:['12']},
-  {id:'m14',type:'mc',section:'math',skill:'Geometry - Triangles',passage:null,
-   question:'A right triangle has legs of length 9 and 12. What is the hypotenuse?',
-   options:['A) 13','B) 15','C) 17','D) 21'],answer:'B'},
-  {id:'m15',type:'mc',section:'math',skill:'Statistics',passage:null,
-   question:'A class of 20 students has mean score 78. If 5 students averaging 90 are removed, what is the new mean?',
-   options:['A) 71','B) 73','C) 74','D) 75'],answer:'C'},
-  {id:'m16',type:'mc',section:'math',skill:'Polynomials',passage:null,
-   question:'Which expression equals (x + 4)(x − 3)?',
-   options:['A) x² − x − 12','B) x² + x − 12','C) x² + 7x − 12','D) x² − 7x + 12'],answer:'B'},
-  {id:'m17',type:'mc',section:'math',skill:'Rates',passage:null,
-   question:'A car gets 32 mpg. Gas is $3.80/gallon. Cost to drive 160 miles?',
-   options:['A) $17.50','B) $19.00','C) $20.75','D) $22.00'],answer:'B'},
-  {id:'m18',type:'mc',section:'math',skill:'Probability',passage:null,
-   question:'A bag has 4 red, 6 blue, 2 green marbles. What is P(not red)?',
-   options:['A) 1/3','B) 1/4','C) 2/3','D) 3/4'],answer:'C'},
-  {id:'m19',type:'spr',section:'math',skill:'Linear Models',passage:null,
-   question:'A line passes through (0, 5) and (3, 11). What is the slope?',
-   options:null,answer:'2',acceptableAnswers:['2']},
-  {id:'m20',type:'mc',section:'math',skill:'Scatterplot',passage:null,
-   question:'A line of best fit passes through (2, 65) and (8, 89). What score does it predict for 5 hours of study?',
-   options:['A) 73','B) 75','C) 77','D) 79'],answer:'C'},
-  {id:'m21',type:'mc',section:'math',skill:'Geometry - Volume',passage:null,
-   question:'A cylinder has r=5 cm, h=10 cm. Volume? (π≈3.14)',
-   options:['A) 628','B) 785','C) 1570','D) 314'],answer:'B'},
-  {id:'m22',type:'mc',section:'math',skill:'Complex Numbers',passage:null,
-   question:'What is (3 + 2i)(3 − 2i)?',
-   options:['A) 9 − 4','B) 13','C) 5','D) 9 + 4'],answer:'B'}
-];
+const QUESTION_BANK_URL = '/data/question-bank/question-bank.jsonl';
+const QUESTION_BANK_CACHE_NAME = 'budy-question-bank-v2';
 
 let questionBankLoadPromise = null;
+let questionBankCache = null;
+let questionBankPreloadStarted = false;
 
 function shuffleQuestions(list) {
   const copy = Array.isArray(list) ? list.slice() : [];
@@ -1585,42 +1382,90 @@ function normalizeBankQuestion(item) {
   };
 }
 
+function createQuestionBankPreloadHint() {
+  if (!document.head || document.querySelector('link[data-budy-question-bank-preload]')) return;
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'fetch';
+  link.href = QUESTION_BANK_URL;
+  link.crossOrigin = 'anonymous';
+  link.setAttribute('data-budy-question-bank-preload', 'true');
+  document.head.appendChild(link);
+}
+
+function parseGeneratedQuestionBank(text) {
+  const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
+  const normalized = rows.map((line) => normalizeBankQuestion(JSON.parse(line))).filter(Boolean);
+  const english = normalized.filter((item) => item.section === 'english');
+  const math = normalized.filter((item) => item.section === 'math');
+  if (!english.length || !math.length) {
+    throw new Error('Question bank loaded without both sections.');
+  }
+  return { english, math };
+}
+
+async function fetchQuestionBankNetworkResponse() {
+  const response = await fetch(QUESTION_BANK_URL, { cache: 'force-cache' });
+  if (!response.ok) {
+    throw new Error(`Question bank request failed with status ${response.status}`);
+  }
+  return response;
+}
+
+async function fetchQuestionBankText() {
+  if (!('caches' in window)) {
+    return (await fetchQuestionBankNetworkResponse()).text();
+  }
+
+  const cache = await caches.open(QUESTION_BANK_CACHE_NAME);
+  const cached = await cache.match(QUESTION_BANK_URL);
+  if (cached) {
+    void fetchQuestionBankNetworkResponse()
+      .then((response) => cache.put(QUESTION_BANK_URL, response.clone()))
+      .catch(() => {});
+    return cached.text();
+  }
+
+  const response = await fetchQuestionBankNetworkResponse();
+  await cache.put(QUESTION_BANK_URL, response.clone());
+  return response.text();
+}
+
+function preloadQuestionBank() {
+  if (questionBankPreloadStarted) return;
+  questionBankPreloadStarted = true;
+  createQuestionBankPreloadHint();
+
+  const schedule = typeof window.requestIdleCallback === 'function'
+    ? (callback) => window.requestIdleCallback(callback, { timeout: 1500 })
+    : (callback) => window.setTimeout(callback, 400);
+
+  schedule(() => {
+    loadGeneratedQuestionBank().catch((error) => {
+      console.warn('Question bank preload failed:', error);
+    });
+  });
+}
+
 async function loadGeneratedQuestionBank() {
+  if (questionBankCache) return questionBankCache;
   if (questionBankLoadPromise) return questionBankLoadPromise;
 
-  questionBankLoadPromise = fetch('/data/question-bank/question-bank.jsonl', { cache: 'no-cache' })
-    .then(async (response) => {
-      if (!response.ok) {
-        throw new Error(`Question bank request failed with status ${response.status}`);
-      }
-      const text = await response.text();
-      const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
-      const normalized = rows.map((line) => normalizeBankQuestion(JSON.parse(line))).filter(Boolean);
-      const english = normalized.filter((item) => item.section === 'english');
-      const math = normalized.filter((item) => item.section === 'math');
-      if (!english.length || !math.length) {
-        throw new Error('Question bank loaded without both sections.');
-      }
-      return { english, math };
+  questionBankLoadPromise = fetchQuestionBankText()
+    .then((text) => {
+      questionBankCache = parseGeneratedQuestionBank(text);
+      return questionBankCache;
     })
     .catch((error) => {
-      console.warn('Falling back to embedded question set:', error);
-      return null;
+      questionBankLoadPromise = null;
+      throw error;
     });
 
   return questionBankLoadPromise;
 }
 
-async function getQuestionPools() {
-  const bank = await loadGeneratedQuestionBank();
-  if (bank && bank.english.length && bank.math.length) {
-    return bank;
-  }
-  return { english: ENG_Q, math: MATH_Q };
-}
-
 async function buildQuestionSet(section, limit) {
-  const pools = await getQuestionPools();
+  const pools = await loadGeneratedQuestionBank();
   const englishPool = shuffleQuestions(pools.english);
   const mathPool = shuffleQuestions(pools.math);
 
@@ -2644,6 +2489,7 @@ window.addEventListener('beforeinstallprompt', e => {
 /* ── INIT ── */
 async function init() {
   setView('landing', { preserveScroll: true });
+  preloadQuestionBank();
   if (typeof window.__budyRestoreLandingScroll === 'function') {
     window.__budyRestoreLandingScroll();
   }

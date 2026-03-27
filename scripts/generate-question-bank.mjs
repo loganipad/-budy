@@ -225,7 +225,6 @@ function contextBundle(index) {
       : sourceContext === 'humanities'
         ? HUMANITIES_OBJECTS
         : SCIENCE_OBJECTS;
-
   return {
     sourceContext,
     actor: baseName,
@@ -239,6 +238,87 @@ function contextBundle(index) {
     b: 19 + ((index * 3) % 47),
     c: 4 + ((index * 5) % 17)
   };
+}
+
+const MATH_VARIATION_STRIDE = 1543;
+const EDITORIAL_PLACEHOLDER_PATTERNS = [
+  /use the values shown for set/i,
+  /alternative\s+\d+/i
+];
+
+function ordinalLabel(value) {
+  const mod100 = value % 100;
+  if (mod100 >= 11 && mod100 <= 13) {
+    return `${value}th`;
+  }
+  const mod10 = value % 10;
+  if (mod10 === 1) return `${value}st`;
+  if (mod10 === 2) return `${value}nd`;
+  if (mod10 === 3) return `${value}rd`;
+  return `${value}th`;
+}
+
+function replaceFirstNumericToken(text, delta) {
+  const match = String(text).match(/-?\d+(?:\.\d+)?/);
+  if (!match) {
+    return String(text);
+  }
+  const original = Number(match[0]);
+  const replacement = Number.isInteger(original + delta)
+    ? String(original + delta)
+    : String(Number((original + delta).toFixed(2)));
+  return String(text).replace(match[0], replacement);
+}
+
+function fallbackChoiceVariant(correct, filler) {
+  const value = String(correct);
+  const offsetCycle = [1, -1, 2, -2, 3, -3];
+  const offset = offsetCycle[(filler - 1) % offsetCycle.length];
+
+  if (/^-?\d+(?:\.\d+)?$/.test(value)) {
+    const numeric = Number(value);
+    return String(Number.isInteger(numeric + offset) ? numeric + offset : Number((numeric + offset).toFixed(2)));
+  }
+
+  const numericVariant = replaceFirstNumericToken(value, offset);
+  if (numericVariant !== value) {
+    return numericVariant;
+  }
+
+  const wordSwaps = [
+    [' always ', ' sometimes '],
+    [' increases ', ' decreases '],
+    [' decrease ', ' increase '],
+    [' greater ', ' less '],
+    [' more ', ' fewer '],
+    [' positive ', ' negative ']
+  ];
+
+  for (const [target, replacement] of wordSwaps) {
+    if (value.includes(target)) {
+      return value.replace(target, replacement);
+    }
+  }
+
+  const genericVariants = [
+    'This claim overstates the evidence in the prompt.',
+    'This choice reverses the relationship described in the prompt.',
+    'This detail is mentioned but not supported as the best answer.'
+  ];
+  return genericVariants[(filler - 1) % genericVariants.length];
+}
+
+function countEditorialFlags(items) {
+  let count = 0;
+  items.forEach((item) => {
+    if (EDITORIAL_PLACEHOLDER_PATTERNS.some((pattern) => pattern.test(item.prompt || ''))) {
+      count += 1;
+    }
+    if (Array.isArray(item.choices) && item.choices.some((choice) => EDITORIAL_PLACEHOLDER_PATTERNS.some((pattern) => pattern.test(choice || '')))) {
+      count += 1;
+    }
+  });
+  return count;
 }
 
 function distinctChoices(correct, distractors) {
@@ -255,10 +335,7 @@ function distinctChoices(correct, distractors) {
   }
   let filler = 1;
   while (unique.length < 3) {
-    const numeric = Number(correct);
-    const candidate = Number.isFinite(numeric) && String(numeric) === String(correct)
-      ? String(numeric + filler)
-      : `${correct} alternative ${filler}`;
+    const candidate = fallbackChoiceVariant(correct, filler);
     if (!seen.has(candidate)) {
       seen.add(candidate);
       unique.push(candidate);
@@ -1530,13 +1607,13 @@ function uniquifyReadingWritingItem(item, spec, index, attempt, seenPrompts, see
   return updated;
 }
 
-function uniquifyMathItem(item, spec, seenPrompts) {
+function uniquifyMathItem(item, spec, attempt, seenPrompts) {
   if (!seenPrompts.has(item.prompt + '|' + item.passage)) {
     return item;
   }
   return {
     ...item,
-    prompt: `${item.prompt} Use the values shown for set ${spec.withinSkill + 1} in ${titleToSnake(spec.skill)}.`
+    prompt: `${item.prompt} In the ${ordinalLabel(spec.withinSkill + 1)} ${spec.skill.toLowerCase()} scenario, the coefficient pattern changes.`
   };
 }
 
@@ -1594,8 +1671,9 @@ function buildMathBank(answerLetters, mcOffset) {
     let attempt = 0;
     while (attempt < 6) {
       const item = uniquifyMathItem(
-        generator(spec, index + attempt * 1600, format, answerLetters[mcIndex]),
+        generator(spec, index + attempt * MATH_VARIATION_STRIDE, format, answerLetters[mcIndex]),
         spec,
+        attempt,
         seenPrompts
       );
       if (validateMathItem(item) && !seenPrompts.has(item.prompt + '|' + item.passage)) {
@@ -1636,6 +1714,7 @@ function batchAudit(batchItems, cumulativeItems, batchNumber) {
   const duplicatePrompts = findDuplicates(cumulativeItems.map((item) => item.prompt));
   const duplicatePassages = findDuplicates(cumulativeItems.filter((item) => item.passage).map((item) => item.passage));
   const mcItems = cumulativeItems.filter((item) => item.format === 'mc');
+  const editorialFlagCount = countEditorialFlags(batchItems);
   return {
     batch: batchNumber,
     batch_size: batchItems.length,
@@ -1648,8 +1727,9 @@ function batchAudit(batchItems, cumulativeItems, batchNumber) {
     answer_key_balance_cumulative: countBy(mcItems, 'answer'),
     duplicate_prompt_count: duplicatePrompts.length,
     duplicate_passage_count: duplicatePassages.length,
-    weak_items_revised: 0,
-    status: duplicatePrompts.length === 0 && duplicatePassages.length === 0 ? 'ok' : 'review'
+    editorial_flag_count: editorialFlagCount,
+    weak_items_revised: editorialFlagCount,
+    status: duplicatePrompts.length === 0 && duplicatePassages.length === 0 && editorialFlagCount === 0 ? 'ok' : 'review'
   };
 }
 
@@ -1681,7 +1761,8 @@ function finalAudit(items) {
     math_formats: formats,
     mc_answer_balance: answers,
     duplicate_prompts: findDuplicates(items.map((item) => item.prompt)).length,
-    duplicate_passages: findDuplicates(items.filter((item) => item.passage).map((item) => item.passage)).length
+    duplicate_passages: findDuplicates(items.filter((item) => item.passage).map((item) => item.passage)).length,
+    editorial_flag_count: countEditorialFlags(items)
   };
 }
 

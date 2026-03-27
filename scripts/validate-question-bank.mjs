@@ -92,6 +92,15 @@ function sameJson(left, right) {
   return JSON.stringify(normalizeValue(left)) === JSON.stringify(normalizeValue(right));
 }
 
+const editorialPlaceholderPatterns = [
+  /use the values shown for set/i,
+  /alternative\s+\d+/i
+];
+
+function hasEditorialPlaceholder(text) {
+  return editorialPlaceholderPatterns.some((pattern) => pattern.test(String(text || '')));
+}
+
 const blueprint = parseJson(blueprintPath);
 const items = parseJsonl(jsonlPath);
 
@@ -123,12 +132,18 @@ items.forEach((item, index) => {
   assert(typeof item.id === 'string' && item.id.length > 0, `Invalid id on item ${index + 1}.`);
   assert(['easy', 'medium', 'hard'].includes(item.difficulty), `Invalid difficulty on ${item.id}.`);
   assert(typeof item.prompt === 'string' && item.prompt.length > 0, `Invalid prompt on ${item.id}.`);
+  assert(!hasEditorialPlaceholder(item.prompt), `Editorial placeholder text detected in prompt on ${item.id}.`);
   assert(typeof item.passage === 'string', `Invalid passage on ${item.id}.`);
   assert(typeof item.rationale === 'string' && item.rationale.length > 0, `Invalid rationale on ${item.id}.`);
   assert(Array.isArray(item.tags), `Invalid tags on ${item.id}.`);
   assert(typeof item.source_context === 'string' && item.source_context.length > 0, `Invalid source_context on ${item.id}.`);
   assert(typeof item.estimated_time_seconds === 'number' && item.estimated_time_seconds > 0, `Invalid estimated_time_seconds on ${item.id}.`);
   assert(item.distractor_rationales && typeof item.distractor_rationales === 'object' && !Array.isArray(item.distractor_rationales), `Invalid distractor_rationales on ${item.id}.`);
+  if (Array.isArray(item.choices)) {
+    item.choices.forEach((choice, choiceIndex) => {
+      assert(!hasEditorialPlaceholder(choice), `Editorial placeholder text detected in choice ${choiceIndex + 1} on ${item.id}.`);
+    });
+  }
 
   if (item.section === 'reading_writing') {
     assert(item.format === 'mc', `Reading/Writing item ${item.id} must be multiple choice.`);
@@ -176,6 +191,9 @@ const batchFiles = readdirSync(batchDir).filter((name) => name.endsWith('.jsonl'
 const auditFiles = readdirSync(auditDir).filter((name) => name.endsWith('.json')).sort();
 assert(batchFiles.length === 32, `Expected 32 batch files but found ${batchFiles.length}.`);
 assert(auditFiles.length === 33, `Expected 33 audit files but found ${auditFiles.length}.`);
+
+const finalAudit = parseJson(path.join(auditDir, 'final-audit.json'));
+assert((finalAudit.editorial_flag_count || 0) === 0, 'Final audit reported editorial placeholder flags.');
 
 batchFiles.forEach((name) => {
   const batchItems = parseJsonl(path.join(batchDir, name));

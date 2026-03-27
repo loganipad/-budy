@@ -29,6 +29,7 @@
   },
   "duplicate_prompt_count": 0,
   "duplicate_passage_count": 0,
+  "editorial_flag_count": 0,
   "weak_items_revised": 0,
   "status": "ok"
 }

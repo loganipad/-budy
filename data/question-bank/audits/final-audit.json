@@ -88,5 +88,6 @@
     "C": 700
   },
   "duplicate_prompts": 0,
-  "duplicate_passages": 0
+  "duplicate_passages": 0,
+  "editorial_flag_count": 0
 }
