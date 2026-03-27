@@ -1,0 +1,35 @@
+{
+  "batch": 20,
+  "batch_size": 100,
+  "cumulative_size": 2000,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Algebra": 100
+  },
+  "skill_balance": {
+    "Linear Inequalities": 36,
+    "Linear Functions": 64
+  },
+  "difficulty_balance_batch": {
+    "medium": 40,
+    "easy": 37,
+    "hard": 23
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 751,
+    "medium": 868,
+    "hard": 381
+  },
+  "answer_key_balance_cumulative": {
+    "B": 540,
+    "D": 519,
+    "A": 342,
+    "C": 473
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

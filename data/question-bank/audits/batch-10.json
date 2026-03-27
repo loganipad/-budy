@@ -1,0 +1,35 @@
+{
+  "batch": 10,
+  "batch_size": 100,
+  "cumulative_size": 1000,
+  "section_balance": {
+    "reading_writing": 100
+  },
+  "domain_balance": {
+    "Expression of Ideas": 100
+  },
+  "skill_balance": {
+    "Transitions": 44,
+    "Rhetorical Synthesis": 56
+  },
+  "difficulty_balance_batch": {
+    "medium": 49,
+    "easy": 37,
+    "hard": 14
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 370,
+    "medium": 449,
+    "hard": 181
+  },
+  "answer_key_balance_cumulative": {
+    "B": 311,
+    "D": 267,
+    "A": 154,
+    "C": 268
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

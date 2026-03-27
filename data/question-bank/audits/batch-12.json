@@ -1,0 +1,37 @@
+{
+  "batch": 12,
+  "batch_size": 100,
+  "cumulative_size": 1200,
+  "section_balance": {
+    "reading_writing": 100
+  },
+  "domain_balance": {
+    "Expression of Ideas": 84,
+    "Standard English Conventions": 16
+  },
+  "skill_balance": {
+    "Sentence Placement": 4,
+    "Concision": 80,
+    "Grammar": 16
+  },
+  "difficulty_balance_batch": {
+    "medium": 53,
+    "easy": 25,
+    "hard": 22
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 427,
+    "medium": 550,
+    "hard": 223
+  },
+  "answer_key_balance_cumulative": {
+    "B": 371,
+    "D": 322,
+    "A": 190,
+    "C": 317
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

@@ -1,0 +1,35 @@
+{
+  "batch": 25,
+  "batch_size": 100,
+  "cumulative_size": 2500,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Advanced Math": 100
+  },
+  "skill_balance": {
+    "Equivalent Expressions": 41,
+    "Radicals and Rational Exponents": 59
+  },
+  "difficulty_balance_batch": {
+    "hard": 17,
+    "medium": 56,
+    "easy": 27
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 896,
+    "medium": 1124,
+    "hard": 480
+  },
+  "answer_key_balance_cumulative": {
+    "B": 619,
+    "D": 603,
+    "A": 443,
+    "C": 563
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

@@ -1,0 +1,35 @@
+{
+  "batch": 27,
+  "batch_size": 100,
+  "cumulative_size": 2700,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Advanced Math": 100
+  },
+  "skill_balance": {
+    "Nonlinear Functions": 27,
+    "Complex Numbers": 73
+  },
+  "difficulty_balance_batch": {
+    "easy": 31,
+    "medium": 48,
+    "hard": 21
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 955,
+    "medium": 1221,
+    "hard": 524
+  },
+  "answer_key_balance_cumulative": {
+    "B": 648,
+    "D": 632,
+    "A": 497,
+    "C": 611
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

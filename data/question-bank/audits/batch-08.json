@@ -1,0 +1,35 @@
+{
+  "batch": 8,
+  "batch_size": 100,
+  "cumulative_size": 800,
+  "section_balance": {
+    "reading_writing": 100
+  },
+  "domain_balance": {
+    "Craft and Structure": 100
+  },
+  "skill_balance": {
+    "Rhetorical Purpose": 52,
+    "Cross-Text Connections": 48
+  },
+  "difficulty_balance_batch": {
+    "medium": 50,
+    "hard": 19,
+    "easy": 31
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 307,
+    "medium": 350,
+    "hard": 143
+  },
+  "answer_key_balance_cumulative": {
+    "B": 247,
+    "D": 218,
+    "A": 117,
+    "C": 218
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

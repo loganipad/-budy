@@ -1,0 +1,35 @@
+{
+  "batch": 24,
+  "batch_size": 100,
+  "cumulative_size": 2400,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Advanced Math": 100
+  },
+  "skill_balance": {
+    "Polynomials": 48,
+    "Equivalent Expressions": 52
+  },
+  "difficulty_balance_batch": {
+    "hard": 26,
+    "medium": 45,
+    "easy": 29
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 869,
+    "medium": 1068,
+    "hard": 463
+  },
+  "answer_key_balance_cumulative": {
+    "B": 600,
+    "D": 587,
+    "A": 421,
+    "C": 550
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

@@ -1,0 +1,34 @@
+{
+  "batch": 17,
+  "batch_size": 100,
+  "cumulative_size": 1700,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Algebra": 100
+  },
+  "skill_balance": {
+    "One-Variable Linear Equations": 100
+  },
+  "difficulty_balance_batch": {
+    "easy": 44,
+    "hard": 11,
+    "medium": 45
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 604,
+    "medium": 765,
+    "hard": 331
+  },
+  "answer_key_balance_cumulative": {
+    "B": 493,
+    "D": 454,
+    "A": 293,
+    "C": 429
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

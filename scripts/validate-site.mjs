@@ -73,4 +73,10 @@ if (testFiles.length) {
   execFileSync(process.execPath, ['--test', ...testFiles], { stdio: 'inherit' });
 }
 
+const questionBankValidator = path.join(root, 'scripts', 'validate-question-bank.mjs');
+const questionBankJsonl = path.join(root, 'data', 'question-bank', 'question-bank.jsonl');
+if (existsSync(questionBankValidator) && existsSync(questionBankJsonl)) {
+  execFileSync(process.execPath, [questionBankValidator], { stdio: 'inherit' });
+}
+
 console.log(`Validated ${requiredHtmlFiles.length} pages, ${jsFiles.length} JavaScript files, and ${testFiles.length} test files.`);

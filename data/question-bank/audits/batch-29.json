@@ -1,0 +1,37 @@
+{
+  "batch": 29,
+  "batch_size": 100,
+  "cumulative_size": 2900,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Problem-Solving and Data Analysis": 100
+  },
+  "skill_balance": {
+    "Rates and Unit Conversion": 24,
+    "Probability": 34,
+    "Statistics": 34,
+    "Scatterplots and Line of Best Fit": 8
+  },
+  "difficulty_balance_batch": {
+    "easy": 33,
+    "medium": 47,
+    "hard": 20
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 1022,
+    "medium": 1319,
+    "hard": 559
+  },
+  "answer_key_balance_cumulative": {
+    "B": 671,
+    "D": 662,
+    "A": 579,
+    "C": 645
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

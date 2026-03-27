@@ -1,0 +1,107 @@
+{
+  "reading_writing": {
+    "total": 1600,
+    "domains": {
+      "Information and Ideas": {
+        "total": 416,
+        "skills": {
+          "Inference": 104,
+          "Central Idea": 104,
+          "Command of Evidence": 104,
+          "Quantitative Information in Text and Graphics": 104
+        }
+      },
+      "Craft and Structure": {
+        "total": 448,
+        "skills": {
+          "Words in Context": 112,
+          "Text Structure": 112,
+          "Rhetorical Purpose": 112,
+          "Cross-Text Connections": 112
+        }
+      },
+      "Expression of Ideas": {
+        "total": 320,
+        "skills": {
+          "Transitions": 80,
+          "Rhetorical Synthesis": 80,
+          "Sentence Placement": 80,
+          "Concision": 80
+        }
+      },
+      "Standard English Conventions": {
+        "total": 416,
+        "skills": {
+          "Grammar": 70,
+          "Punctuation": 70,
+          "Pronoun Clarity": 68,
+          "Modifier Placement": 68,
+          "Parallel Structure": 70,
+          "Verb Tense and Agreement": 70
+        }
+      }
+    },
+    "difficulty": {
+      "easy": 560,
+      "medium": 720,
+      "hard": 320
+    }
+  },
+  "math": {
+    "total": 1600,
+    "domains": {
+      "Algebra": {
+        "total": 560,
+        "skills": {
+          "One-Variable Linear Equations": 112,
+          "Systems of Equations": 112,
+          "Linear Inequalities": 112,
+          "Linear Functions": 112,
+          "Slope and Intercept": 112
+        }
+      },
+      "Advanced Math": {
+        "total": 560,
+        "skills": {
+          "Quadratics": 94,
+          "Polynomials": 94,
+          "Equivalent Expressions": 93,
+          "Radicals and Rational Exponents": 93,
+          "Nonlinear Functions": 93,
+          "Complex Numbers": 93
+        }
+      },
+      "Problem-Solving and Data Analysis": {
+        "total": 240,
+        "skills": {
+          "Ratios and Proportions": 35,
+          "Percentages": 35,
+          "Rates and Unit Conversion": 34,
+          "Probability": 34,
+          "Statistics": 34,
+          "Scatterplots and Line of Best Fit": 34,
+          "Table and Graph Interpretation": 34
+        }
+      },
+      "Geometry and Trigonometry": {
+        "total": 240,
+        "skills": {
+          "Circles": 48,
+          "Triangles": 48,
+          "Area and Volume": 48,
+          "Coordinate Geometry": 48,
+          "Right-Triangle Trigonometry": 48
+        }
+      }
+    },
+    "difficulty": {
+      "easy": 560,
+      "medium": 720,
+      "hard": 320
+    },
+    "format": {
+      "mc": 1200,
+      "spr": 400
+    }
+  }
+}

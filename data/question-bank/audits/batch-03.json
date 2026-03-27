@@ -1,0 +1,35 @@
+{
+  "batch": 3,
+  "batch_size": 100,
+  "cumulative_size": 300,
+  "section_balance": {
+    "reading_writing": 100
+  },
+  "domain_balance": {
+    "Information and Ideas": 100
+  },
+  "skill_balance": {
+    "Central Idea": 8,
+    "Command of Evidence": 92
+  },
+  "difficulty_balance_batch": {
+    "medium": 39,
+    "easy": 40,
+    "hard": 21
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 151,
+    "medium": 106,
+    "hard": 43
+  },
+  "answer_key_balance_cumulative": {
+    "B": 100,
+    "D": 79,
+    "A": 50,
+    "C": 71
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

@@ -1,0 +1,37 @@
+{
+  "batch": 30,
+  "batch_size": 100,
+  "cumulative_size": 3000,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Problem-Solving and Data Analysis": 60,
+    "Geometry and Trigonometry": 40
+  },
+  "skill_balance": {
+    "Scatterplots and Line of Best Fit": 26,
+    "Table and Graph Interpretation": 34,
+    "Circles": 40
+  },
+  "difficulty_balance_batch": {
+    "medium": 43,
+    "easy": 36,
+    "hard": 21
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 1058,
+    "medium": 1362,
+    "hard": 580
+  },
+  "answer_key_balance_cumulative": {
+    "B": 684,
+    "D": 681,
+    "A": 617,
+    "C": 667
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

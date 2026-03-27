@@ -1,0 +1,35 @@
+{
+  "batch": 19,
+  "batch_size": 100,
+  "cumulative_size": 1900,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Algebra": 100
+  },
+  "skill_balance": {
+    "Systems of Equations": 24,
+    "Linear Inequalities": 76
+  },
+  "difficulty_balance_batch": {
+    "medium": 31,
+    "easy": 57,
+    "hard": 12
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 714,
+    "medium": 828,
+    "hard": 358
+  },
+  "answer_key_balance_cumulative": {
+    "B": 526,
+    "D": 503,
+    "A": 327,
+    "C": 458
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

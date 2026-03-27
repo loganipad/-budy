@@ -1,0 +1,36 @@
+{
+  "batch": 22,
+  "batch_size": 100,
+  "cumulative_size": 2200,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Algebra": 60,
+    "Advanced Math": 40
+  },
+  "skill_balance": {
+    "Slope and Intercept": 60,
+    "Quadratics": 40
+  },
+  "difficulty_balance_batch": {
+    "easy": 29,
+    "medium": 57,
+    "hard": 14
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 815,
+    "medium": 971,
+    "hard": 414
+  },
+  "answer_key_balance_cumulative": {
+    "B": 569,
+    "D": 551,
+    "A": 379,
+    "C": 509
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

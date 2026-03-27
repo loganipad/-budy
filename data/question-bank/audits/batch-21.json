@@ -1,0 +1,35 @@
+{
+  "batch": 21,
+  "batch_size": 100,
+  "cumulative_size": 2100,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Algebra": 100
+  },
+  "skill_balance": {
+    "Linear Functions": 48,
+    "Slope and Intercept": 52
+  },
+  "difficulty_balance_batch": {
+    "easy": 35,
+    "medium": 46,
+    "hard": 19
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 786,
+    "medium": 914,
+    "hard": 400
+  },
+  "answer_key_balance_cumulative": {
+    "B": 556,
+    "D": 531,
+    "A": 361,
+    "C": 490
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

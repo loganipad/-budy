@@ -1,0 +1,35 @@
+{
+  "batch": 23,
+  "batch_size": 100,
+  "cumulative_size": 2300,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Advanced Math": 100
+  },
+  "skill_balance": {
+    "Quadratics": 54,
+    "Polynomials": 46
+  },
+  "difficulty_balance_batch": {
+    "medium": 52,
+    "hard": 23,
+    "easy": 25
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 840,
+    "medium": 1023,
+    "hard": 437
+  },
+  "answer_key_balance_cumulative": {
+    "B": 579,
+    "D": 568,
+    "A": 400,
+    "C": 526
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

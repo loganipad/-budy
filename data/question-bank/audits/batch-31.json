@@ -1,0 +1,36 @@
+{
+  "batch": 31,
+  "batch_size": 100,
+  "cumulative_size": 3100,
+  "section_balance": {
+    "math": 100
+  },
+  "domain_balance": {
+    "Geometry and Trigonometry": 100
+  },
+  "skill_balance": {
+    "Circles": 8,
+    "Triangles": 48,
+    "Area and Volume": 44
+  },
+  "difficulty_balance_batch": {
+    "medium": 42,
+    "hard": 28,
+    "easy": 30
+  },
+  "difficulty_balance_cumulative": {
+    "easy": 1088,
+    "medium": 1404,
+    "hard": 608
+  },
+  "answer_key_balance_cumulative": {
+    "B": 689,
+    "D": 688,
+    "A": 664,
+    "C": 681
+  },
+  "duplicate_prompt_count": 0,
+  "duplicate_passage_count": 0,
+  "weak_items_revised": 0,
+  "status": "ok"
+}

@@ -1545,6 +1545,93 @@ const MATH_Q = [
    options:['A) 9 − 4','B) 13','C) 5','D) 9 + 4'],answer:'B'}
 ];
 
+let questionBankLoadPromise = null;
+
+function shuffleQuestions(list) {
+  const copy = Array.isArray(list) ? list.slice() : [];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+
+function normalizeBankQuestion(item) {
+  if (!item || typeof item !== 'object') return null;
+  const section = item.section === 'reading_writing' ? 'english' : item.section === 'math' ? 'math' : null;
+  if (!section) return null;
+
+  const isSpr = item.format === 'spr';
+  const options = Array.isArray(item.choices) ? item.choices.filter(Boolean) : [];
+  return {
+    id: String(item.id || ''),
+    type: isSpr ? 'spr' : 'mc',
+    section,
+    domain: item.domain || '',
+    skill: item.skill || 'General',
+    difficulty: item.difficulty || 'medium',
+    tags: Array.isArray(item.tags) ? item.tags : [],
+    source_context: item.source_context || '',
+    calculator_allowed: Object.prototype.hasOwnProperty.call(item, 'calculator_allowed') ? item.calculator_allowed : null,
+    estimated_time_seconds: Number(item.estimated_time_seconds || 0),
+    passage: item.passage || null,
+    question: item.prompt || '',
+    options: isSpr ? null : options,
+    answer: item.answer != null ? String(item.answer) : '',
+    acceptableAnswers: isSpr ? [String(item.answer)] : undefined,
+    explanation: item.rationale || '',
+    rationale: item.rationale || '',
+    distractor_rationales: item.distractor_rationales && typeof item.distractor_rationales === 'object' ? item.distractor_rationales : {}
+  };
+}
+
+async function loadGeneratedQuestionBank() {
+  if (questionBankLoadPromise) return questionBankLoadPromise;
+
+  questionBankLoadPromise = fetch('/data/question-bank/question-bank.jsonl', { cache: 'no-cache' })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Question bank request failed with status ${response.status}`);
+      }
+      const text = await response.text();
+      const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
+      const normalized = rows.map((line) => normalizeBankQuestion(JSON.parse(line))).filter(Boolean);
+      const english = normalized.filter((item) => item.section === 'english');
+      const math = normalized.filter((item) => item.section === 'math');
+      if (!english.length || !math.length) {
+        throw new Error('Question bank loaded without both sections.');
+      }
+      return { english, math };
+    })
+    .catch((error) => {
+      console.warn('Falling back to embedded question set:', error);
+      return null;
+    });
+
+  return questionBankLoadPromise;
+}
+
+async function getQuestionPools() {
+  const bank = await loadGeneratedQuestionBank();
+  if (bank && bank.english.length && bank.math.length) {
+    return bank;
+  }
+  return { english: ENG_Q, math: MATH_Q };
+}
+
+async function buildQuestionSet(section, limit) {
+  const pools = await getQuestionPools();
+  const englishPool = shuffleQuestions(pools.english);
+  const mathPool = shuffleQuestions(pools.math);
+
+  if (section === 'english') return englishPool.slice(0, limit);
+  if (section === 'math') return mathPool.slice(0, limit);
+
+  const englishCount = Math.ceil(limit * 0.55);
+  const mathCount = Math.max(0, limit - englishCount);
+  return [...englishPool.slice(0, englishCount), ...mathPool.slice(0, mathCount)];
+}
+
 /* ── SCORE TABLES ── */
 function rawToScaled(raw, total, sec) {
   const pct = Math.min(1, raw / Math.max(1, total));
@@ -1582,12 +1669,9 @@ function startTest() {
   setView('loading');
 
   // Short delay so the spinner renders, then build the test
-  setTimeout(()=>{
+  setTimeout(async ()=>{
     try {
-      let questions;
-      if (S.section==='english')      questions = ENG_Q.slice(0, limit);
-      else if (S.section==='math')    questions = MATH_Q.slice(0, limit);
-      else                            questions = [...ENG_Q.slice(0, Math.ceil(limit*.55)), ...MATH_Q.slice(0, Math.floor(limit*.45))];
+      const questions = await buildQuestionSet(S.section, limit);
 
       S.questions  = questions;
       S.answers    = {};
@@ -1922,7 +2006,11 @@ function getExp(i, btn) {
   setTimeout(()=>{
     const box=document.getElementById(`exp-box-${i}`);
     box.style.display='block';
-    box.textContent=exps[q.skill]||exps.default;
+    const rationale = q.rationale || q.explanation || '';
+    const distractorDetail = q.userAnswer && q.userAnswer !== q.answer && q.distractor_rationales && q.distractor_rationales[q.userAnswer]
+      ? ` You chose ${q.userAnswer}, but ${q.distractor_rationales[q.userAnswer]}`
+      : '';
+    box.textContent=(rationale ? `${rationale}${distractorDetail}` : (exps[q.skill]||exps.default));
     btn.style.display='none';
   },600);
 }
