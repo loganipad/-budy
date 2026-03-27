@@ -165,20 +165,25 @@ button { font-family: inherit; cursor: pointer; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
 
 .acct-tabs {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
   gap: 8px;
   margin-top: 24px;
-  max-width: 760px;
+  width: 100%;
   padding: 6px;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 18px;
   background: rgba(255,255,255,.03);
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.acct-tabs::-webkit-scrollbar {
+  display: none;
 }
 .acct-tab {
   height: 44px;
-  width: 100%;
+  flex: 1 0 132px;
   padding: 0 14px;
   border-radius: 14px;
   font-size: .875rem;
@@ -891,7 +896,6 @@ button { font-family: inherit; cursor: pointer; }
   .progress-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
-  .acct-tabs { grid-template-columns: 1fr 1fr; max-width: none; }
   .dash-grid { grid-template-columns: 1fr; }
   .dash-stats { grid-template-columns: 1fr 1fr; }
   .dash-overview-pills { grid-template-columns: 1fr; }
