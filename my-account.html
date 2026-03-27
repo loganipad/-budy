@@ -341,6 +341,86 @@ button { font-family: inherit; cursor: pointer; }
   padding: 22px;
   box-shadow: 0 18px 42px rgba(4,10,20,.16);
 }
+.saved-questions-card {
+  margin-top: 16px;
+}
+.saved-question-list {
+  display: grid;
+  gap: 12px;
+}
+.saved-question-item {
+  border-radius: 20px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.saved-question-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.saved-question-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.saved-question-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.saved-question-badge.flagged {
+  color: #fbbf24;
+  background: rgba(245,158,11,.16);
+  border: 1px solid rgba(245,158,11,.28);
+}
+.saved-question-badge.wrong {
+  color: #fb7185;
+  background: rgba(244,63,94,.14);
+  border: 1px solid rgba(244,63,94,.22);
+}
+.saved-question-date {
+  font-size: .76rem;
+  color: rgba(240,244,255,.5);
+  white-space: nowrap;
+}
+.saved-question-meta {
+  margin-top: 10px;
+  font-size: .76rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: rgba(96,165,250,.82);
+}
+.saved-question-prompt {
+  margin-top: 8px;
+  font-size: .95rem;
+  line-height: 1.6;
+  color: #f8fbff;
+}
+.saved-question-passage {
+  margin-top: 10px;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: rgba(240,244,255,.56);
+}
+.saved-question-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 14px;
+  font-size: .8rem;
+  color: rgba(240,244,255,.64);
+}
+.saved-question-footer strong {
+  color: #f8fbff;
+}
 .streak-card {
   position: relative;
   overflow: hidden;
@@ -940,6 +1020,15 @@ button { font-family: inherit; cursor: pointer; }
             </table>
           </div>
         </div>
+
+        <div class="d-card saved-questions-card">
+          <div class="d-card-hd">
+            <h3>Saved Question Queue</h3>
+            <span class="d-card-tag tag-brand">Flagged + Wrong</span>
+          </div>
+          <div id="saved-questions-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flag"></use></svg></span></div><p>Flag questions during a test or miss one, and it will appear here for later review.</p></div>
+          <div class="saved-question-list" id="saved-question-list"></div>
+        </div>
       </div>
 
       <div class="acct-pane" id="acct-pane-achievements" role="tabpanel">
@@ -1049,6 +1138,7 @@ const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
+const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
 const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
@@ -1075,6 +1165,7 @@ const S = {
   canceledAt: null,
   loginDays: [],
   sessionCache: [],
+  savedQuestionsCache: [],
   chart: null
 };
 
@@ -1582,6 +1673,39 @@ async function hydrateSessions() {
   }
 }
 
+function getSavedQuestionsLocal() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SAVED_QUESTIONS_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+async function hydrateSavedQuestions() {
+  const token = await getAccessToken();
+  if (!token) {
+    S.savedQuestionsCache = getSavedQuestionsLocal();
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/saved-questions', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      S.savedQuestionsCache = getSavedQuestionsLocal();
+      return;
+    }
+
+    S.savedQuestionsCache = Array.isArray(data && data.questions) ? data.questions : [];
+  } catch {
+    S.savedQuestionsCache = getSavedQuestionsLocal();
+  }
+}
+
 function formatBillingDate(isoValue) {
   if (!isoValue) return '';
   const dt = new Date(isoValue);
@@ -1631,6 +1755,139 @@ function setDemoDashboardState() {
     { date: '2026-03-17T10:00:00.000Z', section: 'english', total: 1420, correct: 47, total_q: 50, skillMap: { __scoreSummary: { english: 1420, math: 0, total: 1420 } } },
     { date: '2026-03-19T10:00:00.000Z', section: 'math', total: 1380, correct: 44, total_q: 50, skillMap: { __scoreSummary: { english: 0, math: 1380, total: 1380 } } }
   ];
+  S.savedQuestionsCache = [
+    {
+      key: 'english:e12',
+      section: 'english',
+      skill: 'Inference',
+      prompt: 'Which choice best states the central claim of the passage?',
+      passage: 'The author argues that short feedback loops help students improve faster when they review their mistakes consistently.',
+      correctAnswer: 'B',
+      userAnswer: 'D',
+      isFlagged: true,
+      wasAnsweredWrong: true,
+      lastSeenAt: '2026-03-19T10:00:00.000Z',
+      saveCount: 2
+    },
+    {
+      key: 'math:m14',
+      section: 'math',
+      skill: 'Geometry - Triangles',
+      prompt: 'A right triangle has legs of length 9 and 12. What is the hypotenuse?',
+      correctAnswer: 'B',
+      userAnswer: 'A',
+      isFlagged: false,
+      wasAnsweredWrong: true,
+      lastSeenAt: '2026-03-17T10:00:00.000Z',
+      saveCount: 1
+    }
+  ];
+}
+
+function getSavedQuestionsForDashboard() {
+  if (S.isLoggedIn) {
+    return Array.isArray(S.savedQuestionsCache) ? S.savedQuestionsCache : [];
+  }
+  const local = getSavedQuestionsLocal();
+  return local.length ? local : Array.isArray(S.savedQuestionsCache) ? S.savedQuestionsCache : [];
+}
+
+function formatSavedQuestionDate(value) {
+  const dt = new Date(value);
+  if (Number.isNaN(dt.getTime())) return 'Recently saved';
+  return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderSavedQuestions() {
+  const empty = document.getElementById('saved-questions-empty');
+  const list = document.getElementById('saved-question-list');
+  if (!empty || !list) return;
+
+  const questions = getSavedQuestionsForDashboard()
+    .filter((item) => item && typeof item === 'object')
+    .sort((a, b) => new Date(b.updatedAt || b.lastSeenAt || 0).getTime() - new Date(a.updatedAt || a.lastSeenAt || 0).getTime())
+    .slice(0, 12);
+
+  list.replaceChildren();
+
+  if (!questions.length) {
+    empty.classList.remove('hidden');
+    return;
+  }
+
+  empty.classList.add('hidden');
+  questions.forEach((item) => {
+    const card = document.createElement('article');
+    card.className = 'saved-question-item';
+
+    const top = document.createElement('div');
+    top.className = 'saved-question-top';
+
+    const badges = document.createElement('div');
+    badges.className = 'saved-question-badges';
+    if (item.isFlagged) {
+      const flagged = document.createElement('span');
+      flagged.className = 'saved-question-badge flagged';
+      flagged.textContent = 'Flagged';
+      badges.appendChild(flagged);
+    }
+    if (item.wasAnsweredWrong) {
+      const wrong = document.createElement('span');
+      wrong.className = 'saved-question-badge wrong';
+      wrong.textContent = 'Wrong';
+      badges.appendChild(wrong);
+    }
+
+    const date = document.createElement('div');
+    date.className = 'saved-question-date';
+    date.textContent = formatSavedQuestionDate(item.updatedAt || item.lastSeenAt);
+
+    top.appendChild(badges);
+    top.appendChild(date);
+    card.appendChild(top);
+
+    const meta = document.createElement('div');
+    meta.className = 'saved-question-meta';
+    const section = item.section === 'english' ? 'Reading & Writing' : item.section === 'math' ? 'Math' : 'Mixed';
+    meta.textContent = item.skill ? `${section} · ${item.skill}` : section;
+    card.appendChild(meta);
+
+    const prompt = document.createElement('div');
+    prompt.className = 'saved-question-prompt';
+    prompt.textContent = item.prompt || 'Saved question';
+    card.appendChild(prompt);
+
+    if (item.passage) {
+      const passage = document.createElement('div');
+      passage.className = 'saved-question-passage';
+      passage.textContent = item.passage.length > 180 ? item.passage.slice(0, 180) + '…' : item.passage;
+      card.appendChild(passage);
+    }
+
+    const footer = document.createElement('div');
+    footer.className = 'saved-question-footer';
+    const bits = [];
+    if (item.userAnswer) bits.push(`Yours: ${item.userAnswer}`);
+    if (item.correctAnswer) bits.push(`Correct: ${item.correctAnswer}`);
+    if (Number(item.saveCount) > 1) bits.push(`Saved ${item.saveCount} times`);
+
+    bits.forEach((text) => {
+      const span = document.createElement('span');
+      const splitAt = text.indexOf(':');
+      if (splitAt > -1) {
+        const strong = document.createElement('strong');
+        strong.textContent = text.slice(0, splitAt + 1) + ' ';
+        span.appendChild(strong);
+        span.append(text.slice(splitAt + 2));
+      } else {
+        span.textContent = text;
+      }
+      footer.appendChild(span);
+    });
+
+    if (footer.childNodes.length) card.appendChild(footer);
+    list.appendChild(card);
+  });
 }
 
 const scoreUtils = window.BudyScoreUtils;
@@ -1909,6 +2166,7 @@ function renderDash() {
   renderDashboardOverview(metrics, achievementCards);
   renderLoginStreak(metrics);
   renderAchievements(achievementCards);
+  renderSavedQuestions();
 
   if (!ss.length) {
     document.getElementById('d-best').textContent = '-';
@@ -2028,6 +2286,7 @@ async function boot() {
   document.getElementById('logged-out-notice').classList.add('hidden');
   await refreshPremiumStatus();
   await hydrateSessions();
+  await hydrateSavedQuestions();
   recordLoginActivity();
   renderDash();
 }

@@ -21,6 +21,7 @@ const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
+const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
 const ADMIN_PREMIUM_EMAILS = [];
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
@@ -93,7 +94,9 @@ const S = {
   isLoggedIn: false,
   authViaLocal: false,
   scoreStoreDisabled: false,
+  savedQuestionStoreDisabled: false,
   sessionCache: [],
+  savedQuestionsCache: [],
   section: null,
   isPremium: false,
   obStep: 1,
@@ -1826,6 +1829,7 @@ function submitTest(){
     questions:qs.map((q,i)=>({...q,userAnswer:S.answers[i],isCorrect:S.answers[i]?(q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===S.answers[i].toString()):S.answers[i]===q.answer):false})),
     date:new Date().toISOString(),isFree:!S.isPremium};
   saveSession(S.results);
+  void saveSavedQuestionsForResult(S.results);
   setView('results');renderResults(S.results);
 }
 
@@ -1972,6 +1976,143 @@ function saveSession(r){
   }
 
   saveSessionLocal(entry);
+}
+
+function buildSavedQuestionStorageKey(entry) {
+  const section = String(entry && entry.section ? entry.section : 'unknown').trim().toLowerCase();
+  const questionId = String(entry && (entry.questionId || entry.key) ? (entry.questionId || entry.key) : '').trim();
+  if (questionId) return `${section}:${questionId}`;
+  const prompt = String(entry && entry.prompt ? entry.prompt : '').trim().toLowerCase();
+  return prompt ? `${section}:${prompt.slice(0, 160)}` : '';
+}
+
+function mergeSavedQuestionEntries(existingEntries, incomingEntries) {
+  const merged = new Map();
+
+  [...(Array.isArray(existingEntries) ? existingEntries : []), ...(Array.isArray(incomingEntries) ? incomingEntries : [])].forEach((entry) => {
+    if (!entry || typeof entry !== 'object') return;
+    const key = buildSavedQuestionStorageKey(entry);
+    if (!key) return;
+
+    const previous = merged.get(key);
+    if (!previous) {
+      merged.set(key, {
+        ...entry,
+        key,
+        saveCount: Number.isFinite(Number(entry.saveCount)) ? Number(entry.saveCount) : 1
+      });
+      return;
+    }
+
+    merged.set(key, {
+      ...previous,
+      ...entry,
+      key,
+      isFlagged: Boolean(previous.isFlagged || entry.isFlagged),
+      wasAnsweredWrong: Boolean(previous.wasAnsweredWrong || entry.wasAnsweredWrong),
+      options: Array.isArray(entry.options) && entry.options.length ? entry.options : previous.options,
+      correctAnswer: entry.correctAnswer || previous.correctAnswer,
+      userAnswer: entry.userAnswer || previous.userAnswer,
+      lastSeenAt: entry.lastSeenAt || previous.lastSeenAt,
+      sourceAttemptedAt: entry.sourceAttemptedAt || previous.sourceAttemptedAt,
+      saveCount: (Number(previous.saveCount) || 1) + (Number(entry.saveCount) || 1)
+    });
+  });
+
+  return [...merged.values()].sort((a, b) => new Date(b.lastSeenAt || b.updatedAt || 0).getTime() - new Date(a.lastSeenAt || a.updatedAt || 0).getTime());
+}
+
+function buildSavedQuestionEntries(result) {
+  if (!result || !Array.isArray(result.questions)) return [];
+
+  return result.questions.map((question, index) => {
+    const isFlagged = S.flags.has(index);
+    const wasAnsweredWrong = Boolean(question && question.userAnswer && !question.isCorrect);
+    if (!isFlagged && !wasAnsweredWrong) return null;
+
+    return {
+      questionId: question && question.id ? String(question.id) : `${result.section || 'unknown'}-${index + 1}`,
+      section: question && question.section ? question.section : result.section,
+      skill: question && question.skill ? question.skill : '',
+      questionType: question && question.type ? question.type : '',
+      prompt: question && question.question ? question.question : '',
+      passage: question && question.passage ? question.passage : '',
+      options: Array.isArray(question && question.options) ? question.options : [],
+      correctAnswer: question && question.answer ? String(question.answer) : '',
+      userAnswer: question && question.userAnswer ? String(question.userAnswer) : '',
+      isCorrect: Boolean(question && question.isCorrect),
+      isFlagged,
+      wasAnsweredWrong,
+      sourceTestSection: result.section || '',
+      sourceAttemptedAt: result.date || new Date().toISOString(),
+      lastSeenAt: result.date || new Date().toISOString(),
+      metadata: {
+        questionNumber: index + 1,
+        savedFrom: 'practice_test',
+        score: Number(result.total || 0)
+      }
+    };
+  }).filter(Boolean);
+}
+
+function getSavedQuestionsLocal() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SAVED_QUESTIONS_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveSavedQuestionsLocal(entries) {
+  const merged = mergeSavedQuestionEntries(getSavedQuestionsLocal(), entries);
+  try {
+    localStorage.setItem(SAVED_QUESTIONS_KEY, JSON.stringify(merged));
+  } catch {}
+  S.savedQuestionsCache = merged;
+}
+
+async function saveSavedQuestionsRemote(entries) {
+  const token = await getAccessToken();
+  if (!token) {
+    saveSavedQuestionsLocal(entries);
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/saved-questions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ questions: entries })
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data && data.disabled) S.savedQuestionStoreDisabled = true;
+      saveSavedQuestionsLocal(entries);
+      return;
+    }
+
+    const saved = Array.isArray(data && data.questions) ? data.questions : entries;
+    S.savedQuestionsCache = mergeSavedQuestionEntries(S.savedQuestionsCache, saved);
+  } catch {
+    saveSavedQuestionsLocal(entries);
+  }
+}
+
+async function saveSavedQuestionsForResult(result) {
+  const entries = buildSavedQuestionEntries(result);
+  if (!entries.length) return;
+
+  if (S.isLoggedIn) {
+    await saveSavedQuestionsRemote(entries);
+    return;
+  }
+
+  saveSavedQuestionsLocal(entries);
 }
 
 function getDemoSessions() {
