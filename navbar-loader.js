@@ -200,6 +200,25 @@
     updateNavProgress();
   }
 
+  function runFallbackAuthAction(isLoggedIn) {
+    if (isLoggedIn) {
+      if (typeof window.logout === 'function') {
+        window.logout();
+        return;
+      }
+      try {
+        localStorage.removeItem('budy_local_auth_user');
+        localStorage.removeItem('budy_auth');
+      } catch (_) {}
+      if (typeof window.clearNavbarState === 'function') {
+        window.clearNavbarState();
+      }
+      window.location.href = '/';
+      return;
+    }
+    window.location.href = '/login.html';
+  }
+
   function applyNavContext() {
     var nav = document.getElementById('nav');
     if (!nav) return;
@@ -269,15 +288,8 @@
 
     if (typeof window.handleAuthButton !== 'function') {
       window.handleAuthButton = function () {
-        if (isLoggedIn) {
-          try {
-            localStorage.removeItem('budy_local_auth_user');
-            localStorage.removeItem('budy_auth');
-          } catch (_) {}
-          window.location.href = '/';
-          return;
-        }
-        window.location.href = '/login.html';
+        var currentState = getRuntimeNavState();
+        runFallbackAuthAction(Boolean(currentState.isLoggedIn));
       };
     }
 
