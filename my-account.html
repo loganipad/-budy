@@ -49,27 +49,6 @@ body::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -5%, rgba(26,86,219,.35) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 35% at 90% 100%, rgba(245,158,11,.08) 0%, transparent 60%);
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
 
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
@@ -197,7 +176,7 @@ button { font-family: inherit; cursor: pointer; }
 .acct-tab:hover { color: rgba(240,244,255,.72); background: rgba(255,255,255,.06); }
 .acct-tab.active {
   color: #f0f4ff;
-  background: linear-gradient(180deg, rgba(59,130,246,.2), rgba(26,34,53,.95));
+  background: rgba(26,34,53,.92);
   border-color: rgba(59,130,246,.45);
   box-shadow: 0 6px 20px rgba(26,86,219,.25);
 }
@@ -213,7 +192,7 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 16px;
 }
 .d-stat {
-  background: linear-gradient(180deg, rgba(26,34,53,.98), rgba(17,24,39,.98));
+  background: #1a2235;
   border: 1px solid rgba(255,255,255,.09);
   border-radius: 28px;
   padding: 20px;
@@ -237,75 +216,6 @@ button { font-family: inherit; cursor: pointer; }
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 14px;
-}
-.dash-overview {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .95fr);
-  gap: 14px;
-  margin-bottom: 16px;
-  padding: 24px;
-  border-radius: 30px;
-  border: 1px solid rgba(255,255,255,.1);
-  background:
-    radial-gradient(circle at top right, rgba(59,130,246,.22), rgba(59,130,246,0) 34%),
-    linear-gradient(180deg, rgba(20,29,48,.98), rgba(13,20,34,.98));
-  box-shadow: 0 22px 54px rgba(4,10,20,.2);
-}
-.dash-overview-copy {
-  max-width: 560px;
-}
-.dash-overview-kicker {
-  font-size: .68rem;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: #60a5fa;
-  margin-bottom: 8px;
-}
-.dash-overview-title {
-  font-size: clamp(1.35rem, 3vw, 2rem);
-  line-height: 1.08;
-  font-weight: 800;
-  color: #f8fbff;
-}
-.dash-overview-copy p {
-  margin-top: 10px;
-  font-size: .92rem;
-  line-height: 1.65;
-  color: rgba(240,244,255,.64);
-}
-.dash-overview-pills {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  align-self: stretch;
-}
-.dash-overview-pill {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-  min-height: 120px;
-  padding: 16px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
-}
-.dash-overview-pill span {
-  font-size: .7rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: rgba(240,244,255,.42);
-}
-.dash-overview-pill strong {
-  font-size: 1.2rem;
-  line-height: 1.05;
-  color: #f8fbff;
-}
-.dash-overview-pill small {
-  font-size: .76rem;
-  color: rgba(240,244,255,.54);
 }
 .dash-section-head {
   display: flex;
@@ -341,7 +251,7 @@ button { font-family: inherit; cursor: pointer; }
   gap: 14px;
 }
 .d-card {
-  background: linear-gradient(180deg, rgba(26,34,53,.98), rgba(17,24,39,.98));
+  background: #1a2235;
   border: 1px solid rgba(255,255,255,.09);
   border-radius: 28px;
   padding: 22px;
@@ -431,17 +341,6 @@ button { font-family: inherit; cursor: pointer; }
   position: relative;
   overflow: hidden;
 }
-.streak-card::after {
-  content: '';
-  position: absolute;
-  top: -36px;
-  right: -22px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,158,11,.18) 0%, rgba(245,158,11,0) 70%);
-  pointer-events: none;
-}
 .streak-hero {
   display: flex;
   align-items: center;
@@ -514,7 +413,7 @@ button { font-family: inherit; cursor: pointer; }
   min-height: 124px;
   padding: 16px;
   border-radius: 22px;
-  background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.028));
+  background: rgba(255,255,255,.04);
   border: 1px solid rgba(255,255,255,.08);
 }
 .achievement-item.unlocked {
@@ -623,7 +522,7 @@ button { font-family: inherit; cursor: pointer; }
   min-width: 188px;
   padding: 12px 14px;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(12,18,32,.96), rgba(17,25,42,.96));
+  background: #111827;
   border: 1px solid rgba(255,255,255,.12);
   box-shadow: 0 18px 44px rgba(0,0,0,.34);
   pointer-events: none;
@@ -777,7 +676,7 @@ button { font-family: inherit; cursor: pointer; }
   max-width: 460px;
   border-radius: 28px;
   border: 1px solid rgba(255,255,255,.1);
-  background: linear-gradient(180deg, #162033 0%, #0f1728 100%);
+  background: #162033;
   box-shadow: 0 26px 80px rgba(0,0,0,.42);
   transform: translateY(18px) scale(.98);
   transition: transform .3s var(--ease);
@@ -835,7 +734,7 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 1.55rem;
   font-weight: 900;
   color: #0f1728;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: #f59e0b;
   box-shadow: 0 12px 30px rgba(245,158,11,.24);
   margin-bottom: 16px;
 }
@@ -864,7 +763,7 @@ button { font-family: inherit; cursor: pointer; }
   gap: 10px;
 }
 .confirm-btn-secondary,
-.confirm-btn-primary {
+ .confirm-btn-primary {
   height: 38px;
   padding: 0 18px;
   border-radius: 999px;
@@ -892,13 +791,11 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (max-width: 980px) {
   .dash-stats { grid-template-columns: 1fr 1fr; }
-  .dash-overview { grid-template-columns: 1fr; }
   .progress-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
   .dash-grid { grid-template-columns: 1fr; }
   .dash-stats { grid-template-columns: 1fr 1fr; }
-  .dash-overview-pills { grid-template-columns: 1fr; }
   .dash-section-head { flex-direction: column; align-items: flex-start; }
   .achievement-grid { grid-template-columns: 1fr; }
 }
@@ -948,7 +845,6 @@ button { font-family: inherit; cursor: pointer; }
 
       <div class="acct-tabs" role="tablist">
         <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab">My Progress</button>
-        <button class="acct-tab" id="acct-tab-study" onclick="setAccountTab('study')" role="tab">Study</button>
         <button class="acct-tab" id="acct-tab-achievements" onclick="setAccountTab('achievements')" role="tab">Achievements</button>
         <button class="acct-tab" id="acct-tab-billing" onclick="setAccountTab('billing')" role="tab">Billing</button>
         <button class="acct-tab" id="acct-tab-settings" onclick="setAccountTab('settings')" role="tab">Settings</button>
@@ -966,31 +862,6 @@ button { font-family: inherit; cursor: pointer; }
           <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">-</div><div class="d-stat-sub">Most recent</div></div>
           <div class="d-stat"><div class="d-stat-lbl">Last 7 Days</div><div class="d-stat-v neu" id="d-week-imp">+0</div><div class="d-stat-sub">Score improvement</div></div>
           <div class="d-stat"><div class="d-stat-lbl">Tests Taken</div><div class="d-stat-v" id="d-count">0</div><div class="d-stat-sub">This month</div></div>
-        </div>
-
-        <div class="dash-overview">
-          <div class="dash-overview-copy">
-            <div class="dash-overview-kicker">Dashboard Focus</div>
-            <div class="dash-overview-title" id="dash-overview-title">Start building your score trend.</div>
-            <p id="dash-overview-copy">Your test history, momentum, and next milestone will show up here as you keep practicing.</p>
-          </div>
-          <div class="dash-overview-pills">
-            <div class="dash-overview-pill">
-              <span>Trend</span>
-              <strong id="dash-focus-trend">No change yet</strong>
-              <small id="dash-focus-trend-note">Take two tests this week to unlock a trendline.</small>
-            </div>
-            <div class="dash-overview-pill">
-              <span>Activity</span>
-              <strong id="dash-focus-activity">0 tests this month</strong>
-              <small id="dash-focus-activity-note">Recent sessions stack here automatically.</small>
-            </div>
-            <div class="dash-overview-pill">
-              <span>Milestone</span>
-              <strong id="dash-focus-milestone">0 / 4 unlocked</strong>
-              <small id="dash-focus-milestone-note">Achievements move to their own tab for quick review.</small>
-            </div>
-          </div>
         </div>
 
         <div class="dash-section-head">
@@ -1186,6 +1057,7 @@ const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
 const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
+const ACCOUNT_TABS = ['progress', 'achievements', 'billing', 'settings'];
 
 let authClient = null;
 let accountConfirmResolver = null;
@@ -1274,18 +1146,19 @@ function isTestUserEmail(email) {
 }
 
 function setAccountTab(tab) {
-  S.accountTab = tab;
-  ['progress', 'study', 'achievements', 'billing', 'settings'].forEach((name) => {
+  const nextTab = ACCOUNT_TABS.includes(tab) ? tab : 'progress';
+  S.accountTab = nextTab;
+  ACCOUNT_TABS.forEach((name) => {
     const tabEl = document.getElementById('acct-tab-' + name);
     const paneEl = document.getElementById('acct-pane-' + name);
-    if (tabEl) tabEl.classList.toggle('active', name === tab);
-    if (paneEl) paneEl.classList.toggle('active', name === tab);
+    if (tabEl) tabEl.classList.toggle('active', name === nextTab);
+    if (paneEl) paneEl.classList.toggle('active', name === nextTab);
   });
 
-  const hash = tab === 'progress' ? '' : '#' + tab;
+  const hash = nextTab === 'progress' ? '' : '#' + nextTab;
   window.history.replaceState({}, document.title, window.location.pathname + hash);
 
-  if (tab === 'progress' && S.chart) {
+  if (nextTab === 'progress' && S.chart) {
     setTimeout(function () { if (S.chart) S.chart.resize(); }, 0);
   }
 }
@@ -1471,52 +1344,6 @@ function getAchievementCards(metrics) {
       progress: metrics.totalTests >= 5 ? 'Unlocked' : Math.min(metrics.totalTests, 5) + ' / 5 tests'
     }
   ];
-}
-
-function renderDashboardOverview(metrics, cards) {
-  const titleEl = document.getElementById('dash-overview-title');
-  const copyEl = document.getElementById('dash-overview-copy');
-  const trendEl = document.getElementById('dash-focus-trend');
-  const trendNoteEl = document.getElementById('dash-focus-trend-note');
-  const activityEl = document.getElementById('dash-focus-activity');
-  const activityNoteEl = document.getElementById('dash-focus-activity-note');
-  const milestoneEl = document.getElementById('dash-focus-milestone');
-  const milestoneNoteEl = document.getElementById('dash-focus-milestone-note');
-  const achievementPaneCopyEl = document.getElementById('achievement-pane-copy');
-  if (!titleEl || !copyEl || !trendEl || !trendNoteEl || !activityEl || !activityNoteEl || !milestoneEl || !milestoneNoteEl || !achievementPaneCopyEl) return;
-
-  const unlockedCount = cards.filter((card) => card.unlocked).length;
-  const nextAchievement = cards.find((card) => !card.unlocked);
-  const trendLabel = metrics.weekImp > 0 ? '+' + metrics.weekImp + ' points this week' : metrics.weekImp < 0 ? metrics.weekImp + ' points this week' : 'No change yet';
-
-  titleEl.textContent = metrics.bestScore >= 1400
-    ? 'You are in striking distance of elite scores.'
-    : metrics.totalTests >= 3
-      ? 'Your dashboard now has enough data to show real momentum.'
-      : 'Start building your score trend.';
-
-  copyEl.textContent = metrics.totalTests
-    ? 'Best score, recent activity, and next milestones are grouped here so you can see what to improve without hunting through the dashboard.'
-    : 'Your test history, momentum, and next milestone will show up here as you keep practicing.';
-
-  trendEl.textContent = trendLabel;
-  trendNoteEl.textContent = metrics.totalTests >= 2
-    ? 'Based on your last 7 days of score history.'
-    : 'Take two tests this week to unlock a trendline.';
-
-  activityEl.textContent = metrics.monthCount + ' test' + (metrics.monthCount === 1 ? '' : 's') + ' this month';
-  activityNoteEl.textContent = metrics.latestScore > 0
-    ? 'Latest recorded score: ' + metrics.latestScore + '.'
-    : 'Recent sessions stack here automatically.';
-
-  milestoneEl.textContent = unlockedCount + ' / ' + cards.length + ' unlocked';
-  milestoneNoteEl.textContent = nextAchievement
-    ? 'Next up: ' + nextAchievement.title + '.'
-    : 'All dashboard milestones are unlocked.';
-
-  achievementPaneCopyEl.textContent = nextAchievement
-    ? 'Next milestone: ' + nextAchievement.title + '. ' + nextAchievement.copy
-    : 'All milestones unlocked. Keep your streak alive and protect your gains.';
 }
 
 function renderAchievements(cards) {
@@ -2226,11 +2053,18 @@ function renderDash() {
     streak: getLoginStreakStats(S.loginDays)
   };
   const achievementCards = getAchievementCards(metrics);
-  renderDashboardOverview(metrics, achievementCards);
   renderLoginStreak(metrics);
   renderAchievements(achievementCards);
   renderSavedQuestions();
   mountReviewBank();
+
+  const nextAchievement = achievementCards.find((card) => !card.unlocked);
+  const achievementPaneCopyEl = document.getElementById('achievement-pane-copy');
+  if (achievementPaneCopyEl) {
+    achievementPaneCopyEl.textContent = nextAchievement
+      ? 'Next milestone: ' + nextAchievement.title + '. ' + nextAchievement.copy
+      : 'All milestones unlocked. Keep your streak alive and protect your gains.';
+  }
 
   if (!ss.length) {
     document.getElementById('d-best').textContent = '-';
@@ -2336,13 +2170,15 @@ async function boot() {
   await initAuth();
   bindNavAuthButtonForState();
 
+  const requestedTab = window.location.hash ? window.location.hash.slice(1) : S.accountTab;
+
   if (!S.isLoggedIn) {
     document.getElementById('logged-out-notice').classList.remove('hidden');
     document.getElementById('logged-out-notice').textContent = 'Viewing demo dashboard. Log in to see your real account data.';
     setDemoDashboardState();
     recordLoginActivity();
     renderDash();
-    setAccountTab(window.location.hash === '#study' ? 'study' : 'progress');
+    setAccountTab(requestedTab);
     bindNavAuthButtonForState();
     return;
   }
@@ -2353,7 +2189,7 @@ async function boot() {
   await hydrateSavedQuestions();
   recordLoginActivity();
   renderDash();
-  setAccountTab(window.location.hash === '#study' ? 'study' : (S.accountTab || 'progress'));
+  setAccountTab(requestedTab);
 }
 
 document.addEventListener('navbar:mounted', bindNavAuthButtonForState);
