@@ -76,8 +76,7 @@ button,input,select{font:inherit}
 .study-shell{padding-top:112px;padding-bottom:88px}
 .wrap{
   width:min(1260px,calc(100% - 56px));
-  margin-left:clamp(24px,4vw,64px);
-  margin-right:auto;
+  margin:0 auto;
 }
 
 .section-card{
@@ -111,26 +110,10 @@ button,input,select{font:inherit}
   background:radial-gradient(circle, rgba(26,86,219,.24), transparent 68%);
 }
 
-.eyebrow{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  border-radius:999px;
-  padding:8px 14px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.09);
-  color:rgba(255,255,255,.82);
-  font-size:.78rem;
-  font-weight:700;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  margin-bottom:16px;
-}
-
 .intro-grid{
   display:grid;
   grid-template-columns:1fr;
-  gap:0;
+  gap:18px;
   align-items:start;
   position:relative;
   z-index:1;
@@ -147,7 +130,11 @@ button,input,select{font:inherit}
 .study-intro h1 span{color:var(--gold)}
 .intro-copy p{max-width:880px;color:var(--muted);font-size:.98rem;line-height:1.7}
 
-.intro-steps{display:none}
+.intro-steps{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
 
 .intro-step{
   display:grid;
@@ -174,6 +161,87 @@ button,input,select{font:inherit}
 
 .intro-step strong{display:block;font-size:1rem;margin-bottom:6px}
 .intro-step span{display:block;color:var(--muted);font-size:.84rem;line-height:1.65}
+
+.tutorial-pop{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  width:min(360px,calc(100% - 32px));
+  z-index:1100;
+  border-radius:24px;
+  padding:18px;
+  background:rgba(15,23,42,.94);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 24px 60px rgba(0,0,0,.36);
+  backdrop-filter:blur(16px);
+}
+
+.tutorial-pop.hidden{display:none}
+
+.tutorial-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+  margin-bottom:12px;
+}
+
+.tutorial-pop h3{font-size:1.05rem;line-height:1.2}
+.tutorial-pop p{color:var(--muted);font-size:.86rem;line-height:1.65}
+
+.tutorial-close{
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+  font-size:1rem;
+  font-weight:700;
+}
+
+.tutorial-list{
+  display:grid;
+  gap:10px;
+  margin:14px 0 16px;
+}
+
+.tutorial-item{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:10px;
+  align-items:start;
+}
+
+.tutorial-item strong{display:block;font-size:.86rem;margin-bottom:3px}
+.tutorial-item span{display:block;color:var(--muted);font-size:.8rem;line-height:1.55}
+
+.tutorial-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.tutorial-chip,
+.tutorial-primary{
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:800;
+}
+
+.tutorial-chip{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:#dbeafe;
+}
+
+.tutorial-primary{
+  border:none;
+  background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color:#fff;
+}
 
 .top-grid{
   display:grid;
@@ -681,6 +749,7 @@ button,input,select{font:inherit}
 
 @media (max-width: 980px){
   .intro-grid,
+  .intro-steps,
   .top-grid,
   .guide-grid,
   .flashcard-stack,
@@ -711,7 +780,7 @@ button,input,select{font:inherit}
   .recent-card,
   .recommended-card{padding:22px}
 
-  .wrap{width:min(100%,calc(100% - 32px));margin-left:16px;margin-right:16px}
+  .wrap{width:min(100%,calc(100% - 32px));margin:0 auto}
 
   .panel-head,
   .review-config-bar,
@@ -738,6 +807,7 @@ button,input,select{font:inherit}
 
   .menu-tab{flex:1 1 100%}
   .study-shell{padding-top:96px}
+  .tutorial-pop{right:16px;bottom:16px;width:min(100%,calc(100% - 24px))}
 }
 </style>
 </head>
@@ -752,9 +822,22 @@ button,input,select{font:inherit}
           <section class="study-intro section-card">
             <div class="intro-grid">
               <div class="intro-copy">
-                <div class="eyebrow">Study Hub</div>
                 <h1>How to study with <span>Budy</span></h1>
                 <p>Use one workspace for study guides, wrong-answer feedback, flashcards, and tailored review tests built from the questions you flagged or missed.</p>
+              </div>
+              <div class="intro-steps">
+                <div class="intro-step">
+                  <div class="intro-num">1</div>
+                  <div><strong>Find the topic</strong><span>Search by skill, filter by Math or English, and pick the exact area you want to review.</span></div>
+                </div>
+                <div class="intro-step">
+                  <div class="intro-num">2</div>
+                  <div><strong>Study the pattern</strong><span>Open a guide or flashcard set to rebuild the concept before you jump back into timing pressure.</span></div>
+                </div>
+                <div class="intro-step">
+                  <div class="intro-num">3</div>
+                  <div><strong>Run a review test</strong><span>Turn flagged and wrong-answer history into a targeted test and use the recent panel to track what changed.</span></div>
+                </div>
               </div>
             </div>
           </section>
@@ -862,6 +945,35 @@ button,input,select{font:inherit}
   </main>
 
   <div id="footer-slot"></div>
+  <aside class="tutorial-pop hidden" id="study-tutorial-pop" aria-live="polite">
+    <div class="tutorial-top">
+      <div>
+        <h3>Quick study tour</h3>
+        <p>This short menu shows how to use the hub the first time you land here.</p>
+      </div>
+      <button class="tutorial-close" type="button" id="study-tutorial-close" aria-label="Dismiss tutorial">x</button>
+    </div>
+    <div class="tutorial-list">
+      <div class="tutorial-item">
+        <div class="intro-num">1</div>
+        <div><strong>Pick a lane</strong><span>Use Review Tests for targeted practice, or switch to guides and flashcards for concept review.</span></div>
+      </div>
+      <div class="tutorial-item">
+        <div class="intro-num">2</div>
+        <div><strong>Use your history</strong><span>Flagged and wrong answers drive the best next test and the topic recommendations below.</span></div>
+      </div>
+      <div class="tutorial-item">
+        <div class="intro-num">3</div>
+        <div><strong>Move fast</strong><span>Use the buttons below to jump straight into the part of the hub you want first.</span></div>
+      </div>
+    </div>
+    <div class="tutorial-actions">
+      <button class="tutorial-chip" type="button" data-tutorial-tab="review-tests">Review Tests</button>
+      <button class="tutorial-chip" type="button" data-tutorial-tab="study-guides">Study Guides</button>
+      <button class="tutorial-chip" type="button" data-tutorial-tab="flashcards">Flashcards</button>
+      <button class="tutorial-primary" type="button" id="study-tutorial-dismiss">Got it</button>
+    </div>
+  </aside>
   <script src="/footer-loader.js" defer></script>
   <script src="/assets/review-bank.js"></script>
   <script>
@@ -870,6 +982,7 @@ button,input,select{font:inherit}
     const AUTH0_REDIRECT_URI = window.location.origin;
     const LOCAL_AUTH_KEY = 'budy_local_auth_user';
     const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
+    const STUDY_TUTORIAL_KEY = 'budy_study_tutorial_seen_v1';
     const QUESTION_BLUEPRINT = {
       reading_writing: {
         'Information and Ideas': ['Inference', 'Central Idea', 'Command of Evidence', 'Quantitative Information in Text and Graphics'],
@@ -1892,6 +2005,45 @@ button,input,select{font:inherit}
       });
     }
 
+    function dismissStudyTutorial() {
+      const tutorial = document.getElementById('study-tutorial-pop');
+      if (tutorial) tutorial.classList.add('hidden');
+      try {
+        localStorage.setItem(STUDY_TUTORIAL_KEY, '1');
+      } catch (_) {}
+    }
+
+    function bindStudyTutorial() {
+      const tutorial = document.getElementById('study-tutorial-pop');
+      if (!tutorial) return;
+
+      let hasSeenTutorial = false;
+      try {
+        hasSeenTutorial = localStorage.getItem(STUDY_TUTORIAL_KEY) === '1';
+      } catch (_) {}
+
+      if (!hasSeenTutorial) {
+        tutorial.classList.remove('hidden');
+      }
+
+      const closeButton = document.getElementById('study-tutorial-close');
+      const dismissButton = document.getElementById('study-tutorial-dismiss');
+      if (closeButton) closeButton.addEventListener('click', dismissStudyTutorial);
+      if (dismissButton) dismissButton.addEventListener('click', dismissStudyTutorial);
+
+      tutorial.querySelectorAll('[data-tutorial-tab]').forEach((button) => {
+        button.addEventListener('click', function () {
+          studyUIState.activeTab = button.dataset.tutorialTab || 'review-tests';
+          updateMenuTabs();
+          if (studyUIState.activeTab !== 'review-tests') {
+            renderLibraryPanel();
+          }
+          dismissStudyTutorial();
+          focusWorkspace();
+        });
+      });
+    }
+
     function bindTopicControls() {
       const searchInput = document.getElementById('topic-search-input');
       if (searchInput) {
@@ -1918,6 +2070,7 @@ button,input,select{font:inherit}
       refreshStudyDataModel();
       bindStudyTabs();
       bindTopicControls();
+      bindStudyTutorial();
       renderStudyWorkspace();
     }
 
