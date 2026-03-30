@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Budy.Study | Study Planner Prototype</title>
-<meta name="description" content="Build a personalized SAT or PSAT study plan based on grade level, confidence, and current understanding.">
+<title>Budy.Study | Study Hub</title>
+<meta name="description" content="Review flagged and wrong answers, browse topic-based study guides and flashcards, and build tailored Budy.Study review tests from one study hub.">
 <script>
   (function enforceStudyAccess() {
     const LOCAL_AUTH_KEY = 'budy_local_auth_user';
@@ -23,20 +23,14 @@
 <style>
 :root {
   --ink:#0d1117;
-  --ink-80:#151d2d;
   --panel:rgba(20,29,45,.82);
-  --panel-strong:#1b2538;
   --line:rgba(255,255,255,.1);
   --text:#f8fafc;
   --muted:rgba(240,244,255,.66);
   --brand:#1a56db;
-  --brand-d:#1a56db;
   --gold:#f59e0b;
   --green:#10b981;
   --rose:#f43f5e;
-  --radius-lg:28px;
-  --radius-md:18px;
-  --radius-sm:12px;
   --shadow:0 24px 80px rgba(0,0,0,.28);
   --font-h:'Sora',system-ui,sans-serif;
   --font-b:'Sora',system-ui,sans-serif;
@@ -59,38 +53,35 @@ button,input,select{font:inherit}
 .study-shell{padding-top:112px;padding-bottom:88px}
 .wrap{width:min(1120px,calc(100% - 40px));margin:0 auto}
 
-.study-hero{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:28px;
-  align-items:stretch;
-  margin-bottom:32px;
-}
-
-.hero-panel,
-.study-card,
-.result-card,
-.timeline-card{
+.section-card{
   background:var(--panel);
   border:1px solid var(--line);
   box-shadow:var(--shadow);
   backdrop-filter:blur(14px);
 }
 
-.hero-panel{
-  border-radius:36px;
-  padding:36px;
-  position:relative;
-  overflow:hidden;
+.study-intro,
+.workspace-card,
+.recent-card,
+.recommended-card{
+  border-radius:30px;
+  padding:28px;
 }
 
-.hero-panel::before{
+.study-intro{
+  position:relative;
+  overflow:hidden;
+  margin-bottom:24px;
+}
+
+.study-intro::before{
   content:'';
   position:absolute;
-  inset:auto -20% -40% auto;
+  right:-92px;
+  top:-92px;
   width:280px;
   height:280px;
-  background:radial-gradient(circle, rgba(26,86,219,.26), transparent 68%);
+  background:radial-gradient(circle, rgba(26,86,219,.24), transparent 68%);
 }
 
 .eyebrow{
@@ -106,10 +97,19 @@ button,input,select{font:inherit}
   font-weight:700;
   letter-spacing:.06em;
   text-transform:uppercase;
-  margin-bottom:18px;
+  margin-bottom:16px;
 }
 
-.study-hero h1{
+.intro-grid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:24px;
+  align-items:start;
+  position:relative;
+  z-index:1;
+}
+
+.study-intro h1{
   font-family:var(--font-h);
   font-size:clamp(2.2rem,5vw,4.3rem);
   line-height:1.02;
@@ -117,276 +117,434 @@ button,input,select{font:inherit}
   margin-bottom:16px;
 }
 
-.study-hero h1 span{color:var(--gold)}
-.hero-copy{max-width:620px;color:var(--muted);font-size:1.03rem;line-height:1.75;margin-bottom:28px}
+.study-intro h1 span{color:var(--gold)}
+.intro-copy p{max-width:650px;color:var(--muted);font-size:1.02rem;line-height:1.8}
 
-.hero-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.hero-point{
-  border-radius:20px;
+.intro-steps{display:grid;gap:12px}
+
+.intro-step{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:14px;
+  align-items:start;
+  border-radius:22px;
   padding:18px;
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
 }
-.hero-point strong{display:block;font-size:1.2rem;margin-bottom:6px}
-.hero-point span{display:block;color:var(--muted);font-size:.84rem;line-height:1.55}
 
-.hero-preview{
-  border-radius:32px;
-  padding:28px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-.lane-chip{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
+.intro-num{
+  width:34px;
+  height:34px;
   border-radius:999px;
-  background:rgba(26,86,219,.16);
-  color:#dbeafe;
-  width:max-content;
-  padding:8px 14px;
-  border:1px solid rgba(59,130,246,.3);
-  font-size:.78rem;
-  font-weight:700;
-  letter-spacing:.05em;
-  text-transform:uppercase;
+  display:grid;
+  place-items:center;
+  background:rgba(245,158,11,.16);
+  color:#fde68a;
+  font-size:.86rem;
+  font-weight:800;
 }
 
-.hero-preview h2{font-size:1.42rem;line-height:1.2}
-.hero-preview p{color:var(--muted);line-height:1.7}
+.intro-step strong{display:block;font-size:1rem;margin-bottom:6px}
+.intro-step span{display:block;color:var(--muted);font-size:.84rem;line-height:1.65}
 
-.preview-list{display:grid;gap:12px}
-.preview-item{
+.board-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
+  gap:24px;
+  align-items:start;
+  margin-bottom:24px;
+}
+
+.menu-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+  padding:6px;
   border-radius:18px;
-  background:rgba(255,255,255,.05);
+  background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.08);
-  padding:16px;
 }
-.preview-item strong{display:block;font-size:.9rem;margin-bottom:6px}
-.preview-item span{display:block;color:var(--muted);font-size:.84rem;line-height:1.55}
 
-.study-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px}
-.study-card,.result-card,.timeline-card{border-radius:28px;padding:28px}
+.menu-tab{
+  min-height:44px;
+  padding:0 16px;
+  border-radius:14px;
+  border:1px solid transparent;
+  background:rgba(255,255,255,.05);
+  color:rgba(240,244,255,.58);
+  font-size:.88rem;
+  font-weight:800;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+}
 
-.study-card h2,.result-card h2,.timeline-card h2{
-  font-size:1.45rem;
+.menu-tab:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+.menu-tab.active{
+  color:#fff;
+  background:rgba(26,86,219,.18);
+  border-color:rgba(59,130,246,.36);
+  box-shadow:0 12px 24px rgba(26,86,219,.18);
+}
+
+.menu-panel{display:none}
+.menu-panel.active{display:block}
+
+.panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.panel-head h2,
+.recent-card h2,
+.recommended-head h2{
+  font-size:1.35rem;
   margin-bottom:10px;
 }
 
-.section-copy{color:var(--muted);font-size:.94rem;line-height:1.7;margin-bottom:22px}
+.panel-copy,
+.recent-card-copy{
+  color:var(--muted);
+  font-size:.92rem;
+  line-height:1.75;
+}
 
-.field{margin-bottom:18px}
-.field label{display:block;font-size:.84rem;font-weight:700;letter-spacing:.03em;margin-bottom:10px;color:rgba(255,255,255,.92)}
+.review-bank-shell.study-review-root{display:grid;gap:18px}
 
-.select,
-.name-input{
+.review-config-bar{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  padding:18px;
+  border-radius:22px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.review-config-copy{max-width:520px;color:var(--muted);font-size:.86rem;line-height:1.7}
+.review-config-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+
+.review-config-field,
+.review-config-metric{
+  min-width:150px;
+  min-height:88px;
+  border-radius:18px;
+  padding:14px 16px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.review-config-field span,
+.review-config-metric span,
+.topic-search span{
+  display:block;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(240,244,255,.48);
+  margin-bottom:8px;
+}
+
+.review-config-field input{
   width:100%;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.06);
+  border:none;
+  outline:none;
+  background:transparent;
   color:#fff;
-  border-radius:16px;
+  font-size:1.2rem;
+  font-weight:800;
+}
+
+.review-config-metric strong{display:block;font-size:1.15rem;line-height:1.1}
+
+.library-toolbar{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+
+.topic-search{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:min(420px,100%);
+}
+
+.topic-search input{
+  width:100%;
   min-height:54px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:#fff;
   padding:0 16px;
   outline:none;
 }
 
-.select option{color:#0d1117}
+.topic-filter-row{display:flex;gap:10px;flex-wrap:wrap}
 
-.option-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.option-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-
-.choice-btn{
+.topic-filter{
+  min-height:44px;
+  padding:0 14px;
+  border-radius:999px;
   border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.04);
-  color:rgba(255,255,255,.86);
-  border-radius:18px;
-  padding:14px 12px;
-  text-align:left;
-  min-height:74px;
-  transition:border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+  color:rgba(240,244,255,.76);
+  font-size:.82rem;
+  font-weight:800;
 }
 
-.choice-btn strong{display:block;font-size:.92rem;margin-bottom:4px}
-.choice-btn span{display:block;font-size:.78rem;color:var(--muted);line-height:1.45}
-.choice-btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.24)}
-.choice-btn.active{
+.topic-filter.active{
   background:rgba(26,86,219,.18);
   border-color:rgba(59,130,246,.6);
-  box-shadow:0 10px 24px rgba(26,86,219,.2);
+  color:#dbeafe;
 }
 
-.build-btn{
-  width:100%;
-  min-height:56px;
-  border:none;
-  border-radius:999px;
-  background:linear-gradient(135deg, #1a56db 0%, #2563eb 100%);
-  color:#fff;
+.topic-summary{
+  color:rgba(240,244,255,.58);
+  font-size:.82rem;
   font-weight:800;
-  font-size:.98rem;
-  box-shadow:0 16px 34px rgba(26,86,219,.3);
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-bottom:14px;
 }
 
-.build-btn:hover{background:linear-gradient(135deg, #1440b0 0%, #1a56db 100%)}
+.topic-list{display:grid;gap:12px}
 
-.result-card{display:flex;flex-direction:column;gap:18px}
-.result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
-.result-badge{
+.topic-card{
+  border-radius:22px;
+  padding:18px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  transition:border-color .18s ease,background .18s ease,transform .18s ease,box-shadow .18s ease;
+  cursor:pointer;
+}
+
+.topic-card:hover,
+.topic-card.active{
+  transform:translateY(-2px);
+  border-color:rgba(96,165,250,.32);
+  background:rgba(255,255,255,.07);
+  box-shadow:0 18px 34px rgba(4,10,20,.18);
+}
+
+.topic-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.topic-title{font-size:1rem;font-weight:800;margin-bottom:6px}
+.topic-kicker{font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,244,255,.48)}
+
+.topic-section-tag{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:0 10px;
   border-radius:999px;
-  padding:8px 12px;
-  background:rgba(245,158,11,.16);
-  border:1px solid rgba(245,158,11,.34);
-  color:#fde68a;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  color:#dbeafe;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.topic-card p{margin-top:10px;color:var(--muted);font-size:.84rem;line-height:1.65}
+.topic-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+.topic-stat,
+.competency-badge,
+.recent-test-stat,
+.recent-test-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:0 10px;
+  border-radius:999px;
+  font-size:.74rem;
+  font-weight:800;
+}
+
+.topic-stat,
+.competency-badge{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:rgba(240,244,255,.76);
+}
+
+.topic-preview-button,
+.detail-action,
+.recommended-action{
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(59,130,246,.28);
+  background:rgba(26,86,219,.16);
+  color:#dbeafe;
   font-size:.78rem;
   font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.05em;
 }
 
-.result-summary{font-size:1.02rem;line-height:1.8;color:rgba(255,255,255,.88)}
+.topic-preview-button{margin-top:14px}
 
-.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.stat-card{
+.topic-detail{
+  margin-top:18px;
+  border-radius:24px;
+  padding:22px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.topic-detail.hidden{display:none}
+.topic-detail-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+.topic-detail-kicker{font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px}
+.topic-detail h3{font-size:1.25rem;margin-bottom:8px}
+.topic-detail p{color:var(--muted);font-size:.88rem;line-height:1.7}
+.topic-detail-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.guide-grid,
+.flashcard-stack{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+
+.guide-block,
+.flashcard-item,
+.recent-test-question,
+.recommended-row{
   border-radius:20px;
   padding:16px;
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.08);
 }
-.stat-card strong{display:block;font-size:1.1rem;margin-bottom:6px}
-.stat-card span{display:block;color:var(--muted);font-size:.82rem;line-height:1.45}
 
-.plan-list,.timeline-list{display:grid;gap:12px}
-.plan-item,.timeline-step{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:12px;
-  align-items:start;
-  border-radius:18px;
-  padding:15px 16px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-}
+.guide-block h4{font-size:.92rem;margin-bottom:10px}
+.guide-list{display:grid;gap:10px}
+.guide-list-item{color:var(--muted);font-size:.83rem;line-height:1.65}
+.guide-list-item strong,
+.sample-question strong,
+.recommended-topic strong,
+.recent-test-question strong{color:#fff}
 
-.plan-mark,.timeline-mark{
-  width:28px;
-  height:28px;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  font-size:.8rem;
-  font-weight:800;
-  flex-shrink:0;
-}
+.sample-question{color:var(--muted);font-size:.83rem;line-height:1.7}
+.sample-question strong{display:block;margin-bottom:8px}
 
-.plan-mark{background:rgba(16,185,129,.18);color:#6ee7b7}
-.timeline-mark{background:rgba(244,63,94,.16);color:#fda4af}
-.plan-item strong,.timeline-step strong{display:block;font-size:.92rem;margin-bottom:5px}
-.plan-item span,.timeline-step span{display:block;font-size:.82rem;line-height:1.55;color:var(--muted)}
+.flashcard-label{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.48);margin-bottom:10px}
+.flashcard-front{font-size:.95rem;font-weight:800;line-height:1.45;color:#fff;margin-bottom:10px}
+.flashcard-back{font-size:.82rem;line-height:1.65;color:var(--muted)}
 
-.result-empty{
+.recent-card{position:sticky;top:108px}
+.recent-card-copy{margin-bottom:18px}
+.recent-test-list{display:grid;gap:12px}
+
+.recent-test-card{
   border-radius:22px;
-  padding:22px;
   background:rgba(255,255,255,.04);
   border:1px dashed rgba(255,255,255,.16);
+  overflow:hidden;
+}
+
+.recent-test-card[open]{border-color:rgba(59,130,246,.28);background:rgba(255,255,255,.05)}
+.recent-test-summary{list-style:none;cursor:pointer;padding:18px}
+.recent-test-summary::-webkit-details-marker{display:none}
+.recent-test-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+.recent-test-title{font-size:.98rem;font-weight:800;margin-bottom:4px;color:#fff}
+.recent-test-date{font-size:.8rem;color:rgba(240,244,255,.58)}
+.recent-test-reveal-label{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#dbeafe}
+.recent-test-stats{display:flex;gap:8px;flex-wrap:wrap}
+.recent-test-stat.correct{background:rgba(16,185,129,.16);color:#a7f3d0}
+.recent-test-stat.wrong{background:rgba(244,63,94,.14);color:#fecdd3}
+.recent-test-stat.score{background:rgba(245,158,11,.16);color:#fde68a}
+
+.recent-test-reveal{padding:0 18px 18px;display:grid;gap:10px;border-top:1px solid rgba(255,255,255,.06)}
+.recent-test-question-list{display:grid;gap:10px}
+.recent-test-question-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;margin-bottom:8px}
+.recent-test-question p{font-size:.8rem;line-height:1.65;color:var(--muted)}
+.recent-test-question-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:.74rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:rgba(240,244,255,.48)}
+.recent-test-badge.flagged{background:rgba(245,158,11,.16);color:#fde68a}
+.recent-test-badge.wrong{background:rgba(244,63,94,.14);color:#fecdd3}
+
+.recent-test-empty{
+  border-radius:18px;
+  padding:16px;
+  background:rgba(16,185,129,.12);
+  border:1px solid rgba(16,185,129,.24);
+  color:#d1fae5;
+  font-size:.84rem;
+  line-height:1.7;
+}
+
+.recommended-head{margin-bottom:18px}
+.recommended-list{display:grid;gap:12px}
+
+.recommended-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:14px;
+  align-items:center;
+}
+
+.recommended-topic span{display:block;font-size:.82rem;line-height:1.6;color:var(--muted)}
+.recommended-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+.library-empty,
+.recommended-empty{
+  border-radius:20px;
+  padding:18px;
+  background:rgba(255,255,255,.04);
+  border:1px dashed rgba(255,255,255,.12);
   color:var(--muted);
   line-height:1.7;
 }
 
-.study-footer-note{margin-top:16px;color:rgba(240,244,255,.55);font-size:.78rem;line-height:1.65}
-
-.study-section{
-  margin-top:24px;
-  border-radius:28px;
-  padding:28px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(14px);
-}
-
-.study-section-head{max-width:720px;margin-bottom:22px}
-.study-section-head h2{font-size:1.45rem;margin-bottom:10px}
-
-.feature-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-}
-
-.feature-card{
-  border-radius:22px;
-  padding:20px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
-}
-
-.feature-card:hover{
-  transform:translateY(-3px);
-  border-color:rgba(59,130,246,.34);
-  box-shadow:0 18px 40px rgba(0,0,0,.2);
-  background:rgba(255,255,255,.07);
-}
-
-.feature-icon{
-  width:50px;
-  height:50px;
-  border-radius:16px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:16px;
-  color:#fff;
-}
-
-.feature-icon svg{width:24px;height:24px;display:block}
-.feature-icon.blue{background:rgba(37,99,235,.24);color:#bfdbfe}
-.feature-icon.gold{background:rgba(245,158,11,.2);color:#fde68a}
-.feature-icon.green{background:rgba(16,185,129,.18);color:#a7f3d0}
-.feature-icon.rose{background:rgba(244,63,94,.18);color:#fecdd3}
-
-.feature-card h3{font-size:1rem;line-height:1.35;margin-bottom:8px}
-.feature-card p{font-size:.88rem;line-height:1.65;color:var(--muted)}
-
-.workflow-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-}
-
-.workflow-step{
-  border-radius:22px;
-  padding:20px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.workflow-step strong{
-  width:38px;
-  height:38px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  margin-bottom:16px;
-  background:rgba(245,158,11,.18);
-  color:#fde68a;
-  font-size:.95rem;
-}
-
-.workflow-step h3{font-size:.98rem;margin-bottom:8px}
-.workflow-step p{font-size:.86rem;line-height:1.65;color:var(--muted)}
-
 @media (max-width: 980px){
-  .study-hero,.study-grid{grid-template-columns:1fr}
-  .feature-grid,.workflow-grid{grid-template-columns:1fr 1fr}
+  .intro-grid,
+  .board-grid,
+  .guide-grid,
+  .flashcard-stack,
+  .recommended-row{
+    grid-template-columns:1fr;
+  }
+
+  .recent-card{position:static}
 }
 
 @media (max-width: 720px){
-  .hero-panel,.hero-preview,.study-card,.result-card,.timeline-card,.study-section{padding:22px}
-  .hero-points,.stat-grid,.option-grid,.option-grid.two{grid-template-columns:1fr}
-  .feature-grid,.workflow-grid{grid-template-columns:1fr}
+  .study-intro,
+  .workspace-card,
+  .recent-card,
+  .recommended-card{padding:22px}
+
+  .panel-head,
+  .review-config-bar,
+  .library-toolbar,
+  .topic-top,
+  .recommended-row{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .review-config-controls,
+  .recommended-actions,
+  .topic-search{width:100%}
+
+  .review-config-field,
+  .review-config-metric,
+  .recommended-action,
+  .topic-preview-button,
+  .detail-action{width:100%}
+
+  .menu-tab{flex:1 1 100%}
   .study-shell{padding-top:96px}
 }
 </style>
@@ -397,258 +555,120 @@ button,input,select{font:inherit}
 
   <main class="study-shell">
     <div class="wrap">
-      <section class="study-hero">
-        <div class="hero-panel">
-          <div class="eyebrow">Study Prototype</div>
-          <h1>Build a smarter <span>SAT / PSAT</span> prep path.</h1>
-          <p class="hero-copy">This prototype asks about your grade, target test, and current comfort level, then builds a first-pass study lane with the right pacing, subject order, and starter moves.</p>
-          <div class="hero-points">
-            <div class="hero-point">
-              <strong>Grade-aware</strong>
-              <span>Shifts the plan depending on whether you are still building foundations or pushing for a score jump.</span>
+      <section class="study-intro section-card">
+        <div class="intro-grid">
+          <div class="intro-copy">
+            <div class="eyebrow">Study Hub</div>
+            <h1>How to study with <span>Budy</span></h1>
+            <p>Use one workspace for handcrafted study guides, wrong-answer feedback, unlimited flashcards, and tailored review tests built from the questions you flagged or missed. The layout below matches the way students actually decide what to do next.</p>
+          </div>
+          <div class="intro-steps">
+            <div class="intro-step">
+              <div class="intro-num">1</div>
+              <div><strong>Handcrafted study guides</strong><span>Topic explainers, sample questions, and easy-to-read breakdowns that help you understand the skill before you jump back into timed work.</span></div>
             </div>
-            <div class="hero-point">
-              <strong>Skill-based</strong>
-              <span>Uses your reading and math confidence to decide where to start instead of forcing the same sequence on everyone.</span>
+            <div class="intro-step">
+              <div class="intro-num">2</div>
+              <div><strong>Wrong-answer feedback</strong><span>Suggested topics, tailored review tests, and competency scoring built from the questions you flagged or answered incorrectly.</span></div>
             </div>
-            <div class="hero-point">
-              <strong>Prototype plan</strong>
-              <span>Outputs a suggested lane, weekly rhythm, and first three moves you can expand into a full study system later.</span>
+            <div class="intro-step">
+              <div class="intro-num">3</div>
+              <div><strong>Unlimited flashcards</strong><span>Printable-style concepts in a digital format so you can review fast, repeat often, and stay inside the same study flow.</span></div>
             </div>
           </div>
         </div>
+      </section>
 
-        <aside class="hero-preview">
-          <div class="lane-chip">Adaptive Study Flow</div>
-          <h2>What this version already does</h2>
-          <p>It turns a short questionnaire into a prep recommendation for PSAT or SAT, with a level-aware study sequence and a weekly structure.</p>
-          <div class="preview-list">
-            <div class="preview-item">
-              <strong>Foundation lane</strong>
-              <span>For earlier grades or lower confidence. Starts with skill repair, pacing basics, and low-pressure reps.</span>
+      <section class="board-grid">
+        <section class="workspace-card section-card">
+          <div class="menu-tabs" role="tablist" aria-label="Study tools">
+            <button class="menu-tab active" type="button" data-study-tab="review-tests">Review Tests</button>
+            <button class="menu-tab" type="button" data-study-tab="study-guides">Study Guides</button>
+            <button class="menu-tab" type="button" data-study-tab="flashcards">Flashcards</button>
+          </div>
+
+          <div class="menu-panel active" id="menu-panel-review-tests">
+            <div class="panel-head">
+              <div>
+                <h2>Review tests come first</h2>
+                <p class="panel-copy">Filter by flagged questions, wrong answers, or both. Pick a question amount and Budy will generate a tailored review test from the exact bank you selected.</p>
+              </div>
             </div>
-            <div class="preview-item">
-              <strong>Builder lane</strong>
-              <span>For students with mixed understanding. Balances concept cleanup with timed practice and review.</span>
-            </div>
-            <div class="preview-item">
-              <strong>Score climb lane</strong>
-              <span>For stronger students. Pushes timed sections, mistake pattern tracking, and high-yield refinement.</span>
+
+            <div class="review-bank-shell study-review-root" id="study-review-bank">
+              <div class="review-config-bar">
+                <div class="review-config-copy">This tab stays first in the menu because it turns your flagged and wrong-answer history directly into the next test you should take.</div>
+                <div class="review-config-controls">
+                  <label class="review-config-field">
+                    <span>Question amount</span>
+                    <input type="number" min="1" step="1" value="10" data-review-question-count>
+                  </label>
+                  <div class="review-config-metric">
+                    <span>Estimated time</span>
+                    <strong data-review-estimated-time>0 min</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="review-bank-toolbar">
+                <div class="review-bank-filter-group">
+                  <label class="review-bank-check"><input type="checkbox" data-review-filter="flagged"> <span>Flagged</span></label>
+                  <label class="review-bank-check"><input type="checkbox" data-review-filter="wrong"> <span>Wrong Answers</span></label>
+                  <label class="review-bank-check"><input type="checkbox" data-review-filter="include-similar"> <span>Include similar questions</span></label>
+                  <label class="review-bank-select-wrap">Date
+                    <select class="review-bank-select" data-review-filter="date"></select>
+                  </label>
+                </div>
+                <div class="review-bank-filter-group">
+                  <div class="review-bank-count" data-review-count>0 questions</div>
+                  <button class="review-bank-launch" type="button" data-review-launch disabled>Build review test</button>
+                </div>
+              </div>
+
+              <div class="review-bank-empty hidden" data-review-empty>Finish a test, flag a question, or miss one to start building this review bank.</div>
+              <div class="review-bank-list" data-review-list></div>
             </div>
           </div>
+
+          <div class="menu-panel" id="menu-panel-library">
+            <div class="panel-head">
+              <div>
+                <h2 id="library-title">Study guides</h2>
+                <p class="panel-copy" id="library-copy">Search by topic, filter by Math or English, and preview the exact layout before you open a guide or flashcard set.</p>
+              </div>
+            </div>
+
+            <div class="library-toolbar">
+              <label class="topic-search">
+                <span>Search by topic</span>
+                <input id="topic-search-input" type="search" placeholder="Search by topic">
+              </label>
+              <div class="topic-filter-row" aria-label="Topic filter">
+                <button class="topic-filter active" type="button" data-topic-filter="all">All Topics</button>
+                <button class="topic-filter" type="button" data-topic-filter="math">Math</button>
+                <button class="topic-filter" type="button" data-topic-filter="english">English</button>
+              </div>
+            </div>
+
+            <div class="topic-summary" id="topic-summary">0 topics</div>
+            <div class="topic-list" id="topic-list"></div>
+            <div class="topic-detail hidden" id="topic-detail"></div>
+          </div>
+        </section>
+
+        <aside class="recent-card section-card">
+          <h2>Recent tests</h2>
+          <p class="recent-card-copy">Open each test to reveal the flagged and wrong answers attached to that attempt. If a test is clean, Budy should tell the student no changes are needed and congratulate them.</p>
+          <div class="recent-test-list" id="recent-test-list"></div>
         </aside>
       </section>
 
-      <section class="study-grid">
-        <section class="study-card">
-          <h2>Your Questionnaire</h2>
-          <p class="section-copy">Answer a few quick questions. The prototype will shape your first study lane based on grade, target exam, confidence, and time available each week.</p>
-
-          <div class="field">
-            <label for="study-name">First name</label>
-            <input id="study-name" class="name-input" type="text" maxlength="40" placeholder="e.g. Alex">
-          </div>
-
-          <div class="field">
-            <label for="study-grade">Grade</label>
-            <select id="study-grade" class="select">
-              <option value="">Select your grade</option>
-              <option value="8">8th Grade</option>
-              <option value="9">9th Grade</option>
-              <option value="10">10th Grade</option>
-              <option value="11">11th Grade</option>
-              <option value="12">12th Grade</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Target exam</label>
-            <div class="option-grid" data-group="exam">
-              <button class="choice-btn" type="button" data-value="psat"><strong>PSAT</strong><span>Early score building and confidence before the SAT.</span></button>
-              <button class="choice-btn" type="button" data-value="sat"><strong>SAT</strong><span>Higher-stakes prep and more aggressive pacing.</span></button>
-              <button class="choice-btn" type="button" data-value="both"><strong>Both</strong><span>Build PSAT readiness while laying SAT foundations.</span></button>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Reading &amp; writing comfort</label>
-            <div class="option-grid" data-group="reading">
-              <button class="choice-btn" type="button" data-value="low"><strong>Needs work</strong><span>I miss grammar rules and struggle to explain passage choices.</span></button>
-              <button class="choice-btn" type="button" data-value="mid"><strong>Mixed</strong><span>Some sections feel good, but accuracy is inconsistent.</span></button>
-              <button class="choice-btn" type="button" data-value="high"><strong>Strong</strong><span>I usually understand the questions and want sharper speed.</span></button>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Math comfort</label>
-            <div class="option-grid" data-group="math">
-              <button class="choice-btn" type="button" data-value="low"><strong>Needs work</strong><span>Algebra and data questions still slow me down.</span></button>
-              <button class="choice-btn" type="button" data-value="mid"><strong>Mixed</strong><span>I can solve a lot, but timing and careless misses hurt me.</span></button>
-              <button class="choice-btn" type="button" data-value="high"><strong>Strong</strong><span>I want harder reps and better consistency under time.</span></button>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Weekly study time</label>
-            <div class="option-grid two" data-group="time">
-              <button class="choice-btn" type="button" data-value="light"><strong>2 to 3 hours</strong><span>Short, efficient blocks during the week.</span></button>
-              <button class="choice-btn" type="button" data-value="steady"><strong>4 to 5 hours</strong><span>Enough time for drills plus one timed set.</span></button>
-              <button class="choice-btn" type="button" data-value="heavy"><strong>6+ hours</strong><span>Room for deeper review and full timed work.</span></button>
-              <button class="choice-btn" type="button" data-value="weekend"><strong>Mostly weekends</strong><span>Longer sessions packed into fewer days.</span></button>
-            </div>
-          </div>
-
-          <button class="build-btn" id="build-study-btn" type="button">Build My Study Plan</button>
-          <p class="study-footer-note">Prototype note: this is an early version intended to prove the flow, recommendation logic, and page direction before connecting it to real question sets and score history.</p>
-        </section>
-
-        <section class="result-card">
-          <div class="result-header">
-            <div>
-              <h2 id="result-title">Your recommended lane</h2>
-              <p class="section-copy" id="result-sub">Complete the questionnaire to generate a study path.</p>
-            </div>
-            <div class="result-badge" id="result-badge">Waiting</div>
-          </div>
-
-          <div class="result-empty" id="result-empty">Once you answer the questionnaire, this panel will recommend the best starting lane, subject emphasis, study rhythm, and first actions for a PSAT/SAT prep prototype.</div>
-
-          <div id="result-body" style="display:none">
-            <p class="result-summary" id="result-summary"></p>
-
-            <div class="stat-grid">
-              <div class="stat-card">
-                <strong id="stat-focus">-</strong>
-                <span>Primary study focus</span>
-              </div>
-              <div class="stat-card">
-                <strong id="stat-rhythm">-</strong>
-                <span>Weekly rhythm</span>
-              </div>
-              <div class="stat-card">
-                <strong id="stat-track">-</strong>
-                <span>Recommended track</span>
-              </div>
-            </div>
-
-            <div>
-              <h2 style="font-size:1.08rem;margin-bottom:12px">First three moves</h2>
-              <div class="plan-list" id="plan-list"></div>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      <section class="study-section">
-        <div class="study-section-head">
-          <div class="eyebrow">Review Bank</div>
-          <h2>Build a timed test from your flagged and missed questions</h2>
-          <p class="section-copy">Filter your saved question bank by flagged items, wrong answers, or both. Narrow it to one testing date or use all-time history, preview similar questions, and build a review test with SAT-style timing before you start.</p>
+      <section class="recommended-card section-card">
+        <div class="recommended-head">
+          <h2>Recommended topics</h2>
+          <p class="panel-copy">These suggestions are driven by the topic patterns showing up in your flagged and wrong-answer history, plus a simple competency score that makes the next move clearer.</p>
         </div>
-
-        <div class="review-bank-shell" id="study-review-bank">
-          <div class="review-bank-toolbar">
-            <div class="review-bank-filter-group">
-              <label class="review-bank-check"><input type="checkbox" data-review-filter="flagged"> <span>Flagged</span></label>
-              <label class="review-bank-check"><input type="checkbox" data-review-filter="wrong"> <span>Wrong Answers</span></label>
-              <label class="review-bank-check"><input type="checkbox" data-review-filter="include-similar"> <span>Include similar questions</span></label>
-              <label class="review-bank-select-wrap">Date
-                <select class="review-bank-select" data-review-filter="date"></select>
-              </label>
-            </div>
-            <div class="review-bank-filter-group">
-              <div class="review-bank-count" data-review-count>0 questions</div>
-              <button class="review-bank-launch" type="button" data-review-launch disabled>Build review test</button>
-            </div>
-          </div>
-
-          <div class="review-bank-empty hidden" data-review-empty>Finish a test, flag a question, or miss one to start building this review bank.</div>
-          <div class="review-bank-list" data-review-list></div>
-        </div>
-      </section>
-
-      <section class="timeline-card" style="margin-top:24px">
-        <h2>How the prototype thinks</h2>
-        <p class="section-copy">This page uses simple rule-based logic right now: grade determines pacing pressure, your reading and math confidence determine emphasis, and time available shapes the weekly cadence.</p>
-        <div class="timeline-list">
-          <div class="timeline-step">
-            <div class="timeline-mark">1</div>
-            <div><strong>Map the student</strong><span>Identify grade level, test target, and subject confidence to estimate whether the student needs foundation work, balanced prep, or timed optimization.</span></div>
-          </div>
-          <div class="timeline-step">
-            <div class="timeline-mark">2</div>
-            <div><strong>Choose a lane</strong><span>Set a prep lane like Foundation, Builder, or Score Climb based on how early the student is starting and how confident they feel today.</span></div>
-          </div>
-          <div class="timeline-step">
-            <div class="timeline-mark">3</div>
-            <div><strong>Generate next actions</strong><span>Produce a weekly rhythm, a first-skill focus, and the first few concrete moves needed to begin study without overwhelm.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="study-section" id="study-features">
-        <div class="study-section-head">
-          <div class="eyebrow">Everything Included</div>
-          <h2>All of the core Budy.Study features, directly on the study page</h2>
-          <p class="section-copy">The planner is now framed by the same product features highlighted on the landing page, so students can see the full system around the study-lane recommendation instead of only the prototype questionnaire.</p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-card">
-            <div class="feature-icon blue"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/ui-icons.svg#icon-target"></use></svg></div>
-            <h3>Real SAT-Style Questions</h3>
-            <p>Every question follows the actual College Board format for reading, writing, and math, with the same skills tested on test day.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/ui-icons.svg#icon-bolt"></use></svg></div>
-            <h3>Instant Score &amp; Feedback</h3>
-            <p>See your score the second you finish. Know exactly which questions you got right and wrong, with no waiting and no guessing.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon green"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></div>
-            <h3>Track Your Progress</h3>
-            <p>Every test you take gets saved. Watch your score go up over time and see which subjects are your strongest.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon rose"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></div>
-            <h3>Step-by-Step Explanations</h3>
-            <p>Missed a question? Premium members get a clear, easy-to-understand explanation for every single answer.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon blue"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/ui-icons.svg#icon-device"></use></svg></div>
-            <h3>Works on Any Device</h3>
-            <p>Practice on your phone, tablet, or computer. Budy.Study works anywhere, even in the car on the way to school.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/ui-icons.svg#icon-trophy"></use></svg></div>
-            <h3>Grade-Appropriate Difficulty</h3>
-            <p>Questions are calibrated for 8th, 9th, and 10th graders. Start where you are, and we will push you to where you want to be.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="study-section">
-        <div class="study-section-head">
-          <div class="eyebrow">How It Works</div>
-          <h2>The full study workflow in three steps</h2>
-          <p class="section-copy">This mirrors the index-page flow so the study page explains not just the planner prototype, but the complete path from onboarding to score improvement.</p>
-        </div>
-        <div class="workflow-grid">
-          <article class="workflow-step">
-            <strong>1</strong>
-            <h3>Tell Us About You</h3>
-            <p>Enter your name and pick which section you want to practice: reading, math, or both.</p>
-          </article>
-          <article class="workflow-step">
-            <strong>2</strong>
-            <h3>Take the Practice Test</h3>
-            <p>Answer real SAT-style questions with a timer just like the real test. Flag the tough ones and come back.</p>
-          </article>
-          <article class="workflow-step">
-            <strong>3</strong>
-            <h3>See Your Score &amp; Improve</h3>
-            <p>Get your score instantly, see which skills need work, and unlock explanations to understand exactly what you missed.</p>
-          </article>
-        </div>
+        <div class="recommended-list" id="recommended-topic-list"></div>
       </section>
     </div>
   </main>
@@ -657,15 +677,96 @@ button,input,select{font:inherit}
   <script src="/footer-loader.js" defer></script>
   <script src="/assets/review-bank.js"></script>
   <script>
-    const STUDY_STORAGE_KEY = 'budy_study_profile_v1';
-    const GRADE_PREF_KEY = 'budy_grade_pref';
     const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
     const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
     const AUTH0_REDIRECT_URI = window.location.origin;
     const LOCAL_AUTH_KEY = 'budy_local_auth_user';
     const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
+    const DEFAULT_TOPIC_LIBRARY = [
+      {
+        key: 'math:functions',
+        section: 'math',
+        label: 'Functions',
+        summary: 'Read, compare, and transform functions across equations, graphs, and tables.',
+        guidePoints: ['Interpret function notation', 'Compare representations', 'Track how outputs change when the rule shifts'],
+        sampleQuestion: 'How does the graph of f(x) change when the expression becomes f(x) + 3?'
+      },
+      {
+        key: 'math:linear-equations',
+        section: 'math',
+        label: 'Linear Equations',
+        summary: 'Solve linear equations cleanly and recognize slope, intercept, and rate-of-change cues.',
+        guidePoints: ['Solve in one variable without dropping signs', 'Connect slope to context', 'Translate tables and words into equations'],
+        sampleQuestion: 'Which equation matches a line with slope 4 that passes through (2, 11)?'
+      },
+      {
+        key: 'math:quadratics',
+        section: 'math',
+        label: 'Quadratics',
+        summary: 'Work with parabolas, factoring, zeros, and vertex form without losing the structure.',
+        guidePoints: ['Factor and identify zeros', 'Read key features from graphs', 'Move between standard and vertex form'],
+        sampleQuestion: 'What are the zeros of x^2 - 7x + 10 = 0?'
+      },
+      {
+        key: 'math:problem-solving-and-data',
+        section: 'math',
+        label: 'Problem Solving and Data',
+        summary: 'Use ratios, percentages, tables, and data displays to reason through SAT-style setups.',
+        guidePoints: ['Translate word problems into equations', 'Use units and labels to stay organized', 'Check whether the final answer makes sense in context'],
+        sampleQuestion: 'A class survey shows 18 of 30 students prefer math. What percent is that?'
+      },
+      {
+        key: 'math:geometry',
+        section: 'math',
+        label: 'Geometry',
+        summary: 'Practice triangles, circles, angles, and coordinate geometry with clean diagrams and structure.',
+        guidePoints: ['Label diagrams before solving', 'Know the high-yield formulas', 'Check whether the question wants length, area, or angle'],
+        sampleQuestion: 'A right triangle has legs 9 and 12. What is the hypotenuse?'
+      },
+      {
+        key: 'english:vocabulary-in-context',
+        section: 'english',
+        label: 'Vocabulary in Context',
+        summary: 'Choose the word that matches the sentence logic, not just the one that sounds advanced.',
+        guidePoints: ['Read the full sentence before deciding', 'Replace the word with your own paraphrase', 'Eliminate answer choices that shift tone or meaning'],
+        sampleQuestion: 'Which choice most nearly means "direct" as used in line 18?'
+      },
+      {
+        key: 'english:command-of-evidence',
+        section: 'english',
+        label: 'Command of Evidence',
+        summary: 'Prove every answer with a specific word, sentence, or relationship in the passage.',
+        guidePoints: ['Find the evidence before locking the answer', 'Match the reasoning, not just the topic', 'Cross-check paired evidence questions'],
+        sampleQuestion: 'Which line best supports the answer to the previous question?'
+      },
+      {
+        key: 'english:central-ideas',
+        section: 'english',
+        label: 'Central Ideas',
+        summary: 'Track what the passage is really saying so summary and purpose questions stop feeling vague.',
+        guidePoints: ['State the main claim in your own words', 'Separate detail from purpose', 'Check whether the answer is too narrow or too broad'],
+        sampleQuestion: 'Which choice best states the central claim of the passage?'
+      },
+      {
+        key: 'english:transitions',
+        section: 'english',
+        label: 'Transitions',
+        summary: 'Choose transitions based on logic between sentences, not on what sounds smooth by itself.',
+        guidePoints: ['Name the relationship first', 'Contrast, support, and sequence are different jobs', 'Read the sentence before and after the blank'],
+        sampleQuestion: 'Which transition best connects the idea in sentence 3 to sentence 4?'
+      },
+      {
+        key: 'english:boundaries-and-punctuation',
+        section: 'english',
+        label: 'Boundaries and Punctuation',
+        summary: 'Fix comma, semicolon, and sentence-boundary errors by checking clause structure first.',
+        guidePoints: ['Count independent clauses', 'Know when a comma is not enough', 'Use punctuation to match the sentence pattern'],
+        sampleQuestion: 'Which choice most effectively completes the sentence with standard punctuation?'
+      }
+    ];
 
     let reviewAuthClient = null;
+    let studyReviewController = null;
     const reviewData = {
       isLoggedIn: false,
       authViaLocal: false,
@@ -675,15 +776,15 @@ button,input,select{font:inherit}
       savedQuestionsCache: []
     };
 
-    const state = {
-      exam: '',
-      reading: '',
-      math: '',
-      time: ''
+    const studyUIState = {
+      activeTab: 'review-tests',
+      topicFilter: 'all',
+      topicSearch: '',
+      selectedTopicKey: ''
     };
 
-    const GROUPS = ['exam', 'reading', 'math', 'time'];
-    const SCORE_MAP = { low: 0, mid: 1, high: 2 };
+    let normalizedSavedQuestions = [];
+    let topicCatalog = [];
 
     function getLocalAuthUser() {
       try {
@@ -816,177 +917,814 @@ button,input,select{font:inherit}
 
     function mountStudyReviewBank() {
       if (!window.BudyReviewBank) return;
-      window.BudyReviewBank.mount({
-        root: document.getElementById('study-review-bank'),
-        getSavedQuestions: function () { return reviewData.savedQuestionsCache; },
-        getSessions: function () { return reviewData.sessionCache; },
-        testUrl: '/?review=1'
-      });
-    }
+      const root = document.getElementById('study-review-bank');
+      if (!root) return;
 
-    async function bootStudyReviewBank() {
-      await initReviewAuth();
-      await Promise.all([hydrateReviewSessions(), hydrateReviewSavedQuestions()]);
-      mountStudyReviewBank();
-    }
-
-    function setActiveChoice(group, value) {
-      state[group] = value;
-      document.querySelectorAll('[data-group="' + group + '"] .choice-btn').forEach((button) => {
-        button.classList.toggle('active', button.dataset.value === value);
-      });
-    }
-
-    function bindChoiceGroups() {
-      GROUPS.forEach((group) => {
-        document.querySelectorAll('[data-group="' + group + '"] .choice-btn').forEach((button) => {
-          button.addEventListener('click', () => setActiveChoice(group, button.dataset.value || ''));
+      if (!studyReviewController) {
+        studyReviewController = window.BudyReviewBank.mount({
+          root: root,
+          getSavedQuestions: function () { return reviewData.savedQuestionsCache; },
+          getSessions: function () { return reviewData.sessionCache; },
+          testUrl: '/?review=1'
         });
-      });
-    }
-
-    function getGradeLabel(grade) {
-      const map = { '8': '8th Grade', '9': '9th Grade', '10': '10th Grade', '11': '11th Grade', '12': '12th Grade' };
-      return map[String(grade || '')] || 'your grade';
-    }
-
-    function buildPlan() {
-      const name = String(document.getElementById('study-name').value || '').trim();
-      const grade = String(document.getElementById('study-grade').value || '');
-      if (!grade || !state.exam || !state.reading || !state.math || !state.time) {
-        alert('Please complete the questionnaire first.');
         return;
       }
 
-      const readingScore = SCORE_MAP[state.reading] ?? 1;
-      const mathScore = SCORE_MAP[state.math] ?? 1;
-      const averageScore = (readingScore + mathScore) / 2;
-      const isEarlyPrep = grade === '8' || grade === '9';
-      const target = state.exam === 'both' ? 'PSAT-to-SAT bridge' : state.exam.toUpperCase();
-
-      let lane = 'Builder';
-      let laneBadge = 'Balanced';
-      let focus = 'Split reading and math evenly';
-      let rhythm = '3 focused sessions';
-      let track = 'Core';
-      let summary = '';
-      let steps = [];
-
-      if (averageScore <= 0.5 || (isEarlyPrep && averageScore < 1)) {
-        lane = 'Foundation Lane';
-        laneBadge = 'Foundation';
-        focus = readingScore < mathScore ? 'Reading & writing basics first' : 'Math fundamentals first';
-        rhythm = state.time === 'light' ? '3 short sessions' : '4 guided sessions';
-        track = isEarlyPrep ? 'PSAT readiness' : 'SAT foundations';
-        summary = (name ? name + ', t' : 'T') + 'his plan starts with calmer skill-building for ' + getGradeLabel(grade) + ' so you can stack accuracy before heavy timed pressure. The goal is to make core question types feel normal, not rushed.';
-        steps = [
-          ['Rebuild the weak side', 'Start with untimed drills in the lower-confidence subject so every miss turns into a clear rule or pattern.'],
-          ['Add light timed reps', 'Once accuracy improves, add short timed sets to build pacing without overwhelming the session.'],
-          ['Reflect after each block', 'Log what type of question caused the miss so the next session starts with a fix, not a guess.']
-        ];
-      } else if (averageScore >= 1.5 && !isEarlyPrep) {
-        lane = 'Score Climb Lane';
-        laneBadge = 'Advanced';
-        focus = readingScore < mathScore ? 'Sharpen passage speed and evidence questions' : 'Sharpen algebra speed and hard multi-step math';
-        rhythm = state.time === 'heavy' ? '5 sessions + 1 timed section' : '4 sessions + 1 timed section';
-        track = target === 'SAT' ? 'SAT push' : 'Upper-track hybrid';
-        summary = (name ? name + ', y' : 'Y') + 'ou already have decent footing, so this lane pushes score growth through timed sections, pattern review, and sharper correction loops instead of basic concept review.';
-        steps = [
-          ['Run one timed section weekly', 'Use one higher-pressure block each week to expose pacing leaks and decision mistakes.'],
-          ['Tag every miss by pattern', 'Separate content misses from rushing, misreads, and second-guessing so your review is targeted.'],
-          ['Push your stronger side last', 'Spend early energy on the weaker section, then finish with confidence-building reps in the stronger one.']
-        ];
-      } else {
-        lane = 'Builder Lane';
-        laneBadge = 'Builder';
-        focus = readingScore < mathScore ? 'Lift verbal consistency while keeping math warm' : 'Lift math consistency while keeping verbal warm';
-        rhythm = state.time === 'weekend' ? '2 long blocks + 1 reset review' : '4 balanced sessions';
-        track = isEarlyPrep ? 'PSAT builder' : 'SAT builder';
-        summary = (name ? name + ', t' : 'T') + 'his lane balances concept cleanup with timed work so you improve understanding and confidence at the same time. It is the best fit when your scores feel mixed rather than clearly low or clearly advanced.';
-        steps = [
-          ['Open with the weaker section', 'Spend the first session of the week on the subject where accuracy feels shakier.'],
-          ['Add one mixed timed block', 'Blend both sections into one timed block so transitions stop feeling abrupt.'],
-          ['Review before adding volume', 'Only increase workload after you can explain why your recent misses happened.']
-        ];
+      if (typeof studyReviewController.refresh === 'function') {
+        studyReviewController.refresh();
       }
-
-      if (state.exam === 'psat' && Number(grade) <= 9) {
-        summary += ' Because you are targeting the PSAT earlier, the plan keeps pressure lower and focuses on clean foundations first.';
-      }
-      if (state.exam === 'both') {
-        summary += ' Since you want both PSAT and SAT readiness, the plan starts broad now and gets stricter with timing later.';
-      }
-
-      localStorage.setItem(STUDY_STORAGE_KEY, JSON.stringify({
-        name,
-        grade,
-        exam: state.exam,
-        reading: state.reading,
-        math: state.math,
-        time: state.time
-      }));
-      localStorage.setItem(GRADE_PREF_KEY, grade);
-
-      renderPlan({ lane, laneBadge, focus, rhythm, track, summary, steps, target });
     }
 
-    function renderPlan(plan) {
-      document.getElementById('result-title').textContent = plan.lane;
-      document.getElementById('result-sub').textContent = 'Built for ' + plan.target + ' prep';
-      document.getElementById('result-badge').textContent = plan.laneBadge;
-      document.getElementById('result-summary').textContent = plan.summary;
-      document.getElementById('stat-focus').textContent = plan.focus;
-      document.getElementById('stat-rhythm').textContent = plan.rhythm;
-      document.getElementById('stat-track').textContent = plan.track;
+    function normalizeSection(section) {
+      if (section === 'reading_writing') return 'english';
+      if (section === 'english' || section === 'math' || section === 'full') return section;
+      return '';
+    }
 
-      const planList = document.getElementById('plan-list');
-      planList.replaceChildren();
-      plan.steps.forEach((step, index) => {
-        const item = document.createElement('div');
-        item.className = 'plan-item';
+    function getSavedQuestionDate(entry) {
+      return entry && (entry.sourceAttemptedAt || entry.updatedAt || entry.lastSeenAt)
+        ? (entry.sourceAttemptedAt || entry.updatedAt || entry.lastSeenAt)
+        : '';
+    }
 
-        const mark = document.createElement('div');
-        mark.className = 'plan-mark';
-        mark.textContent = String(index + 1);
+    function getDayKey(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+    }
 
-        const body = document.createElement('div');
-        const title = document.createElement('strong');
-        title.textContent = step[0];
-        const detail = document.createElement('span');
-        detail.textContent = step[1];
+    function formatDisplayDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Unknown date';
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    }
 
-        body.appendChild(title);
-        body.appendChild(detail);
-        item.appendChild(mark);
-        item.appendChild(body);
-        planList.appendChild(item);
+    function sectionLabel(section) {
+      return section === 'math' ? 'Math' : section === 'english' ? 'English' : 'Mixed';
+    }
+
+    function reviewTestLabel(section) {
+      return section === 'math' ? 'Math Test' : section === 'english' ? 'English Test' : 'Full Test';
+    }
+
+    function slugify(value) {
+      return String(value || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function truncateText(value, maxLength) {
+      const text = String(value || '').trim();
+      if (text.length <= maxLength) return text;
+      return text.slice(0, maxLength).trim() + '...';
+    }
+
+    function normalizeSavedQuestion(entry, index) {
+      if (!entry || typeof entry !== 'object') return null;
+      const section = normalizeSection(entry.section);
+      if (!section || section === 'full') return null;
+      const topic = String(entry.skill || entry.domain || (section === 'math' ? 'Math Foundations' : 'Reading & Writing Foundations')).trim();
+      return {
+        key: String(entry.key || entry.questionId || entry.id || ('saved-' + (index + 1))),
+        section: section,
+        topic: topic || (section === 'math' ? 'Math Foundations' : 'Reading & Writing Foundations'),
+        prompt: String(entry.prompt || entry.question || 'Saved question'),
+        passage: String(entry.passage || ''),
+        userAnswer: entry.userAnswer ? String(entry.userAnswer) : '',
+        correctAnswer: entry.correctAnswer ? String(entry.correctAnswer) : '',
+        isFlagged: Boolean(entry.isFlagged),
+        wasAnsweredWrong: Boolean(entry.wasAnsweredWrong),
+        dateValue: getSavedQuestionDate(entry)
+      };
+    }
+
+    function createDynamicSummary(section, label) {
+      if (section === 'math') {
+        return 'Tighten ' + label.toLowerCase() + ' with cleaner setup, more deliberate solving, and one-pass error checks.';
+      }
+      return 'Sharpen ' + label.toLowerCase() + ' by matching answers to evidence, passage logic, and sentence structure.';
+    }
+
+    function buildDynamicGuidePoints(label, section) {
+      if (section === 'math') {
+        return [
+          'Rebuild the rule or pattern behind ' + label.toLowerCase() + '.',
+          'Work one untimed example before you add timer pressure.',
+          'Check the final answer against the condition in the question.'
+        ];
+      }
+      return [
+        'Name the reading or grammar job behind ' + label.toLowerCase() + '.',
+        'Compare the credited answer against the trap answer choice.',
+        'Anchor every answer to a line, phrase, or sentence-level clue.'
+      ];
+    }
+
+    function buildDynamicFlashcards(label, section) {
+      if (section === 'math') {
+        return [
+          { label: 'Concept', front: label, back: 'Know the rule, formula, or pattern that controls this math topic before you race the clock.' },
+          { label: 'Watch for', front: 'Common trap', back: 'Rushing past the setup, mixing values, or skipping the unit check.' },
+          { label: 'Quick check', front: 'How do you verify it?', back: 'Re-read the condition and confirm the answer actually fits the problem.' }
+        ];
+      }
+      return [
+        { label: 'Concept', front: label, back: 'Know what this skill is asking you to notice in a sentence or passage before choosing an answer.' },
+        { label: 'Watch for', front: 'Common trap', back: 'Picking what sounds smooth instead of what the evidence or grammar structure supports.' },
+        { label: 'Quick check', front: 'How do you verify it?', back: 'Point to the exact word, line, or logic that proves the answer choice is right.' }
+      ];
+    }
+
+    function calculateCompetency(topic) {
+      if (!topic.issueCount) return topic.questions.length ? 97 : 92;
+      return clamp(100 - (topic.wrongCount * 16) - (topic.flaggedCount * 8), 55, 96);
+    }
+
+    function buildTopicStatus(topic, competency) {
+      if (topic.wrongCount > 0 || competency <= 84) return 'Needs improvement';
+      if (topic.flaggedCount > 0) return 'Needs review';
+      if (topic.questions.length) return 'Strong';
+      return 'Build baseline';
+    }
+
+    function buildTopicCatalog(savedQuestions) {
+      const topicMap = new Map();
+
+      DEFAULT_TOPIC_LIBRARY.forEach((seed) => {
+        topicMap.set(seed.key, {
+          key: seed.key,
+          section: seed.section,
+          label: seed.label,
+          summary: seed.summary,
+          guidePoints: seed.guidePoints.slice(),
+          flashcards: buildDynamicFlashcards(seed.label, seed.section),
+          sampleQuestion: seed.sampleQuestion,
+          questions: [],
+          flaggedCount: 0,
+          wrongCount: 0,
+          issueCount: 0,
+          latestDate: ''
+        });
       });
 
-      document.getElementById('result-empty').style.display = 'none';
-      document.getElementById('result-body').style.display = 'block';
+      savedQuestions.forEach((question) => {
+        const key = question.section + ':' + slugify(question.topic);
+        const existing = topicMap.get(key) || {
+          key: key,
+          section: question.section,
+          label: question.topic,
+          summary: createDynamicSummary(question.section, question.topic),
+          guidePoints: buildDynamicGuidePoints(question.topic, question.section),
+          flashcards: buildDynamicFlashcards(question.topic, question.section),
+          sampleQuestion: question.prompt,
+          questions: [],
+          flaggedCount: 0,
+          wrongCount: 0,
+          issueCount: 0,
+          latestDate: ''
+        };
+
+        existing.questions.push(question);
+        if (question.isFlagged) existing.flaggedCount += 1;
+        if (question.wasAnsweredWrong) existing.wrongCount += 1;
+        existing.issueCount = existing.flaggedCount + existing.wrongCount;
+        if (question.prompt && !existing.sampleQuestion) existing.sampleQuestion = question.prompt;
+        if (question.dateValue && (!existing.latestDate || new Date(question.dateValue).getTime() > new Date(existing.latestDate).getTime())) {
+          existing.latestDate = question.dateValue;
+        }
+        topicMap.set(key, existing);
+      });
+
+      return Array.from(topicMap.values()).map((topic) => {
+        const competency = calculateCompetency(topic);
+        return {
+          key: topic.key,
+          section: topic.section,
+          label: topic.label,
+          summary: topic.summary,
+          guidePoints: topic.guidePoints,
+          flashcards: topic.flashcards,
+          sampleQuestion: topic.sampleQuestion,
+          questions: topic.questions,
+          flaggedCount: topic.flaggedCount,
+          wrongCount: topic.wrongCount,
+          issueCount: topic.issueCount,
+          latestDate: topic.latestDate,
+          competency: competency,
+          status: buildTopicStatus(topic, competency)
+        };
+      }).sort((left, right) => {
+        if (right.issueCount !== left.issueCount) return right.issueCount - left.issueCount;
+        return left.label.localeCompare(right.label);
+      });
     }
 
-    function hydrateSavedProfile() {
-      const savedGrade = localStorage.getItem(GRADE_PREF_KEY);
-      if (savedGrade) document.getElementById('study-grade').value = savedGrade;
+    function refreshStudyDataModel() {
+      normalizedSavedQuestions = (Array.isArray(reviewData.savedQuestionsCache) ? reviewData.savedQuestionsCache : [])
+        .map(normalizeSavedQuestion)
+        .filter(Boolean);
+      topicCatalog = buildTopicCatalog(normalizedSavedQuestions);
+    }
 
-      try {
-        const raw = localStorage.getItem(STUDY_STORAGE_KEY);
-        if (!raw) return;
-        const saved = JSON.parse(raw);
-        if (!saved || typeof saved !== 'object') return;
-        if (saved.name) document.getElementById('study-name').value = saved.name;
-        if (saved.grade) document.getElementById('study-grade').value = saved.grade;
-        GROUPS.forEach((group) => {
-          if (saved[group]) setActiveChoice(group, saved[group]);
+    function getFilteredTopics() {
+      const search = String(studyUIState.topicSearch || '').trim().toLowerCase();
+      return topicCatalog.filter((topic) => {
+        if (studyUIState.topicFilter !== 'all' && topic.section !== studyUIState.topicFilter) return false;
+        if (!search) return true;
+        return topic.label.toLowerCase().includes(search) || topic.summary.toLowerCase().includes(search);
+      });
+    }
+
+    function getLibraryConfig() {
+      if (studyUIState.activeTab === 'flashcards') {
+        return {
+          title: 'Flashcards',
+          copy: 'Search by topic, filter by Math or English, and preview the flashcard layout before you jump into a stack.'
+        };
+      }
+
+      return {
+        title: 'Study guides',
+        copy: 'Search by topic, filter by Math or English, and preview the exact guide layout before you open it.'
+      };
+    }
+
+    function updateMenuTabs() {
+      document.querySelectorAll('[data-study-tab]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.studyTab === studyUIState.activeTab);
+      });
+
+      const reviewPanel = document.getElementById('menu-panel-review-tests');
+      const libraryPanel = document.getElementById('menu-panel-library');
+      if (reviewPanel) reviewPanel.classList.toggle('active', studyUIState.activeTab === 'review-tests');
+      if (libraryPanel) libraryPanel.classList.toggle('active', studyUIState.activeTab !== 'review-tests');
+    }
+
+    function ensureSelectedTopic(topics) {
+      if (!Array.isArray(topics) || !topics.length) {
+        studyUIState.selectedTopicKey = '';
+        return null;
+      }
+
+      const existing = topics.find((topic) => topic.key === studyUIState.selectedTopicKey);
+      if (existing) return existing;
+
+      studyUIState.selectedTopicKey = topics[0].key;
+      return topics[0];
+    }
+
+    function focusWorkspace() {
+      const workspace = document.querySelector('.workspace-card');
+      if (!workspace) return;
+      workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function createTopicPreviewButton(label, onClick) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'topic-preview-button';
+      button.textContent = label;
+      button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        onClick();
+      });
+      return button;
+    }
+
+    function renderTopicList(topics) {
+      const list = document.getElementById('topic-list');
+      if (!list) return;
+
+      list.replaceChildren();
+      if (!topics.length) {
+        const empty = document.createElement('div');
+        empty.className = 'library-empty';
+        empty.textContent = 'No topics match this search yet. Try another keyword or switch between Math and English.';
+        list.appendChild(empty);
+        return;
+      }
+
+      topics.forEach((topic) => {
+        const card = document.createElement('article');
+        card.className = 'topic-card' + (studyUIState.selectedTopicKey === topic.key ? ' active' : '');
+        card.addEventListener('click', function () {
+          studyUIState.selectedTopicKey = topic.key;
+          renderLibraryPanel();
         });
-      } catch (_) {}
+
+        const top = document.createElement('div');
+        top.className = 'topic-top';
+
+        const titleWrap = document.createElement('div');
+        const kicker = document.createElement('div');
+        kicker.className = 'topic-kicker';
+        kicker.textContent = topic.status;
+        const title = document.createElement('div');
+        title.className = 'topic-title';
+        title.textContent = topic.label;
+        titleWrap.appendChild(kicker);
+        titleWrap.appendChild(title);
+
+        const sectionTag = document.createElement('div');
+        sectionTag.className = 'topic-section-tag';
+        sectionTag.textContent = sectionLabel(topic.section);
+
+        top.appendChild(titleWrap);
+        top.appendChild(sectionTag);
+        card.appendChild(top);
+
+        const summary = document.createElement('p');
+        summary.textContent = topic.summary;
+        card.appendChild(summary);
+
+        const stats = document.createElement('div');
+        stats.className = 'topic-stats';
+
+        const competency = document.createElement('div');
+        competency.className = 'topic-stat';
+        competency.textContent = topic.competency + '% competency';
+        stats.appendChild(competency);
+
+        const flagged = document.createElement('div');
+        flagged.className = 'topic-stat';
+        flagged.textContent = topic.flaggedCount + ' flagged';
+        stats.appendChild(flagged);
+
+        const wrong = document.createElement('div');
+        wrong.className = 'topic-stat';
+        wrong.textContent = topic.wrongCount + ' wrong';
+        stats.appendChild(wrong);
+
+        card.appendChild(stats);
+        card.appendChild(createTopicPreviewButton(studyUIState.activeTab === 'flashcards' ? 'Preview flashcards' : 'Preview study guide', function () {
+          studyUIState.selectedTopicKey = topic.key;
+          renderLibraryPanel();
+        }));
+
+        list.appendChild(card);
+      });
     }
 
-    document.getElementById('build-study-btn').addEventListener('click', buildPlan);
-    bindChoiceGroups();
-    hydrateSavedProfile();
-    void bootStudyReviewBank();
+    function renderTopicDetail(topic) {
+      const detail = document.getElementById('topic-detail');
+      if (!detail) return;
+
+      if (!topic) {
+        detail.classList.add('hidden');
+        detail.replaceChildren();
+        return;
+      }
+
+      detail.classList.remove('hidden');
+      detail.replaceChildren();
+
+      const head = document.createElement('div');
+      head.className = 'topic-detail-head';
+
+      const headCopy = document.createElement('div');
+      const kicker = document.createElement('div');
+      kicker.className = 'topic-detail-kicker';
+      kicker.textContent = studyUIState.activeTab === 'flashcards' ? 'Flashcard Preview' : 'Study Guide Preview';
+      const title = document.createElement('h3');
+      title.textContent = topic.label;
+      const copy = document.createElement('p');
+      copy.textContent = topic.summary;
+      headCopy.appendChild(kicker);
+      headCopy.appendChild(title);
+      headCopy.appendChild(copy);
+
+      const actions = document.createElement('div');
+      actions.className = 'topic-detail-actions';
+
+      const reviewButton = document.createElement('button');
+      reviewButton.type = 'button';
+      reviewButton.className = 'detail-action';
+      reviewButton.textContent = 'Use in review tests';
+      reviewButton.addEventListener('click', function () {
+        studyUIState.activeTab = 'review-tests';
+        updateMenuTabs();
+        focusWorkspace();
+      });
+      actions.appendChild(reviewButton);
+
+      const altButton = document.createElement('button');
+      altButton.type = 'button';
+      altButton.className = 'detail-action';
+      altButton.textContent = studyUIState.activeTab === 'flashcards' ? 'Switch to study guide' : 'Switch to flashcards';
+      altButton.addEventListener('click', function () {
+        studyUIState.activeTab = studyUIState.activeTab === 'flashcards' ? 'study-guides' : 'flashcards';
+        updateMenuTabs();
+        renderLibraryPanel();
+      });
+      actions.appendChild(altButton);
+
+      head.appendChild(headCopy);
+      head.appendChild(actions);
+      detail.appendChild(head);
+
+      if (studyUIState.activeTab === 'flashcards') {
+        const flashcardStack = document.createElement('div');
+        flashcardStack.className = 'flashcard-stack';
+        topic.flashcards.forEach((cardData) => {
+          const card = document.createElement('article');
+          card.className = 'flashcard-item';
+
+          const label = document.createElement('div');
+          label.className = 'flashcard-label';
+          label.textContent = cardData.label;
+
+          const front = document.createElement('div');
+          front.className = 'flashcard-front';
+          front.textContent = cardData.front;
+
+          const back = document.createElement('div');
+          back.className = 'flashcard-back';
+          back.textContent = cardData.back;
+
+          card.appendChild(label);
+          card.appendChild(front);
+          card.appendChild(back);
+          flashcardStack.appendChild(card);
+        });
+        detail.appendChild(flashcardStack);
+        return;
+      }
+
+      const guideGrid = document.createElement('div');
+      guideGrid.className = 'guide-grid';
+
+      const focusBlock = document.createElement('article');
+      focusBlock.className = 'guide-block';
+      const focusTitle = document.createElement('h4');
+      focusTitle.textContent = 'What to study first';
+      focusBlock.appendChild(focusTitle);
+      const focusList = document.createElement('div');
+      focusList.className = 'guide-list';
+      topic.guidePoints.forEach((point) => {
+        const item = document.createElement('div');
+        item.className = 'guide-list-item';
+        item.textContent = point;
+        focusList.appendChild(item);
+      });
+      focusBlock.appendChild(focusList);
+      guideGrid.appendChild(focusBlock);
+
+      const feedbackBlock = document.createElement('article');
+      feedbackBlock.className = 'guide-block';
+      const feedbackTitle = document.createElement('h4');
+      feedbackTitle.textContent = 'Wrong-answer feedback';
+      feedbackBlock.appendChild(feedbackTitle);
+      const feedbackList = document.createElement('div');
+      feedbackList.className = 'guide-list';
+
+      const issueSummary = document.createElement('div');
+      issueSummary.className = 'guide-list-item';
+      issueSummary.innerHTML = '<strong>Current read:</strong> ' + topic.flaggedCount + ' flagged and ' + topic.wrongCount + ' wrong answers are tied to this topic.';
+      feedbackList.appendChild(issueSummary);
+
+      const latestSeen = document.createElement('div');
+      latestSeen.className = 'guide-list-item';
+      latestSeen.innerHTML = '<strong>Latest signal:</strong> ' + (topic.latestDate ? ('Seen on ' + formatDisplayDate(topic.latestDate) + '.') : 'No recent flagged or wrong-answer history yet.');
+      feedbackList.appendChild(latestSeen);
+
+      feedbackBlock.appendChild(feedbackList);
+      guideGrid.appendChild(feedbackBlock);
+
+      const sampleBlock = document.createElement('article');
+      sampleBlock.className = 'guide-block';
+      const sampleTitle = document.createElement('h4');
+      sampleTitle.textContent = 'Sample question';
+      sampleBlock.appendChild(sampleTitle);
+      const sample = document.createElement('div');
+      sample.className = 'sample-question';
+      const sampleStrong = document.createElement('strong');
+      sampleStrong.textContent = sectionLabel(topic.section) + ' focus';
+      const sampleText = document.createElement('span');
+      sampleText.textContent = topic.sampleQuestion || 'Use this guide to rebuild the topic before you re-enter timed practice.';
+      sample.appendChild(sampleStrong);
+      sample.appendChild(sampleText);
+      sampleBlock.appendChild(sample);
+      guideGrid.appendChild(sampleBlock);
+
+      detail.appendChild(guideGrid);
+    }
+
+    function renderLibraryPanel() {
+      const title = document.getElementById('library-title');
+      const copy = document.getElementById('library-copy');
+      const summary = document.getElementById('topic-summary');
+      const config = getLibraryConfig();
+      const filteredTopics = getFilteredTopics();
+      const selectedTopic = ensureSelectedTopic(filteredTopics);
+
+      if (title) title.textContent = config.title;
+      if (copy) copy.textContent = config.copy;
+      if (summary) summary.textContent = filteredTopics.length + ' topic' + (filteredTopics.length === 1 ? '' : 's') + ' in view';
+
+      renderTopicList(filteredTopics);
+      renderTopicDetail(selectedTopic);
+    }
+
+    function getQuestionsForSession(session) {
+      const sessionDayKey = getDayKey(session && session.date);
+      const sessionSection = normalizeSection(session && session.section);
+      return normalizedSavedQuestions
+        .filter((question) => {
+          if (!sessionDayKey || getDayKey(question.dateValue) !== sessionDayKey) return false;
+          if (!(question.isFlagged || question.wasAnsweredWrong)) return false;
+          if (!sessionSection || sessionSection === 'full') return true;
+          return question.section === sessionSection;
+        })
+        .sort((left, right) => {
+          if (Number(right.wasAnsweredWrong) !== Number(left.wasAnsweredWrong)) {
+            return Number(right.wasAnsweredWrong) - Number(left.wasAnsweredWrong);
+          }
+          return Number(right.isFlagged) - Number(left.isFlagged);
+        });
+    }
+
+    function renderRecentTests() {
+      const list = document.getElementById('recent-test-list');
+      if (!list) return;
+      list.replaceChildren();
+
+      const sessions = (Array.isArray(reviewData.sessionCache) ? reviewData.sessionCache : [])
+        .slice()
+        .sort((left, right) => new Date(right.date).getTime() - new Date(left.date).getTime())
+        .slice(0, 6);
+
+      if (!sessions.length) {
+        const empty = document.createElement('div');
+        empty.className = 'recent-test-empty';
+        empty.textContent = 'No recent tests yet. Take a review test or full practice test and this reveal panel will fill in automatically.';
+        list.appendChild(empty);
+        return;
+      }
+
+      sessions.forEach((session) => {
+        const details = document.createElement('details');
+        details.className = 'recent-test-card';
+
+        const summary = document.createElement('summary');
+        summary.className = 'recent-test-summary';
+
+        const header = document.createElement('div');
+        header.className = 'recent-test-header';
+
+        const titleWrap = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'recent-test-title';
+        title.textContent = reviewTestLabel(normalizeSection(session.section));
+        const date = document.createElement('div');
+        date.className = 'recent-test-date';
+        date.textContent = formatDisplayDate(session.date);
+        titleWrap.appendChild(title);
+        titleWrap.appendChild(date);
+
+        const revealLabel = document.createElement('div');
+        revealLabel.className = 'recent-test-reveal-label';
+        revealLabel.textContent = 'Reveal';
+
+        header.appendChild(titleWrap);
+        header.appendChild(revealLabel);
+        summary.appendChild(header);
+
+        const stats = document.createElement('div');
+        stats.className = 'recent-test-stats';
+
+        const correctCount = Number(session.correct || 0);
+        const wrongCount = Math.max(0, Number(session.total_q || 0) - correctCount);
+
+        const correct = document.createElement('div');
+        correct.className = 'recent-test-stat correct';
+        correct.textContent = correctCount + ' correct';
+        stats.appendChild(correct);
+
+        const wrong = document.createElement('div');
+        wrong.className = 'recent-test-stat wrong';
+        wrong.textContent = wrongCount + ' wrong';
+        stats.appendChild(wrong);
+
+        const score = document.createElement('div');
+        score.className = 'recent-test-stat score';
+        score.textContent = Number(session.total || 0) + ' score';
+        stats.appendChild(score);
+
+        summary.appendChild(stats);
+        details.appendChild(summary);
+
+        const reveal = document.createElement('div');
+        reveal.className = 'recent-test-reveal';
+
+        const matchedQuestions = getQuestionsForSession(session);
+        if (!matchedQuestions.length) {
+          const success = document.createElement('div');
+          success.className = 'recent-test-empty';
+          success.textContent = 'No flagged or wrong answers for this test. No changes needed. Well done.';
+          reveal.appendChild(success);
+        } else {
+          const questionList = document.createElement('div');
+          questionList.className = 'recent-test-question-list';
+
+          matchedQuestions.forEach((question) => {
+            const card = document.createElement('article');
+            card.className = 'recent-test-question';
+
+            const top = document.createElement('div');
+            top.className = 'recent-test-question-top';
+
+            const topCopy = document.createElement('div');
+            const skill = document.createElement('strong');
+            skill.textContent = question.topic;
+            const meta = document.createElement('div');
+            meta.className = 'recent-test-question-meta';
+            meta.textContent = sectionLabel(question.section) + ' topic';
+            topCopy.appendChild(skill);
+            topCopy.appendChild(meta);
+
+            const badges = document.createElement('div');
+            if (question.isFlagged) {
+              const flagged = document.createElement('span');
+              flagged.className = 'recent-test-badge flagged';
+              flagged.textContent = 'Flagged';
+              badges.appendChild(flagged);
+            }
+            if (question.wasAnsweredWrong) {
+              const wrongBadge = document.createElement('span');
+              wrongBadge.className = 'recent-test-badge wrong';
+              wrongBadge.textContent = 'Wrong';
+              badges.appendChild(wrongBadge);
+            }
+
+            top.appendChild(topCopy);
+            top.appendChild(badges);
+            card.appendChild(top);
+
+            const prompt = document.createElement('p');
+            prompt.textContent = truncateText(question.prompt, 140);
+            card.appendChild(prompt);
+
+            if (question.userAnswer || question.correctAnswer) {
+              const answerMeta = document.createElement('div');
+              answerMeta.className = 'recent-test-question-meta';
+              answerMeta.textContent = (question.userAnswer ? ('Yours: ' + question.userAnswer + ' ') : '') + (question.correctAnswer ? ('Correct: ' + question.correctAnswer) : '');
+              card.appendChild(answerMeta);
+            }
+
+            questionList.appendChild(card);
+          });
+
+          reveal.appendChild(questionList);
+        }
+
+        details.appendChild(reveal);
+        list.appendChild(details);
+      });
+    }
+
+    function openTopicView(tab, topicKey) {
+      studyUIState.activeTab = tab;
+      if (topicKey) studyUIState.selectedTopicKey = topicKey;
+      updateMenuTabs();
+      renderLibraryPanel();
+      focusWorkspace();
+    }
+
+    function renderRecommendedTopics() {
+      const list = document.getElementById('recommended-topic-list');
+      if (!list) return;
+      list.replaceChildren();
+
+      const prioritized = topicCatalog
+        .filter((topic) => topic.issueCount > 0)
+        .sort((left, right) => {
+          if (left.competency !== right.competency) return left.competency - right.competency;
+          return right.issueCount - left.issueCount;
+        });
+
+      const topicsToRender = (prioritized.length ? prioritized : topicCatalog.slice())
+        .slice(0, 4);
+
+      if (!topicsToRender.length) {
+        const empty = document.createElement('div');
+        empty.className = 'recommended-empty';
+        empty.textContent = 'Topic recommendations will appear here once Budy has flagged or wrong-answer history to work from.';
+        list.appendChild(empty);
+        return;
+      }
+
+      topicsToRender.forEach((topic) => {
+        const row = document.createElement('article');
+        row.className = 'recommended-row';
+
+        const topicCopy = document.createElement('div');
+        topicCopy.className = 'recommended-topic';
+        const title = document.createElement('strong');
+        title.textContent = sectionLabel(topic.section) + ': ' + topic.label;
+        const subtitle = document.createElement('span');
+        subtitle.textContent = topic.status + '. ' + topic.summary;
+        topicCopy.appendChild(title);
+        topicCopy.appendChild(subtitle);
+        row.appendChild(topicCopy);
+
+        const competency = document.createElement('div');
+        competency.className = 'competency-badge';
+        competency.textContent = topic.competency + '% competency';
+        row.appendChild(competency);
+
+        const actions = document.createElement('div');
+        actions.className = 'recommended-actions';
+
+        const guideButton = document.createElement('button');
+        guideButton.type = 'button';
+        guideButton.className = 'recommended-action';
+        guideButton.textContent = 'Study Guide';
+        guideButton.addEventListener('click', function () {
+          openTopicView('study-guides', topic.key);
+        });
+        actions.appendChild(guideButton);
+
+        const reviewButton = document.createElement('button');
+        reviewButton.type = 'button';
+        reviewButton.className = 'recommended-action';
+        reviewButton.textContent = 'Review';
+        reviewButton.addEventListener('click', function () {
+          studyUIState.activeTab = 'review-tests';
+          updateMenuTabs();
+          focusWorkspace();
+        });
+        actions.appendChild(reviewButton);
+
+        const flashcardButton = document.createElement('button');
+        flashcardButton.type = 'button';
+        flashcardButton.className = 'recommended-action';
+        flashcardButton.textContent = 'Flashcards';
+        flashcardButton.addEventListener('click', function () {
+          openTopicView('flashcards', topic.key);
+        });
+        actions.appendChild(flashcardButton);
+
+        row.appendChild(actions);
+        list.appendChild(row);
+      });
+    }
+
+    function renderStudyWorkspace() {
+      updateMenuTabs();
+      renderLibraryPanel();
+      renderRecentTests();
+      renderRecommendedTopics();
+      mountStudyReviewBank();
+    }
+
+    function bindStudyTabs() {
+      document.querySelectorAll('[data-study-tab]').forEach((button) => {
+        button.addEventListener('click', function () {
+          studyUIState.activeTab = button.dataset.studyTab || 'review-tests';
+          updateMenuTabs();
+          if (studyUIState.activeTab !== 'review-tests') {
+            renderLibraryPanel();
+          }
+        });
+      });
+    }
+
+    function bindTopicControls() {
+      const searchInput = document.getElementById('topic-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          studyUIState.topicSearch = searchInput.value || '';
+          renderLibraryPanel();
+        });
+      }
+
+      document.querySelectorAll('[data-topic-filter]').forEach((button) => {
+        button.addEventListener('click', function () {
+          studyUIState.topicFilter = button.dataset.topicFilter || 'all';
+          document.querySelectorAll('[data-topic-filter]').forEach((filterButton) => {
+            filterButton.classList.toggle('active', filterButton.dataset.topicFilter === studyUIState.topicFilter);
+          });
+          renderLibraryPanel();
+        });
+      });
+    }
+
+    async function bootStudyPage() {
+      await initReviewAuth();
+      await Promise.all([hydrateReviewSessions(), hydrateReviewSavedQuestions()]);
+      refreshStudyDataModel();
+      bindStudyTabs();
+      bindTopicControls();
+      renderStudyWorkspace();
+    }
+
+    void bootStudyPage();
   </script>
 </body>
 </html>

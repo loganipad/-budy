@@ -273,6 +273,59 @@
     window.location.href = testUrl || '/?review=1';
   }
 
+  async function startReviewSession(options, state, desiredCount) {
+    const safeCount = Math.max(1, Math.min(state.modalMaxCount || 1, Number(desiredCount || state.modalMaxCount || 1)));
+    let bankItems = [];
+    if (state.filters.includeSimilar) {
+      try {
+        bankItems = await loadQuestionBank();
+      } catch (error) {
+        notifyWithFallback(options, 'Could not load similar questions right now. Try again in a moment.', 'er');
+        return false;
+      }
+    }
+
+    const candidateSet = buildReviewCandidates(state.filteredQuestions, bankItems, state.filters.includeSimilar);
+    const selected = candidateSet.base.slice(0, safeCount);
+    if (selected.length < safeCount) {
+      const needed = safeCount - selected.length;
+      selected.push(...candidateSet.similarPool.slice(0, needed));
+    }
+
+    if (!selected.length) {
+      notifyWithFallback(options, 'No review questions matched the current filters.', 'wn');
+      return false;
+    }
+
+    const section = inferSectionFromQuestions(selected);
+    const timeLimitSeconds = calculateTimeLimitSeconds(selected);
+    queueReviewTest({
+      label: buildReviewLabel(state.filters),
+      section,
+      timeLimitSeconds,
+      questions: selected,
+      metadata: {
+        flagged: state.filters.flagged,
+        wrong: state.filters.wrong,
+        date: state.filters.date,
+        includeSimilar: state.filters.includeSimilar
+      }
+    }, options.testUrl);
+    return true;
+  }
+
+  function estimatePreviewTimeSeconds(previewQuestions, desiredCount) {
+    if (!Array.isArray(previewQuestions) || !previewQuestions.length) return 60;
+    const safeCount = Math.max(1, Number(desiredCount || 1));
+    const baseQuestions = previewQuestions.slice(0, Math.min(safeCount, previewQuestions.length));
+    let seconds = calculateTimeLimitSeconds(baseQuestions);
+    if (safeCount > baseQuestions.length && baseQuestions.length) {
+      const averageSeconds = seconds / baseQuestions.length;
+      seconds += Math.round(averageSeconds * (safeCount - baseQuestions.length));
+    }
+    return Math.max(60, seconds);
+  }
+
   function notifyWithFallback(options, message, tone) {
     if (typeof options.notify === 'function') {
       options.notify(message, tone || '');
@@ -325,43 +378,10 @@
 
     modal.querySelector('[data-review-modal-confirm]').addEventListener('click', async function () {
       const countInput = modal.querySelector('[data-review-modal-count]');
-      const desiredCount = Math.max(1, Math.min(state.modalMaxCount, Number(countInput.value || state.modalMaxCount)));
-      let bankItems = [];
-      if (state.filters.includeSimilar) {
-        try {
-          bankItems = await loadQuestionBank();
-        } catch (error) {
-          notifyWithFallback(options, 'Could not load similar questions right now. Try again in a moment.', 'er');
-          return;
-        }
+      const didStart = await startReviewSession(options, state, countInput.value || state.modalMaxCount);
+      if (didStart) {
+        modal.classList.remove('open');
       }
-
-      const candidateSet = buildReviewCandidates(state.filteredQuestions, bankItems, state.filters.includeSimilar);
-      const selected = candidateSet.base.slice(0, desiredCount);
-      if (selected.length < desiredCount) {
-        const needed = desiredCount - selected.length;
-        selected.push(...candidateSet.similarPool.slice(0, needed));
-      }
-
-      if (!selected.length) {
-        notifyWithFallback(options, 'No review questions matched the current filters.', 'wn');
-        return;
-      }
-
-      const section = inferSectionFromQuestions(selected);
-      const timeLimitSeconds = calculateTimeLimitSeconds(selected);
-      queueReviewTest({
-        label: buildReviewLabel(state.filters),
-        section,
-        timeLimitSeconds,
-        questions: selected,
-        metadata: {
-          flagged: state.filters.flagged,
-          wrong: state.filters.wrong,
-          date: state.filters.date,
-          includeSimilar: state.filters.includeSimilar
-        }
-      }, options.testUrl);
     });
 
     return modal;
@@ -377,8 +397,7 @@
 
     const updateTime = function () {
       const desiredCount = Math.max(1, Math.min(state.modalMaxCount, Number(countInput.value || 1)));
-      const previewQuestions = state.previewQuestions.slice(0, desiredCount);
-      timeEl.textContent = formatMinutes(calculateTimeLimitSeconds(previewQuestions)) + ' min';
+      timeEl.textContent = formatMinutes(estimatePreviewTimeSeconds(state.previewQuestions, desiredCount)) + ' min';
     };
 
     countInput.oninput = updateTime;
@@ -527,6 +546,8 @@
       wrong: root.querySelector('[data-review-filter="wrong"]'),
       date: root.querySelector('[data-review-filter="date"]'),
       includeSimilar: root.querySelector('[data-review-filter="include-similar"]'),
+      questionCount: root.querySelector('[data-review-question-count]'),
+      estimatedTime: root.querySelector('[data-review-estimated-time]'),
       count: root.querySelector('[data-review-count]'),
       list: root.querySelector('[data-review-list]'),
       empty: root.querySelector('[data-review-empty]'),
@@ -538,6 +559,36 @@
     };
     const readSessions = function () {
       return typeof options.getSessions === 'function' ? options.getSessions() : [];
+    };
+
+    const clampInlineCount = function (value) {
+      return Math.max(1, Math.min(state.modalMaxCount || 1, Number(value || state.modalMaxCount || 1)));
+    };
+
+    const syncInlineControls = function () {
+      if (!elements.questionCount && !elements.estimatedTime) return;
+
+      const previewQuestions = state.filteredQuestions.map(buildQuestionForRunner);
+      state.previewQuestions = previewQuestions;
+      state.modalMaxCount = state.filteredQuestions.length
+        ? (state.filters.includeSimilar ? 50 : Math.max(1, Math.min(50, previewQuestions.length || 1)))
+        : 1;
+
+      if (elements.questionCount) {
+        const fallbackValue = Math.min(state.modalMaxCount, Math.max(1, state.filteredQuestions.length, 10));
+        const nextValue = clampInlineCount(elements.questionCount.value || fallbackValue);
+        elements.questionCount.min = '1';
+        elements.questionCount.max = String(state.modalMaxCount);
+        elements.questionCount.value = String(nextValue);
+        elements.questionCount.disabled = !state.filteredQuestions.length;
+      }
+
+      if (elements.estimatedTime) {
+        const desiredCount = elements.questionCount ? clampInlineCount(elements.questionCount.value) : Math.min(state.modalMaxCount, Math.max(1, previewQuestions.length, 10));
+        elements.estimatedTime.textContent = state.filteredQuestions.length
+          ? formatMinutes(estimatePreviewTimeSeconds(previewQuestions, desiredCount)) + ' min'
+          : '0 min';
+      }
     };
 
     const render = function () {
@@ -566,6 +617,7 @@
       if (elements.count) {
         elements.count.textContent = state.filteredQuestions.length + ' question' + (state.filteredQuestions.length === 1 ? '' : 's');
       }
+      syncInlineControls();
 
       if (elements.list) elements.list.replaceChildren();
       const hasActiveTypeFilter = state.filters.flagged || state.filters.wrong;
@@ -611,6 +663,13 @@
       elements.includeSimilar.checked = false;
       elements.includeSimilar.addEventListener('change', function () {
         state.filters.includeSimilar = Boolean(elements.includeSimilar.checked);
+        syncInlineControls();
+      });
+    }
+
+    if (elements.questionCount) {
+      elements.questionCount.addEventListener('input', function () {
+        syncInlineControls();
       });
     }
 
@@ -620,6 +679,11 @@
       elements.launch.addEventListener('click', async function () {
         if (!state.filteredQuestions.length) {
           notifyWithFallback(options, 'No review questions match the current filters.', 'wn');
+          return;
+        }
+
+        if (elements.questionCount) {
+          await startReviewSession(options, state, elements.questionCount.value || state.modalMaxCount);
           return;
         }
 
