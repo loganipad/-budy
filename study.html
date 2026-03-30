@@ -74,7 +74,11 @@ a{text-decoration:none;color:inherit}
 button,input,select{font:inherit}
 
 .study-shell{padding-top:112px;padding-bottom:88px}
-.wrap{width:min(1120px,calc(100% - 40px));margin:0 auto}
+.wrap{
+  width:min(1260px,calc(100% - 56px));
+  margin-left:clamp(24px,4vw,64px);
+  margin-right:auto;
+}
 
 .section-card{
   background:var(--panel);
@@ -94,7 +98,7 @@ button,input,select{font:inherit}
 .study-intro{
   position:relative;
   overflow:hidden;
-  margin-bottom:24px;
+  padding:22px 24px;
 }
 
 .study-intro::before{
@@ -125,8 +129,8 @@ button,input,select{font:inherit}
 
 .intro-grid{
   display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:24px;
+  grid-template-columns:1fr;
+  gap:0;
   align-items:start;
   position:relative;
   z-index:1;
@@ -134,16 +138,16 @@ button,input,select{font:inherit}
 
 .study-intro h1{
   font-family:var(--font-h);
-  font-size:clamp(2.2rem,5vw,4.3rem);
-  line-height:1.02;
+  font-size:clamp(1.8rem,3.4vw,3rem);
+  line-height:1.04;
   letter-spacing:-.04em;
-  margin-bottom:16px;
+  margin-bottom:10px;
 }
 
 .study-intro h1 span{color:var(--gold)}
-.intro-copy p{max-width:650px;color:var(--muted);font-size:1.02rem;line-height:1.8}
+.intro-copy p{max-width:880px;color:var(--muted);font-size:.98rem;line-height:1.7}
 
-.intro-steps{display:grid;gap:12px}
+.intro-steps{display:none}
 
 .intro-step{
   display:grid;
@@ -171,12 +175,18 @@ button,input,select{font:inherit}
 .intro-step strong{display:block;font-size:1rem;margin-bottom:6px}
 .intro-step span{display:block;color:var(--muted);font-size:.84rem;line-height:1.65}
 
-.board-grid{
+.top-grid{
   display:grid;
   grid-template-columns:minmax(0,1.42fr) minmax(300px,.58fr);
   gap:28px;
   align-items:start;
   margin-bottom:24px;
+}
+
+.study-main-column{
+  display:grid;
+  gap:20px;
+  min-width:0;
 }
 
 .menu-tabs{
@@ -671,7 +681,7 @@ button,input,select{font:inherit}
 
 @media (max-width: 980px){
   .intro-grid,
-  .board-grid,
+  .top-grid,
   .guide-grid,
   .flashcard-stack,
   .recommended-row,
@@ -700,6 +710,8 @@ button,input,select{font:inherit}
   .workspace-card,
   .recent-card,
   .recommended-card{padding:22px}
+
+  .wrap{width:min(100%,calc(100% - 32px));margin-left:16px;margin-right:16px}
 
   .panel-head,
   .review-config-bar,
@@ -735,32 +747,19 @@ button,input,select{font:inherit}
 
   <main class="study-shell">
     <div class="wrap">
-      <section class="study-intro section-card">
-        <div class="intro-grid">
-          <div class="intro-copy">
-            <div class="eyebrow">Study Hub</div>
-            <h1>How to study with <span>Budy</span></h1>
-            <p>Use one workspace for handcrafted study guides, wrong-answer feedback, unlimited flashcards, and tailored review tests built from the questions you flagged or missed. The layout below matches the way students actually decide what to do next.</p>
-          </div>
-          <div class="intro-steps">
-            <div class="intro-step">
-              <div class="intro-num">1</div>
-              <div><strong>Handcrafted study guides</strong><span>Topic explainers, sample questions, and easy-to-read breakdowns that help you understand the skill before you jump back into timed work.</span></div>
+      <section class="top-grid">
+        <div class="study-main-column">
+          <section class="study-intro section-card">
+            <div class="intro-grid">
+              <div class="intro-copy">
+                <div class="eyebrow">Study Hub</div>
+                <h1>How to study with <span>Budy</span></h1>
+                <p>Use one workspace for study guides, wrong-answer feedback, flashcards, and tailored review tests built from the questions you flagged or missed.</p>
+              </div>
             </div>
-            <div class="intro-step">
-              <div class="intro-num">2</div>
-              <div><strong>Wrong-answer feedback</strong><span>Suggested topics, tailored review tests, and competency scoring built from the questions you flagged or answered incorrectly.</span></div>
-            </div>
-            <div class="intro-step">
-              <div class="intro-num">3</div>
-              <div><strong>Unlimited flashcards</strong><span>Printable-style concepts in a digital format so you can review fast, repeat often, and stay inside the same study flow.</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <section class="board-grid">
-        <section class="workspace-card section-card">
+          <section class="workspace-card section-card">
           <div class="menu-tabs" role="tablist" aria-label="Study tools">
             <button class="menu-tab active" type="button" data-study-tab="review-tests">Review Tests</button>
             <button class="menu-tab" type="button" data-study-tab="study-guides">Study Guides</button>
@@ -842,7 +841,8 @@ button,input,select{font:inherit}
               <div class="topic-detail hidden" id="topic-detail"></div>
             </div>
           </div>
-        </section>
+          </section>
+        </div>
 
         <aside class="recent-card section-card">
           <h2>Recent tests</h2>
