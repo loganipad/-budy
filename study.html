@@ -442,7 +442,7 @@ button,input,select{font:inherit}
 .flashcard-front{font-size:.95rem;font-weight:800;line-height:1.45;color:#fff;margin-bottom:10px}
 .flashcard-back{font-size:.82rem;line-height:1.65;color:var(--muted)}
 
-.recent-card{position:sticky;top:108px}
+.recent-card{position:static;top:auto}
 .recent-card-copy{margin-bottom:18px}
 .recent-test-list{display:grid;gap:12px}
 
@@ -682,88 +682,20 @@ button,input,select{font:inherit}
     const AUTH0_REDIRECT_URI = window.location.origin;
     const LOCAL_AUTH_KEY = 'budy_local_auth_user';
     const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
-    const DEFAULT_TOPIC_LIBRARY = [
-      {
-        key: 'math:functions',
-        section: 'math',
-        label: 'Functions',
-        summary: 'Read, compare, and transform functions across equations, graphs, and tables.',
-        guidePoints: ['Interpret function notation', 'Compare representations', 'Track how outputs change when the rule shifts'],
-        sampleQuestion: 'How does the graph of f(x) change when the expression becomes f(x) + 3?'
+    const QUESTION_BLUEPRINT = {
+      reading_writing: {
+        'Information and Ideas': ['Inference', 'Central Idea', 'Command of Evidence', 'Quantitative Information in Text and Graphics'],
+        'Craft and Structure': ['Words in Context', 'Text Structure', 'Rhetorical Purpose', 'Cross-Text Connections'],
+        'Expression of Ideas': ['Transitions', 'Rhetorical Synthesis', 'Sentence Placement', 'Concision'],
+        'Standard English Conventions': ['Grammar', 'Punctuation', 'Pronoun Clarity', 'Modifier Placement', 'Parallel Structure', 'Verb Tense and Agreement']
       },
-      {
-        key: 'math:linear-equations',
-        section: 'math',
-        label: 'Linear Equations',
-        summary: 'Solve linear equations cleanly and recognize slope, intercept, and rate-of-change cues.',
-        guidePoints: ['Solve in one variable without dropping signs', 'Connect slope to context', 'Translate tables and words into equations'],
-        sampleQuestion: 'Which equation matches a line with slope 4 that passes through (2, 11)?'
-      },
-      {
-        key: 'math:quadratics',
-        section: 'math',
-        label: 'Quadratics',
-        summary: 'Work with parabolas, factoring, zeros, and vertex form without losing the structure.',
-        guidePoints: ['Factor and identify zeros', 'Read key features from graphs', 'Move between standard and vertex form'],
-        sampleQuestion: 'What are the zeros of x^2 - 7x + 10 = 0?'
-      },
-      {
-        key: 'math:problem-solving-and-data',
-        section: 'math',
-        label: 'Problem Solving and Data',
-        summary: 'Use ratios, percentages, tables, and data displays to reason through SAT-style setups.',
-        guidePoints: ['Translate word problems into equations', 'Use units and labels to stay organized', 'Check whether the final answer makes sense in context'],
-        sampleQuestion: 'A class survey shows 18 of 30 students prefer math. What percent is that?'
-      },
-      {
-        key: 'math:geometry',
-        section: 'math',
-        label: 'Geometry',
-        summary: 'Practice triangles, circles, angles, and coordinate geometry with clean diagrams and structure.',
-        guidePoints: ['Label diagrams before solving', 'Know the high-yield formulas', 'Check whether the question wants length, area, or angle'],
-        sampleQuestion: 'A right triangle has legs 9 and 12. What is the hypotenuse?'
-      },
-      {
-        key: 'english:vocabulary-in-context',
-        section: 'english',
-        label: 'Vocabulary in Context',
-        summary: 'Choose the word that matches the sentence logic, not just the one that sounds advanced.',
-        guidePoints: ['Read the full sentence before deciding', 'Replace the word with your own paraphrase', 'Eliminate answer choices that shift tone or meaning'],
-        sampleQuestion: 'Which choice most nearly means "direct" as used in line 18?'
-      },
-      {
-        key: 'english:command-of-evidence',
-        section: 'english',
-        label: 'Command of Evidence',
-        summary: 'Prove every answer with a specific word, sentence, or relationship in the passage.',
-        guidePoints: ['Find the evidence before locking the answer', 'Match the reasoning, not just the topic', 'Cross-check paired evidence questions'],
-        sampleQuestion: 'Which line best supports the answer to the previous question?'
-      },
-      {
-        key: 'english:central-ideas',
-        section: 'english',
-        label: 'Central Ideas',
-        summary: 'Track what the passage is really saying so summary and purpose questions stop feeling vague.',
-        guidePoints: ['State the main claim in your own words', 'Separate detail from purpose', 'Check whether the answer is too narrow or too broad'],
-        sampleQuestion: 'Which choice best states the central claim of the passage?'
-      },
-      {
-        key: 'english:transitions',
-        section: 'english',
-        label: 'Transitions',
-        summary: 'Choose transitions based on logic between sentences, not on what sounds smooth by itself.',
-        guidePoints: ['Name the relationship first', 'Contrast, support, and sequence are different jobs', 'Read the sentence before and after the blank'],
-        sampleQuestion: 'Which transition best connects the idea in sentence 3 to sentence 4?'
-      },
-      {
-        key: 'english:boundaries-and-punctuation',
-        section: 'english',
-        label: 'Boundaries and Punctuation',
-        summary: 'Fix comma, semicolon, and sentence-boundary errors by checking clause structure first.',
-        guidePoints: ['Count independent clauses', 'Know when a comma is not enough', 'Use punctuation to match the sentence pattern'],
-        sampleQuestion: 'Which choice most effectively completes the sentence with standard punctuation?'
+      math: {
+        'Algebra': ['One-Variable Linear Equations', 'Systems of Equations', 'Linear Inequalities', 'Linear Functions', 'Slope and Intercept'],
+        'Advanced Math': ['Quadratics', 'Polynomials', 'Equivalent Expressions', 'Radicals and Rational Exponents', 'Nonlinear Functions', 'Complex Numbers'],
+        'Problem-Solving and Data Analysis': ['Ratios and Proportions', 'Percentages', 'Rates and Unit Conversion', 'Probability', 'Statistics', 'Scatterplots and Line of Best Fit', 'Table and Graph Interpretation'],
+        'Geometry and Trigonometry': ['Circles', 'Triangles', 'Area and Volume', 'Coordinate Geometry', 'Right-Triangle Trigonometry']
       }
-    ];
+    };
 
     let reviewAuthClient = null;
     let studyReviewController = null;
@@ -993,6 +925,7 @@ button,input,select{font:inherit}
       return {
         key: String(entry.key || entry.questionId || entry.id || ('saved-' + (index + 1))),
         section: section,
+        domain: String(entry.domain || '').trim(),
         topic: topic || (section === 'math' ? 'Math Foundations' : 'Reading & Writing Foundations'),
         prompt: String(entry.prompt || entry.question || 'Saved question'),
         passage: String(entry.passage || ''),
@@ -1041,6 +974,75 @@ button,input,select{font:inherit}
       ];
     }
 
+    function buildBlueprintSummary(section, domain, skill) {
+      if (section === 'math') {
+        if (domain === 'Algebra') return 'Build ' + skill.toLowerCase() + ' accuracy with cleaner setup, steadier algebra, and one final condition check before you move on.';
+        if (domain === 'Advanced Math') return 'Handle ' + skill.toLowerCase() + ' by keeping the expression structure visible before you simplify or transform it.';
+        if (domain === 'Problem-Solving and Data Analysis') return 'Use ' + skill.toLowerCase() + ' to reason through data, rates, and context without losing what the numbers mean.';
+        return 'Tighten ' + skill.toLowerCase() + ' with diagram discipline, formula recall, and cleaner geometric reasoning.';
+      }
+
+      if (domain === 'Information and Ideas') return 'Answer ' + skill.toLowerCase() + ' questions by proving each choice with the passage, the graphic, or the exact claim being made.';
+      if (domain === 'Craft and Structure') return 'Read ' + skill.toLowerCase() + ' questions for function, tone, and word choice before you commit to what sounds right.';
+      if (domain === 'Expression of Ideas') return 'Sharpen ' + skill.toLowerCase() + ' by tracking the job each sentence plays inside the paragraph or argument.';
+      return 'Lock in ' + skill.toLowerCase() + ' by checking clause structure, grammar relationships, and punctuation boundaries before you pick an answer.';
+    }
+
+    function buildBlueprintGuidePoints(section, domain, skill) {
+      if (section === 'math') {
+        return [
+          'Start by naming the algebra or geometry pattern behind ' + skill.toLowerCase() + '.',
+          'Work one clean untimed example before you add timer pressure.',
+          'Check that the final value or expression actually matches the condition in the prompt.'
+        ];
+      }
+
+      return [
+        'Name the reading or grammar job behind ' + skill.toLowerCase() + ' before looking at answer choices.',
+        'Use the passage, sentence, or graphic to prove why the credited answer is right.',
+        'Watch for trap answers that sound smooth but shift the author\'s meaning or the sentence logic.'
+      ];
+    }
+
+    function buildBlueprintSampleQuestion(section, domain, skill) {
+      if (section === 'math') {
+        return 'Which choice best solves this ' + skill.toLowerCase() + ' problem while still matching the condition in the prompt?';
+      }
+
+      if (domain === 'Standard English Conventions') {
+        return 'Which choice most effectively completes the sentence using standard English conventions for ' + skill.toLowerCase() + '?';
+      }
+
+      return 'Which choice best answers this ' + skill.toLowerCase() + ' question using the passage evidence and logic?';
+    }
+
+    function buildBlueprintTopicLibrary() {
+      const topics = [];
+      Object.entries(QUESTION_BLUEPRINT).forEach(function (entry) {
+        const section = normalizeSection(entry[0]);
+        const domains = entry[1] || {};
+        Object.entries(domains).forEach(function (domainEntry) {
+          const domain = domainEntry[0];
+          const skills = Array.isArray(domainEntry[1]) ? domainEntry[1] : [];
+          skills.forEach(function (skill) {
+            topics.push({
+              key: section + ':' + slugify(skill),
+              section: section,
+              domain: domain,
+              label: skill,
+              summary: buildBlueprintSummary(section, domain, skill),
+              guidePoints: buildBlueprintGuidePoints(section, domain, skill),
+              flashcards: buildDynamicFlashcards(skill, section),
+              sampleQuestion: buildBlueprintSampleQuestion(section, domain, skill)
+            });
+          });
+        });
+      });
+      return topics;
+    }
+
+    const BLUEPRINT_TOPIC_LIBRARY = buildBlueprintTopicLibrary();
+
     function calculateCompetency(topic) {
       if (!topic.issueCount) return topic.questions.length ? 97 : 92;
       return clamp(100 - (topic.wrongCount * 16) - (topic.flaggedCount * 8), 55, 96);
@@ -1056,10 +1058,11 @@ button,input,select{font:inherit}
     function buildTopicCatalog(savedQuestions) {
       const topicMap = new Map();
 
-      DEFAULT_TOPIC_LIBRARY.forEach((seed) => {
+      BLUEPRINT_TOPIC_LIBRARY.forEach((seed) => {
         topicMap.set(seed.key, {
           key: seed.key,
           section: seed.section,
+          domain: seed.domain,
           label: seed.label,
           summary: seed.summary,
           guidePoints: seed.guidePoints.slice(),
@@ -1078,6 +1081,7 @@ button,input,select{font:inherit}
         const existing = topicMap.get(key) || {
           key: key,
           section: question.section,
+          domain: question.domain || '',
           label: question.topic,
           summary: createDynamicSummary(question.section, question.topic),
           guidePoints: buildDynamicGuidePoints(question.topic, question.section),
@@ -1106,6 +1110,7 @@ button,input,select{font:inherit}
         return {
           key: topic.key,
           section: topic.section,
+          domain: topic.domain || '',
           label: topic.label,
           summary: topic.summary,
           guidePoints: topic.guidePoints,
@@ -1137,7 +1142,9 @@ button,input,select{font:inherit}
       return topicCatalog.filter((topic) => {
         if (studyUIState.topicFilter !== 'all' && topic.section !== studyUIState.topicFilter) return false;
         if (!search) return true;
-        return topic.label.toLowerCase().includes(search) || topic.summary.toLowerCase().includes(search);
+        return topic.label.toLowerCase().includes(search)
+          || topic.summary.toLowerCase().includes(search)
+          || String(topic.domain || '').toLowerCase().includes(search);
       });
     }
 
@@ -1224,7 +1231,7 @@ button,input,select{font:inherit}
         const titleWrap = document.createElement('div');
         const kicker = document.createElement('div');
         kicker.className = 'topic-kicker';
-        kicker.textContent = topic.status;
+        kicker.textContent = topic.domain ? (topic.domain + ' • ' + topic.status) : topic.status;
         const title = document.createElement('div');
         title.className = 'topic-title';
         title.textContent = topic.label;
