@@ -448,10 +448,10 @@ button,input,select{font:inherit}
 .topic-list{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  grid-auto-rows:minmax(132px,1fr);
+  grid-auto-rows:180px;
   gap:12px;
   align-items:start;
-  max-height:432px;
+  max-height:564px;
   overflow-y:auto;
   padding-right:6px;
 }
@@ -473,7 +473,9 @@ button,input,select{font:inherit}
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  min-height:132px;
+  min-height:0;
+  height:100%;
+  overflow:hidden;
 }
 
 .topic-card:hover,
@@ -519,6 +521,7 @@ button,input,select{font:inherit}
   border-radius:999px;
   font-size:.66rem;
   font-weight:800;
+  max-width:100%;
 }
 
 .library-body:not(.detail-open) .topic-detail{
