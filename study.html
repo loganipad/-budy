@@ -112,8 +112,8 @@ button,input,select{font:inherit}
 
 .intro-grid{
   display:grid;
-  grid-template-columns:1fr;
-  gap:18px;
+  grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);
+  gap:26px;
   align-items:start;
   position:relative;
   z-index:1;
@@ -130,21 +130,58 @@ button,input,select{font:inherit}
 .study-intro h1 span{color:var(--gold)}
 .intro-copy p{max-width:880px;color:var(--muted);font-size:.98rem;line-height:1.7}
 
+.intro-guide{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  margin-top:16px;
+}
+
+.intro-guide img{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  object-fit:cover;
+  background:rgba(255,255,255,.08);
+  box-shadow:0 14px 28px rgba(0,0,0,.18);
+}
+
+.intro-guide-copy{
+  display:grid;
+  gap:3px;
+}
+
+.intro-guide-copy strong{font-size:.92rem;color:#fff}
+.intro-guide-copy span{font-size:.84rem;color:var(--muted);line-height:1.55}
+
 .intro-steps{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
+  gap:18px;
+  align-self:center;
+  position:relative;
+  padding-top:12px;
+}
+
+.intro-steps::before{
+  content:'';
+  position:absolute;
+  top:28px;
+  left:18px;
+  right:18px;
+  height:1px;
+  background:linear-gradient(90deg, rgba(59,130,246,.14) 0%, rgba(245,158,11,.24) 50%, rgba(59,130,246,.14) 100%);
 }
 
 .intro-step{
   display:grid;
-  grid-template-columns:auto 1fr;
-  gap:14px;
+  grid-template-columns:1fr;
+  gap:12px;
   align-items:start;
-  border-radius:22px;
-  padding:18px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
+  padding:0;
+  background:transparent;
+  border:none;
+  position:relative;
 }
 
 .intro-num{
@@ -157,10 +194,14 @@ button,input,select{font:inherit}
   color:#fde68a;
   font-size:.86rem;
   font-weight:800;
+  position:relative;
+  z-index:1;
+  box-shadow:0 0 0 8px rgba(13,17,23,.9);
 }
 
-.intro-step strong{display:block;font-size:1rem;margin-bottom:6px}
-.intro-step span{display:block;color:var(--muted);font-size:.84rem;line-height:1.65}
+.intro-step-copy{display:grid;gap:6px;padding-right:6px}
+.intro-step strong{display:block;font-size:.98rem;margin-bottom:0}
+.intro-step span{display:block;color:var(--muted);font-size:.83rem;line-height:1.6}
 
 .tutorial-pop{
   position:fixed;
@@ -170,10 +211,23 @@ button,input,select{font:inherit}
   z-index:1100;
   border-radius:24px;
   padding:18px;
-  background:rgba(15,23,42,.94);
+  background:rgba(12,19,34,.96);
   border:1px solid rgba(255,255,255,.1);
   box-shadow:0 24px 60px rgba(0,0,0,.36);
   backdrop-filter:blur(16px);
+}
+
+.tutorial-pop::after{
+  content:'';
+  position:absolute;
+  right:26px;
+  bottom:-10px;
+  width:22px;
+  height:22px;
+  background:rgba(12,19,34,.96);
+  border-right:1px solid rgba(255,255,255,.1);
+  border-bottom:1px solid rgba(255,255,255,.1);
+  transform:rotate(45deg);
 }
 
 .tutorial-pop.hidden{display:none}
@@ -183,15 +237,31 @@ button,input,select{font:inherit}
   justify-content:space-between;
   gap:12px;
   align-items:flex-start;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .tutorial-progress{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
+  align-items:flex-start;
   gap:12px;
-  margin-bottom:12px;
+  flex:1 1 auto;
+}
+
+.tutorial-mascot{
+  width:56px;
+  height:56px;
+  border-radius:18px;
+  object-fit:cover;
+  background:linear-gradient(180deg, rgba(59,130,246,.22) 0%, rgba(245,158,11,.16) 100%);
+  box-shadow:0 16px 30px rgba(0,0,0,.22);
+}
+
+.tutorial-meta{display:grid;gap:8px;flex:1 1 auto}
+
+.tutorial-guide-name{
+  color:#fff;
+  font-size:.92rem;
+  font-weight:800;
 }
 
 .tutorial-step-label{
@@ -213,9 +283,16 @@ button,input,select{font:inherit}
 
 .tutorial-dot.active{background:#60a5fa}
 
-.tutorial-body{display:grid;gap:10px}
+.tutorial-body{display:grid;gap:10px;padding:10px 0 6px}
 .tutorial-body h3{font-size:1.05rem;line-height:1.2}
 .tutorial-body p{color:var(--muted);font-size:.86rem;line-height:1.65}
+
+.tutorial-hint{
+  color:#93c5fd;
+  font-size:.75rem;
+  font-weight:700;
+  line-height:1.5;
+}
 
 .tutorial-close{
   width:34px;
@@ -1099,12 +1176,17 @@ button,input,select{font:inherit}
   .panel-head,
   .review-config-bar,
   .library-toolbar,
+  .intro-guide,
   .topic-top,
   .recommended-row{
     display:flex;
     flex-direction:column;
     align-items:flex-start;
   }
+
+  .intro-steps::before{display:none}
+
+  .intro-step-copy{padding-right:0}
 
   .review-config-controls,
   .review-choice-row,
@@ -1143,19 +1225,26 @@ button,input,select{font:inherit}
               <div class="intro-copy">
                 <h1>How to study with <span>Budy</span></h1>
                 <p>Move fast: choose a topic, preview the guide or flashcards, then turn misses into the next review test.</p>
+                <div class="intro-guide" aria-hidden="true">
+                  <img src="/assets/budy-logo.png" alt="">
+                  <div class="intro-guide-copy">
+                    <strong>Your study companion</strong>
+                    <span>Budy keeps the next step obvious so the page feels guided instead of crowded.</span>
+                  </div>
+                </div>
               </div>
               <div class="intro-steps">
                 <div class="intro-step">
                   <div class="intro-num">1</div>
-                  <div><strong>Find the topic</strong><span>Search by skill, filter by Math or English, and pick the exact area you want to review.</span></div>
+                  <div class="intro-step-copy"><strong>Find the topic</strong><span>Search by skill, filter by Math or English, and jump straight into the area you want.</span></div>
                 </div>
                 <div class="intro-step">
                   <div class="intro-num">2</div>
-                  <div><strong>Study the pattern</strong><span>Open a guide or flashcard set to rebuild the concept before you jump back into timing pressure.</span></div>
+                  <div class="intro-step-copy"><strong>Study the pattern</strong><span>Open one focused preview and rebuild the concept before you add timer pressure.</span></div>
                 </div>
                 <div class="intro-step">
                   <div class="intro-num">3</div>
-                  <div><strong>Run a review test</strong><span>Turn flagged and wrong-answer history into a targeted test and use the recent panel to track what changed.</span></div>
+                  <div class="intro-step-copy"><strong>Run a review test</strong><span>Turn misses into a targeted test and use the recent panel to track what changed.</span></div>
                 </div>
               </div>
             </div>
@@ -1297,8 +1386,12 @@ button,input,select{font:inherit}
   <aside class="tutorial-pop hidden" id="study-tutorial-pop" aria-live="polite">
     <div class="tutorial-top">
       <div class="tutorial-progress">
-        <div class="tutorial-step-label" id="study-tour-step-label">Step 1 of 3</div>
-        <div class="tutorial-dots" id="study-tour-dots"></div>
+        <img src="/assets/budy-logo.png" alt="Budy study companion" class="tutorial-mascot">
+        <div class="tutorial-meta">
+          <div class="tutorial-guide-name">Budy guide</div>
+          <div class="tutorial-step-label" id="study-tour-step-label">Step 1 of 3</div>
+          <div class="tutorial-dots" id="study-tour-dots"></div>
+        </div>
       </div>
       <button class="tutorial-close" type="button" id="study-tutorial-close" aria-label="Dismiss tutorial">x</button>
     </div>
@@ -1321,19 +1414,19 @@ button,input,select{font:inherit}
     const STUDY_TOUR_STEPS = [
       {
         title: 'Review tests first',
-        copy: 'Start with flagged questions, wrong answers, or both. Then narrow the bank to your most-missed topics.',
+        copy: 'Start with flagged questions, wrong answers, or both. I will help you narrow the bank to the topics that need the most work.',
         tab: 'review-tests',
         cta: 'Show review tests'
       },
       {
         title: 'Guides take over the workspace',
-        copy: 'Pick one topic and the full panel turns into a printable study-guide preview with pages, worked examples, and answer breakdowns.',
+        copy: 'Pick one topic and I will turn the whole panel into a printable guide preview with pages, worked examples, and answer breakdowns.',
         tab: 'study-guides',
         cta: 'Show a guide preview'
       },
       {
         title: 'Flashcards print and flip',
-        copy: 'Use the same topic to preview foldable PDF flashcards and the virtual deck with shuffle, restart, next, and back controls.',
+        copy: 'Use the same topic to preview foldable PDF flashcards and a virtual deck with shuffle, restart, next, and back controls.',
         tab: 'flashcards',
         cta: 'Show flashcards'
       }
@@ -2857,8 +2950,16 @@ button,input,select{font:inherit}
       title.textContent = currentStep.title;
       const copy = document.createElement('p');
       copy.textContent = currentStep.copy;
+      const hint = document.createElement('div');
+      hint.className = 'tutorial-hint';
+      hint.textContent = studyUIState.tutorialStep === 0
+        ? 'Tap next and I will move you into the right tool.'
+        : studyUIState.tutorialStep === 1
+          ? 'Once a topic is selected, the list gets out of the way so you can focus.'
+          : 'These cards are meant to feel printable first and interactive second.';
       body.appendChild(title);
       body.appendChild(copy);
+      body.appendChild(hint);
 
       next.textContent = studyUIState.tutorialStep === STUDY_TOUR_STEPS.length - 1 ? 'Finish tour' : currentStep.cta;
       back.disabled = studyUIState.tutorialStep === 0;
