@@ -186,8 +186,36 @@ button,input,select{font:inherit}
   margin-bottom:12px;
 }
 
-.tutorial-pop h3{font-size:1.05rem;line-height:1.2}
-.tutorial-pop p{color:var(--muted);font-size:.86rem;line-height:1.65}
+.tutorial-progress{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.tutorial-step-label{
+  color:#dbeafe;
+  font-size:.76rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.tutorial-dots{display:flex;gap:6px}
+
+.tutorial-dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+}
+
+.tutorial-dot.active{background:#60a5fa}
+
+.tutorial-body{display:grid;gap:10px}
+.tutorial-body h3{font-size:1.05rem;line-height:1.2}
+.tutorial-body p{color:var(--muted);font-size:.86rem;line-height:1.65}
 
 .tutorial-close{
   width:34px;
@@ -200,22 +228,6 @@ button,input,select{font:inherit}
   font-weight:700;
 }
 
-.tutorial-list{
-  display:grid;
-  gap:10px;
-  margin:14px 0 16px;
-}
-
-.tutorial-item{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:10px;
-  align-items:start;
-}
-
-.tutorial-item strong{display:block;font-size:.86rem;margin-bottom:3px}
-.tutorial-item span{display:block;color:var(--muted);font-size:.8rem;line-height:1.55}
-
 .tutorial-actions{
   display:flex;
   gap:8px;
@@ -223,6 +235,7 @@ button,input,select{font:inherit}
 }
 
 .tutorial-chip,
+.tutorial-secondary,
 .tutorial-primary{
   min-height:38px;
   padding:0 14px;
@@ -235,6 +248,12 @@ button,input,select{font:inherit}
   border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.05);
   color:#dbeafe;
+}
+
+.tutorial-secondary{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;
 }
 
 .tutorial-primary{
@@ -316,6 +335,77 @@ button,input,select{font:inherit}
 
 .review-head{
   margin-bottom:20px;
+}
+
+.review-guide-steps{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.review-guide-step,
+.review-choice-card{
+  border-radius:22px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.review-guide-step strong,
+.review-choice-label{display:block;font-size:.9rem;margin-bottom:6px}
+
+.review-guide-step span,
+.review-focus-summary{display:block;color:var(--muted);font-size:.82rem;line-height:1.6}
+
+.review-choice-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.review-choice-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.review-toggle,
+.review-topic-select{
+  min-height:42px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:rgba(240,244,255,.78);
+  font-size:.8rem;
+  font-weight:800;
+}
+
+.review-toggle{padding:0 14px}
+
+.review-toggle.active{
+  background:rgba(26,86,219,.18);
+  border-color:rgba(59,130,246,.45);
+  color:#dbeafe;
+}
+
+.review-topic-select-wrap{
+  display:flex;
+  flex:1 1 220px;
+  min-width:220px;
+}
+
+.review-topic-select{
+  width:100%;
+  padding:0 14px;
+  outline:none;
+}
+
+.review-focus-summary{
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.06);
 }
 
 .review-head-kicker{
@@ -514,6 +604,22 @@ button,input,select{font:inherit}
   align-items:start;
 }
 
+#menu-panel-library.preview-active .panel-head,
+#menu-panel-library.preview-active .library-toolbar,
+#menu-panel-library.preview-active .library-list-panel{
+  display:none;
+}
+
+#menu-panel-library.preview-active .library-body{
+  grid-template-columns:1fr;
+}
+
+#menu-panel-library.preview-active .topic-detail{
+  display:block;
+  min-height:620px;
+  max-height:none;
+}
+
 .library-body.detail-open{
   grid-template-columns:minmax(0,.92fr) minmax(360px,1.08fr);
 }
@@ -644,6 +750,209 @@ button,input,select{font:inherit}
 .topic-detail p{color:var(--muted);font-size:.88rem;line-height:1.7}
 .topic-detail-actions{display:flex;gap:10px;flex-wrap:wrap}
 
+.preview-back{
+  min-height:40px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+  font-size:.8rem;
+  font-weight:800;
+}
+
+.preview-shell{display:grid;gap:18px}
+
+.preview-hero{
+  display:grid;
+  gap:12px;
+  border-radius:24px;
+  padding:22px;
+  background:linear-gradient(180deg, rgba(37,99,235,.16) 0%, rgba(255,255,255,.04) 100%);
+  border:1px solid rgba(96,165,250,.24);
+}
+
+.preview-hero h3{font-size:1.45rem;margin:0}
+
+.preview-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.preview-chip{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:0 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:#dbeafe;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.guide-preview-layout,
+.flashcard-preview-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);
+  gap:16px;
+  align-items:start;
+}
+
+.guide-preview-card,
+.flashcard-preview-card,
+.virtual-deck,
+.flashcard-sheet,
+.guide-page-card{
+  border-radius:22px;
+  padding:18px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.guide-page-strip{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+}
+
+.guide-page-card span,
+.guide-preview-card span,
+.flashcard-preview-card span,
+.virtual-meta span,
+.flashcard-sheet-front span,
+.flashcard-sheet-back span{
+  display:block;
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(240,244,255,.48);
+  margin-bottom:8px;
+}
+
+.guide-page-card strong,
+.guide-preview-card strong,
+.flashcard-preview-card strong,
+.virtual-card strong,
+.flashcard-sheet-front strong,
+.flashcard-sheet-back strong{display:block;font-size:.95rem;line-height:1.45;color:#fff}
+
+.guide-page-card p,
+.guide-preview-card p,
+.flashcard-preview-card p,
+.virtual-card p,
+.flashcard-sheet-back p{font-size:.82rem;line-height:1.65;color:var(--muted)}
+
+.guide-preview-stack,
+.guide-bullets,
+.flashcard-sheet-grid{display:grid;gap:12px}
+
+.guide-bullets li{
+  margin-left:18px;
+  color:var(--muted);
+  font-size:.83rem;
+  line-height:1.65;
+}
+
+.guide-example-stack{display:grid;gap:12px}
+
+.guide-callout{
+  border-radius:18px;
+  padding:16px;
+  background:rgba(15,23,42,.72);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.flashcard-count-row{display:flex;flex-wrap:wrap;gap:8px}
+
+.flashcard-count{
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:rgba(240,244,255,.78);
+  font-size:.78rem;
+  font-weight:800;
+}
+
+.flashcard-count.active{
+  background:rgba(245,158,11,.14);
+  border-color:rgba(245,158,11,.32);
+  color:#fde68a;
+}
+
+.flashcard-sheet{display:grid;gap:10px}
+.flashcard-sheet-grid{gap:0}
+
+.flashcard-sheet-row{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0;
+  border-top:1px dotted rgba(255,255,255,.18);
+}
+
+.flashcard-sheet-row:first-child{border-top:none}
+
+.flashcard-sheet-front,
+.flashcard-sheet-back{
+  min-height:132px;
+  padding:16px;
+}
+
+.flashcard-sheet-front{border-right:1px dashed rgba(255,255,255,.18)}
+
+.virtual-deck{display:grid;gap:14px}
+
+.virtual-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.virtual-card{
+  min-height:220px;
+  border-radius:22px;
+  padding:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,255,255,.1);
+  display:grid;
+  align-content:start;
+  gap:10px;
+}
+
+.virtual-card p{font-size:.9rem}
+
+.virtual-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.virtual-control{
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+  font-size:.78rem;
+  font-weight:800;
+}
+
+.virtual-control.primary{
+  background:rgba(26,86,219,.18);
+  border-color:rgba(59,130,246,.36);
+  color:#dbeafe;
+}
+
 .guide-grid,
 .flashcard-stack{
   display:grid;
@@ -751,8 +1060,13 @@ button,input,select{font:inherit}
   .intro-grid,
   .intro-steps,
   .top-grid,
+  .review-guide-steps,
+  .review-choice-grid,
   .guide-grid,
   .flashcard-stack,
+  .guide-preview-layout,
+  .flashcard-preview-layout,
+  .guide-page-strip,
   .recommended-row,
   .library-body,
   .library-body.detail-open{
@@ -793,11 +1107,16 @@ button,input,select{font:inherit}
   }
 
   .review-config-controls,
+  .review-choice-row,
   .recommended-actions,
   .topic-search{width:100%}
 
   .review-config-controls,
   .topic-list{grid-template-columns:1fr}
+
+  .flashcard-sheet-row{grid-template-columns:1fr}
+
+  .flashcard-sheet-front{border-right:none;border-bottom:1px dashed rgba(255,255,255,.18)}
 
   .review-config-field,
   .review-config-metric,
@@ -823,7 +1142,7 @@ button,input,select{font:inherit}
             <div class="intro-grid">
               <div class="intro-copy">
                 <h1>How to study with <span>Budy</span></h1>
-                <p>Use one workspace for study guides, wrong-answer feedback, flashcards, and tailored review tests built from the questions you flagged or missed.</p>
+                <p>Move fast: choose a topic, preview the guide or flashcards, then turn misses into the next review test.</p>
               </div>
               <div class="intro-steps">
                 <div class="intro-step">
@@ -854,7 +1173,37 @@ button,input,select{font:inherit}
               <div>
                 <div class="review-head-kicker">Tailored Review Builder</div>
                 <h2>Review tests come first</h2>
-                <p class="panel-copy">Filter by flagged questions, wrong answers, or both. Pick a question amount and Budy will generate a tailored review test from the exact bank you selected.</p>
+                <p class="panel-copy">Pick the source, narrow the topic focus, and build the next test fast.</p>
+              </div>
+            </div>
+
+            <div class="review-guide-steps" aria-hidden="true">
+              <div class="review-guide-step"><strong>1. Pick the source</strong><span>Flagged, wrong answers, or both.</span></div>
+              <div class="review-guide-step"><strong>2. Focus the topic</strong><span>Use all topics, the most-missed topics, or one exact skill.</span></div>
+              <div class="review-guide-step"><strong>3. Build the test</strong><span>Set the question count and launch the review.</span></div>
+            </div>
+
+            <div class="review-choice-grid">
+              <div class="review-choice-card">
+                <div class="review-choice-label">Question source</div>
+                <div class="review-choice-row" aria-label="Review source">
+                  <button class="review-toggle active" type="button" data-review-mode="both">Flagged + Wrong</button>
+                  <button class="review-toggle" type="button" data-review-mode="flagged">Flagged only</button>
+                  <button class="review-toggle" type="button" data-review-mode="wrong">Wrong only</button>
+                </div>
+              </div>
+              <div class="review-choice-card">
+                <div class="review-choice-label">Topic focus</div>
+                <div class="review-choice-row" aria-label="Review topic focus">
+                  <button class="review-toggle active" type="button" data-review-topic-mode="all">All topics</button>
+                  <button class="review-toggle" type="button" data-review-topic-mode="most-wrong">Most wrong topics</button>
+                  <label class="review-topic-select-wrap">
+                    <select class="review-topic-select" id="review-topic-select" aria-label="Choose a single topic focus">
+                      <option value="">Single topic</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="review-focus-summary" id="review-focus-summary">All saved flagged and wrong-answer questions are in view.</div>
               </div>
             </div>
 
@@ -862,7 +1211,7 @@ button,input,select{font:inherit}
               <div class="review-config-bar">
                 <div class="review-config-copy-wrap">
                   <div class="review-config-kicker">Built from your history</div>
-                  <div class="review-config-copy">Turn your flagged and wrong-answer history directly into the next test you should take, with the question amount and timing set before you launch.</div>
+                  <div class="review-config-copy">Choose the size, check the timer, and launch.</div>
                 </div>
                 <div class="review-config-controls">
                   <label class="review-config-field">
@@ -900,7 +1249,7 @@ button,input,select{font:inherit}
             <div class="panel-head">
               <div>
                 <h2 id="library-title">Study guides</h2>
-                <p class="panel-copy" id="library-copy">Search by topic, filter by Math or English, and preview the exact layout before you open a guide or flashcard set.</p>
+                <p class="panel-copy" id="library-copy">Pick one topic and the workspace turns into the full preview.</p>
               </div>
             </div>
 
@@ -947,31 +1296,17 @@ button,input,select{font:inherit}
   <div id="footer-slot"></div>
   <aside class="tutorial-pop hidden" id="study-tutorial-pop" aria-live="polite">
     <div class="tutorial-top">
-      <div>
-        <h3>Quick study tour</h3>
-        <p>This short menu shows how to use the hub the first time you land here.</p>
+      <div class="tutorial-progress">
+        <div class="tutorial-step-label" id="study-tour-step-label">Step 1 of 3</div>
+        <div class="tutorial-dots" id="study-tour-dots"></div>
       </div>
       <button class="tutorial-close" type="button" id="study-tutorial-close" aria-label="Dismiss tutorial">x</button>
     </div>
-    <div class="tutorial-list">
-      <div class="tutorial-item">
-        <div class="intro-num">1</div>
-        <div><strong>Pick a lane</strong><span>Use Review Tests for targeted practice, or switch to guides and flashcards for concept review.</span></div>
-      </div>
-      <div class="tutorial-item">
-        <div class="intro-num">2</div>
-        <div><strong>Use your history</strong><span>Flagged and wrong answers drive the best next test and the topic recommendations below.</span></div>
-      </div>
-      <div class="tutorial-item">
-        <div class="intro-num">3</div>
-        <div><strong>Move fast</strong><span>Use the buttons below to jump straight into the part of the hub you want first.</span></div>
-      </div>
-    </div>
+    <div class="tutorial-body" id="study-tour-body"></div>
     <div class="tutorial-actions">
-      <button class="tutorial-chip" type="button" data-tutorial-tab="review-tests">Review Tests</button>
-      <button class="tutorial-chip" type="button" data-tutorial-tab="study-guides">Study Guides</button>
-      <button class="tutorial-chip" type="button" data-tutorial-tab="flashcards">Flashcards</button>
-      <button class="tutorial-primary" type="button" id="study-tutorial-dismiss">Got it</button>
+      <button class="tutorial-secondary" type="button" id="study-tour-back">Back</button>
+      <button class="tutorial-chip" type="button" id="study-tour-skip">Skip</button>
+      <button class="tutorial-primary" type="button" id="study-tour-next">Show review tests</button>
     </div>
   </aside>
   <script src="/footer-loader.js" defer></script>
@@ -983,6 +1318,26 @@ button,input,select{font:inherit}
     const LOCAL_AUTH_KEY = 'budy_local_auth_user';
     const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
     const STUDY_TUTORIAL_KEY = 'budy_study_tutorial_seen_v1';
+    const STUDY_TOUR_STEPS = [
+      {
+        title: 'Review tests first',
+        copy: 'Start with flagged questions, wrong answers, or both. Then narrow the bank to your most-missed topics.',
+        tab: 'review-tests',
+        cta: 'Show review tests'
+      },
+      {
+        title: 'Guides take over the workspace',
+        copy: 'Pick one topic and the full panel turns into a printable study-guide preview with pages, worked examples, and answer breakdowns.',
+        tab: 'study-guides',
+        cta: 'Show a guide preview'
+      },
+      {
+        title: 'Flashcards print and flip',
+        copy: 'Use the same topic to preview foldable PDF flashcards and the virtual deck with shuffle, restart, next, and back controls.',
+        tab: 'flashcards',
+        cta: 'Show flashcards'
+      }
+    ];
     const QUESTION_BLUEPRINT = {
       reading_writing: {
         'Information and Ideas': ['Inference', 'Central Idea', 'Command of Evidence', 'Quantitative Information in Text and Graphics'],
@@ -1013,7 +1368,15 @@ button,input,select{font:inherit}
       activeTab: 'review-tests',
       topicFilter: 'all',
       topicSearch: '',
-      selectedTopicKey: ''
+      selectedTopicKey: '',
+      reviewMode: 'both',
+      reviewTopicMode: 'all',
+      reviewTopicKey: '',
+      flashcardCount: 8,
+      flashcardIndex: 0,
+      flashcardFace: 'front',
+      flashcardOrder: [],
+      tutorialStep: 0
     };
 
     let normalizedSavedQuestions = [];
@@ -1156,15 +1519,17 @@ button,input,select{font:inherit}
       if (!studyReviewController) {
         studyReviewController = window.BudyReviewBank.mount({
           root: root,
-          getSavedQuestions: function () { return reviewData.savedQuestionsCache; },
+          getSavedQuestions: function () { return getReviewBankSavedQuestions(); },
           getSessions: function () { return reviewData.sessionCache; },
           testUrl: '/?review=1'
         });
+        syncReviewModeWithBuilder();
         return;
       }
 
       if (typeof studyReviewController.refresh === 'function') {
         studyReviewController.refresh();
+        syncReviewModeWithBuilder();
       }
     }
 
@@ -1212,6 +1577,28 @@ button,input,select{font:inherit}
       return Math.min(max, Math.max(min, value));
     }
 
+    function getDefaultTopicLabel(section) {
+      return section === 'math' ? 'Math Foundations' : 'Reading & Writing Foundations';
+    }
+
+    function buildTopicKey(section, label) {
+      return section + ':' + slugify(label);
+    }
+
+    function getQuestionTopicLabel(entry, section) {
+      return String(entry && (entry.skill || entry.domain || getDefaultTopicLabel(section)) || '').trim() || getDefaultTopicLabel(section);
+    }
+
+    function getTopicKeyForRawSavedQuestion(entry) {
+      const section = normalizeSection(entry && entry.section);
+      if (!section || section === 'full') return '';
+      return buildTopicKey(section, getQuestionTopicLabel(entry, section));
+    }
+
+    function getTopicByKey(topicKey) {
+      return topicCatalog.find((topic) => topic.key === topicKey) || null;
+    }
+
     function truncateText(value, maxLength) {
       const text = String(value || '').trim();
       if (text.length <= maxLength) return text;
@@ -1222,7 +1609,7 @@ button,input,select{font:inherit}
       if (!entry || typeof entry !== 'object') return null;
       const section = normalizeSection(entry.section);
       if (!section || section === 'full') return null;
-      const topic = String(entry.skill || entry.domain || (section === 'math' ? 'Math Foundations' : 'Reading & Writing Foundations')).trim();
+      const topic = getQuestionTopicLabel(entry, section);
       return {
         key: String(entry.key || entry.questionId || entry.id || ('saved-' + (index + 1))),
         section: section,
@@ -1436,6 +1823,10 @@ button,input,select{font:inherit}
         .map(normalizeSavedQuestion)
         .filter(Boolean);
       topicCatalog = buildTopicCatalog(normalizedSavedQuestions);
+      if (studyUIState.reviewTopicKey && !topicCatalog.some((topic) => topic.key === studyUIState.reviewTopicKey)) {
+        studyUIState.reviewTopicKey = '';
+        if (studyUIState.reviewTopicMode === 'topic') studyUIState.reviewTopicMode = 'all';
+      }
     }
 
     function getFilteredTopics() {
@@ -1453,14 +1844,142 @@ button,input,select{font:inherit}
       if (studyUIState.activeTab === 'flashcards') {
         return {
           title: 'Flashcards',
-          copy: 'Search by topic, filter by Math or English, and preview the flashcard layout before you jump into a stack.'
+          copy: 'Pick one topic to preview the printable sheet and the virtual stack.'
         };
       }
 
       return {
         title: 'Study guides',
-        copy: 'Search by topic, filter by Math or English, and preview the exact guide layout before you open it.'
+        copy: 'Pick one topic to turn the whole workspace into the guide preview.'
       };
+    }
+
+    function getSuggestedTourTopic() {
+      return topicCatalog.find((topic) => topic.issueCount > 0) || topicCatalog[0] || null;
+    }
+
+    function resetFlashcardSession() {
+      studyUIState.flashcardIndex = 0;
+      studyUIState.flashcardFace = 'front';
+      studyUIState.flashcardOrder = [];
+    }
+
+    function selectTopicPreview(topicKey) {
+      const topic = getTopicByKey(topicKey);
+      if (!topic) return;
+      studyUIState.selectedTopicKey = topic.key;
+      studyUIState.topicFilter = topic.section;
+      studyUIState.topicSearch = '';
+      resetFlashcardSession();
+
+      const searchInput = document.getElementById('topic-search-input');
+      if (searchInput) searchInput.value = '';
+      document.querySelectorAll('[data-topic-filter]').forEach((filterButton) => {
+        filterButton.classList.toggle('active', filterButton.dataset.topicFilter === studyUIState.topicFilter);
+      });
+
+      renderLibraryPanel();
+      focusWorkspace();
+    }
+
+    function exitTopicPreview() {
+      studyUIState.selectedTopicKey = '';
+      resetFlashcardSession();
+      renderLibraryPanel();
+    }
+
+    function getMostWrongTopics(limit) {
+      return topicCatalog
+        .filter((topic) => topic.wrongCount > 0)
+        .sort((left, right) => {
+          if (right.wrongCount !== left.wrongCount) return right.wrongCount - left.wrongCount;
+          if (right.flaggedCount !== left.flaggedCount) return right.flaggedCount - left.flaggedCount;
+          return left.label.localeCompare(right.label);
+        })
+        .slice(0, limit || 5);
+    }
+
+    function getReviewBankSavedQuestions() {
+      const savedQuestions = Array.isArray(reviewData.savedQuestionsCache) ? reviewData.savedQuestionsCache.slice() : [];
+      if (studyUIState.reviewTopicMode === 'topic' && studyUIState.reviewTopicKey) {
+        return savedQuestions.filter((entry) => getTopicKeyForRawSavedQuestion(entry) === studyUIState.reviewTopicKey);
+      }
+
+      if (studyUIState.reviewTopicMode === 'most-wrong') {
+        const topKeys = new Set(getMostWrongTopics(5).map((topic) => topic.key));
+        if (!topKeys.size) return savedQuestions;
+        return savedQuestions.filter((entry) => topKeys.has(getTopicKeyForRawSavedQuestion(entry)));
+      }
+
+      return savedQuestions;
+    }
+
+    function syncReviewModeWithBuilder() {
+      const flaggedInput = document.querySelector('[data-review-filter="flagged"]');
+      const wrongInput = document.querySelector('[data-review-filter="wrong"]');
+      const wantsFlagged = studyUIState.reviewMode === 'flagged' || studyUIState.reviewMode === 'both';
+      const wantsWrong = studyUIState.reviewMode === 'wrong' || studyUIState.reviewMode === 'both';
+
+      if (flaggedInput && flaggedInput.checked !== wantsFlagged) {
+        flaggedInput.checked = wantsFlagged;
+        flaggedInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      if (wrongInput && wrongInput.checked !== wantsWrong) {
+        wrongInput.checked = wantsWrong;
+        wrongInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+
+    function renderReviewFocusControls() {
+      document.querySelectorAll('[data-review-mode]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.reviewMode === studyUIState.reviewMode);
+      });
+      document.querySelectorAll('[data-review-topic-mode]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.reviewTopicMode === studyUIState.reviewTopicMode);
+      });
+
+      const select = document.getElementById('review-topic-select');
+      if (select) {
+        const currentValue = studyUIState.reviewTopicKey;
+        select.replaceChildren();
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Single topic';
+        select.appendChild(placeholder);
+
+        topicCatalog
+          .filter((topic) => topic.issueCount > 0 || topic.questions.length)
+          .slice()
+          .sort((left, right) => {
+            if (right.issueCount !== left.issueCount) return right.issueCount - left.issueCount;
+            return left.label.localeCompare(right.label);
+          })
+          .forEach((topic) => {
+            const option = document.createElement('option');
+            option.value = topic.key;
+            option.textContent = sectionLabel(topic.section) + ' - ' + topic.label;
+            select.appendChild(option);
+          });
+
+        select.value = topicCatalog.some((topic) => topic.key === currentValue) ? currentValue : '';
+      }
+
+      const summary = document.getElementById('review-focus-summary');
+      if (summary) {
+        if (studyUIState.reviewTopicMode === 'topic' && studyUIState.reviewTopicKey) {
+          const topic = getTopicByKey(studyUIState.reviewTopicKey);
+          summary.textContent = topic
+            ? ('Focused on ' + topic.label + ' with ' + topic.wrongCount + ' wrong answers and ' + topic.flaggedCount + ' flagged questions.')
+            : 'Pick a topic to narrow the review test.';
+        } else if (studyUIState.reviewTopicMode === 'most-wrong') {
+          const mostWrong = getMostWrongTopics(3);
+          summary.textContent = mostWrong.length
+            ? ('Focused on your most-missed topics: ' + mostWrong.map((topic) => topic.label).join(', ') + '.')
+            : 'No wrong-answer topic history yet, so all topics stay in view.';
+        } else {
+          summary.textContent = 'All saved flagged and wrong-answer questions are in view.';
+        }
+      }
     }
 
     function updateMenuTabs() {
@@ -1522,8 +2041,7 @@ button,input,select{font:inherit}
         const card = document.createElement('article');
         card.className = 'topic-card' + (studyUIState.selectedTopicKey === topic.key ? ' active' : '');
         card.addEventListener('click', function () {
-          studyUIState.selectedTopicKey = studyUIState.selectedTopicKey === topic.key ? '' : topic.key;
-          renderLibraryPanel();
+          selectTopicPreview(topic.key);
         });
 
         const top = document.createElement('div');
@@ -1571,12 +2089,435 @@ button,input,select{font:inherit}
 
         card.appendChild(stats);
         card.appendChild(createTopicPreviewButton(studyUIState.activeTab === 'flashcards' ? 'Preview flashcards' : 'Preview study guide', function () {
-          studyUIState.selectedTopicKey = topic.key;
-          renderLibraryPanel();
+          selectTopicPreview(topic.key);
         }));
 
         list.appendChild(card);
       });
+    }
+
+    function buildGuidePreviewPages(topic) {
+      return [
+        { page: 'Page 1', title: 'Core skill', text: topic.label + ' foundations and the main pattern to notice first.' },
+        { page: 'Page 2', title: 'Key moves', text: topic.guidePoints[0] || 'Short rules and reminders for this topic.' },
+        { page: 'Page 3', title: 'Worked example 1', text: 'A clean example that shows the correct setup before timing pressure.' },
+        { page: 'Page 4', title: 'Worked example 2', text: 'A second example with the common trap called out next to it.' },
+        { page: 'Page 5', title: 'Answer breakdown', text: 'Why the right answer works and why the wrong answer choices fail.' }
+      ];
+    }
+
+    function buildGuideReasoning(topic) {
+      if (topic.section === 'math') {
+        return {
+          correct: 'The correct answer keeps the setup aligned with the condition in the question and checks the final value before moving on.',
+          wrong: 'Wrong answers usually come from solving too early, dropping a condition, or stopping before verifying the value in context.'
+        };
+      }
+
+      return {
+        correct: 'The correct answer matches the exact evidence, sentence logic, or grammar relationship the question is testing.',
+        wrong: 'Wrong answers usually sound smooth but shift the meaning, miss the line evidence, or break the sentence structure.'
+      };
+    }
+
+    function buildGuideHighlightList(topic) {
+      return [
+        topic.guidePoints[0] || 'Start with the main pattern this topic is testing.',
+        topic.guidePoints[1] || 'Work one clean example before you speed up.',
+        topic.guidePoints[2] || 'Use the answer explanation to check why the trap fails.'
+      ];
+    }
+
+    function buildFlashcardDeck(topic) {
+      const deck = [
+        {
+          label: 'Core topic',
+          front: topic.label,
+          back: topic.summary
+        },
+        {
+          label: 'Main move',
+          front: topic.section === 'math' ? 'What do you set up first?' : 'What do you prove first?',
+          back: topic.guidePoints[0] || 'Start with the core pattern before you touch the answer choices.'
+        },
+        {
+          label: 'Common trap',
+          front: 'What usually goes wrong?',
+          back: topic.section === 'math'
+            ? 'Dropping a condition, rushing the algebra, or skipping the final check.'
+            : 'Choosing what sounds right instead of what the evidence or grammar actually proves.'
+        },
+        {
+          label: 'Match up',
+          front: 'Match the main idea to the move.',
+          back: topic.section === 'math'
+            ? 'Topic -> setup -> solve -> verify.'
+            : 'Topic -> evidence -> eliminate traps -> verify.'
+        }
+      ];
+
+      topic.questions.slice(0, 8).forEach((question, index) => {
+        deck.push({
+          label: 'Question cue ' + (index + 1),
+          front: truncateText(question.prompt, 100),
+          back: (question.correctAnswer ? ('Correct answer: ' + question.correctAnswer + '. ') : '') + (topic.section === 'math'
+            ? 'Rebuild the setup, solve carefully, and check the condition one more time.'
+            : 'Find the exact clue in the text or sentence that proves the answer.')
+        });
+      });
+
+      if (deck.length < 6) {
+        deck.push({
+          label: 'Quick check',
+          front: 'How do you know you are done?',
+          back: topic.section === 'math' ? 'The value fits the condition and the units still make sense.' : 'The answer is backed by the exact line, phrase, or grammar rule.'
+        });
+        deck.push({
+          label: 'Confidence check',
+          front: 'What should feel obvious before you move on?',
+          back: topic.status + ' is the signal. If the logic still feels fuzzy, review the guide page plan first.'
+        });
+      }
+
+      return deck.slice(0, 12);
+    }
+
+    function shuffleFlashcardOrder(deckLength) {
+      const order = Array.from({ length: deckLength }, function (_, index) { return index; });
+      for (let index = order.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        const current = order[index];
+        order[index] = order[swapIndex];
+        order[swapIndex] = current;
+      }
+      studyUIState.flashcardOrder = order;
+      studyUIState.flashcardIndex = 0;
+      studyUIState.flashcardFace = 'front';
+    }
+
+    function getVisibleFlashcards(topic) {
+      const deck = buildFlashcardDeck(topic);
+      const safeCount = clamp(Number(studyUIState.flashcardCount || 8), 1, deck.length || 1);
+      studyUIState.flashcardCount = safeCount;
+
+      if (!Array.isArray(studyUIState.flashcardOrder) || studyUIState.flashcardOrder.length !== deck.length) {
+        studyUIState.flashcardOrder = Array.from({ length: deck.length }, function (_, index) { return index; });
+      }
+
+      const visibleDeck = studyUIState.flashcardOrder
+        .slice(0, safeCount)
+        .map((index) => deck[index])
+        .filter(Boolean);
+
+      studyUIState.flashcardIndex = clamp(studyUIState.flashcardIndex, 0, Math.max(0, visibleDeck.length - 1));
+      return { deck: deck, visibleDeck: visibleDeck };
+    }
+
+    function renderGuidePreview(detail, topic) {
+      const shell = document.createElement('div');
+      shell.className = 'preview-shell';
+
+      const backButton = document.createElement('button');
+      backButton.type = 'button';
+      backButton.className = 'preview-back';
+      backButton.textContent = 'Back to topics';
+      backButton.addEventListener('click', exitTopicPreview);
+      shell.appendChild(backButton);
+
+      const hero = document.createElement('section');
+      hero.className = 'preview-hero';
+      const kicker = document.createElement('div');
+      kicker.className = 'topic-detail-kicker';
+      kicker.textContent = 'Printable Study Guide';
+      const title = document.createElement('h3');
+      title.textContent = topic.label;
+      const copy = document.createElement('p');
+      copy.textContent = 'This preview represents a 4 to 6 page PDF guide with the core skill, worked examples, and the answer breakdown students need before they go back into timed practice.';
+      const meta = document.createElement('div');
+      meta.className = 'preview-meta';
+      ['PDF preview', '5 pages', sectionLabel(topic.section), topic.domain || 'Core topic'].forEach((label) => {
+        const chip = document.createElement('div');
+        chip.className = 'preview-chip';
+        chip.textContent = label;
+        meta.appendChild(chip);
+      });
+      hero.appendChild(kicker);
+      hero.appendChild(title);
+      hero.appendChild(copy);
+      hero.appendChild(meta);
+      shell.appendChild(hero);
+
+      const pageStrip = document.createElement('div');
+      pageStrip.className = 'guide-page-strip';
+      buildGuidePreviewPages(topic).forEach((page) => {
+        const card = document.createElement('article');
+        card.className = 'guide-page-card';
+        const pageLabel = document.createElement('span');
+        pageLabel.textContent = page.page;
+        const pageTitle = document.createElement('strong');
+        pageTitle.textContent = page.title;
+        const pageCopy = document.createElement('p');
+        pageCopy.textContent = page.text;
+        card.appendChild(pageLabel);
+        card.appendChild(pageTitle);
+        card.appendChild(pageCopy);
+        pageStrip.appendChild(card);
+      });
+      shell.appendChild(pageStrip);
+
+      const layout = document.createElement('div');
+      layout.className = 'guide-preview-layout';
+
+      const left = document.createElement('div');
+      left.className = 'guide-preview-stack';
+
+      const focusCard = document.createElement('article');
+      focusCard.className = 'guide-preview-card';
+      const focusLabel = document.createElement('span');
+      focusLabel.textContent = 'What the PDF covers';
+      const focusTitle = document.createElement('strong');
+      focusTitle.textContent = 'Highlighted ideas first';
+      const focusList = document.createElement('ul');
+      focusList.className = 'guide-bullets';
+      buildGuideHighlightList(topic).forEach((point) => {
+        const item = document.createElement('li');
+        item.textContent = point;
+        focusList.appendChild(item);
+      });
+      focusCard.appendChild(focusLabel);
+      focusCard.appendChild(focusTitle);
+      focusCard.appendChild(focusList);
+      left.appendChild(focusCard);
+
+      const feedbackCard = document.createElement('article');
+      feedbackCard.className = 'guide-preview-card';
+      const feedbackLabel = document.createElement('span');
+      feedbackLabel.textContent = 'Answer breakdown';
+      const feedbackTitle = document.createElement('strong');
+      feedbackTitle.textContent = 'Why the right answer wins';
+      const reasoning = buildGuideReasoning(topic);
+      const correct = document.createElement('div');
+      correct.className = 'guide-callout';
+      correct.innerHTML = '<strong>Correct answer</strong><p>' + reasoning.correct + '</p>';
+      const wrong = document.createElement('div');
+      wrong.className = 'guide-callout';
+      wrong.innerHTML = '<strong>Wrong answers</strong><p>' + reasoning.wrong + '</p>';
+      feedbackCard.appendChild(feedbackLabel);
+      feedbackCard.appendChild(feedbackTitle);
+      feedbackCard.appendChild(correct);
+      feedbackCard.appendChild(wrong);
+      left.appendChild(feedbackCard);
+
+      const right = document.createElement('div');
+      right.className = 'guide-example-stack';
+
+      const exampleCard = document.createElement('article');
+      exampleCard.className = 'guide-preview-card';
+      const exampleLabel = document.createElement('span');
+      exampleLabel.textContent = 'Example question';
+      const exampleTitle = document.createElement('strong');
+      exampleTitle.textContent = topic.sampleQuestion || 'This guide opens with one representative question from the topic.';
+      const exampleCopy = document.createElement('p');
+      exampleCopy.textContent = 'The PDF walks through the setup, highlights the trap, and ends with the exact reason the credited answer is correct.';
+      exampleCard.appendChild(exampleLabel);
+      exampleCard.appendChild(exampleTitle);
+      exampleCard.appendChild(exampleCopy);
+      right.appendChild(exampleCard);
+
+      const signalCard = document.createElement('article');
+      signalCard.className = 'guide-preview-card';
+      const signalLabel = document.createElement('span');
+      signalLabel.textContent = 'Topic signal';
+      const signalTitle = document.createElement('strong');
+      signalTitle.textContent = topic.flaggedCount + ' flagged · ' + topic.wrongCount + ' wrong';
+      const signalCopy = document.createElement('p');
+      signalCopy.textContent = topic.latestDate
+        ? ('Latest miss recorded on ' + formatDisplayDate(topic.latestDate) + '.')
+        : 'No saved misses yet. This guide is ready as a baseline study sheet.';
+      signalCard.appendChild(signalLabel);
+      signalCard.appendChild(signalTitle);
+      signalCard.appendChild(signalCopy);
+      right.appendChild(signalCard);
+
+      layout.appendChild(left);
+      layout.appendChild(right);
+      shell.appendChild(layout);
+      detail.appendChild(shell);
+    }
+
+    function renderFlashcardPreview(detail, topic) {
+      const shell = document.createElement('div');
+      shell.className = 'preview-shell';
+      const flashcardState = getVisibleFlashcards(topic);
+
+      const backButton = document.createElement('button');
+      backButton.type = 'button';
+      backButton.className = 'preview-back';
+      backButton.textContent = 'Back to topics';
+      backButton.addEventListener('click', exitTopicPreview);
+      shell.appendChild(backButton);
+
+      const hero = document.createElement('section');
+      hero.className = 'preview-hero';
+      const kicker = document.createElement('div');
+      kicker.className = 'topic-detail-kicker';
+      kicker.textContent = 'Printable + Virtual Flashcards';
+      const title = document.createElement('h3');
+      title.textContent = topic.label;
+      const copy = document.createElement('p');
+      copy.textContent = 'These cards are built around the topic bank, printable in a foldable PDF layout, and available in a virtual stack with shuffle, restart, skip, and back controls.';
+      const meta = document.createElement('div');
+      meta.className = 'preview-meta';
+      ['Foldable PDF', 'Virtual deck', sectionLabel(topic.section), 'Match-up cards included'].forEach((label) => {
+        const chip = document.createElement('div');
+        chip.className = 'preview-chip';
+        chip.textContent = label;
+        meta.appendChild(chip);
+      });
+      hero.appendChild(kicker);
+      hero.appendChild(title);
+      hero.appendChild(copy);
+      hero.appendChild(meta);
+      shell.appendChild(hero);
+
+      const countRow = document.createElement('div');
+      countRow.className = 'flashcard-count-row';
+      [4, 6, 8, 10, 12].forEach((count) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'flashcard-count' + (studyUIState.flashcardCount === count ? ' active' : '');
+        button.textContent = count + ' cards';
+        button.addEventListener('click', function () {
+          studyUIState.flashcardCount = count;
+          studyUIState.flashcardIndex = 0;
+          studyUIState.flashcardFace = 'front';
+          renderLibraryPanel();
+        });
+        countRow.appendChild(button);
+      });
+      shell.appendChild(countRow);
+
+      const layout = document.createElement('div');
+      layout.className = 'flashcard-preview-layout';
+
+      const printable = document.createElement('section');
+      printable.className = 'flashcard-sheet';
+      const printLabel = document.createElement('span');
+      printLabel.textContent = 'Foldable PDF sheet';
+      const printTitle = document.createElement('strong');
+      printTitle.textContent = 'Front on the left, explanation on the right';
+      const printCopy = document.createElement('p');
+      printCopy.textContent = 'Each row folds down the middle, so students can print one page and fold the cards without using a double-sided printer.';
+      const sheetGrid = document.createElement('div');
+      sheetGrid.className = 'flashcard-sheet-grid';
+      flashcardState.visibleDeck.slice(0, 4).forEach((cardData) => {
+        const row = document.createElement('article');
+        row.className = 'flashcard-sheet-row';
+
+        const front = document.createElement('div');
+        front.className = 'flashcard-sheet-front';
+        front.innerHTML = '<span>Front</span><strong>' + cardData.front + '</strong>';
+
+        const back = document.createElement('div');
+        back.className = 'flashcard-sheet-back';
+        back.innerHTML = '<span>Back</span><p>' + cardData.back + '</p>';
+
+        row.appendChild(front);
+        row.appendChild(back);
+        sheetGrid.appendChild(row);
+      });
+
+      printable.appendChild(printLabel);
+      printable.appendChild(printTitle);
+      printable.appendChild(printCopy);
+      printable.appendChild(sheetGrid);
+      layout.appendChild(printable);
+
+      const virtual = document.createElement('section');
+      virtual.className = 'virtual-deck';
+      const virtualMeta = document.createElement('div');
+      virtualMeta.className = 'virtual-meta';
+      virtualMeta.innerHTML = '<span>Virtual deck</span><strong>' + (studyUIState.flashcardIndex + 1) + ' / ' + flashcardState.visibleDeck.length + '</strong>';
+      virtual.appendChild(virtualMeta);
+
+      const currentCard = flashcardState.visibleDeck[studyUIState.flashcardIndex] || flashcardState.visibleDeck[0];
+      const card = document.createElement('article');
+      card.className = 'virtual-card';
+      const cardLabel = document.createElement('span');
+      cardLabel.textContent = currentCard ? currentCard.label : 'Flashcard';
+      const cardTitle = document.createElement('strong');
+      cardTitle.textContent = currentCard ? (studyUIState.flashcardFace === 'front' ? currentCard.front : currentCard.back) : 'No flashcards available yet.';
+      const cardCopy = document.createElement('p');
+      cardCopy.textContent = currentCard
+        ? (studyUIState.flashcardFace === 'front' ? 'Front side' : 'Back side')
+        : 'Pick a different topic to load more cards.';
+      card.appendChild(cardLabel);
+      card.appendChild(cardTitle);
+      card.appendChild(cardCopy);
+      virtual.appendChild(card);
+
+      const controls = document.createElement('div');
+      controls.className = 'virtual-controls';
+
+      const prev = document.createElement('button');
+      prev.type = 'button';
+      prev.className = 'virtual-control';
+      prev.textContent = 'Back';
+      prev.disabled = studyUIState.flashcardIndex === 0;
+      prev.addEventListener('click', function () {
+        studyUIState.flashcardIndex = clamp(studyUIState.flashcardIndex - 1, 0, Math.max(0, flashcardState.visibleDeck.length - 1));
+        studyUIState.flashcardFace = 'front';
+        renderLibraryPanel();
+      });
+      controls.appendChild(prev);
+
+      const flip = document.createElement('button');
+      flip.type = 'button';
+      flip.className = 'virtual-control primary';
+      flip.textContent = studyUIState.flashcardFace === 'front' ? 'Flip card' : 'Show front';
+      flip.addEventListener('click', function () {
+        studyUIState.flashcardFace = studyUIState.flashcardFace === 'front' ? 'back' : 'front';
+        renderLibraryPanel();
+      });
+      controls.appendChild(flip);
+
+      const next = document.createElement('button');
+      next.type = 'button';
+      next.className = 'virtual-control';
+      next.textContent = 'Skip';
+      next.disabled = studyUIState.flashcardIndex >= flashcardState.visibleDeck.length - 1;
+      next.addEventListener('click', function () {
+        studyUIState.flashcardIndex = clamp(studyUIState.flashcardIndex + 1, 0, Math.max(0, flashcardState.visibleDeck.length - 1));
+        studyUIState.flashcardFace = 'front';
+        renderLibraryPanel();
+      });
+      controls.appendChild(next);
+
+      const shuffle = document.createElement('button');
+      shuffle.type = 'button';
+      shuffle.className = 'virtual-control';
+      shuffle.textContent = 'Shuffle';
+      shuffle.addEventListener('click', function () {
+        shuffleFlashcardOrder(flashcardState.deck.length);
+        renderLibraryPanel();
+      });
+      controls.appendChild(shuffle);
+
+      const restart = document.createElement('button');
+      restart.type = 'button';
+      restart.className = 'virtual-control';
+      restart.textContent = 'Restart';
+      restart.addEventListener('click', function () {
+        resetFlashcardSession();
+        renderLibraryPanel();
+      });
+      controls.appendChild(restart);
+
+      virtual.appendChild(controls);
+      layout.appendChild(virtual);
+
+      shell.appendChild(layout);
+      detail.appendChild(shell);
     }
 
     function renderTopicDetail(topic) {
@@ -1592,135 +2533,12 @@ button,input,select{font:inherit}
       detail.classList.remove('hidden');
       detail.replaceChildren();
 
-      const head = document.createElement('div');
-      head.className = 'topic-detail-head';
-
-      const headCopy = document.createElement('div');
-      const kicker = document.createElement('div');
-      kicker.className = 'topic-detail-kicker';
-      kicker.textContent = studyUIState.activeTab === 'flashcards' ? 'Flashcard Preview' : 'Study Guide Preview';
-      const title = document.createElement('h3');
-      title.textContent = topic.label;
-      const copy = document.createElement('p');
-      copy.textContent = topic.summary;
-      headCopy.appendChild(kicker);
-      headCopy.appendChild(title);
-      headCopy.appendChild(copy);
-
-      const actions = document.createElement('div');
-      actions.className = 'topic-detail-actions';
-
-      const reviewButton = document.createElement('button');
-      reviewButton.type = 'button';
-      reviewButton.className = 'detail-action';
-      reviewButton.textContent = 'Use in review tests';
-      reviewButton.addEventListener('click', function () {
-        studyUIState.activeTab = 'review-tests';
-        updateMenuTabs();
-        focusWorkspace();
-      });
-      actions.appendChild(reviewButton);
-
-      const altButton = document.createElement('button');
-      altButton.type = 'button';
-      altButton.className = 'detail-action';
-      altButton.textContent = studyUIState.activeTab === 'flashcards' ? 'Switch to study guide' : 'Switch to flashcards';
-      altButton.addEventListener('click', function () {
-        studyUIState.activeTab = studyUIState.activeTab === 'flashcards' ? 'study-guides' : 'flashcards';
-        updateMenuTabs();
-        renderLibraryPanel();
-      });
-      actions.appendChild(altButton);
-
-      head.appendChild(headCopy);
-      head.appendChild(actions);
-      detail.appendChild(head);
-
       if (studyUIState.activeTab === 'flashcards') {
-        const flashcardStack = document.createElement('div');
-        flashcardStack.className = 'flashcard-stack';
-        topic.flashcards.forEach((cardData) => {
-          const card = document.createElement('article');
-          card.className = 'flashcard-item';
-
-          const label = document.createElement('div');
-          label.className = 'flashcard-label';
-          label.textContent = cardData.label;
-
-          const front = document.createElement('div');
-          front.className = 'flashcard-front';
-          front.textContent = cardData.front;
-
-          const back = document.createElement('div');
-          back.className = 'flashcard-back';
-          back.textContent = cardData.back;
-
-          card.appendChild(label);
-          card.appendChild(front);
-          card.appendChild(back);
-          flashcardStack.appendChild(card);
-        });
-        detail.appendChild(flashcardStack);
+        renderFlashcardPreview(detail, topic);
         return;
       }
 
-      const guideGrid = document.createElement('div');
-      guideGrid.className = 'guide-grid';
-
-      const focusBlock = document.createElement('article');
-      focusBlock.className = 'guide-block';
-      const focusTitle = document.createElement('h4');
-      focusTitle.textContent = 'What to study first';
-      focusBlock.appendChild(focusTitle);
-      const focusList = document.createElement('div');
-      focusList.className = 'guide-list';
-      topic.guidePoints.forEach((point) => {
-        const item = document.createElement('div');
-        item.className = 'guide-list-item';
-        item.textContent = point;
-        focusList.appendChild(item);
-      });
-      focusBlock.appendChild(focusList);
-      guideGrid.appendChild(focusBlock);
-
-      const feedbackBlock = document.createElement('article');
-      feedbackBlock.className = 'guide-block';
-      const feedbackTitle = document.createElement('h4');
-      feedbackTitle.textContent = 'Wrong-answer feedback';
-      feedbackBlock.appendChild(feedbackTitle);
-      const feedbackList = document.createElement('div');
-      feedbackList.className = 'guide-list';
-
-      const issueSummary = document.createElement('div');
-      issueSummary.className = 'guide-list-item';
-      issueSummary.innerHTML = '<strong>Current read:</strong> ' + topic.flaggedCount + ' flagged and ' + topic.wrongCount + ' wrong answers are tied to this topic.';
-      feedbackList.appendChild(issueSummary);
-
-      const latestSeen = document.createElement('div');
-      latestSeen.className = 'guide-list-item';
-      latestSeen.innerHTML = '<strong>Latest signal:</strong> ' + (topic.latestDate ? ('Seen on ' + formatDisplayDate(topic.latestDate) + '.') : 'No recent flagged or wrong-answer history yet.');
-      feedbackList.appendChild(latestSeen);
-
-      feedbackBlock.appendChild(feedbackList);
-      guideGrid.appendChild(feedbackBlock);
-
-      const sampleBlock = document.createElement('article');
-      sampleBlock.className = 'guide-block';
-      const sampleTitle = document.createElement('h4');
-      sampleTitle.textContent = 'Sample question';
-      sampleBlock.appendChild(sampleTitle);
-      const sample = document.createElement('div');
-      sample.className = 'sample-question';
-      const sampleStrong = document.createElement('strong');
-      sampleStrong.textContent = sectionLabel(topic.section) + ' focus';
-      const sampleText = document.createElement('span');
-      sampleText.textContent = topic.sampleQuestion || 'Use this guide to rebuild the topic before you re-enter timed practice.';
-      sample.appendChild(sampleStrong);
-      sample.appendChild(sampleText);
-      sampleBlock.appendChild(sample);
-      guideGrid.appendChild(sampleBlock);
-
-      detail.appendChild(guideGrid);
+      renderGuidePreview(detail, topic);
     }
 
     function renderLibraryPanel() {
@@ -1728,6 +2546,7 @@ button,input,select{font:inherit}
       const copy = document.getElementById('library-copy');
       const summary = document.getElementById('topic-summary');
       const libraryBody = document.querySelector('.library-body');
+      const libraryPanel = document.getElementById('menu-panel-library');
       const config = getLibraryConfig();
       const filteredTopics = getFilteredTopics();
       const selectedTopic = ensureSelectedTopic(filteredTopics);
@@ -1736,6 +2555,7 @@ button,input,select{font:inherit}
       if (copy) copy.textContent = config.copy;
       if (summary) summary.textContent = filteredTopics.length + ' topic' + (filteredTopics.length === 1 ? '' : 's') + ' in view';
       if (libraryBody) libraryBody.classList.toggle('detail-open', Boolean(selectedTopic));
+      if (libraryPanel) libraryPanel.classList.toggle('preview-active', Boolean(selectedTopic));
 
       renderTopicList(filteredTopics);
       renderTopicDetail(selectedTopic);
@@ -1900,7 +2720,15 @@ button,input,select{font:inherit}
 
     function openTopicView(tab, topicKey) {
       studyUIState.activeTab = tab;
-      if (topicKey) studyUIState.selectedTopicKey = topicKey;
+      if (topicKey) {
+        const topic = getTopicByKey(topicKey);
+        if (topic) {
+          studyUIState.topicFilter = topic.section;
+          studyUIState.topicSearch = '';
+        }
+        studyUIState.selectedTopicKey = topicKey;
+        resetFlashcardSession();
+      }
       updateMenuTabs();
       renderLibraryPanel();
       focusWorkspace();
@@ -1987,6 +2815,7 @@ button,input,select{font:inherit}
 
     function renderStudyWorkspace() {
       updateMenuTabs();
+      renderReviewFocusControls();
       renderLibraryPanel();
       renderRecentTests();
       renderRecommendedTopics();
@@ -2001,8 +2830,38 @@ button,input,select{font:inherit}
           if (studyUIState.activeTab !== 'review-tests') {
             renderLibraryPanel();
           }
+          focusWorkspace();
         });
       });
+    }
+
+    function renderStudyTutorial() {
+      const body = document.getElementById('study-tour-body');
+      const dots = document.getElementById('study-tour-dots');
+      const label = document.getElementById('study-tour-step-label');
+      const next = document.getElementById('study-tour-next');
+      const back = document.getElementById('study-tour-back');
+      if (!body || !dots || !label || !next || !back) return;
+
+      const currentStep = STUDY_TOUR_STEPS[studyUIState.tutorialStep] || STUDY_TOUR_STEPS[0];
+      label.textContent = 'Step ' + (studyUIState.tutorialStep + 1) + ' of ' + STUDY_TOUR_STEPS.length;
+      dots.replaceChildren();
+      STUDY_TOUR_STEPS.forEach(function (_, index) {
+        const dot = document.createElement('div');
+        dot.className = 'tutorial-dot' + (index === studyUIState.tutorialStep ? ' active' : '');
+        dots.appendChild(dot);
+      });
+
+      body.replaceChildren();
+      const title = document.createElement('h3');
+      title.textContent = currentStep.title;
+      const copy = document.createElement('p');
+      copy.textContent = currentStep.copy;
+      body.appendChild(title);
+      body.appendChild(copy);
+
+      next.textContent = studyUIState.tutorialStep === STUDY_TOUR_STEPS.length - 1 ? 'Finish tour' : currentStep.cta;
+      back.disabled = studyUIState.tutorialStep === 0;
     }
 
     function dismissStudyTutorial() {
@@ -2026,22 +2885,82 @@ button,input,select{font:inherit}
         tutorial.classList.remove('hidden');
       }
 
-      const closeButton = document.getElementById('study-tutorial-close');
-      const dismissButton = document.getElementById('study-tutorial-dismiss');
-      if (closeButton) closeButton.addEventListener('click', dismissStudyTutorial);
-      if (dismissButton) dismissButton.addEventListener('click', dismissStudyTutorial);
+      renderStudyTutorial();
 
-      tutorial.querySelectorAll('[data-tutorial-tab]').forEach((button) => {
-        button.addEventListener('click', function () {
-          studyUIState.activeTab = button.dataset.tutorialTab || 'review-tests';
-          updateMenuTabs();
-          if (studyUIState.activeTab !== 'review-tests') {
+      const closeButton = document.getElementById('study-tutorial-close');
+      const backButton = document.getElementById('study-tour-back');
+      const skipButton = document.getElementById('study-tour-skip');
+      const nextButton = document.getElementById('study-tour-next');
+      if (closeButton) closeButton.addEventListener('click', dismissStudyTutorial);
+      if (skipButton) skipButton.addEventListener('click', dismissStudyTutorial);
+      if (backButton) {
+        backButton.addEventListener('click', function () {
+          studyUIState.tutorialStep = clamp(studyUIState.tutorialStep - 1, 0, STUDY_TOUR_STEPS.length - 1);
+          renderStudyTutorial();
+        });
+      }
+      if (nextButton) {
+        nextButton.addEventListener('click', function () {
+          const step = STUDY_TOUR_STEPS[studyUIState.tutorialStep];
+          const previewTopic = getSuggestedTourTopic();
+
+          if (step && step.tab === 'review-tests') {
+            studyUIState.activeTab = 'review-tests';
+            updateMenuTabs();
+            focusWorkspace();
+          } else if (step && previewTopic) {
+            openTopicView(step.tab, previewTopic.key);
+          } else if (step) {
+            studyUIState.activeTab = step.tab;
+            updateMenuTabs();
             renderLibraryPanel();
+            focusWorkspace();
           }
-          dismissStudyTutorial();
-          focusWorkspace();
+
+          if (studyUIState.tutorialStep >= STUDY_TOUR_STEPS.length - 1) {
+            dismissStudyTutorial();
+            return;
+          }
+
+          studyUIState.tutorialStep += 1;
+          renderStudyTutorial();
+        });
+      }
+    }
+
+    function bindReviewFocusControls() {
+      document.querySelectorAll('[data-review-mode]').forEach((button) => {
+        button.addEventListener('click', function () {
+          studyUIState.reviewMode = button.dataset.reviewMode || 'both';
+          renderReviewFocusControls();
+          syncReviewModeWithBuilder();
         });
       });
+
+      document.querySelectorAll('[data-review-topic-mode]').forEach((button) => {
+        button.addEventListener('click', function () {
+          studyUIState.reviewTopicMode = button.dataset.reviewTopicMode || 'all';
+          if (studyUIState.reviewTopicMode !== 'topic') {
+            studyUIState.reviewTopicKey = '';
+          }
+          renderReviewFocusControls();
+          if (studyReviewController && typeof studyReviewController.refresh === 'function') {
+            studyReviewController.refresh();
+          }
+        });
+      });
+
+      const topicSelect = document.getElementById('review-topic-select');
+      if (topicSelect) {
+        topicSelect.addEventListener('change', function () {
+          studyUIState.reviewTopicKey = topicSelect.value || '';
+          studyUIState.reviewTopicMode = studyUIState.reviewTopicKey ? 'topic' : 'all';
+          renderReviewFocusControls();
+          if (studyReviewController && typeof studyReviewController.refresh === 'function') {
+            studyReviewController.refresh();
+          }
+        });
+      }
     }
 
     function bindTopicControls() {
@@ -2049,6 +2968,7 @@ button,input,select{font:inherit}
       if (searchInput) {
         searchInput.addEventListener('input', function () {
           studyUIState.topicSearch = searchInput.value || '';
+          if (studyUIState.selectedTopicKey) studyUIState.selectedTopicKey = '';
           renderLibraryPanel();
         });
       }
@@ -2056,6 +2976,7 @@ button,input,select{font:inherit}
       document.querySelectorAll('[data-topic-filter]').forEach((button) => {
         button.addEventListener('click', function () {
           studyUIState.topicFilter = button.dataset.topicFilter || 'all';
+          if (studyUIState.selectedTopicKey) studyUIState.selectedTopicKey = '';
           document.querySelectorAll('[data-topic-filter]').forEach((filterButton) => {
             filterButton.classList.toggle('active', filterButton.dataset.topicFilter === studyUIState.topicFilter);
           });
@@ -2069,6 +2990,7 @@ button,input,select{font:inherit}
       await Promise.all([hydrateReviewSessions(), hydrateReviewSavedQuestions()]);
       refreshStudyDataModel();
       bindStudyTabs();
+      bindReviewFocusControls();
       bindTopicControls();
       bindStudyTutorial();
       renderStudyWorkspace();
