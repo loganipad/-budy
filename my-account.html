@@ -645,6 +645,159 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 16px;
 }
 
+.dashboard-tour {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  width: min(360px, calc(100% - 32px));
+  z-index: 1950;
+  border-radius: 26px;
+  padding: 18px;
+  background: rgba(17, 24, 39, .96);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 26px 60px rgba(0,0,0,.36);
+  backdrop-filter: blur(16px);
+}
+
+.dashboard-tour.hidden {
+  display: none;
+}
+
+.dashboard-tour::after {
+  content: '';
+  position: absolute;
+  left: 34px;
+  bottom: -10px;
+  width: 22px;
+  height: 22px;
+  background: rgba(17, 24, 39, .96);
+  border-left: 1px solid rgba(255,255,255,.12);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  transform: rotate(45deg);
+}
+
+.dashboard-tour-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dashboard-tour-guide {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1 1 auto;
+}
+
+.dashboard-tour-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  object-fit: cover;
+  background: linear-gradient(180deg, rgba(59,130,246,.22) 0%, rgba(245,158,11,.16) 100%);
+  box-shadow: 0 14px 30px rgba(0,0,0,.24);
+}
+
+.dashboard-tour-meta {
+  display: grid;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+
+.dashboard-tour-name {
+  font-size: .92rem;
+  font-weight: 800;
+  color: #f8fbff;
+}
+
+.dashboard-tour-step {
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #93c5fd;
+}
+
+.dashboard-tour-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dashboard-tour-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.18);
+}
+
+.dashboard-tour-dot.active {
+  background: #60a5fa;
+}
+
+.dashboard-tour-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: rgba(240,244,255,.76);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dashboard-tour-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px 0 8px;
+}
+
+.dashboard-tour-body h3 {
+  font-size: 1.06rem;
+  line-height: 1.22;
+  color: #f8fbff;
+}
+
+.dashboard-tour-body p {
+  color: rgba(240,244,255,.66);
+  font-size: .86rem;
+  line-height: 1.65;
+}
+
+.dashboard-tour-hint {
+  color: #bfdbfe;
+  font-size: .76rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.dashboard-tour-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dashboard-tour-btn,
+.dashboard-tour-primary {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.dashboard-tour-btn {
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: #f8fbff;
+}
+
+.dashboard-tour-primary {
+  border: none;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #fff;
+}
+
 #toasts {
   position: fixed;
   bottom: 20px;
@@ -815,6 +968,11 @@ button { font-family: inherit; cursor: pointer; }
   .dash-stats { grid-template-columns: 1fr; }
   .acct-tab { font-size: .8rem; }
   .streak-metrics { grid-template-columns: 1fr; }
+  .dashboard-tour {
+    left: 12px;
+    bottom: 12px;
+    width: min(100%, calc(100% - 24px));
+  }
 }
 </style>
 </head>
@@ -1053,6 +1211,26 @@ button { font-family: inherit; cursor: pointer; }
   </div>
 </div>
 
+  <aside class="dashboard-tour hidden" id="dashboard-tour" aria-live="polite">
+    <div class="dashboard-tour-head">
+      <div class="dashboard-tour-guide">
+        <img src="/assets/budy-logo.png" alt="Budy dashboard guide" class="dashboard-tour-avatar">
+        <div class="dashboard-tour-meta">
+          <div class="dashboard-tour-name">Budy guide</div>
+          <div class="dashboard-tour-step" id="dashboard-tour-step-label">Step 1 of 4</div>
+          <div class="dashboard-tour-dots" id="dashboard-tour-dots"></div>
+        </div>
+      </div>
+      <button class="dashboard-tour-close" type="button" id="dashboard-tour-close" aria-label="Dismiss dashboard tour">x</button>
+    </div>
+    <div class="dashboard-tour-body" id="dashboard-tour-body"></div>
+    <div class="dashboard-tour-actions">
+      <button class="dashboard-tour-btn" type="button" id="dashboard-tour-back">Back</button>
+      <button class="dashboard-tour-btn" type="button" id="dashboard-tour-skip">Skip</button>
+      <button class="dashboard-tour-primary" type="button" id="dashboard-tour-next">Show progress</button>
+    </div>
+  </aside>
+
 <div id="footer-slot"></div>
 <script src="/footer-loader.js" defer></script>
 <script src="/assets/score-utils.js"></script>
@@ -1069,7 +1247,38 @@ const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
 const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
+const DASHBOARD_TOUR_KEY = 'budy_dashboard_tour_seen_v1';
 const ACCOUNT_TABS = ['progress', 'achievements', 'billing', 'settings'];
+const DASHBOARD_TOUR_STEPS = [
+  {
+    tab: 'progress',
+    title: 'This page is your dashboard',
+    copy: 'Use the dashboard to track scores, review saved questions, and see what changed from test to test.',
+    hint: 'Think results first: this page should answer “How am I doing?” fast.',
+    cta: 'Show progress'
+  },
+  {
+    tab: 'progress',
+    title: 'Progress is the tracking portal',
+    copy: 'Your best score, latest score, chart, recent tests, and saved question queue all live here.',
+    hint: 'Saved questions are your bridge into deeper study later.',
+    cta: 'Show achievements'
+  },
+  {
+    tab: 'achievements',
+    title: 'Achievements keep students coming back',
+    copy: 'Streaks and milestone unlocks make improvement visible even before a big score jump lands.',
+    hint: 'This is the retention tab. It rewards consistency, not just high scores.',
+    cta: 'Show billing'
+  },
+  {
+    tab: 'billing',
+    title: 'Billing and settings stay separate',
+    copy: 'Account controls belong here so the dashboard stays focused on progress instead of clutter.',
+    hint: 'Study Hub should stay separate too: dashboard for tracking, study for doing.',
+    cta: 'Finish tour'
+  }
+];
 
 let authClient = null;
 let accountConfirmResolver = null;
@@ -1095,7 +1304,8 @@ const S = {
   loginDays: [],
   sessionCache: [],
   savedQuestionsCache: [],
-  chart: null
+  chart: null,
+  dashboardTourStep: 0
 };
 
 window.S = S;
@@ -1172,6 +1382,103 @@ function setAccountTab(tab) {
 
   if (nextTab === 'progress' && S.chart) {
     setTimeout(function () { if (S.chart) S.chart.resize(); }, 0);
+  }
+}
+
+function getDashboardTourStorageKey() {
+  return DASHBOARD_TOUR_KEY + ':' + getDashboardIdentityKey();
+}
+
+function dismissDashboardTour() {
+  const tour = document.getElementById('dashboard-tour');
+  if (tour) tour.classList.add('hidden');
+  try {
+    localStorage.setItem(getDashboardTourStorageKey(), '1');
+  } catch {
+    // No-op.
+  }
+}
+
+function renderDashboardTour() {
+  const body = document.getElementById('dashboard-tour-body');
+  const dots = document.getElementById('dashboard-tour-dots');
+  const label = document.getElementById('dashboard-tour-step-label');
+  const next = document.getElementById('dashboard-tour-next');
+  const back = document.getElementById('dashboard-tour-back');
+  if (!body || !dots || !label || !next || !back) return;
+
+  const step = DASHBOARD_TOUR_STEPS[S.dashboardTourStep] || DASHBOARD_TOUR_STEPS[0];
+  label.textContent = 'Step ' + (S.dashboardTourStep + 1) + ' of ' + DASHBOARD_TOUR_STEPS.length;
+
+  dots.replaceChildren();
+  DASHBOARD_TOUR_STEPS.forEach((_, index) => {
+    const dot = document.createElement('div');
+    dot.className = 'dashboard-tour-dot' + (index === S.dashboardTourStep ? ' active' : '');
+    dots.appendChild(dot);
+  });
+
+  body.replaceChildren();
+  const title = document.createElement('h3');
+  title.textContent = step.title;
+  const copy = document.createElement('p');
+  copy.textContent = step.copy;
+  const hint = document.createElement('div');
+  hint.className = 'dashboard-tour-hint';
+  hint.textContent = step.hint;
+  body.appendChild(title);
+  body.appendChild(copy);
+  body.appendChild(hint);
+
+  next.textContent = step.cta;
+  back.disabled = S.dashboardTourStep === 0;
+}
+
+function bindDashboardTour() {
+  const tour = document.getElementById('dashboard-tour');
+  if (!tour) return;
+
+  let hasSeen = false;
+  try {
+    hasSeen = localStorage.getItem(getDashboardTourStorageKey()) === '1';
+  } catch {
+    hasSeen = false;
+  }
+
+  if (!hasSeen) {
+    tour.classList.remove('hidden');
+  }
+
+  renderDashboardTour();
+
+  const closeButton = document.getElementById('dashboard-tour-close');
+  const backButton = document.getElementById('dashboard-tour-back');
+  const skipButton = document.getElementById('dashboard-tour-skip');
+  const nextButton = document.getElementById('dashboard-tour-next');
+
+  if (closeButton) closeButton.addEventListener('click', dismissDashboardTour);
+  if (skipButton) skipButton.addEventListener('click', dismissDashboardTour);
+  if (backButton) {
+    backButton.addEventListener('click', function () {
+      S.dashboardTourStep = Math.max(0, S.dashboardTourStep - 1);
+      setAccountTab(DASHBOARD_TOUR_STEPS[S.dashboardTourStep].tab);
+      renderDashboardTour();
+    });
+  }
+  if (nextButton) {
+    nextButton.addEventListener('click', function () {
+      const current = DASHBOARD_TOUR_STEPS[S.dashboardTourStep];
+      if (current && current.tab) setAccountTab(current.tab);
+
+      if (S.dashboardTourStep >= DASHBOARD_TOUR_STEPS.length - 1) {
+        dismissDashboardTour();
+        return;
+      }
+
+      S.dashboardTourStep += 1;
+      const nextStep = DASHBOARD_TOUR_STEPS[S.dashboardTourStep];
+      if (nextStep && nextStep.tab) setAccountTab(nextStep.tab);
+      renderDashboardTour();
+    });
   }
 }
 
@@ -2191,6 +2498,7 @@ async function boot() {
     recordLoginActivity();
     renderDash();
     setAccountTab(requestedTab);
+    bindDashboardTour();
     bindNavAuthButtonForState();
     return;
   }
@@ -2202,6 +2510,7 @@ async function boot() {
   recordLoginActivity();
   renderDash();
   setAccountTab(requestedTab);
+  bindDashboardTour();
 }
 
 document.addEventListener('navbar:mounted', bindNavAuthButtonForState);
@@ -2209,6 +2518,11 @@ document.addEventListener('keydown', function (event) {
   const overlay = document.getElementById('account-confirm-overlay');
   if (overlay && overlay.classList.contains('open') && event.key === 'Escape') {
     closeAccountConfirm(false);
+  }
+
+  const tour = document.getElementById('dashboard-tour');
+  if (tour && !tour.classList.contains('hidden') && event.key === 'Escape') {
+    dismissDashboardTour();
   }
 });
 
