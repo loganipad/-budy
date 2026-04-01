@@ -159,6 +159,8 @@ button,input,select{font:inherit}
 
 .study-demo-note.show{display:inline-flex}
 
+.study-demo-note strong{color:#fff}
+
 .intro-guide{
   display:inline-flex;
   align-items:center;
@@ -1358,7 +1360,7 @@ button,input,select{font:inherit}
               <div class="intro-copy">
                 <h1>How to study with <span>Budy</span></h1>
                 <p>Move fast: choose a topic, preview the guide or flashcards, then turn misses into the next review test.</p>
-                <div class="study-demo-note" id="study-demo-note">Previewing Alex Rivera's demo study plan</div>
+                <div class="study-demo-note" id="study-demo-note">Demo account: <strong>Alex Rivera</strong> with saved misses and suggested next topics</div>
                 <div class="intro-guide" aria-hidden="true">
                   <img src="/assets/budy-logo.png" alt="">
                   <div class="intro-guide-copy">
@@ -1632,15 +1634,6 @@ button,input,select{font:inherit}
       }
     }
 
-    function getStudySessionsLocal() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || '[]');
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (_) {
-        return [];
-      }
-    }
-
     function getDemoStudySessions() {
       return [
         { date: '2026-03-07T10:00:00.000Z', section: 'english', total: 1310, correct: 39, total_q: 50 },
@@ -1682,12 +1675,10 @@ button,input,select{font:inherit}
     }
 
     function applyStudyDemoState() {
-      const localSessions = getStudySessionsLocal();
-      const localSavedQuestions = getSavedQuestionsLocal();
       reviewData.user.name = 'Alex Rivera';
       reviewData.user.email = '';
-      reviewData.sessionCache = localSessions.length ? localSessions : getDemoStudySessions();
-      reviewData.savedQuestionsCache = localSavedQuestions.length ? localSavedQuestions : getDemoStudySavedQuestions();
+      reviewData.sessionCache = getDemoStudySessions();
+      reviewData.savedQuestionsCache = getDemoStudySavedQuestions();
 
       const demoNote = document.getElementById('study-demo-note');
       if (demoNote) demoNote.classList.add('show');
