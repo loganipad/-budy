@@ -50,6 +50,99 @@ function normalizeDeepDivePayload(raw, fallbackTerm) {
   };
 }
 
+function toTitleCase(value) {
+  return String(value || '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
+function buildRelatedTerms(term, context) {
+  const items = [
+    context && context.skill ? String(context.skill) : '',
+    context && context.topic ? String(context.topic) : '',
+    context && context.section ? String(context.section) : '',
+    'evidence',
+    'strategy',
+    'trap answer',
+    'timed practice'
+  ];
+
+  const seen = new Set();
+  return items
+    .map((item) => cleanText(item, 40))
+    .filter(Boolean)
+    .filter((item) => {
+      const lower = item.toLowerCase();
+      if (lower === String(term || '').toLowerCase()) return false;
+      if (seen.has(lower)) return false;
+      seen.add(lower);
+      return true;
+    })
+    .slice(0, 4);
+}
+
+function buildPreviewDeepDive(input) {
+  const context = input.context && typeof input.context === 'object' ? input.context : {};
+  const rawTerm = cleanText(input.text, 80);
+  const term = toTitleCase(rawTerm || 'SAT Topic');
+  const section = cleanText(context.section, 60) || 'SAT practice';
+  const skill = cleanText(context.skill || context.topic, 80) || 'this topic';
+  const surface = cleanText(context.surface, 40) || 'study mode';
+  const visibleContext = cleanText(input.surroundingText, 260);
+
+  const specialCases = {
+    inference: {
+      definition: 'Inference means using clues from the passage to figure out what is most strongly supported, even if the answer is not stated word-for-word.',
+      explanation: 'On the SAT, inference questions reward careful reading, not guessing. You look at the exact lines, connect the evidence, and choose the answer that follows logically from what the author gives you.',
+      satConnection: 'Inference matters because many Reading and Writing questions test whether you can move from explicit evidence to the best-supported conclusion.',
+      example: 'If a passage says a scientist repeated an experiment three times with the same result, you can infer the result seems reliable.',
+      caution: 'Do not pick an answer just because it sounds smart. It still has to be supported by the passage.'
+    },
+    grammar: {
+      definition: 'Grammar is the set of rules that makes a sentence clear, correct, and easy to follow.',
+      explanation: 'SAT grammar questions usually test sentence structure, agreement, punctuation, and clarity. The goal is not to sound fancy. The goal is to choose the version that follows standard written English.',
+      satConnection: 'Grammar shows up in Standard English Conventions questions, where small wording changes can completely change whether a sentence is correct.',
+      example: 'A verb has to match its subject, so "The list of items is" is correct, not "The list of items are."',
+      caution: 'Do not trust what only sounds natural. Check the actual rule being tested.'
+    },
+    slope: {
+      definition: 'Slope tells you how steep a line is by comparing how much it rises or falls to how much it moves left or right.',
+      explanation: 'In SAT math, slope is a fast way to describe the rate of change in a linear relationship. Positive slope means the line goes up, negative slope means it goes down, and zero slope means it stays flat.',
+      satConnection: 'Slope appears in graph, equation, and word-problem questions because it helps describe how one quantity changes compared with another.',
+      example: 'From points (2, 4) and (6, 12), the slope is (12 - 4) / (6 - 2) = 2.',
+      caution: 'Do not mix up rise over run with run over rise.'
+    },
+    quadratic: {
+      definition: 'A quadratic is an expression or equation where the highest power of the variable is 2.',
+      explanation: 'Quadratics often create parabolas, factor pairs, and two possible solutions. On the SAT, they can appear as equations to solve, expressions to rewrite, or graphs to analyze.',
+      satConnection: 'Quadratics matter because Advanced Math questions often test whether you can recognize structure, factor correctly, and interpret zeros or vertex information.',
+      example: 'In x^2 - 5x + 6 = 0, the solutions are x = 2 and x = 3 because the expression factors into (x - 2)(x - 3).',
+      caution: 'Do not stop after finding one solution if the equation can produce two.'
+    }
+  };
+
+  const normalizedKey = rawTerm.toLowerCase();
+  if (specialCases[normalizedKey]) {
+    return {
+      term,
+      relatedTerms: buildRelatedTerms(rawTerm, context),
+      ...specialCases[normalizedKey]
+    };
+  }
+
+  return {
+    term,
+    definition: `${term} is a key ${section} idea connected to ${skill}. Students usually need to know what it means, where it appears, and how to recognize it quickly under time pressure.`,
+    explanation: `${term} matters in ${surface} because SAT questions reward pattern recognition more than memorizing big words. When you understand what ${term.toLowerCase()} is doing in the problem or passage, you can slow down the guesswork and focus on the real evidence, rule, or math structure. ${visibleContext ? `In the current material, the clue is: ${visibleContext}` : 'In practice, the best move is to connect the term to the exact sentence, graph, or equation in front of you.'}`,
+    satConnection: `${term} shows up as part of the decision students must make on the SAT: identify the skill, avoid the trap answer, and prove the choice with evidence or correct math steps.`,
+    example: `A strong student response would be: "I know this question is testing ${term.toLowerCase()}, so I should look for the exact evidence or setup before choosing an answer."`,
+    caution: `A common mistake is recognizing the word ${term.toLowerCase()} but not connecting it to the exact part of the question that proves the answer.` ,
+    relatedTerms: buildRelatedTerms(rawTerm, context)
+  };
+}
+
 function buildMessages(input) {
   const systemPrompt = [
     'You are Budy.Study AI Deep Dive.',
@@ -152,6 +245,22 @@ async function handler(req, res) {
     return json(res, 400, { error: 'Select a keyword or short phrase first.' });
   }
 
+  const aiConfig = getAiConfig();
+  const previewMode = !aiConfig.enabled;
+
+  if (previewMode) {
+    const previewResult = buildPreviewDeepDive({ text, surroundingText, context });
+    return json(res, 200, {
+      ...previewResult,
+      previewMode: true,
+      usedCredits: 0,
+      remainingCredits: null,
+      creditLimit: null,
+      periodKey: null,
+      model: 'local-preview'
+    });
+  }
+
   const email = cleanText(auth.user && auth.user.email, 160).toLowerCase();
   const bypassEmails = getBypassEmails();
   const hasBypass = email ? bypassEmails.has(email) : false;
@@ -172,11 +281,6 @@ async function handler(req, res) {
       error: 'AI Deep Dive is included with Pro.',
       upgradeRequired: true
     });
-  }
-
-  const aiConfig = getAiConfig();
-  if (!aiConfig.enabled) {
-    return json(res, 503, { error: 'AI Deep Dive is not configured yet.' });
   }
 
   const periodKey = getCurrentPeriodKey();

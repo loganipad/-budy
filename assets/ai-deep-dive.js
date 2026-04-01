@@ -571,7 +571,7 @@
     renderModalState(
       state,
       term,
-      ['AI Deep Dive', '1 Pro credit after success'],
+      ['AI Deep Dive', 'Live AI or preview fallback'],
       '<div class="budy-deep-dive-state"><strong>Building the explanation</strong><p>Pulling together a student-safe definition, the big-picture idea, and why this shows up on the SAT.</p></div>',
       { secondaryLabel: 'Close' }
     );
@@ -599,7 +599,11 @@
 
   function renderResult(state, payload, result) {
     const chips = [
-      `Credits left: ${result.remainingCredits}/${result.creditLimit}`,
+      result.previewMode ? 'Preview mode' : '',
+      result.previewMode ? 'Add your API key later to switch to live AI' : '',
+      !result.previewMode && Number.isFinite(result.remainingCredits) && Number.isFinite(result.creditLimit)
+        ? `Credits left: ${result.remainingCredits}/${result.creditLimit}`
+        : '',
       result.caution ? `Watch for: ${result.caution}` : ''
     ].filter(Boolean);
 
