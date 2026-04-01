@@ -645,6 +645,68 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 16px;
 }
 
+@keyframes budyFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.row.is-stack {
+  align-items: flex-start;
+}
+
+.row-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.row-copy small,
+.purchase-copy p {
+  color: rgba(240,244,255,.56);
+  font-size: .78rem;
+  line-height: 1.65;
+}
+
+.purchase-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.purchase-panel::after {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  width: 58px;
+  height: 58px;
+  background: url('/assets/budy-logo.png') center/contain no-repeat;
+  opacity: .12;
+  pointer-events: none;
+  animation: budyFloat 6s ease-in-out infinite;
+}
+
+.purchase-copy {
+  display: grid;
+  gap: 10px;
+  padding: 18px 22px 0;
+}
+
+.purchase-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.purchase-note {
+  margin: 0 22px 18px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(26,86,219,.12);
+  border: 1px solid rgba(59,130,246,.24);
+  color: #bfdbfe;
+  font-size: .8rem;
+  line-height: 1.6;
+}
+
 .dashboard-tour {
   position: fixed;
   left: 20px;
@@ -963,11 +1025,18 @@ button { font-family: inherit; cursor: pointer; }
   .dash-stats { grid-template-columns: 1fr 1fr; }
   .dash-section-head { flex-direction: column; align-items: flex-start; }
   .achievement-grid { grid-template-columns: 1fr; }
+  .row { flex-direction: column; align-items: flex-start; }
+  .billing-actions, .purchase-actions { width: 100%; }
+  .billing-actions button, .purchase-actions button { width: 100%; }
 }
 @media (max-width: 480px) {
   .dash-stats { grid-template-columns: 1fr; }
   .acct-tab { font-size: .8rem; }
   .streak-metrics { grid-template-columns: 1fr; }
+  .panel { border-radius: 24px; }
+  .panel-hd, .row { padding-left: 18px; padding-right: 18px; }
+  .purchase-copy { padding-left: 18px; padding-right: 18px; }
+  .purchase-note { margin: 0 18px 18px; }
   .dashboard-tour {
     left: 12px;
     bottom: 12px;
@@ -1168,7 +1237,16 @@ button { font-family: inherit; cursor: pointer; }
             <div class="row"><span class="k">Account status</span><span class="v" id="profile-account-status">ACTIVE FREE</span></div>
             <div class="row"><span class="k">Account type</span><span class="v" id="profile-account-type">Standard user</span></div>
             <div class="row"><span class="k">Subscription timing</span><span class="v" id="profile-billing-timing">No active subscription</span></div>
-            <div class="row"><span class="k">Payment method</span><span class="v">Managed in Stripe checkout</span></div>
+            <div class="row"><span class="k">Payment method</span><span class="v">Web checkout now, app-store billing in app builds</span></div>
+            <div class="row is-stack">
+              <div class="row-copy">
+                <span class="k">Upgrade options</span>
+                <small>Use secure web checkout today. This same account area can surface App Store or Google Play purchases later without changing the user flow.</small>
+              </div>
+              <div class="billing-actions">
+                <button class="btn-outline-dark" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Upgrade Plan</button>
+              </div>
+            </div>
             <div class="row">
               <span class="k">Billing actions</span>
               <div class="billing-actions">
@@ -1182,6 +1260,21 @@ button { font-family: inherit; cursor: pointer; }
 
       <div class="acct-pane" id="acct-pane-settings" role="tabpanel">
         <div class="settings-wrap">
+          <div class="panel purchase-panel">
+            <div class="panel-hd">Purchases</div>
+            <div class="purchase-copy">
+              <div class="row-copy">
+                <span class="k">Choose how to upgrade</span>
+                <p>On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
+              </div>
+              <div class="purchase-actions">
+                <button class="btn-outline-dark" type="button" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Open Upgrade Options</button>
+                <button class="btn-outline-dark" type="button" onclick="openBillingPortal()">Open Billing Portal</button>
+              </div>
+            </div>
+            <div class="purchase-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
+          </div>
+
           <div class="panel">
             <div class="panel-hd">Profile</div>
             <div class="row"><span class="k">Full Name</span><span class="v" id="profile-name">-</span></div>
@@ -2201,6 +2294,52 @@ function saveGrade() {
   const gradeView = document.getElementById('profile-grade');
   if (gradeView) gradeView.textContent = grade ? grade + 'th grade' : '-';
   toast('Grade saved.', 'ok');
+}
+
+async function openPurchaseOptions() {
+  if (!S.isLoggedIn) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  if (S.isPremium) {
+    toast('Premium access is already active on this account.', 'ok');
+    return;
+  }
+
+  const buttons = Array.from(document.querySelectorAll('[data-upgrade-trigger="true"]'));
+  const originalLabels = buttons.map((btn) => btn.textContent);
+  buttons.forEach((btn) => {
+    btn.disabled = true;
+    btn.textContent = 'Opening checkout...';
+  });
+
+  try {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Session expired. Please log in again.');
+
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      },
+      body: JSON.stringify({ plan: 'monthly' })
+    });
+    const data = await response.json();
+
+    if (!response.ok || !data.url) {
+      throw new Error((data && data.error) ? data.error : 'Could not open checkout.');
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    toast(err && err.message ? err.message : 'Could not open checkout.', 'er');
+    buttons.forEach((btn, index) => {
+      btn.disabled = false;
+      btn.textContent = originalLabels[index];
+    });
+  }
 }
 
 async function openBillingPortal() {

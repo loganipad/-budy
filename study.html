@@ -70,6 +70,11 @@ body::after{
     linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
   background-size:40px 40px;
 }
+
+@keyframes budyFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
 a{text-decoration:none;color:inherit}
 button,input,select{font:inherit}
 
@@ -92,6 +97,8 @@ button,input,select{font:inherit}
 .recommended-card{
   border-radius:30px;
   padding:28px;
+  position:relative;
+  overflow:hidden;
 }
 
 .study-intro{
@@ -108,6 +115,19 @@ button,input,select{font:inherit}
   width:280px;
   height:280px;
   background:radial-gradient(circle, rgba(26,86,219,.24), transparent 68%);
+}
+
+.study-intro::after{
+  content:'';
+  position:absolute;
+  right:24px;
+  bottom:18px;
+  width:74px;
+  height:74px;
+  background:url('/assets/budy-logo.png') center/contain no-repeat;
+  opacity:.14;
+  pointer-events:none;
+  animation:budyFloat 6s ease-in-out infinite;
 }
 
 .intro-grid{
@@ -1169,9 +1189,35 @@ button,input,select{font:inherit}
   .study-intro,
   .workspace-card,
   .recent-card,
-  .recommended-card{padding:22px}
+  .recommended-card{padding:20px;border-radius:24px}
 
   .wrap{width:min(100%,calc(100% - 32px));margin:0 auto}
+
+  .top-grid,
+  .study-main-column,
+  .recommended-list,
+  .recent-test-list,
+  .guide-list,
+  .review-guide-steps,
+  .review-choice-grid,
+  .topic-list{gap:10px}
+
+  .menu-tabs{
+    padding:4px;
+    gap:6px;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    scrollbar-width:none;
+  }
+
+  .menu-tabs::-webkit-scrollbar{display:none}
+
+  .menu-tab{
+    flex:0 0 auto;
+    min-height:40px;
+    padding:0 14px;
+    font-size:.82rem;
+  }
 
   .panel-head,
   .review-config-bar,
@@ -1206,9 +1252,44 @@ button,input,select{font:inherit}
   .topic-preview-button,
   .detail-action{width:100%}
 
-  .menu-tab{flex:1 1 100%}
-  .study-shell{padding-top:96px}
+  .panel-head h2,
+  .recent-card h2,
+  .recommended-head h2{font-size:1.18rem;margin-bottom:8px}
+
+  .panel-copy,
+  .recent-card-copy,
+  .intro-copy p{font-size:.86rem;line-height:1.6}
+
+  .recent-test-summary{padding:16px}
+  .recent-test-reveal{padding:0 16px 16px}
+  .guide-block,
+  .flashcard-item,
+  .recent-test-question,
+  .recommended-row{padding:14px;border-radius:18px}
+
+  .study-shell{padding-top:96px;padding-bottom:48px}
   .tutorial-pop{right:16px;bottom:16px;width:min(100%,calc(100% - 24px))}
+}
+
+@media (max-width: 560px){
+  .study-shell{padding-top:90px;padding-bottom:40px}
+
+  .study-intro,
+  .workspace-card,
+  .recent-card,
+  .recommended-card{padding:18px;border-radius:22px}
+
+  .intro-grid{gap:18px}
+  .intro-guide{margin-top:12px}
+  .intro-guide img{width:46px;height:46px;border-radius:16px}
+  .intro-step{gap:8px}
+  .intro-num{width:30px;height:30px;font-size:.78rem}
+  .review-config-bar{padding:16px;border-radius:20px}
+  .recent-test-header{margin-bottom:10px}
+  .recent-test-title{font-size:.92rem}
+  .recent-test-date,.guide-list-item,.sample-question,.flashcard-back,.recent-test-question p{font-size:.78rem}
+  .recommended-row{gap:10px}
+  .study-intro::after{right:16px;bottom:14px;width:58px;height:58px}
 }
 </style>
 </head>

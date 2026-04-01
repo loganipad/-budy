@@ -9,7 +9,73 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="/assets/observability.js" defer></script>
 <style>
-:root {--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.1);--text:#f8fafc;--muted:rgba(240,244,255,.66);--brand:#1a56db;--shadow:0 24px 80px rgba(0,0,0,.28);--font-h:'Sora',system-ui,sans-serif;--font-b:'Sora',system-ui,sans-serif;}*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;background:var(--ink)}body{font-family:var(--font-b);background:linear-gradient(180deg, #0b1018 0%, #111827 54%, #0b1018 100%);color:var(--text);min-height:100vh}a{text-decoration:none;color:inherit}.wrap{width:min(980px,calc(100% - 40px));margin:0 auto}.page-shell{padding-top:112px;padding-bottom:88px}.hero,.policy-card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px)}.hero{border-radius:36px;padding:38px;margin-bottom:24px}.eyebrow{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}.hero h1{font-family:var(--font-h);font-size:clamp(2.2rem,5vw,4rem);line-height:1.04;letter-spacing:-.04em;margin-bottom:14px}.hero p{color:var(--muted);line-height:1.8}.policy-card{border-radius:28px;padding:28px;display:grid;gap:22px}.policy-block h2{font-size:1.12rem;margin-bottom:8px}.policy-block p,.policy-block li{color:var(--muted);font-size:.92rem;line-height:1.75}.policy-block ul{padding-left:18px;display:grid;gap:6px}.updated{color:rgba(240,244,255,.5);font-size:.82rem;margin-top:10px}@media (max-width: 720px){.page-shell{padding-top:96px}.hero,.policy-card{padding:22px}}
+:root {
+  --ink:#0d1117;
+  --panel:rgba(20,29,45,.82);
+  --line:rgba(255,255,255,.1);
+  --text:#f8fafc;
+  --muted:rgba(240,244,255,.68);
+  --brand:#1a56db;
+  --gold:#f59e0b;
+  --shadow:0 24px 80px rgba(0,0,0,.28);
+  --font-h:'Sora',system-ui,sans-serif;
+  --font-b:'Sora',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{
+  font-family:var(--font-b);
+  background:linear-gradient(180deg,#0b1018 0%,#111827 54%,#0b1018 100%);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -5%, rgba(26,86,219,.28) 0%, transparent 65%),
+    radial-gradient(ellipse 42% 30% at 88% 84%, rgba(245,158,11,.1) 0%, transparent 58%);
+}
+a{text-decoration:none;color:inherit}
+.wrap{width:min(1120px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding-top:112px;padding-bottom:88px;position:relative;z-index:1}
+.hero,.policy-card,.quick-facts{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+.hero{border-radius:36px;padding:38px;margin-bottom:24px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:26px;bottom:18px;width:80px;height:80px;background:url('/assets/budy-logo.png') center/contain no-repeat;opacity:.12;animation:budyFloat 6s ease-in-out infinite}
+@keyframes budyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-family:var(--font-h);font-size:clamp(2.2rem,5vw,4rem);line-height:1.04;letter-spacing:-.04em;margin-bottom:14px;max-width:780px}
+.hero p{color:var(--muted);line-height:1.8;max-width:780px}
+.updated{color:rgba(240,244,255,.5);font-size:.82rem;margin-top:12px}
+.hero-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.hero-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:.82rem;font-weight:700;color:#dbeafe}
+.quick-facts{border-radius:28px;padding:22px 24px;margin-bottom:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.fact{border-radius:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.fact span{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px}
+.fact strong{display:block;font-size:1rem;margin-bottom:6px}
+.fact p{color:var(--muted);font-size:.82rem;line-height:1.65}
+.policy-card{border-radius:28px;padding:28px;display:grid;gap:22px}
+.policy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.policy-block{border-radius:22px;padding:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.policy-block h2{font-size:1.05rem;margin-bottom:10px}
+.policy-block p,.policy-block li{color:var(--muted);font-size:.9rem;line-height:1.72}
+.policy-block ul{padding-left:18px;display:grid;gap:6px}
+.policy-inline{display:grid;gap:10px}
+.policy-band{border-radius:24px;padding:22px;background:linear-gradient(180deg,rgba(26,86,219,.14) 0%,rgba(255,255,255,.04) 100%);border:1px solid rgba(59,130,246,.22)}
+.policy-band h2{font-size:1.08rem;margin-bottom:8px}
+.policy-band p{color:var(--muted);font-size:.9rem;line-height:1.72}
+@media (max-width: 860px){
+  .quick-facts,.policy-grid{grid-template-columns:1fr}
+}
+@media (max-width: 720px){
+  .page-shell{padding-top:96px;padding-bottom:56px}
+  .hero,.policy-card,.quick-facts{padding:22px}
+  .hero::after{right:18px;bottom:14px;width:62px;height:62px}
+  .hero-links{flex-direction:column;align-items:stretch}
+}
 </style>
 </head>
 <body data-page-type="privacy">
@@ -19,16 +85,160 @@
     <div class="wrap">
       <section class="hero">
         <div class="eyebrow">Privacy Policy</div>
-        <h1>How Budy.Study handles student and account information.</h1>
-        <p>This policy explains what information we collect, why we collect it, and how it is used to deliver account access, study features, score tracking, and subscription support.</p>
-        <div class="updated">Last updated: March 25, 2026</div>
+        <h1>How Budy.Study handles account, study, billing, and support data.</h1>
+        <p>This policy explains what information Budy.Study collects, why it is used, where it may be stored, and what choices users have when they use practice tests, study tools, subscriptions, analytics, or AI-assisted learning features.</p>
+        <div class="hero-links">
+          <a class="hero-link" href="mailto:support@budy.study">support@budy.study</a>
+          <a class="hero-link" href="/terms.html">Terms and subscriptions</a>
+        </div>
+        <div class="updated">Last updated: April 1, 2026</div>
       </section>
+
+      <section class="quick-facts">
+        <div class="fact">
+          <span>What we collect</span>
+          <strong>Account, subscription, and study activity data</strong>
+          <p>That includes sign-in details, test attempts, saved questions, progress data, and support requests needed to run the product.</p>
+        </div>
+        <div class="fact">
+          <span>Why we collect it</span>
+          <strong>To deliver the service and improve it</strong>
+          <p>We use data to keep users signed in, save progress, power paid features, fix bugs, and understand which parts of the product are being used.</p>
+        </div>
+        <div class="fact">
+          <span>How to contact us</span>
+          <strong>Questions, deletion, or correction requests</strong>
+          <p>Email support@budy.study if you need help with your data, billing records, or account removal requests.</p>
+        </div>
+      </section>
+
       <section class="policy-card">
-        <div class="policy-block"><h2>Information we collect</h2><p>We may collect account details such as email address, authentication identifiers, subscription status, test attempt history, and study-related profile selections used to personalize the product.</p></div>
-        <div class="policy-block"><h2>How we use information</h2><ul><li>To authenticate users and protect account access</li><li>To save test attempts, score history, and study preferences</li><li>To manage subscriptions, billing, and support requests</li><li>To measure page usage patterns and feature engagement with first-party analytics</li><li>To capture technical error diagnostics so broken flows can be fixed faster</li></ul></div>
-        <div class="policy-block"><h2>How information is stored</h2><p>Some data may be stored locally in the browser for convenience. Account, subscription, and attempt-history data may also be stored in hosted infrastructure used by Budy.Study to operate the service.</p></div>
-        <div class="policy-block"><h2>Sharing</h2><p>We do not sell personal information. Information may be shared only with service providers necessary to run authentication, payments, storage, analytics, monitoring, or support workflows.</p></div>
-        <div class="policy-block"><h2>Your choices</h2><p>You can contact Budy.Study to request updates, deletion, or clarification about your information, subject to legal, security, and billing record requirements.</p></div>
+        <div class="policy-band">
+          <h2>Scope of this policy</h2>
+          <p>This policy applies to the Budy.Study website, student dashboard, study hub, practice-test flows, subscription checkout, billing support, and related support or analytics tooling. It is written to cover both the current web product and future mobile app builds that may use the same Budy account system.</p>
+        </div>
+
+        <div class="policy-grid">
+          <div class="policy-block">
+            <h2>Account and sign-in data</h2>
+            <div class="policy-inline">
+              <p>We collect information required to create and maintain an account, such as email address, authentication identifiers, profile name, grade selection, and subscription state.</p>
+              <ul>
+                <li>Authentication may be handled through Auth0, including email/password or Google sign-in.</li>
+                <li>We may store session-related data in browser storage so users stay signed in between visits.</li>
+                <li>We may associate account identifiers with billing, saved questions, AI usage, and test history.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="policy-block">
+            <h2>Study and progress data</h2>
+            <div class="policy-inline">
+              <p>We store learning activity needed to make the product useful, including practice-test attempts, score history, review-test activity, flagged questions, saved questions, and other progress signals.</p>
+              <ul>
+                <li>Recent attempts may be shown back to the user inside the dashboard or Study Hub.</li>
+                <li>Saved question and score data may be stored in hosted databases or in local browser storage depending on the feature.</li>
+                <li>We may use study data to recommend follow-up topics or review sessions.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="policy-block">
+            <h2>Purchases and billing</h2>
+            <div class="policy-inline">
+              <p>When users start or manage a paid plan, we collect the minimum information needed to process subscriptions and verify entitlement status.</p>
+              <ul>
+                <li>Web purchases currently route through Stripe checkout and Stripe's billing portal.</li>
+                <li>We may store plan level, renewal status, cancellation timing, and payment-platform metadata on the account.</li>
+                <li>If Budy.Study is offered through a future App Store or Google Play app, subscription handling may follow that store's purchase and refund rules instead of Stripe's web flow.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="policy-block">
+            <h2>AI Deep Dive and support tools</h2>
+            <div class="policy-inline">
+              <p>If users trigger AI-assisted explanations, the selected word, phrase, or study context may be processed to generate a response. Usage counters may also be stored to enforce plan limits.</p>
+              <ul>
+                <li>Selected learning content can include the chosen term, the surrounding question or topic, and related category labels.</li>
+                <li>Usage records may include the account, billing period key, and consumption counts.</li>
+                <li>Preview or fallback responses may be shown when a live model is not configured.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="policy-block">
+            <h2>Analytics, diagnostics, and observability</h2>
+            <div class="policy-inline">
+              <p>We use first-party analytics and error monitoring to understand reliability issues, broken user journeys, and general feature engagement.</p>
+              <ul>
+                <li>This may include page views, interaction events, device or browser metadata, and error traces.</li>
+                <li>We use this information to debug failures, measure adoption, and improve product quality.</li>
+                <li>We do not sell personal information to data brokers.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="policy-block">
+            <h2>Browser storage and local device data</h2>
+            <div class="policy-inline">
+              <p>Some Budy.Study features use local browser storage to keep users signed in, remember settings, cache progress, or preserve in-progress study work between page loads.</p>
+              <ul>
+                <li>Examples can include login/session markers, grade preference, saved-question fallbacks, or UI tutorial completion state.</li>
+                <li>Local data can remain on the device until it is cleared by the browser or by the user.</li>
+                <li>Clearing browser storage may remove convenience features or local copies of progress data.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="policy-grid">
+          <div class="policy-block">
+            <h2>How we use information</h2>
+            <ul>
+              <li>To authenticate users and protect account access.</li>
+              <li>To save practice history, study preferences, review queues, and progress summaries.</li>
+              <li>To provide subscriptions, paid entitlements, billing support, and account recovery.</li>
+              <li>To improve product design, reliability, and educational effectiveness.</li>
+              <li>To investigate fraud, abuse, policy violations, or service misuse.</li>
+            </ul>
+          </div>
+
+          <div class="policy-block">
+            <h2>Service providers and sharing</h2>
+            <ul>
+              <li>Authentication providers that help users sign in securely.</li>
+              <li>Payment processors and billing tools that support subscriptions.</li>
+              <li>Hosting, database, analytics, logging, and monitoring providers used to operate Budy.Study.</li>
+              <li>Professional advisors or authorities when needed to comply with law, enforce rights, or protect users and the service.</li>
+            </ul>
+          </div>
+
+          <div class="policy-block">
+            <h2>Retention</h2>
+            <p>We keep data for as long as needed to provide the service, maintain security, preserve necessary business or billing records, resolve disputes, and comply with legal obligations. Some browser-stored data remains until removed locally. Aggregated or de-identified analytics may be kept longer for operational reporting.</p>
+          </div>
+
+          <div class="policy-block">
+            <h2>Your choices</h2>
+            <ul>
+              <li>You can contact support@budy.study to request account updates, data correction, or deletion review.</li>
+              <li>You can sign out and clear local browser storage through your browser settings.</li>
+              <li>You can cancel eligible subscriptions through the available billing management flow.</li>
+              <li>Some information may need to be retained for security, fraud prevention, or financial recordkeeping.</li>
+            </ul>
+          </div>
+
+          <div class="policy-block">
+            <h2>Students and younger users</h2>
+            <p>Budy.Study is intended for students and families. If you believe a child has provided personal information in a way that needs review or removal, contact support@budy.study so the request can be evaluated and handled appropriately.</p>
+          </div>
+
+          <div class="policy-block">
+            <h2>Policy updates</h2>
+            <p>We may update this policy as Budy.Study changes, including when billing flows, mobile apps, AI features, or legal requirements change. Material updates will be reflected by updating the date at the top of this page.</p>
+          </div>
+        </div>
       </section>
     </div>
   </main>
