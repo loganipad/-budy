@@ -1,0 +1,101 @@
+Budy.Study Launch Playbook
+
+Positioning
+
+1. Budy.Study is the SAT and PSAT prep system that turns mistakes into the next study action faster than generic AI tools or bloated prep subscriptions.
+2. Compete against broad AI products by being narrower, not louder. The edge is vertical specialization: SAT and PSAT context, review tests built from misses, student-friendly explanations, progress tracking, and a study loop designed for high schoolers.
+3. The core landing message should always show the loop clearly: Test. Find misses. Study the exact topic. Retest. Track what changed.
+4. Proof should scale in stages. First prove the workflow. Then prove user response. Then prove measurable outcomes.
+
+Product And Brand Truth
+
+5. Do not position the product like a generic free test site. The stronger message is that the product now includes timed practice tests, a progress dashboard, a guided Study Hub, wrong-answer review flows, flashcards, study guides, and AI Deep Dive explanations.
+6. The honest flex points are the tighter learning loop, student-readable explanations, mobile-first browser access, and a product that keeps the next move obvious.
+7. Do not invent score gains, market leadership, or adoption numbers unless you have verified proof.
+8. The brand voice should be sharp, clear, student-readable, and slightly confident. It should not sound like a corporate edtech brochure or a meme page.
+
+Go-To-Market Strategy
+
+9. Before scale, prioritize local trust over national paid traffic. Nearby high schools, counselors, tutors, parent groups, and student ambassadors are easier early wins than broad cold ads.
+10. Use school pilots and local testing to gather real feedback, retention data, and message clarity.
+11. The first pitch to schools or partners should not be “buy our SaaS.” It should be “we built a tighter SAT and PSAT practice loop, and we want measured feedback from real students.”
+12. Build a small launch list and a waitlist tied to launch updates, school pilot interest, and partnership interest.
+
+Acquisition Measurement
+
+13. Every flyer, QR code, local partner, creator mention, referral, and paid ad should map to a distinct campaign source.
+14. Track at least these funnel points: visitor to account creation, account creation to first test, first test to Study Hub usage, Study Hub usage to paid conversion, first month retention, and payback period.
+15. If you cannot tell which source produces account creation, test start, Study Hub use, and paid conversion, you are buying noise.
+
+Content And SEO
+
+16. Your content strategy should target narrow student and parent intent, not broad vanity keywords.
+17. Good early topics include:
+   - how to review wrong answers on SAT math
+   - how 9th graders should start PSAT prep
+   - best SAT prep for students who hate long study sessions
+   - how to turn one practice test into a week of study
+18. Good SEO posts should follow one structure every time: exact intent, keyword in title and URL, direct answer early, short sections, screenshots or examples, internal links, and one clear call to action.
+19. Build topic clusters around SAT math mistakes, SAT reading mistakes, PSAT prep by grade, review-test strategy, and student study habits.
+20. Every content piece should tie back to the product truth: test, review, study, retest, and track progress.
+
+Social And Messaging
+
+21. Organic social content should look like useful student truth, not brand announcements.
+22. Strong hooks include:
+   - Most SAT prep dies after the test ends.
+   - Students do not need more questions. They need a better review loop.
+   - If you missed this kind of PSAT math problem, here is the next move.
+23. Use short-form posts, screen recordings, carousels, and before-and-after review flows to show what the product actually does.
+
+Emails And Lifecycle
+
+24. The email system should include at least these flows:
+   - Welcome email
+   - Account activation email
+   - First-test follow-up
+   - Free-to-paid conversion email
+   - Weekly progress email
+   - Abandoned checkout email
+   - Billing reminder or failed-payment email
+   - Win-back email after inactivity or cancellation
+25. The welcome email should tell the student exactly what to do in the next ten minutes.
+26. Weekly progress emails should include name, last section, a visible trend or streak, a weak topic, and one direct next action.
+27. Student emails should feel momentum-driven. Parent emails should feel calm, trustworthy, and structured.
+
+Billing And Monetization
+
+28. Stripe should feel branded and trustworthy. Use the real logo, brand colors, support email, support URL, refund summary, and clear product descriptions.
+29. Make the checkout session success and cancel paths intentional so users never feel dropped.
+30. Stripe checkout copy should state the plan name, what unlocks immediately, whether it renews, how to cancel, and where support lives.
+31. The billing portal should feel like part of the product, not an escape hatch.
+
+Profitability
+
+32. Profitability depends less on one ad campaign and more on funnel efficiency and retention.
+33. The fastest path to profitability is narrow-market dominance before broad scale.
+34. Referral asks should happen after meaningful progress moments, not at signup.
+35. The strongest early case studies are simple: starting point, study pattern, features used, what improved, and what the student said felt different.
+
+What Makes The Brand Feel Complete
+
+36. The brand feels complete when product voice, landing copy, support tone, billing trust, and follow-up emails all feel like the same company.
+37. A real brand operating surface includes support, launch updates, school pilots, parent-facing explanation, creator outreach, referral asks, and repeatable follow-up.
+38. A focused product with honest proof beats a louder product with inflated claims.
+
+Operating Timeline
+
+39. Next 30 days: tighten onboarding, polish lifecycle emails, finalize pricing language, build a small launch list, run local pilots, and collect the first real testimonials and usage patterns.
+40. Next 60 days: run a small number of paid tests, compare channels, monitor which users reach the full loop, improve the free-to-paid handoff, and identify what features correlate with retained users.
+41. Next 90 days: double down on channels that produce retained users, publish the first measured case studies, build a consistent creator or school-outreach motion, and standardize reporting.
+
+Historical Pattern To Follow
+
+42. Strong education SaaS products usually do not start by scaling ads. They tighten one valuable workflow, find a narrow audience, prove activation, prove retention, collect language from real users, and only then scale what already converts.
+43. The biggest mistake is trying to look bigger than the company is. The better strategy is to look sharper than expected.
+
+Immediate Next Moves
+
+44. Build the email system next: welcome, activation, abandoned checkout, weekly progress, win-back, and billing templates in the Budy.Study voice.
+45. Build a launch content set next: homepage proof strip, three SEO articles, one school-pilot page, and three short-form social scripts.
+46. Build revenue instrumentation next: event naming, funnel dashboard, conversion definitions, and channel attribution so you know what actually makes money.
