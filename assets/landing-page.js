@@ -342,7 +342,7 @@ function applyHomeStudyNavOverride() {
   const nav = document.getElementById('nav');
   if (!nav) return;
   nav.classList.add('home-study-nav');
-  const studyTarget = S.isLoggedIn ? '/study.html' : '/login.html';
+  const studyTarget = '/study.html';
 
   const authBtn = document.getElementById('auth-btn');
   if (authBtn) {
