@@ -1315,10 +1315,6 @@ button { font-family: inherit; cursor: pointer; }
                 <span class="k" id="purchase-heading">Choose how to upgrade</span>
                 <p id="purchase-body-copy">On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
               </div>
-              <div class="purchase-actions">
-                <button class="btn-outline-dark" type="button" id="purchase-primary-btn" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Open Upgrade Options</button>
-                <button class="btn-outline-dark" type="button" id="purchase-secondary-btn" onclick="openBillingPortal()">Open Billing Portal</button>
-              </div>
             </div>
             <div class="purchase-note" id="purchase-platform-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
           </div>
@@ -2414,10 +2410,8 @@ function applyPurchaseEnvironmentUI() {
   const note = document.getElementById('purchase-platform-note');
   const billingUpgradeNote = document.getElementById('billing-upgrade-note');
   const paymentMethod = document.getElementById('profile-payment-method');
-  const purchasePrimaryBtn = document.getElementById('purchase-primary-btn');
-  const purchaseSecondaryBtn = document.getElementById('purchase-secondary-btn');
   const billingUpgradeBtn = document.getElementById('billing-upgrade-btn');
-  if (!badge || !heading || !body || !note || !billingUpgradeNote || !paymentMethod || !purchasePrimaryBtn || !purchaseSecondaryBtn || !billingUpgradeBtn) return;
+  if (!badge || !heading || !body || !note || !billingUpgradeNote || !paymentMethod || !billingUpgradeBtn) return;
 
   if (env.usesNativeStore) {
     const isIOS = env.platform === 'ios';
@@ -2434,9 +2428,7 @@ function applyPurchaseEnvironmentUI() {
       : 'Android app builds can switch to Google Play billing while keeping Stripe on the site. This screen now swaps to store messaging automatically when native app mode is detected.';
     billingUpgradeNote.textContent = `This device is using ${storeLabel} purchase messaging, so external checkout links stay hidden from the primary upgrade flow.`;
     paymentMethod.textContent = `${storeLabel} in-app purchase in native app mode`;
-    purchasePrimaryBtn.textContent = env.hasNativeBridge ? `Use ${storeLabel}` : `${storeLabel} purchase coming soon`;
     billingUpgradeBtn.textContent = env.hasNativeBridge ? `Use ${storeLabel}` : `${storeLabel} purchase coming soon`;
-    purchaseSecondaryBtn.classList.add('hidden');
   } else {
     badge.textContent = env.platform === 'web' ? 'Web checkout' : 'Mobile web checkout';
     badge.classList.remove('native');
@@ -2446,9 +2438,7 @@ function applyPurchaseEnvironmentUI() {
     note.textContent = 'If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store\'s billing rules instead of Stripe\'s web portal.';
     billingUpgradeNote.textContent = 'Use secure web checkout today. This same account area can surface App Store or Google Play purchases later without changing the user flow.';
     paymentMethod.textContent = env.platform === 'web' ? 'Secure Stripe checkout on the web' : 'Secure Stripe checkout in the mobile browser';
-    purchasePrimaryBtn.textContent = 'Open Upgrade Options';
     billingUpgradeBtn.textContent = 'Upgrade Plan';
-    purchaseSecondaryBtn.classList.remove('hidden');
   }
 
   setBillingButtonsForMode();

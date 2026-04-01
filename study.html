@@ -192,21 +192,15 @@ button,input,select{font:inherit}
 
 .intro-steps{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:18px;
-  align-self:center;
+  grid-template-columns:1fr;
+  gap:14px;
+  align-self:start;
   position:relative;
-  padding-top:12px;
+  padding-top:0;
 }
 
 .intro-steps::before{
-  content:'';
-  position:absolute;
-  top:28px;
-  left:18px;
-  right:18px;
-  height:1px;
-  background:linear-gradient(90deg, rgba(59,130,246,.14) 0%, rgba(245,158,11,.24) 50%, rgba(59,130,246,.14) 100%);
+  display:none;
 }
 
 .intro-step{
@@ -1364,15 +1358,7 @@ button,input,select{font:inherit}
             <div class="intro-grid">
               <div class="intro-copy">
                 <h1>How to study with <span>Budy</span></h1>
-                <p>Move fast: choose a topic, preview the guide or flashcards, then turn misses into the next review test.</p>
                 <div class="study-demo-note" id="study-demo-note">Demo account: <strong>Alex Rivera</strong> with saved misses and suggested next topics</div>
-                <div class="intro-guide" aria-hidden="true">
-                  <img src="/assets/budy-logo.png" alt="">
-                  <div class="intro-guide-copy">
-                    <strong>Your study companion</strong>
-                    <span>Budy keeps the next step obvious so the page feels guided instead of crowded.</span>
-                  </div>
-                </div>
               </div>
               <div class="intro-steps">
                 <div class="intro-step">
