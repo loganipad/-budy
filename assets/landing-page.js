@@ -86,6 +86,7 @@ const BILLING_DISPLAY = {
 
 let authClient = null;
 let authReady = false;
+let deepDiveController = null;
 
 /* ── STATE ── */
 const S = {
@@ -157,6 +158,75 @@ function getTestDurationSeconds(section, isPremium) {
 function getTestDurationSummary(section, isPremium) {
   const minutes = Math.round(getTestDurationSeconds(section, isPremium) / 60);
   return isPremium ? `${minutes} min` : `~${minutes} min`;
+}
+
+function buildLandingDeepDiveKeywords() {
+  const terms = [
+    'evidence',
+    'claim',
+    'reasoning',
+    'author\'s purpose',
+    'equation',
+    'variable',
+    'slope',
+    'intercept',
+    'probability',
+    'grammar',
+    'transition'
+  ];
+  const currentQuestion = S.questions[S.curQ] || null;
+  if (currentQuestion) {
+    if (currentQuestion.skill) terms.push(currentQuestion.skill);
+    if (currentQuestion.domain) terms.push(currentQuestion.domain);
+    if (Array.isArray(currentQuestion.tags)) terms.push(...currentQuestion.tags);
+    if (currentQuestion.section === 'math') {
+      terms.push('algebra', 'quadratics', 'polynomials');
+    } else {
+      terms.push('inference', 'central idea', 'command of evidence');
+    }
+  }
+  if (S.results && S.results.skillMap) {
+    terms.push(...Object.keys(S.results.skillMap));
+  }
+  return terms;
+}
+
+function getLandingDeepDiveContext() {
+  const currentQuestion = S.questions[S.curQ] || null;
+  return {
+    surface: S.view === 'results' ? 'answer-review' : S.view === 'test' ? 'live-test' : 'practice',
+    section: currentQuestion && currentQuestion.section ? String(currentQuestion.section) : String(S.section || 'Practice'),
+    topic: currentQuestion && currentQuestion.domain ? String(currentQuestion.domain) : '',
+    skill: currentQuestion && currentQuestion.skill ? String(currentQuestion.skill) : ''
+  };
+}
+
+function syncLandingDeepDive() {
+  if (!window.BudyAiDeepDive) return;
+
+  const selectors = [];
+  if (S.view === 'test') selectors.push('#q-main');
+  if (S.view === 'results') selectors.push('#review-list');
+
+  const nextConfig = {
+    selectors,
+    glossaryTerms: buildLandingDeepDiveKeywords(),
+    getAccessToken,
+    getRuntimeContext: getLandingDeepDiveContext,
+    upgradeUrl: '/checkout.html',
+    loginUrl: '/login.html'
+  };
+
+  if (!deepDiveController && !selectors.length) {
+    return;
+  }
+
+  if (!deepDiveController) {
+    deepDiveController = window.BudyAiDeepDive.mount(nextConfig);
+    return;
+  }
+
+  deepDiveController.refresh(nextConfig);
 }
 
 function getQueuedReviewTest() {
@@ -763,6 +833,8 @@ function setView(v, options = {}) {
   if (!preserveScroll) {
     window.scrollTo(0, 0);
   }
+
+  syncLandingDeepDive();
 }
 
 function closeLeaveTestModal() {
@@ -1665,6 +1737,7 @@ function renderQ(idx){
   document.getElementById('q-main').scrollTo(0,0);
   updQNav();updFlag();
   announce(`Question ${idx+1}: ${q.question}`);
+  syncLandingDeepDive();
 }
 
 /* ── RIPPLE (attached after DOM ready) ── */
@@ -1881,6 +1954,7 @@ function renderResults(r){
 
   if(r.total>=700||(r.section==='full'&&r.total>=1400))setTimeout(confetti,900);
   document.getElementById('results-screen').classList.add('p-enter');
+  syncLandingDeepDive();
 }
 
 function buildExpSection(i, q, wrap) {
@@ -1918,6 +1992,7 @@ function getExp(i, btn) {
       : '';
     box.textContent=(rationale ? `${rationale}${distractorDetail}` : (exps[q.skill]||exps.default));
     btn.style.display='none';
+    syncLandingDeepDive();
   },600);
 }
 
@@ -2574,6 +2649,8 @@ async function init() {
     console.error('Auth init failed:', err);
     toast('Auth setup failed. Check Auth0 URLs and try again.', 'er');
   }
+
+  syncLandingDeepDive();
 
   await handleCheckoutReturn();
 

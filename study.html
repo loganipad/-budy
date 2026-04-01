@@ -1404,6 +1404,7 @@ button,input,select{font:inherit}
   </aside>
   <script src="/footer-loader.js" defer></script>
   <script src="/assets/review-bank.js"></script>
+  <script src="/assets/ai-deep-dive.js"></script>
   <script>
     const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
     const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
@@ -1448,6 +1449,7 @@ button,input,select{font:inherit}
 
     let reviewAuthClient = null;
     let studyReviewController = null;
+    let studyDeepDiveController = null;
     const reviewData = {
       isLoggedIn: false,
       authViaLocal: false,
@@ -1690,6 +1692,73 @@ button,input,select{font:inherit}
 
     function getTopicByKey(topicKey) {
       return topicCatalog.find((topic) => topic.key === topicKey) || null;
+    }
+
+    function buildStudyDeepDiveKeywords() {
+      const terms = [
+        'evidence',
+        'claim',
+        'reasoning',
+        'rhetoric',
+        'passage',
+        'function notation',
+        'equation',
+        'variable',
+        'coefficient',
+        'slope',
+        'intercept'
+      ];
+
+      Object.keys(QUESTION_BLUEPRINT).forEach((sectionKey) => {
+        const domains = QUESTION_BLUEPRINT[sectionKey] || {};
+        Object.keys(domains).forEach((domain) => {
+          terms.push(domain);
+          (domains[domain] || []).forEach((skill) => terms.push(skill));
+        });
+      });
+
+      topicCatalog.forEach((topic) => {
+        terms.push(topic.label);
+        if (topic.domain) terms.push(topic.domain);
+      });
+
+      const activeTopic = getTopicByKey(studyUIState.selectedTopicKey);
+      if (activeTopic) {
+        terms.push(activeTopic.label);
+        if (activeTopic.domain) terms.push(activeTopic.domain);
+      }
+
+      return terms;
+    }
+
+    function getStudyDeepDiveContext() {
+      const activeTopic = getTopicByKey(studyUIState.selectedTopicKey);
+      return {
+        surface: studyUIState.activeTab,
+        section: activeTopic ? sectionLabel(activeTopic.section) : 'Study Hub',
+        topic: activeTopic ? activeTopic.label : '',
+        skill: activeTopic && activeTopic.domain ? activeTopic.domain : ''
+      };
+    }
+
+    function syncStudyDeepDive() {
+      if (!window.BudyAiDeepDive) return;
+
+      const nextConfig = {
+        selectors: ['#topic-detail', '#recent-test-list'],
+        glossaryTerms: buildStudyDeepDiveKeywords(),
+        getAccessToken: getReviewAccessToken,
+        getRuntimeContext: getStudyDeepDiveContext,
+        upgradeUrl: '/checkout.html',
+        loginUrl: '/login.html'
+      };
+
+      if (!studyDeepDiveController) {
+        studyDeepDiveController = window.BudyAiDeepDive.mount(nextConfig);
+        return;
+      }
+
+      studyDeepDiveController.refresh(nextConfig);
     }
 
     function truncateText(value, maxLength) {
@@ -2652,6 +2721,7 @@ button,input,select{font:inherit}
 
       renderTopicList(filteredTopics);
       renderTopicDetail(selectedTopic);
+      syncStudyDeepDive();
     }
 
     function getQuestionsForSession(session) {
@@ -2687,6 +2757,7 @@ button,input,select{font:inherit}
         empty.className = 'recent-test-empty';
         empty.textContent = 'No recent tests yet. Take a review test or full practice test and this reveal panel will fill in automatically.';
         list.appendChild(empty);
+        syncStudyDeepDive();
         return;
       }
 
@@ -2809,6 +2880,8 @@ button,input,select{font:inherit}
         details.appendChild(reveal);
         list.appendChild(details);
       });
+
+      syncStudyDeepDive();
     }
 
     function openTopicView(tab, topicKey) {
