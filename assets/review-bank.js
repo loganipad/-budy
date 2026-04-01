@@ -270,6 +270,10 @@
 
   function queueReviewTest(config, testUrl) {
     localStorage.setItem(REVIEW_TEST_STORAGE_KEY, JSON.stringify(config));
+    if (typeof testUrl === 'function') {
+      testUrl(config);
+      return;
+    }
     window.location.href = testUrl || '/?review=1';
   }
 
