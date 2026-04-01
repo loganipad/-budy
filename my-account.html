@@ -690,6 +690,32 @@ button { font-family: inherit; cursor: pointer; }
   padding: 18px 22px 0;
 }
 
+.purchase-mode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.purchase-mode.web {
+  background: rgba(26,86,219,.14);
+  border: 1px solid rgba(59,130,246,.24);
+  color: #bfdbfe;
+}
+
+.purchase-mode.native {
+  background: rgba(245,158,11,.12);
+  border: 1px solid rgba(245,158,11,.24);
+  color: #fde68a;
+}
+
 .purchase-actions {
   display: flex;
   gap: 8px;
@@ -1043,6 +1069,27 @@ button { font-family: inherit; cursor: pointer; }
     width: min(100%, calc(100% - 24px));
   }
 }
+@media (max-width: 430px) {
+  .wrap { padding: 0 14px; }
+  .dash-hd { padding-top: calc(var(--nav-h) + 28px); }
+  .dash-body { padding: 18px 0 42px; }
+  .dash-name { font-size: clamp(1.7rem, 9vw, 2.2rem); }
+  .acct-tabs { gap: 6px; padding: 4px; border-radius: 16px; scroll-snap-type: x proximity; }
+  .acct-tab { height: 40px; flex: 0 0 auto; padding: 0 12px; font-size: .78rem; scroll-snap-align: start; }
+  .d-stat { padding: 16px; border-radius: 22px; }
+  .billing-wrap, .settings-wrap { gap: 12px; }
+  .purchase-copy, .purchase-note { font-size: .78rem; }
+  .dashboard-tour { border-radius: 22px; padding: 16px; }
+}
+@media (max-width: 390px) {
+  .wrap { padding: 0 12px; }
+  .dash-greeting { font-size: .72rem; }
+  .dash-name { font-size: 1.6rem; }
+  .panel-hd { font-size: .68rem; }
+  .row { font-size: .82rem; gap: 12px; }
+  .btn-outline-dark, .btn-danger { min-height: 40px; height: auto; padding: 10px 14px; }
+  .purchase-copy p, .row-copy small, .purchase-note { font-size: .75rem; }
+}
 </style>
 </head>
 <body data-page-type="account">
@@ -1237,14 +1284,14 @@ button { font-family: inherit; cursor: pointer; }
             <div class="row"><span class="k">Account status</span><span class="v" id="profile-account-status">ACTIVE FREE</span></div>
             <div class="row"><span class="k">Account type</span><span class="v" id="profile-account-type">Standard user</span></div>
             <div class="row"><span class="k">Subscription timing</span><span class="v" id="profile-billing-timing">No active subscription</span></div>
-            <div class="row"><span class="k">Payment method</span><span class="v">Web checkout now, app-store billing in app builds</span></div>
+            <div class="row"><span class="k">Payment method</span><span class="v" id="profile-payment-method">Web checkout now, app-store billing in app builds</span></div>
             <div class="row is-stack">
               <div class="row-copy">
                 <span class="k">Upgrade options</span>
-                <small>Use secure web checkout today. This same account area can surface App Store or Google Play purchases later without changing the user flow.</small>
+                <small id="billing-upgrade-note">Use secure web checkout today. This same account area can surface App Store or Google Play purchases later without changing the user flow.</small>
               </div>
               <div class="billing-actions">
-                <button class="btn-outline-dark" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Upgrade Plan</button>
+                <button class="btn-outline-dark" id="billing-upgrade-btn" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Upgrade Plan</button>
               </div>
             </div>
             <div class="row">
@@ -1263,16 +1310,17 @@ button { font-family: inherit; cursor: pointer; }
           <div class="panel purchase-panel">
             <div class="panel-hd">Purchases</div>
             <div class="purchase-copy">
+              <div class="purchase-mode web" id="purchase-mode-badge">Web checkout</div>
               <div class="row-copy">
-                <span class="k">Choose how to upgrade</span>
-                <p>On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
+                <span class="k" id="purchase-heading">Choose how to upgrade</span>
+                <p id="purchase-body-copy">On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
               </div>
               <div class="purchase-actions">
-                <button class="btn-outline-dark" type="button" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Open Upgrade Options</button>
-                <button class="btn-outline-dark" type="button" onclick="openBillingPortal()">Open Billing Portal</button>
+                <button class="btn-outline-dark" type="button" id="purchase-primary-btn" data-upgrade-trigger="true" onclick="openPurchaseOptions()">Open Upgrade Options</button>
+                <button class="btn-outline-dark" type="button" id="purchase-secondary-btn" onclick="openBillingPortal()">Open Billing Portal</button>
               </div>
             </div>
-            <div class="purchase-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
+            <div class="purchase-note" id="purchase-platform-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
           </div>
 
           <div class="panel">
@@ -1398,7 +1446,8 @@ const S = {
   sessionCache: [],
   savedQuestionsCache: [],
   chart: null,
-  dashboardTourStep: 0
+  dashboardTourStep: 0,
+  purchaseEnvironment: null
 };
 
 window.S = S;
@@ -2270,6 +2319,23 @@ function setBillingButtonsForMode() {
   const cancelBtn = document.getElementById('billing-cancel-btn');
   if (!portalBtn || !cancelBtn) return;
 
+  if (!portalBtn.dataset.defaultLabel) portalBtn.dataset.defaultLabel = portalBtn.textContent;
+  if (!cancelBtn.dataset.defaultLabel) cancelBtn.dataset.defaultLabel = cancelBtn.textContent;
+
+  const env = S.purchaseEnvironment || detectPurchaseEnvironment();
+  if (env.usesNativeStore) {
+    portalBtn.textContent = 'Managed In Store';
+    cancelBtn.textContent = 'Cancel In Store';
+    portalBtn.disabled = true;
+    cancelBtn.disabled = true;
+    portalBtn.title = `Purchases in this build are managed through ${env.storeLabel}.`;
+    cancelBtn.title = `Use ${env.storeLabel} account settings to manage cancellations in native app mode.`;
+    return;
+  }
+
+  portalBtn.textContent = portalBtn.dataset.defaultLabel;
+  cancelBtn.textContent = cancelBtn.dataset.defaultLabel;
+
   if (S.isLoggedIn) {
     portalBtn.disabled = false;
     cancelBtn.disabled = false;
@@ -2282,6 +2348,110 @@ function setBillingButtonsForMode() {
   cancelBtn.disabled = true;
   portalBtn.title = 'Log in to manage billing';
   cancelBtn.title = 'Log in to manage billing';
+}
+
+function detectPurchaseEnvironment() {
+  const params = new URLSearchParams(window.location.search);
+  const forcedPlatform = String(params.get('purchasePlatform') || '').trim().toLowerCase();
+  const ua = navigator.userAgent || '';
+  const isIOSDevice = forcedPlatform === 'ios' || /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroidDevice = forcedPlatform === 'android' || /Android/i.test(ua);
+  const hasNativeBridge = Boolean(window.BudyNativePurchase && typeof window.BudyNativePurchase.openPaywall === 'function')
+    || Boolean(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.budyPurchase && typeof window.webkit.messageHandlers.budyPurchase.postMessage === 'function')
+    || Boolean(window.AndroidBridge && typeof window.AndroidBridge.openPurchase === 'function')
+    || Boolean(window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function');
+
+  let platform = 'web';
+  if (isIOSDevice) platform = 'ios';
+  else if (isAndroidDevice) platform = 'android';
+
+  return {
+    platform,
+    usesNativeStore: forcedPlatform === 'ios' || forcedPlatform === 'android' || hasNativeBridge,
+    hasNativeBridge,
+    isStandalone: Boolean(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true,
+    storeLabel: platform === 'ios' ? 'App Store' : platform === 'android' ? 'Google Play' : 'Stripe web checkout'
+  };
+}
+
+function requestNativePurchaseFlow(plan) {
+  const payload = { type: 'openPurchase', plan: plan || 'monthly' };
+
+  if (window.BudyNativePurchase && typeof window.BudyNativePurchase.openPaywall === 'function') {
+    try {
+      window.BudyNativePurchase.openPaywall(payload);
+    } catch {
+      window.BudyNativePurchase.openPaywall(payload.plan);
+    }
+    return true;
+  }
+
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.budyPurchase && typeof window.webkit.messageHandlers.budyPurchase.postMessage === 'function') {
+    window.webkit.messageHandlers.budyPurchase.postMessage(payload);
+    return true;
+  }
+
+  if (window.AndroidBridge && typeof window.AndroidBridge.openPurchase === 'function') {
+    window.AndroidBridge.openPurchase(payload.plan);
+    return true;
+  }
+
+  if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+    window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+    return true;
+  }
+
+  return false;
+}
+
+function applyPurchaseEnvironmentUI() {
+  const env = detectPurchaseEnvironment();
+  S.purchaseEnvironment = env;
+
+  const badge = document.getElementById('purchase-mode-badge');
+  const heading = document.getElementById('purchase-heading');
+  const body = document.getElementById('purchase-body-copy');
+  const note = document.getElementById('purchase-platform-note');
+  const billingUpgradeNote = document.getElementById('billing-upgrade-note');
+  const paymentMethod = document.getElementById('profile-payment-method');
+  const purchasePrimaryBtn = document.getElementById('purchase-primary-btn');
+  const purchaseSecondaryBtn = document.getElementById('purchase-secondary-btn');
+  const billingUpgradeBtn = document.getElementById('billing-upgrade-btn');
+  if (!badge || !heading || !body || !note || !billingUpgradeNote || !paymentMethod || !purchasePrimaryBtn || !purchaseSecondaryBtn || !billingUpgradeBtn) return;
+
+  if (env.usesNativeStore) {
+    const isIOS = env.platform === 'ios';
+    const storeLabel = env.storeLabel;
+    badge.textContent = isIOS ? 'App Store mode' : 'Google Play mode';
+    badge.classList.remove('web');
+    badge.classList.add('native');
+    heading.textContent = `${storeLabel} purchases in this build`;
+    body.textContent = env.hasNativeBridge
+      ? `This build hands upgrades off to ${storeLabel}. Web checkout links stay out of the purchase flow here.`
+      : `This environment is flagged for ${storeLabel} purchases. Connect the native purchase bridge to finish the handoff without showing Stripe inside the app.`;
+    note.textContent = isIOS
+      ? 'Apple expects digital subscriptions sold inside iPhone or iPad apps to use in-app purchase. This screen now swaps to App Store messaging automatically when native app mode is detected.'
+      : 'Android app builds can switch to Google Play billing while keeping Stripe on the site. This screen now swaps to store messaging automatically when native app mode is detected.';
+    billingUpgradeNote.textContent = `This device is using ${storeLabel} purchase messaging, so external checkout links stay hidden from the primary upgrade flow.`;
+    paymentMethod.textContent = `${storeLabel} in-app purchase in native app mode`;
+    purchasePrimaryBtn.textContent = env.hasNativeBridge ? `Use ${storeLabel}` : `${storeLabel} purchase coming soon`;
+    billingUpgradeBtn.textContent = env.hasNativeBridge ? `Use ${storeLabel}` : `${storeLabel} purchase coming soon`;
+    purchaseSecondaryBtn.classList.add('hidden');
+  } else {
+    badge.textContent = env.platform === 'web' ? 'Web checkout' : 'Mobile web checkout';
+    badge.classList.remove('native');
+    badge.classList.add('web');
+    heading.textContent = 'Choose how to upgrade';
+    body.textContent = 'On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.';
+    note.textContent = 'If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store\'s billing rules instead of Stripe\'s web portal.';
+    billingUpgradeNote.textContent = 'Use secure web checkout today. This same account area can surface App Store or Google Play purchases later without changing the user flow.';
+    paymentMethod.textContent = env.platform === 'web' ? 'Secure Stripe checkout on the web' : 'Secure Stripe checkout in the mobile browser';
+    purchasePrimaryBtn.textContent = 'Open Upgrade Options';
+    billingUpgradeBtn.textContent = 'Upgrade Plan';
+    purchaseSecondaryBtn.classList.remove('hidden');
+  }
+
+  setBillingButtonsForMode();
 }
 
 function saveGrade() {
@@ -2309,12 +2479,21 @@ async function openPurchaseOptions() {
 
   const buttons = Array.from(document.querySelectorAll('[data-upgrade-trigger="true"]'));
   const originalLabels = buttons.map((btn) => btn.textContent);
+  const env = S.purchaseEnvironment || detectPurchaseEnvironment();
   buttons.forEach((btn) => {
     btn.disabled = true;
-    btn.textContent = 'Opening checkout...';
+    btn.textContent = env.usesNativeStore ? `Opening ${env.storeLabel}...` : 'Opening checkout...';
   });
 
   try {
+    if (env.usesNativeStore) {
+      if (!requestNativePurchaseFlow('monthly')) {
+        throw new Error(`${env.storeLabel} purchase bridge is not connected in this build yet.`);
+      }
+      toast(`Opening ${env.storeLabel} purchase flow...`, 'ok');
+      return;
+    }
+
     const token = await getAccessToken();
     if (!token) throw new Error('Session expired. Please log in again.');
 
@@ -2487,7 +2666,7 @@ function renderDash() {
   document.getElementById('profile-email').textContent = S.user.email || '-';
   document.getElementById('profile-plan').textContent = S.isPremium ? 'Pro' : 'Free';
   document.getElementById('profile-billing-timing').textContent = getBillingTimingText();
-  setBillingButtonsForMode();
+  applyPurchaseEnvironmentUI();
 
   loadGrade();
 
