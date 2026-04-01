@@ -20,6 +20,7 @@ const requiredHtmlFiles = [
 const observabilitySnippet = '<script src="/assets/observability.js" defer></script>';
 const jsFiles = [];
 const testFiles = [];
+const htmlLinkFiles = [...requiredHtmlFiles, 'footer.html', 'navbar.html'];
 
 function walk(dirPath) {
   for (const entry of readdirSync(dirPath)) {
@@ -62,7 +63,59 @@ if (!existsSync(vercelConfigPath)) {
   throw new Error('Missing vercel.json');
 }
 
-JSON.parse(readFileSync(vercelConfigPath, 'utf8'));
+const vercelConfig = JSON.parse(readFileSync(vercelConfigPath, 'utf8'));
+const rewriteSources = new Set((vercelConfig.rewrites || []).map((entry) => String(entry.source || '')));
+
+for (const file of htmlLinkFiles) {
+  const fullPath = path.join(root, file);
+  if (!existsSync(fullPath)) {
+    throw new Error(`Missing shared page or partial: ${file}`);
+  }
+
+  const html = readFileSync(fullPath, 'utf8');
+  const anchorMatches = html.matchAll(/<a\b[^>]*\bhref\s*=\s*['"]([^'"]+)['"][^>]*>/gi);
+
+  for (const match of anchorMatches) {
+    const href = String(match[1] || '').trim();
+    const tag = String(match[0] || '');
+
+    if (!href) {
+      throw new Error(`Empty link href in ${file}`);
+    }
+
+    if (href === '#' && !/\bonclick\s*=/.test(tag) && !/\bid\s*=/.test(tag)) {
+      throw new Error(`Placeholder link href found in ${file}: ${tag}`);
+    }
+
+    if (
+      href.startsWith('#') ||
+      href.startsWith('mailto:') ||
+      href.startsWith('tel:') ||
+      href.startsWith('javascript:') ||
+      href.startsWith('http://') ||
+      href.startsWith('https://')
+    ) {
+      continue;
+    }
+
+    const hrefWithoutHash = href.split('#')[0].split('?')[0] || '/';
+    if (hrefWithoutHash === '/') {
+      continue;
+    }
+
+    if (rewriteSources.has(hrefWithoutHash)) {
+      continue;
+    }
+
+    const relativeHref = hrefWithoutHash.startsWith('/') ? hrefWithoutHash.slice(1) : hrefWithoutHash;
+    if (!relativeHref || existsSync(path.join(root, relativeHref))) {
+      continue;
+    }
+
+    throw new Error(`Unresolved local link in ${file}: ${href}`);
+  }
+}
+
 walk(root);
 
 for (const file of jsFiles) {

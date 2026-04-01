@@ -91,7 +91,7 @@
 
   .site-footer .footer-grid-socials {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .site-footer .footer-col a {
@@ -119,6 +119,27 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  .site-footer .footer-utility-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(240, 244, 255, 0.86);
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: transform 0.18s, border-color 0.18s, background 0.18s;
+  }
+
+  .site-footer .footer-utility-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(96, 165, 250, 0.44);
+    background: rgba(37, 99, 235, 0.12);
   }
 
   .site-footer .footer-social {
@@ -214,7 +235,7 @@
             <span class="footer-logo-wordmark">Budy<span class="footer-logo-study">.Study</span></span>
           </div>
           <div class="footer-brand-tag">SAT &amp; PSAT Prep</div>
-          <p class="footer-brand-desc">SAT &amp; PSAT prep that actually works. Built for real students who want faster score gains and cleaner feedback.</p>
+          <p class="footer-brand-desc">SAT &amp; PSAT prep built around the full loop: test, inspect misses, study the exact topic, and run the next review fast.</p>
         </div>
         <div class="footer-col">
           <h4>Product</h4>
@@ -222,42 +243,30 @@
             <li><a href="/#features">Features</a></li>
             <li><a href="/#pricing">Pricing</a></li>
             <li><a href="/my-account.html">Account</a></li>
-            <li><a href="/score-guarantee">Score Guarantee</a></li>
+            <li><a href="/score-guarantee.html">Score Guarantee</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Company</h4>
           <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="/privacy">Privacy</a></li>
-            <li><a href="/terms">Terms</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/privacy.html">Privacy</a></li>
+            <li><a href="/terms.html">Terms</a></li>
+            <li><a href="/contact.html">Contact</a></li>
           </ul>
         </div>
 
         <div class="footer-grid-socials">
           <div class="footer-social-row" aria-label="Social media links">
-            <a class="footer-social" href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M21.58 7.19a2.96 2.96 0 0 0-2.08-2.1C17.67 4.6 12 4.6 12 4.6s-5.67 0-7.5.49a2.96 2.96 0 0 0-2.08 2.1A30.2 30.2 0 0 0 2 12a30.2 30.2 0 0 0 .42 4.81 2.96 2.96 0 0 0 2.08 2.1c1.83.49 7.5.49 7.5.49s5.67 0 7.5-.49a2.96 2.96 0 0 0 2.08-2.1A30.2 30.2 0 0 0 22 12a30.2 30.2 0 0 0-.42-4.81ZM10 15.5v-7l6 3.5-6 3.5Z"/>
-              </svg>
-            </a>
-            <a class="footer-social" href="https://www.instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5Zm8.95 1.55a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8Z"/>
-              </svg>
-            </a>
-            <a class="footer-social" href="https://www.tiktok.com" target="_blank" rel="noreferrer" aria-label="TikTok">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M14.95 2h2.43c.2 1.7 1.15 3.24 2.62 4.06.86.49 1.79.75 2.75.78v2.47a8.57 8.57 0 0 1-4.79-1.49v6.45c0 3.85-3.12 6.96-6.96 6.96A6.96 6.96 0 0 1 4.05 14.3a6.96 6.96 0 0 1 8.29-6.83v2.54a4.5 4.5 0 0 0-5.84 4.29 4.5 4.5 0 0 0 8.99.28l-.01-12.58Z"/>
-              </svg>
-            </a>
+            <a class="footer-utility-link" href="/contact.html#launch-updates">Launch Updates</a>
+            <a class="footer-utility-link" href="/contact.html#school-pilots">School Pilots</a>
+            <a class="footer-utility-link" href="mailto:support@budy.study">Support</a>
           </div>
         </div>
-        <a class="footer-store-badge" href="#" aria-label="Download on the App Store">
+        <a class="footer-store-badge" href="/contact.html#launch-updates" aria-label="Join the iPhone launch list">
           <img src="/assets/app-store-badge.png" alt="Download on the App Store">
         </a>
-        <a class="footer-store-badge" href="#" aria-label="Get it on Google Play">
+        <a class="footer-store-badge" href="/contact.html#launch-updates" aria-label="Join the Android launch list">
           <img src="/assets/Google_Play_Store_badge_EN.png?v=2" alt="Get it on Google Play">
         </a>
       </div>
