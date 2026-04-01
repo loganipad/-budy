@@ -5,16 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Budy.Study | Study Hub</title>
 <meta name="description" content="Review flagged and wrong answers, browse topic-based study guides and flashcards, and build tailored Budy.Study review tests from one study hub.">
-<script>
-  (function enforceStudyAccess() {
-    const LOCAL_AUTH_KEY = 'budy_local_auth_user';
-    const hasLocalUser = Boolean(localStorage.getItem(LOCAL_AUTH_KEY));
-    const hasAuth0Session = Object.keys(localStorage).some((key) => key.startsWith('@@auth0spajs@@') && Boolean(localStorage.getItem(key)));
-    if (!hasLocalUser && !hasAuth0Session) {
-      window.location.replace('/login.html');
-    }
-  })();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
@@ -149,6 +139,25 @@ button,input,select{font:inherit}
 
 .study-intro h1 span{color:var(--gold)}
 .intro-copy p{max-width:880px;color:var(--muted);font-size:.98rem;line-height:1.7}
+
+.study-demo-note{
+  display:none;
+  align-items:center;
+  gap:8px;
+  width:fit-content;
+  margin-top:14px;
+  min-height:34px;
+  padding:0 12px;
+  border-radius:999px;
+  background:rgba(26,86,219,.14);
+  border:1px solid rgba(59,130,246,.22);
+  color:#dbeafe;
+  font-size:.78rem;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+
+.study-demo-note.show{display:inline-flex}
 
 .intro-guide{
   display:inline-flex;
@@ -1349,6 +1358,7 @@ button,input,select{font:inherit}
               <div class="intro-copy">
                 <h1>How to study with <span>Budy</span></h1>
                 <p>Move fast: choose a topic, preview the guide or flashcards, then turn misses into the next review test.</p>
+                <div class="study-demo-note" id="study-demo-note">Previewing Alex Rivera's demo study plan</div>
                 <div class="intro-guide" aria-hidden="true">
                   <img src="/assets/budy-logo.png" alt="">
                   <div class="intro-guide-copy">
@@ -1535,6 +1545,7 @@ button,input,select{font:inherit}
     const AUTH0_REDIRECT_URI = window.location.origin;
     const LOCAL_AUTH_KEY = 'budy_local_auth_user';
     const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
+    const SESSION_STORAGE_KEY = 'sm_s';
     const STUDY_TUTORIAL_KEY = 'budy_study_tutorial_seen_v1';
     const STUDY_TOUR_STEPS = [
       {
@@ -1619,6 +1630,67 @@ button,input,select{font:inherit}
       } catch (_) {
         return [];
       }
+    }
+
+    function getStudySessionsLocal() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function getDemoStudySessions() {
+      return [
+        { date: '2026-03-07T10:00:00.000Z', section: 'english', total: 1310, correct: 39, total_q: 50 },
+        { date: '2026-03-10T10:00:00.000Z', section: 'math', total: 1290, correct: 37, total_q: 50 },
+        { date: '2026-03-14T10:00:00.000Z', section: 'english', total: 1350, correct: 42, total_q: 50 },
+        { date: '2026-03-17T10:00:00.000Z', section: 'english', total: 1420, correct: 47, total_q: 50 },
+        { date: '2026-03-19T10:00:00.000Z', section: 'math', total: 1380, correct: 44, total_q: 50 }
+      ];
+    }
+
+    function getDemoStudySavedQuestions() {
+      return [
+        {
+          key: 'english:e12',
+          section: 'english',
+          skill: 'Inference',
+          prompt: 'Which choice best states the central claim of the passage?',
+          passage: 'The author argues that short feedback loops help students improve faster when they review their mistakes consistently.',
+          correctAnswer: 'B',
+          userAnswer: 'D',
+          isFlagged: true,
+          wasAnsweredWrong: true,
+          lastSeenAt: '2026-03-19T10:00:00.000Z',
+          saveCount: 2
+        },
+        {
+          key: 'math:m14',
+          section: 'math',
+          skill: 'Geometry - Triangles',
+          prompt: 'A right triangle has legs of length 9 and 12. What is the hypotenuse?',
+          correctAnswer: 'B',
+          userAnswer: 'A',
+          isFlagged: false,
+          wasAnsweredWrong: true,
+          lastSeenAt: '2026-03-17T10:00:00.000Z',
+          saveCount: 1
+        }
+      ];
+    }
+
+    function applyStudyDemoState() {
+      const localSessions = getStudySessionsLocal();
+      const localSavedQuestions = getSavedQuestionsLocal();
+      reviewData.user.name = 'Alex Rivera';
+      reviewData.user.email = '';
+      reviewData.sessionCache = localSessions.length ? localSessions : getDemoStudySessions();
+      reviewData.savedQuestionsCache = localSavedQuestions.length ? localSavedQuestions : getDemoStudySavedQuestions();
+
+      const demoNote = document.getElementById('study-demo-note');
+      if (demoNote) demoNote.classList.add('show');
     }
 
     async function initReviewAuth() {
@@ -2112,6 +2184,15 @@ button,input,select{font:inherit}
       if (studyUIState.reviewTopicKey && !topicCatalog.some((topic) => topic.key === studyUIState.reviewTopicKey)) {
         studyUIState.reviewTopicKey = '';
         if (studyUIState.reviewTopicMode === 'topic') studyUIState.reviewTopicMode = 'all';
+      }
+
+      if (!reviewData.isLoggedIn) {
+        const firstIssueTopic = topicCatalog.find((topic) => topic.issueCount > 0) || topicCatalog[0] || null;
+        studyUIState.reviewMode = 'both';
+        studyUIState.reviewTopicMode = firstIssueTopic ? 'most-wrong' : 'all';
+        if (!studyUIState.selectedTopicKey && firstIssueTopic) {
+          studyUIState.selectedTopicKey = firstIssueTopic.key;
+        }
       }
     }
 
@@ -3286,6 +3367,9 @@ button,input,select{font:inherit}
     async function bootStudyPage() {
       await initReviewAuth();
       await Promise.all([hydrateReviewSessions(), hydrateReviewSavedQuestions()]);
+      if (!reviewData.isLoggedIn) {
+        applyStudyDemoState();
+      }
       refreshStudyDataModel();
       bindStudyTabs();
       bindReviewFocusControls();

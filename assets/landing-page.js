@@ -1185,12 +1185,14 @@ function retryDemoTest() {
   renderLandingDemo(0);
 }
 
+function seedGuestDemoProfile() {
+  if (!S.user.name) S.user.name = 'Alex Rivera';
+  if (!S.user.grade) S.user.grade = '11';
+}
+
 /* ── ONBOARDING ── */
 function openOnboard() {
-  if (!S.isLoggedIn) {
-    window.location.href = '/login.html';
-    return;
-  }
+  if (!S.isLoggedIn) seedGuestDemoProfile();
   S.obStep=1; S.obSection=null;
   document.getElementById('ob-name').value=S.user.name||'';
   document.getElementById('ob-grade').value=S.user.grade||'';
@@ -2662,6 +2664,24 @@ async function init() {
     window.history.replaceState({}, document.title, nextUrl);
     const launched = await launchQueuedReviewTestIfPresent();
     if (launched) return;
+  }
+
+  if (searchParams.get('start') === '1') {
+    const section = (searchParams.get('section') || '').toLowerCase();
+    searchParams.delete('start');
+    searchParams.delete('section');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+    openOnboard();
+    if (section && ['english', 'math', 'full'].includes(section)) {
+      S.obSection = section;
+      document.querySelectorAll('.sec-opt').forEach((option) => {
+        const onclickValue = String(option.getAttribute('onclick') || '');
+        option.classList.toggle('sel', onclickValue.includes(`pickSec('${section}'`));
+      });
+      obUpdateStep(2);
+    }
   }
 
   if (searchParams.get('billing') === 'return') {

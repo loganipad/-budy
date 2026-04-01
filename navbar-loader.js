@@ -22,6 +22,10 @@
     return path === '/' || path === '/index.html' || path === '/index';
   }
 
+  function isLoginPage(path) {
+    return path === '/login.html' || path === '/login';
+  }
+
   function isStudyPage(path) {
     return path === '/study.html' || path === '/study';
   }
@@ -237,7 +241,7 @@
           : (study ? 'nav-context-study' : (account ? 'nav-context-account' : 'nav-context-default')))
     );
 
-    updateAccountLink(account || test);
+    updateAccountLink(account || test || isLoginPage(path));
     updateStudyLink(study);
   }
 
@@ -251,12 +255,21 @@
     var state = getRuntimeNavState();
     var isLoggedIn = Boolean(state.isLoggedIn);
     var isLanding = isLandingPage(path);
-    var nextLabel = isLanding ? 'Study' : (isLoggedIn ? 'Log Out' : 'Log In');
-    var authHref = isLanding ? (isLoggedIn ? '/study.html' : '/login.html') : '/login.html';
+    var isAccount = isAccountPage(path);
+    var nextLabel = isLanding
+      ? 'Study'
+      : (isAccount && isLoggedIn ? 'Study' : (isLoggedIn ? 'Log Out' : 'Log In'));
+    var authHref = isLanding || (isAccount && isLoggedIn)
+      ? '/study.html'
+      : '/login.html';
 
     authBtn.textContent = nextLabel;
     authBtn.onclick = function () {
       if (isLanding) {
+        window.location.href = authHref;
+        return;
+      }
+      if (isAccount && isLoggedIn) {
         window.location.href = authHref;
         return;
       }
@@ -271,6 +284,13 @@
       mobileAuth.onclick = function (event) {
         event.preventDefault();
         if (isLanding) {
+          if (typeof window.closeMobileMenu === 'function') {
+            window.closeMobileMenu();
+          }
+          window.location.href = authHref;
+          return;
+        }
+        if (isAccount && isLoggedIn) {
           if (typeof window.closeMobileMenu === 'function') {
             window.closeMobileMenu();
           }
@@ -314,8 +334,7 @@
 
     if (typeof window.openOnboard !== 'function') {
       window.openOnboard = function () {
-        var state = getRuntimeNavState();
-        window.location.href = state.isLoggedIn ? '/' : '/login.html';
+        window.location.href = '/?start=1';
       };
     }
 
