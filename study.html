@@ -738,6 +738,70 @@ button,input,select{font:inherit}
   padding-right:6px;
 }
 
+/* List mode (default) */
+.topic-list.list-mode{
+  grid-template-columns:1fr;
+  gap:0;
+}
+.topic-list.list-mode .topic-card{
+  flex-direction:row;
+  align-items:center;
+  text-align:left;
+  gap:12px;
+  padding:10px 14px;
+  border-radius:0;
+  border:none;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:transparent;
+}
+.topic-list.list-mode .topic-card:first-child{
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.topic-list.list-mode .topic-card:hover{
+  transform:none;
+  background:rgba(255,255,255,.05);
+}
+.topic-list.list-mode .topic-card.active{
+  background:rgba(26,86,219,.12);
+  box-shadow:none;
+}
+.topic-list.list-mode .topic-title{
+  flex:1 1 auto;
+  -webkit-line-clamp:1;
+}
+.topic-list.list-mode .topic-card-section{
+  flex-shrink:0;
+}
+
+/* View toggle */
+.view-toggle-row{
+  display:flex;
+  gap:4px;
+  margin-left:auto;
+}
+.view-toggle-btn{
+  width:34px;
+  height:34px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:rgba(240,244,255,.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease;
+}
+.view-toggle-btn:hover{
+  background:rgba(255,255,255,.08);
+  color:rgba(240,244,255,.8);
+}
+.view-toggle-btn.active{
+  background:rgba(26,86,219,.18);
+  border-color:rgba(59,130,246,.5);
+  color:#dbeafe;
+}
+
 .topic-list::-webkit-scrollbar,
 .topic-detail::-webkit-scrollbar{width:10px}
 .topic-list::-webkit-scrollbar-thumb,
@@ -780,8 +844,7 @@ button,input,select{font:inherit}
 .topic-section-tag{display:none}
 
 .topic-card-icon{
-  font-size:1.5rem;
-  line-height:1;
+  display:none;
 }
 
 .topic-card-section{
@@ -1122,7 +1185,7 @@ button,input,select{font:inherit}
 .fc-btn-restart:hover{background:rgba(255,255,255,.12)}
 
 .fc-result{text-align:center;padding:36px 28px;border-radius:22px;background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(245,158,11,.08));border:2px solid rgba(16,185,129,.24)}
-.fc-result-emoji{font-size:3.4rem;margin-bottom:12px}
+.fc-result-emoji{display:none}
 .fc-result-title{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:8px}
 .fc-result-stats{display:flex;justify-content:center;gap:20px;margin:14px 0}
 .fc-result-stat{text-align:center}
@@ -1585,6 +1648,9 @@ button,input,select{font:inherit}
     grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
     max-height:none;
   }
+  .topic-list.list-mode{
+    grid-template-columns:1fr;
+  }
 
   .review-quick-config{
     flex-direction:column;
@@ -1857,6 +1923,10 @@ button,input,select{font:inherit}
                 <button class="topic-filter active" type="button" data-topic-filter="all">All Topics</button>
                 <button class="topic-filter" type="button" data-topic-filter="math">Math</button>
                 <button class="topic-filter" type="button" data-topic-filter="english">English</button>
+              </div>
+              <div class="view-toggle-row">
+                <button class="view-toggle-btn active" type="button" id="view-list-btn" aria-label="List view" title="List view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="7" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="12" width="14" height="2" rx="1" fill="currentColor"/></svg></button>
+                <button class="view-toggle-btn" type="button" id="view-grid-btn" aria-label="Grid view" title="Grid view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg></button>
               </div>
             </div>
 
@@ -2780,18 +2850,7 @@ button,input,select{font:inherit}
     }
 
     function getTopicIcon(section, domain) {
-      if (section === 'math') {
-        if (domain && domain.includes('Algebra')) return '🔢';
-        if (domain && domain.includes('Advanced')) return '📐';
-        if (domain && domain.includes('Geometry')) return '📏';
-        if (domain && domain.includes('Problem')) return '📊';
-        return '➗';
-      }
-      if (domain && domain.includes('Information')) return '📖';
-      if (domain && domain.includes('Craft')) return '✍️';
-      if (domain && domain.includes('Expression')) return '💬';
-      if (domain && domain.includes('Convention')) return '📝';
-      return '📄';
+      return '';
     }
 
     function renderTopicList(topics) {
@@ -3162,7 +3221,7 @@ button,input,select{font:inherit}
         var emoji = document.createElement('div');
         emoji.className = 'fc-result-emoji';
         var knownPct = totalCards ? Math.round((fcGameState.knownIndexes.length / totalCards) * 100) : 0;
-        emoji.textContent = knownPct >= 80 ? '🎉' : knownPct >= 50 ? '💪' : '📚';
+        emoji.textContent = '';
         var resTitle = document.createElement('div');
         resTitle.className = 'fc-result-title';
         resTitle.textContent = knownPct >= 80 ? 'Great job! You crushed it!' : knownPct >= 50 ? 'Solid work! Keep reviewing.' : 'Keep studying — you\'ll get there!';
@@ -3223,7 +3282,7 @@ button,input,select{font:inherit}
         var dlPdf = document.createElement('button');
         dlPdf.type = 'button';
         dlPdf.className = 'fc-download-btn';
-        dlPdf.textContent = '📄 Download Flashcard PDF';
+        dlPdf.textContent = 'Download Flashcard PDF';
         dlPdf.addEventListener('click', function () { generateFlashcardPDF(topic, deck); });
         dlRow.appendChild(dlPdf);
         shell.appendChild(dlRow);
@@ -3365,7 +3424,7 @@ button,input,select{font:inherit}
       var dlPdf2 = document.createElement('button');
       dlPdf2.type = 'button';
       dlPdf2.className = 'fc-download-btn';
-      dlPdf2.textContent = '📄 Download PDF';
+      dlPdf2.textContent = 'Download PDF';
       dlPdf2.addEventListener('click', function () { generateFlashcardPDF(topic, deck); });
       dlRow2.appendChild(dlPdf2);
       game.appendChild(dlRow2);
@@ -4020,6 +4079,22 @@ button,input,select{font:inherit}
           });
           renderLibraryPanel();
         });
+      });
+
+      /* View toggle: list (default) vs grid */
+      var listBtn = document.getElementById('view-list-btn');
+      var gridBtn = document.getElementById('view-grid-btn');
+      var topicListEl = document.getElementById('topic-list');
+      if (topicListEl) topicListEl.classList.add('list-mode');
+      if (listBtn) listBtn.addEventListener('click', function () {
+        if (topicListEl) topicListEl.classList.add('list-mode');
+        listBtn.classList.add('active');
+        if (gridBtn) gridBtn.classList.remove('active');
+      });
+      if (gridBtn) gridBtn.addEventListener('click', function () {
+        if (topicListEl) topicListEl.classList.remove('list-mode');
+        gridBtn.classList.add('active');
+        if (listBtn) listBtn.classList.remove('active');
       });
     }
 
