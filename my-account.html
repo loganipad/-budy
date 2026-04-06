@@ -1042,9 +1042,149 @@ button { font-family: inherit; cursor: pointer; }
   background: #9f1239;
 }
 
+/* ── Performance HQ ── */
+.phq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.phq-fire-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  background: rgba(245,158,11,.14);
+  border: 1px solid rgba(245,158,11,.18);
+  flex-shrink: 0;
+}
+.phq-mission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.phq-mission {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  transition: border-color .2s;
+  cursor: default;
+}
+.phq-mission.done {
+  border-color: rgba(16,185,129,.28);
+  background: rgba(16,185,129,.06);
+}
+.phq-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .2s;
+  color: transparent;
+  background: transparent;
+}
+.phq-mission.done .phq-check {
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+}
+.phq-check svg { width: 14px; height: 14px; }
+.phq-mission-body { min-width: 0; }
+.phq-mission-title {
+  font-size: .875rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  line-height: 1.2;
+}
+.phq-mission.done .phq-mission-title {
+  color: #10b981;
+  text-decoration: line-through;
+  text-decoration-color: rgba(16,185,129,.5);
+}
+.phq-mission-sub {
+  font-size: .75rem;
+  color: rgba(240,244,255,.45);
+  margin-top: 2px;
+}
+.phq-next-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.phq-next-rec {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(26,86,219,.08);
+  border: 1px solid rgba(59,130,246,.18);
+}
+.phq-next-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  background: rgba(59,130,246,.15);
+  border: 1px solid rgba(59,130,246,.22);
+  flex-shrink: 0;
+}
+.phq-next-body {}
+.phq-next-label {
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #3b82f6;
+  margin-bottom: 4px;
+}
+.phq-next-title {
+  font-size: .95rem;
+  font-weight: 800;
+  color: #f0f4ff;
+  line-height: 1.25;
+}
+.phq-next-copy {
+  font-size: .8rem;
+  color: rgba(240,244,255,.55);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.phq-next-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #3b82f6;
+  background: rgba(59,130,246,.12);
+  border: 1px solid rgba(59,130,246,.25);
+  cursor: pointer;
+  transition: all .18s;
+}
+.phq-next-cta:hover { background: rgba(59,130,246,.2); }
+
 @media (max-width: 980px) {
   .dash-stats { grid-template-columns: 1fr 1fr; }
   .progress-grid { grid-template-columns: 1fr; }
+  .phq-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
   .dash-grid { grid-template-columns: 1fr; }
@@ -1080,6 +1220,14 @@ button { font-family: inherit; cursor: pointer; }
   .billing-wrap, .settings-wrap { gap: 12px; }
   .purchase-copy, .purchase-note { font-size: .78rem; }
   .dashboard-tour { border-radius: 22px; padding: 16px; }
+  /* PHQ at 430px */
+  .phq-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
+  .phq-mission { padding: 10px 12px; }
+  .phq-mission-title { font-size: .84rem; }
+  .phq-next-rec { padding: 12px; }
+  .phq-next-title { font-size: .88rem; }
+  .phq-next-copy { font-size: .77rem; }
+  .phq-next-cta { font-size: .75rem; padding: 7px 12px; }
 }
 @media (max-width: 390px) {
   .wrap { padding: 0 12px; }
@@ -1089,6 +1237,19 @@ button { font-family: inherit; cursor: pointer; }
   .row { font-size: .82rem; gap: 12px; }
   .btn-outline-dark, .btn-danger { min-height: 40px; height: auto; padding: 10px 14px; }
   .purchase-copy p, .row-copy small, .purchase-note { font-size: .75rem; }
+  /* PHQ at 390px */
+  .phq-fire-badge { width: 28px; height: 28px; border-radius: 8px; }
+  .d-card-hd h3 { font-size: .82rem; }
+  .phq-check { width: 22px; height: 22px; border-radius: 6px; }
+  .phq-mission-title { font-size: .8rem; }
+  .phq-mission-sub { font-size: .72rem; }
+  .phq-next-label { font-size: .62rem; }
+  .phq-next-title { font-size: .84rem; }
+  /* Tighter stats at 390px */
+  .d-stat-v { font-size: 1.7rem; }
+  .d-stat-lbl { font-size: .62rem; }
+  /* Session table squeeze */
+  .sessions-tbl th, .sessions-tbl td { padding: 8px 6px; font-size: .74rem; }
 }
 </style>
 </head>
@@ -1150,9 +1311,30 @@ button { font-family: inherit; cursor: pointer; }
           <div class="d-stat"><div class="d-stat-lbl">Tests Taken</div><div class="d-stat-v" id="d-count">0</div><div class="d-stat-sub">This month</div></div>
         </div>
 
+        <!-- PERFORMANCE HQ: daily missions + next step -->
+        <div class="phq-grid" id="phq-grid">
+          <div class="d-card phq-missions-card">
+            <div class="d-card-hd">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="phq-fire-badge"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bolt"></use></svg></span></div>
+                <h3>Today's Missions</h3>
+              </div>
+              <span class="d-card-tag tag-gold" id="phq-missions-count">0 / 3 done</span>
+            </div>
+            <div class="phq-mission-list" id="phq-mission-list"></div>
+          </div>
+          <div class="d-card phq-next-card">
+            <div class="d-card-hd">
+              <h3>Next Step</h3>
+              <span class="d-card-tag tag-brand">Recommended</span>
+            </div>
+            <div id="phq-next-content"></div>
+          </div>
+        </div>
+
         <div class="dash-section-head">
           <div>
-            <span class="dash-section-kicker">Performance</span>
+            <span class="dash-section-kicker">Performance HQ</span>
             <h2>Score tracking</h2>
           </div>
           <p class="dash-section-note">Your chart and recent tests stay here, while milestones and streaks live in the Achievements tab.</p>
@@ -2621,6 +2803,201 @@ function logout() {
   authClient.logout({ logoutParams: { returnTo: AUTH0_REDIRECT_URI } });
 }
 
+function renderPerformanceHQ(metrics, sessions, achievementCards) {
+  const missionList = document.getElementById('phq-mission-list');
+  const missionCount = document.getElementById('phq-missions-count');
+  const nextContent = document.getElementById('phq-next-content');
+  if (!missionList || !nextContent) return;
+
+  // ── Build missions ──────────────────────────────────────────────────────────
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const STORAGE_KEY = 'budy_phq_missions_' + (S.user.email || 'guest') + '_' + todayKey;
+  let completed = {};
+  try { completed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
+
+  const hasTakenTestToday = sessions.some((s) => (s.date || '').slice(0, 10) === todayKey);
+  const hasSavedQuestions = Array.isArray(S.savedQuestionsCache) && S.savedQuestionsCache.length > 0;
+  const hasWeakArea = metrics.weekImp < 0 || (metrics.latestScore > 0 && metrics.latestScore < 1100);
+  const testsThisWeek = sessions.filter((s) => {
+    const d = new Date(s.date);
+    return Date.now() - d.getTime() < 7 * 24 * 60 * 60 * 1000;
+  }).length;
+
+  if (hasTakenTestToday) completed['test'] = true;
+
+  const MISSIONS = [
+    {
+      id: 'test',
+      title: 'Take a practice test',
+      sub: hasTakenTestToday ? 'Completed today' : 'Start a timed set to track your progress',
+      done: Boolean(completed['test']) || hasTakenTestToday,
+      href: '/'
+    },
+    {
+      id: 'review',
+      title: hasSavedQuestions ? 'Review your saved questions' : 'Flag a question during a test',
+      sub: hasSavedQuestions
+        ? S.savedQuestionsCache.length + ' question' + (S.savedQuestionsCache.length === 1 ? '' : 's') + ' waiting in your queue'
+        : 'Miss or flag a question so it queues up here',
+      done: Boolean(completed['review']),
+      href: '/my-account.html#study'
+    },
+    {
+      id: 'study',
+      title: testsThisWeek >= 3 ? 'Strong week — aim for 4 tests' : 'Open the Study Hub',
+      sub: testsThisWeek >= 3
+        ? testsThisWeek + ' tests this week · keep the streak going'
+        : 'Explore a topic, flashcards, or a study guide',
+      done: Boolean(completed['study']),
+      href: '/study.html'
+    }
+  ];
+
+  const doneCount = MISSIONS.filter((m) => m.done).length;
+  missionCount.textContent = doneCount + ' / 3 done';
+
+  missionList.replaceChildren();
+  MISSIONS.forEach((m) => {
+    const item = document.createElement('div');
+    item.className = 'phq-mission' + (m.done ? ' done' : '');
+
+    const check = document.createElement('div');
+    check.className = 'phq-check';
+    check.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+
+    const body = document.createElement('div');
+    body.className = 'phq-mission-body';
+    const title = document.createElement('div');
+    title.className = 'phq-mission-title';
+    title.textContent = m.title;
+    const sub = document.createElement('div');
+    sub.className = 'phq-mission-sub';
+    sub.textContent = m.sub;
+    body.appendChild(title);
+    body.appendChild(sub);
+
+    item.appendChild(check);
+    item.appendChild(body);
+
+    if (!m.done) {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', () => {
+        completed[m.id] = true;
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch {}
+        if (m.href) window.location.href = m.href;
+      });
+    }
+
+    missionList.appendChild(item);
+  });
+
+  // ── Build next-step recommendation ──────────────────────────────────────────
+  nextContent.replaceChildren();
+
+  let recs = [];
+
+  // Rule 1: No tests ever → start first test
+  if (metrics.totalTests === 0) {
+    recs.push({
+      label: 'First step',
+      icon: 'clipboard',
+      title: 'Take your first practice test',
+      copy: 'Start a 10-question set and see your baseline score instantly. No prep required.',
+      cta: 'Start Free Test →',
+      href: '/'
+    });
+  }
+
+  // Rule 2: Has saved questions not reviewed → go to review lab
+  if (hasSavedQuestions && !completed['review']) {
+    recs.push({
+      label: 'Flagged questions',
+      icon: 'flag',
+      title: 'Clear your saved question queue',
+      copy: S.savedQuestionsCache.length + ' question' + (S.savedQuestionsCache.length === 1 ? '' : 's') + ' flagged or wrong are waiting. Reviewing them is the fastest way to close gaps.',
+      cta: 'Open Review Lab →',
+      href: '/my-account.html#study'
+    });
+  }
+
+  // Rule 3: Score is declining or weak area
+  if (metrics.weekImp < 0) {
+    recs.push({
+      label: 'Score dip detected',
+      icon: 'chart',
+      title: 'Your score dropped this week',
+      copy: 'A ' + Math.abs(metrics.weekImp) + '-point dip over 7 days. Go to Study Hub and open a topic guide for the skill that caused the most recent miss.',
+      cta: 'Open Study Hub →',
+      href: '/study.html'
+    });
+  }
+
+  // Rule 4: Hasn't studied a guide yet
+  if (metrics.totalTests > 0 && !hasWeakArea && recs.length === 0) {
+    recs.push({
+      label: 'Keep momentum',
+      icon: 'note',
+      title: metrics.streak.current >= 3 ? 'You\'re on a ' + metrics.streak.current + '-day streak' : 'Keep your study streak alive',
+      copy: metrics.streak.current >= 3
+        ? 'Great consistency. Add a topic study guide session today to lock in the gains.'
+        : 'Log in and take a test each day to build the habit that moves scores.',
+      cta: 'Go to Study Hub →',
+      href: '/study.html'
+    });
+  }
+
+  // Default fallback
+  if (recs.length === 0) {
+    recs.push({
+      label: 'On track',
+      icon: 'bulb',
+      title: 'You\'re on track today',
+      copy: 'Complete all 3 missions and you\'re set. Come back tomorrow for a fresh set of daily goals.',
+      cta: 'Explore Study Hub →',
+      href: '/study.html'
+    });
+  }
+
+  recs.slice(0, 2).forEach((rec) => {
+    const recEl = document.createElement('div');
+    recEl.className = 'phq-next-rec';
+
+    const iconEl = document.createElement('div');
+    iconEl.className = 'phq-next-icon';
+    iconEl.innerHTML = '<span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-' + rec.icon + '"></use></svg></span>';
+
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'phq-next-body';
+
+    const labelEl = document.createElement('div');
+    labelEl.className = 'phq-next-label';
+    labelEl.textContent = rec.label;
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'phq-next-title';
+    titleEl.textContent = rec.title;
+
+    const copyEl = document.createElement('div');
+    copyEl.className = 'phq-next-copy';
+    copyEl.textContent = rec.copy;
+
+    const ctaEl = document.createElement('a');
+    ctaEl.className = 'phq-next-cta';
+    ctaEl.href = rec.href;
+    ctaEl.textContent = rec.cta;
+
+    bodyEl.appendChild(labelEl);
+    bodyEl.appendChild(titleEl);
+    bodyEl.appendChild(copyEl);
+    bodyEl.appendChild(ctaEl);
+
+    recEl.appendChild(iconEl);
+    recEl.appendChild(bodyEl);
+
+    nextContent.appendChild(recEl);
+  });
+}
+
 function renderDash() {
   const ss = Array.isArray(S.sessionCache)
     ? [...S.sessionCache].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -2683,6 +3060,7 @@ function renderDash() {
   renderLoginStreak(metrics);
   renderAchievements(achievementCards);
   renderSavedQuestions();
+  renderPerformanceHQ(metrics, ss, achievementCards);
   mountReviewBank();
 
   const nextAchievement = achievementCards.find((card) => !card.unlocked);

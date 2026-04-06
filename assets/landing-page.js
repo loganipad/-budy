@@ -1254,9 +1254,57 @@ function obBack(){if(S.obStep>1)obUpdateStep(S.obStep-1)}
 
 /* ── PAYWALL ── */
 let paywallCtx='';
+function detectNativeStoreEnv() {
+  const params = new URLSearchParams(window.location.search);
+  const forced = String(params.get('purchasePlatform') || '').toLowerCase().trim();
+  const ua = navigator.userAgent || '';
+  const isIOS = forced === 'ios' || /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = forced === 'android' || /Android/i.test(ua);
+  const hasNativeBridge =
+    Boolean(window.BudyNativePurchase && typeof window.BudyNativePurchase.openPaywall === 'function') ||
+    Boolean(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.budyPurchase) ||
+    Boolean(window.AndroidBridge && typeof window.AndroidBridge.openPurchase === 'function') ||
+    Boolean(window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function');
+  const platform = forced === 'ios' || (isIOS && !forced) ? 'ios' : forced === 'android' || (isAndroid && !forced) ? 'android' : 'web';
+  const usesNativeStore = forced === 'ios' || forced === 'android' || hasNativeBridge;
+  return {
+    platform,
+    usesNativeStore,
+    hasNativeBridge,
+    storeLabel: platform === 'ios' ? 'App Store' : platform === 'android' ? 'Google Play' : 'Stripe'
+  };
+}
+
+function requestNativeStorePurchase(plan) {
+  const payload = { type: 'openPurchase', plan: plan || 'monthly' };
+  if (window.BudyNativePurchase && typeof window.BudyNativePurchase.openPaywall === 'function') {
+    try { window.BudyNativePurchase.openPaywall(payload); } catch { window.BudyNativePurchase.openPaywall(payload.plan); }
+    return true;
+  }
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.budyPurchase && typeof window.webkit.messageHandlers.budyPurchase.postMessage === 'function') {
+    window.webkit.messageHandlers.budyPurchase.postMessage(payload);
+    return true;
+  }
+  if (window.AndroidBridge && typeof window.AndroidBridge.openPurchase === 'function') {
+    window.AndroidBridge.openPurchase(payload.plan);
+    return true;
+  }
+  if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+    window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+    return true;
+  }
+  return false;
+}
+
 function openPaywall(ctx='') {
   paywallCtx=ctx;
   selectPlan(ctx === 'annual' ? 'annual' : 'monthly');
+  // Adapt CTA for native store environments
+  const nativeEnv = detectNativeStoreEnv();
+  const ctaBtn = document.getElementById('pw-cta-btn');
+  if (ctaBtn && nativeEnv.usesNativeStore) {
+    ctaBtn.textContent = 'Continue with ' + nativeEnv.storeLabel + ' →';
+  }
   document.getElementById('paywall-overlay').classList.add('open');
 }
 function closePaywall(){ document.getElementById('paywall-overlay').classList.remove('open') }
@@ -1292,6 +1340,38 @@ async function handlePurchase() {
     }
     closePaywall();
     if (paywallCtx==='results' && S.results) renderResults(S.results);
+    return;
+  }
+
+  // ── Native store detection ────────────────────────────────────────────────
+  const nativeEnv = detectNativeStoreEnv();
+  if (nativeEnv.usesNativeStore) {
+    const cta = document.getElementById('pw-cta-btn');
+    if (cta) { cta.disabled = true; cta.textContent = 'Opening ' + nativeEnv.storeLabel + '...'; }
+    const sent = requestNativeStorePurchase(S.selectedPlan || 'monthly');
+    if (sent) {
+      toast('Opening ' + nativeEnv.storeLabel + ' purchase flow...', 'ok');
+      closePaywall();
+    } else {
+      toast(nativeEnv.storeLabel + ' purchase bridge is not connected in this build.', 'wn');
+      if (cta) { cta.disabled = false; cta.textContent = 'Start ' + nativeEnv.storeLabel; }
+    }
+    return;
+  }
+
+  // ── Native store detection ────────────────────────────────────────────────
+  const nativeEnv = detectNativeStoreEnv();
+  if (nativeEnv.usesNativeStore) {
+    const cta = document.getElementById('pw-cta-btn');
+    if (cta) { cta.disabled = true; cta.textContent = 'Opening ' + nativeEnv.storeLabel + '...'; }
+    const sent = requestNativeStorePurchase(S.selectedPlan || 'monthly');
+    if (sent) {
+      toast('Opening ' + nativeEnv.storeLabel + ' purchase flow...', 'ok');
+      closePaywall();
+    } else {
+      toast(nativeEnv.storeLabel + ' purchase bridge is not connected in this build.', 'wn');
+      if (cta) { cta.disabled = false; cta.textContent = 'Start ' + nativeEnv.storeLabel; }
+    }
     return;
   }
 
