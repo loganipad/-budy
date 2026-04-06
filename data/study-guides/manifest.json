@@ -1,0 +1,330 @@
+[
+  {
+    "section": "math",
+    "domain": "Advanced Math",
+    "skill": "Complex Numbers",
+    "filename": "math-complex-numbers.pdf",
+    "pages": 5,
+    "questionCount": 93
+  },
+  {
+    "section": "math",
+    "domain": "Advanced Math",
+    "skill": "Equivalent Expressions",
+    "filename": "math-equivalent-expressions.pdf",
+    "pages": 5,
+    "questionCount": 93
+  },
+  {
+    "section": "math",
+    "domain": "Advanced Math",
+    "skill": "Nonlinear Functions",
+    "filename": "math-nonlinear-functions.pdf",
+    "pages": 5,
+    "questionCount": 93
+  },
+  {
+    "section": "math",
+    "domain": "Advanced Math",
+    "skill": "Polynomials",
+    "filename": "math-polynomials.pdf",
+    "pages": 5,
+    "questionCount": 94
+  },
+  {
+    "section": "math",
+    "domain": "Advanced Math",
+    "skill": "Quadratics",
+    "filename": "math-quadratics.pdf",
+    "pages": 5,
+    "questionCount": 94
+  },
+  {
+    "section": "math",
+    "domain": "Advanced Math",
+    "skill": "Radicals and Rational Exponents",
+    "filename": "math-radicals-and-rational-exponents.pdf",
+    "pages": 5,
+    "questionCount": 93
+  },
+  {
+    "section": "math",
+    "domain": "Algebra",
+    "skill": "Linear Functions",
+    "filename": "math-linear-functions.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "math",
+    "domain": "Algebra",
+    "skill": "Linear Inequalities",
+    "filename": "math-linear-inequalities.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "math",
+    "domain": "Algebra",
+    "skill": "One-Variable Linear Equations",
+    "filename": "math-one-variable-linear-equations.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "math",
+    "domain": "Algebra",
+    "skill": "Slope and Intercept",
+    "filename": "math-slope-and-intercept.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "math",
+    "domain": "Algebra",
+    "skill": "Systems of Equations",
+    "filename": "math-systems-of-equations.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "math",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Area and Volume",
+    "filename": "math-area-and-volume.pdf",
+    "pages": 5,
+    "questionCount": 48
+  },
+  {
+    "section": "math",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Circles",
+    "filename": "math-circles.pdf",
+    "pages": 5,
+    "questionCount": 48
+  },
+  {
+    "section": "math",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Coordinate Geometry",
+    "filename": "math-coordinate-geometry.pdf",
+    "pages": 5,
+    "questionCount": 48
+  },
+  {
+    "section": "math",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Right-Triangle Trigonometry",
+    "filename": "math-right-triangle-trigonometry.pdf",
+    "pages": 5,
+    "questionCount": 48
+  },
+  {
+    "section": "math",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Triangles",
+    "filename": "math-triangles.pdf",
+    "pages": 5,
+    "questionCount": 48
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Percentages",
+    "filename": "math-percentages.pdf",
+    "pages": 5,
+    "questionCount": 35
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Probability",
+    "filename": "math-probability.pdf",
+    "pages": 5,
+    "questionCount": 34
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Rates and Unit Conversion",
+    "filename": "math-rates-and-unit-conversion.pdf",
+    "pages": 5,
+    "questionCount": 34
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Ratios and Proportions",
+    "filename": "math-ratios-and-proportions.pdf",
+    "pages": 5,
+    "questionCount": 35
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Scatterplots and Line of Best Fit",
+    "filename": "math-scatterplots-and-line-of-best-fit.pdf",
+    "pages": 5,
+    "questionCount": 34
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Statistics",
+    "filename": "math-statistics.pdf",
+    "pages": 5,
+    "questionCount": 34
+  },
+  {
+    "section": "math",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Table and Graph Interpretation",
+    "filename": "math-table-and-graph-interpretation.pdf",
+    "pages": 5,
+    "questionCount": 34
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Craft and Structure",
+    "skill": "Cross-Text Connections",
+    "filename": "reading-writing-cross-text-connections.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Craft and Structure",
+    "skill": "Rhetorical Purpose",
+    "filename": "reading-writing-rhetorical-purpose.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Craft and Structure",
+    "skill": "Text Structure",
+    "filename": "reading-writing-text-structure.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Craft and Structure",
+    "skill": "Words in Context",
+    "filename": "reading-writing-words-in-context.pdf",
+    "pages": 5,
+    "questionCount": 112
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Expression of Ideas",
+    "skill": "Concision",
+    "filename": "reading-writing-concision.pdf",
+    "pages": 5,
+    "questionCount": 80
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Expression of Ideas",
+    "skill": "Rhetorical Synthesis",
+    "filename": "reading-writing-rhetorical-synthesis.pdf",
+    "pages": 5,
+    "questionCount": 80
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Expression of Ideas",
+    "skill": "Sentence Placement",
+    "filename": "reading-writing-sentence-placement.pdf",
+    "pages": 5,
+    "questionCount": 80
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Expression of Ideas",
+    "skill": "Transitions",
+    "filename": "reading-writing-transitions.pdf",
+    "pages": 5,
+    "questionCount": 80
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Information and Ideas",
+    "skill": "Central Idea",
+    "filename": "reading-writing-central-idea.pdf",
+    "pages": 5,
+    "questionCount": 104
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Information and Ideas",
+    "skill": "Command of Evidence",
+    "filename": "reading-writing-command-of-evidence.pdf",
+    "pages": 5,
+    "questionCount": 104
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Information and Ideas",
+    "skill": "Inference",
+    "filename": "reading-writing-inference.pdf",
+    "pages": 5,
+    "questionCount": 104
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Information and Ideas",
+    "skill": "Quantitative Information in Text and Graphics",
+    "filename": "reading-writing-quantitative-information-in-text-and-graphics.pdf",
+    "pages": 5,
+    "questionCount": 104
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Standard English Conventions",
+    "skill": "Grammar",
+    "filename": "reading-writing-grammar.pdf",
+    "pages": 5,
+    "questionCount": 70
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Standard English Conventions",
+    "skill": "Modifier Placement",
+    "filename": "reading-writing-modifier-placement.pdf",
+    "pages": 5,
+    "questionCount": 68
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Standard English Conventions",
+    "skill": "Parallel Structure",
+    "filename": "reading-writing-parallel-structure.pdf",
+    "pages": 5,
+    "questionCount": 70
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Standard English Conventions",
+    "skill": "Pronoun Clarity",
+    "filename": "reading-writing-pronoun-clarity.pdf",
+    "pages": 5,
+    "questionCount": 68
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Standard English Conventions",
+    "skill": "Punctuation",
+    "filename": "reading-writing-punctuation.pdf",
+    "pages": 5,
+    "questionCount": 70
+  },
+  {
+    "section": "reading_writing",
+    "domain": "Standard English Conventions",
+    "skill": "Verb Tense and Agreement",
+    "filename": "reading-writing-verb-tense-and-agreement.pdf",
+    "pages": 5,
+    "questionCount": 70
+  }
+]
