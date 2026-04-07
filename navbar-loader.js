@@ -257,9 +257,9 @@
     var isLanding = isLandingPage(path);
     var isAccount = isAccountPage(path);
     var nextLabel = isLanding
-      ? 'Study'
+      ? (isLoggedIn ? 'Study' : 'Log In')
       : (isAccount && isLoggedIn ? 'Study' : (isLoggedIn ? 'Log Out' : 'Log In'));
-    var authHref = isLanding || (isAccount && isLoggedIn)
+    var authHref = ((isLanding && isLoggedIn) || (isAccount && isLoggedIn))
       ? '/study.html'
       : '/login.html';
 
