@@ -1054,6 +1054,56 @@ button,input,select{font:inherit}
 .guide-bullets,
 .flashcard-sheet-grid{display:grid;gap:12px}
 
+.guide-sheet{
+  display:grid;
+  gap:12px;
+}
+
+.guide-sheet-steps{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  gap:10px;
+}
+
+.guide-sheet-step{
+  border-radius:16px;
+  padding:13px 14px;
+  background:rgba(15,23,42,.55);
+  border:1px solid rgba(148,163,184,.2);
+  display:grid;
+  gap:6px;
+}
+
+.guide-sheet-step-head{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:baseline;
+}
+
+.guide-sheet-step-page{
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#93c5fd;
+}
+
+.guide-sheet-step-title{
+  font-size:.92rem;
+  font-weight:800;
+  color:#eff6ff;
+}
+
+.guide-sheet-step p{
+  margin:0;
+  color:var(--muted);
+  font-size:.84rem;
+  line-height:1.65;
+}
+
 .guide-bullets{
   margin:0;
   padding-left:20px;
@@ -2503,7 +2553,7 @@ button,input,select{font:inherit}
       if (!window.BudyAiDeepDive) return;
 
       const nextConfig = {
-        selectors: ['#topic-detail', '#recent-test-list'],
+        selectors: ['#recent-test-list'],
         glossaryTerms: buildStudyDeepDiveKeywords(),
         getAccessToken: getReviewAccessToken,
         getRuntimeContext: getStudyDeepDiveContext,
@@ -3229,57 +3279,44 @@ button,input,select{font:inherit}
 
       shell.appendChild(hero);
 
-      const pageStrip = document.createElement('div');
-      pageStrip.className = 'guide-page-strip';
-      const pageOverview = document.createElement('article');
-      pageOverview.className = 'guide-preview-card guide-page-overview';
-      const overviewLabel = document.createElement('span');
-      overviewLabel.textContent = 'Current preview page';
-      const overviewTitle = document.createElement('strong');
-      const overviewCopy = document.createElement('p');
-      pageOverview.appendChild(overviewLabel);
-      pageOverview.appendChild(overviewTitle);
-      pageOverview.appendChild(overviewCopy);
+      const guideSheetCard = document.createElement('article');
+      guideSheetCard.className = 'guide-preview-card guide-sheet';
+      const guideSheetLabel = document.createElement('span');
+      guideSheetLabel.textContent = 'In-app study sheet';
+      const guideSheetTitle = document.createElement('strong');
+      guideSheetTitle.textContent = 'Page-by-page walkthrough';
+      const guideSheetList = document.createElement('ol');
+      guideSheetList.className = 'guide-sheet-steps';
 
-      const pageCards = [];
-      function setActivePage(index) {
-        pageCards.forEach(function (item, itemIndex) {
-          item.classList.toggle('is-active', itemIndex === index);
-        });
-        const page = guidePages[index] || guidePages[0];
-        if (!page) return;
-        overviewTitle.textContent = page.page + ': ' + page.title;
-        overviewCopy.textContent = page.text;
-      }
+      guidePages.forEach((page) => {
+        const item = document.createElement('li');
+        item.className = 'guide-sheet-step';
 
-      guidePages.forEach((page, index) => {
-        const card = document.createElement('article');
-        card.className = 'guide-page-card';
-        card.setAttribute('role', 'button');
-        card.tabIndex = 0;
-        const pageLabel = document.createElement('span');
-        pageLabel.textContent = page.page;
-        const pageTitle = document.createElement('strong');
-        pageTitle.textContent = page.title;
-        const pageCopy = document.createElement('p');
-        pageCopy.textContent = page.text;
-        card.addEventListener('click', function () { setActivePage(index); });
-        card.addEventListener('keydown', function (event) {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            setActivePage(index);
-          }
-        });
-        card.appendChild(pageLabel);
-        card.appendChild(pageTitle);
-        card.appendChild(pageCopy);
-        pageStrip.appendChild(card);
-        pageCards.push(card);
+        const itemHead = document.createElement('div');
+        itemHead.className = 'guide-sheet-step-head';
+
+        const itemPage = document.createElement('span');
+        itemPage.className = 'guide-sheet-step-page';
+        itemPage.textContent = page.page;
+
+        const itemTitle = document.createElement('strong');
+        itemTitle.className = 'guide-sheet-step-title';
+        itemTitle.textContent = page.title;
+
+        const itemCopy = document.createElement('p');
+        itemCopy.textContent = page.text;
+
+        itemHead.appendChild(itemPage);
+        itemHead.appendChild(itemTitle);
+        item.appendChild(itemHead);
+        item.appendChild(itemCopy);
+        guideSheetList.appendChild(item);
       });
 
-      setActivePage(0);
-      shell.appendChild(pageStrip);
-      shell.appendChild(pageOverview);
+      guideSheetCard.appendChild(guideSheetLabel);
+      guideSheetCard.appendChild(guideSheetTitle);
+      guideSheetCard.appendChild(guideSheetList);
+      shell.appendChild(guideSheetCard);
 
       const layout = document.createElement('div');
       layout.className = 'guide-preview-layout';
