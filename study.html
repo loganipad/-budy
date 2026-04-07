@@ -2229,6 +2229,8 @@ button,input,select{font:inherit}
       flashcardIndex: 0,
       flashcardFace: 'front',
       flashcardOrder: [],
+      flashcardMode: 'all',
+      flashcardStudyDeck: [],
       tutorialStep: 0
     };
 
@@ -2842,6 +2844,8 @@ button,input,select{font:inherit}
       studyUIState.flashcardIndex = 0;
       studyUIState.flashcardFace = 'front';
       studyUIState.flashcardOrder = [];
+      studyUIState.flashcardMode = 'all';
+      studyUIState.flashcardStudyDeck = [];
     }
 
     function selectTopicPreview(topicKey) {
@@ -3138,7 +3142,23 @@ button,input,select{font:inherit}
     }
 
     function buildFlashcardDeck(topic) {
-      const deck = [
+      const deck = [];
+
+      if (Array.isArray(topic.flashcards)) {
+        topic.flashcards.slice(0, 6).forEach(function (card, index) {
+          if (!card || typeof card !== 'object') return;
+          const front = String(card.front || '').trim();
+          const back = String(card.back || '').trim();
+          if (!front || !back) return;
+          deck.push({
+            label: String(card.label || ('Concept ' + (index + 1))).trim(),
+            front: front,
+            back: back
+          });
+        });
+      }
+
+      deck.push(
         {
           label: 'Core topic',
           front: topic.label,
@@ -3163,7 +3183,17 @@ button,input,select{font:inherit}
             ? 'Topic -> setup -> solve -> verify.'
             : 'Topic -> evidence -> eliminate traps -> verify.'
         }
-      ];
+      );
+
+      if (topic.sampleQuestion) {
+        deck.push({
+          label: 'Sample prompt',
+          front: truncateText(topic.sampleQuestion, 100),
+          back: topic.section === 'math'
+            ? 'Set up carefully first, then solve and verify against the original condition.'
+            : 'Find the exact evidence or sentence logic before committing to the answer choice.'
+        });
+      }
 
       topic.questions.slice(0, 8).forEach((question, index) => {
         deck.push({
@@ -3205,7 +3235,21 @@ button,input,select{font:inherit}
     }
 
     function getVisibleFlashcards(topic) {
-      const deck = buildFlashcardDeck(topic);
+      const fullDeck = buildFlashcardDeck(topic);
+      let deck = fullDeck;
+
+      if (studyUIState.flashcardMode === 'study-only' && Array.isArray(studyUIState.flashcardStudyDeck) && studyUIState.flashcardStudyDeck.length) {
+        deck = studyUIState.flashcardStudyDeck.slice();
+      }
+
+      if (!deck.length) {
+        deck = [{
+          label: 'Flashcards',
+          front: topic.label || 'Topic',
+          back: 'No flashcards are available yet for this topic. Try another topic or generate a review test first.'
+        }];
+      }
+
       const safeCount = clamp(Number(studyUIState.flashcardCount || 8), 1, deck.length || 1);
       studyUIState.flashcardCount = safeCount;
 
@@ -3219,7 +3263,7 @@ button,input,select{font:inherit}
         .filter(Boolean);
 
       studyUIState.flashcardIndex = clamp(studyUIState.flashcardIndex, 0, Math.max(0, visibleDeck.length - 1));
-      return { deck: deck, visibleDeck: visibleDeck };
+      return { deck: deck, fullDeck: fullDeck, visibleDeck: visibleDeck };
     }
 
     function renderGuidePreview(detail, topic) {
@@ -3457,6 +3501,14 @@ button,input,select{font:inherit}
       hero.appendChild(kicker);
       hero.appendChild(title);
 
+      if (studyUIState.flashcardMode === 'study-only') {
+        const modeChip = document.createElement('div');
+        modeChip.className = 'preview-chip';
+        modeChip.textContent = 'Reviewing missed cards';
+        modeChip.style.marginTop = '8px';
+        hero.appendChild(modeChip);
+      }
+
       const countRow = document.createElement('div');
       countRow.className = 'flashcard-count-row';
       countRow.style.marginTop = '10px';
@@ -3513,10 +3565,18 @@ button,input,select{font:inherit}
           reviewMissed.className = 'fc-btn fc-btn-study';
           reviewMissed.textContent = '🔄 Review missed cards';
           reviewMissed.addEventListener('click', function () {
-            /* rebuild deck with only study-more cards */
-            studyUIState.flashcardCount = fcGameState.studyIndexes.length;
+            var uniqueIndexes = Array.from(new Set(fcGameState.studyIndexes));
+            var missedDeck = uniqueIndexes
+              .map(function (cardIndex) { return deck[cardIndex]; })
+              .filter(Boolean);
+            if (!missedDeck.length) return;
+
+            studyUIState.flashcardMode = 'study-only';
+            studyUIState.flashcardStudyDeck = missedDeck;
+            studyUIState.flashcardCount = missedDeck.length;
             studyUIState.flashcardIndex = 0;
             studyUIState.flashcardFace = 'front';
+            studyUIState.flashcardOrder = Array.from({ length: missedDeck.length }, function (_, i) { return i; });
             resetFcGame();
             renderLibraryPanel();
           });
@@ -3527,8 +3587,7 @@ button,input,select{font:inherit}
         restartBtn.className = 'fc-btn fc-btn-flip';
         restartBtn.textContent = '🔁 Start over';
         restartBtn.addEventListener('click', function () {
-          studyUIState.flashcardIndex = 0;
-          studyUIState.flashcardFace = 'front';
+          resetFlashcardSession();
           resetFcGame();
           renderLibraryPanel();
         });
@@ -3879,6 +3938,7 @@ button,input,select{font:inherit}
     }
 
     function renderFlashcardContent(container, topic) {
+      container.classList.remove('hidden');
       container.replaceChildren();
       renderFlashcardPreview(container, topic);
     }
@@ -3900,7 +3960,14 @@ button,input,select{font:inherit}
       if (libraryPanel) libraryPanel.classList.toggle('preview-active', Boolean(selectedTopic));
 
       renderTopicList(filteredTopics);
-      renderTopicDetail(selectedTopic);
+      if (selectedTopic && studyUIState.activeTab === 'flashcards') {
+        const detail = document.getElementById('topic-detail');
+        if (detail) {
+          renderFlashcardContent(detail, selectedTopic);
+        }
+      } else {
+        renderTopicDetail(selectedTopic);
+      }
       syncStudyDeepDive();
     }
 
