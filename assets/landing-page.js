@@ -2888,6 +2888,10 @@ document.addEventListener('click', e => {
 (function lockTopOverscroll() {
   let touchStartY = 0;
 
+  function isInsideDeepDiveModal(target) {
+    return Boolean(target && target.closest && target.closest('.budy-deep-dive-modal'));
+  }
+
   window.addEventListener('touchstart', e => {
     if (!e.touches || e.touches.length === 0) return;
     touchStartY = e.touches[0].clientY;
@@ -2895,6 +2899,7 @@ document.addEventListener('click', e => {
 
   window.addEventListener('touchmove', e => {
     if (!e.touches || e.touches.length === 0) return;
+    if (isInsideDeepDiveModal(e.target)) return;
     const currentY = e.touches[0].clientY;
     const pullingDown = currentY > touchStartY;
     if (window.scrollY <= 0 && pullingDown) {
@@ -2903,6 +2908,7 @@ document.addEventListener('click', e => {
   }, { passive: false });
 
   window.addEventListener('wheel', e => {
+    if (isInsideDeepDiveModal(e.target)) return;
     if (window.scrollY <= 0 && e.deltaY < 0) {
       e.preventDefault();
     }
