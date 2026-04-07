@@ -1586,6 +1586,12 @@ const CONTENT_W = PAGE_WIDTH - 80;
 function drawPageChrome(doc, accentColor, sectionLabel) {
   doc.rect(0, 0, doc.page.width, doc.page.height).fill(rgb([251, 253, 255]));
 
+  doc.save();
+  doc.fillOpacity(0.08);
+  doc.circle(doc.page.width - 82, 120, 64).fill(rgb([191, 219, 254]));
+  doc.circle(doc.page.width - 30, 70, 40).fill(rgb([147, 197, 253]));
+  doc.restore();
+
   doc.rect(0, 0, doc.page.width, 76).fill(rgb(NAVY));
   doc.rect(0, 70, doc.page.width, 6).fill(rgb(accentColor));
 
@@ -1594,6 +1600,13 @@ function drawPageChrome(doc, accentColor, sectionLabel) {
 
   doc.fontSize(9).fillColor(rgb(WHITE)).font('Helvetica')
     .text(sectionLabel, CONTENT_X, 34, { width: doc.page.width - 80 });
+}
+
+function drawSectionIntro(doc, label, y, fillColor = [239, 246, 255], strokeColor = [191, 219, 254]) {
+  drawBox(doc, CONTENT_X, y, CONTENT_W, 32, rgb(fillColor), strokeColor);
+  doc.fontSize(8.8).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
+    .text(label.toUpperCase(), CONTENT_X + 12, y + 11, { width: CONTENT_W - 24, characterSpacing: 0.6 });
+  return y + 44;
 }
 
 function drawFooter(doc, pageNum, skill) {
@@ -1661,9 +1674,9 @@ function drawNumberedList(doc, items, y) {
 
 function drawBox(doc, x, y, w, h, fillColor, strokeColor = [219, 234, 254]) {
   doc.save();
-  doc.roundedRect(x, y + 2, w, h, 8).fill(rgb([241, 245, 249]));
-  doc.roundedRect(x, y, w, h, 8).fill(fillColor || rgb([245, 247, 255]));
-  doc.roundedRect(x, y, w, h, 8).lineWidth(1).strokeColor(rgb(strokeColor)).stroke();
+  doc.roundedRect(x, y + 3, w, h, 10).fill(rgb([226, 232, 240]));
+  doc.roundedRect(x, y, w, h, 10).fill(fillColor || rgb([245, 247, 255]));
+  doc.roundedRect(x, y, w, h, 10).lineWidth(1).strokeColor(rgb(strokeColor)).stroke();
   doc.restore();
   return y;
 }
@@ -1718,6 +1731,7 @@ function generateStudyGuidePDF(topicKey, topic) {
     .text('5 pages  |  built for fast revision', 40, 166, { width: doc.page.width - 80 });
 
   let y = 210;
+  y = drawSectionIntro(doc, 'Overview and Concept Map', y - 2, [255, 251, 235], [253, 230, 138]);
   y = drawHeader(doc, 'Topic Overview', y);
   y = drawBody(doc, overview, y);
 
@@ -1733,6 +1747,7 @@ function generateStudyGuidePDF(topicKey, topic) {
   doc.addPage();
   drawPageChrome(doc, BRAND_BLUE, `${skill}  |  Core Toolkit`);
   y = 98;
+  y = drawSectionIntro(doc, 'Core Methods and Formula Recall', y, [239, 246, 255], [191, 219, 254]);
   y = drawHeader(doc, 'Core Strategies', y);
   y = drawNumberedList(doc, strategies, y);
 
@@ -1752,6 +1767,7 @@ function generateStudyGuidePDF(topicKey, topic) {
   doc.addPage();
   drawPageChrome(doc, GOLD, `${skill}  |  Worked Examples`);
   y = 98;
+  y = drawSectionIntro(doc, 'Modeling Expert-Level Reasoning', y, [255, 251, 235], [253, 230, 138]);
   y = drawHeader(doc, 'Worked Examples', y);
 
   workedExamples.forEach((ex, idx) => {
@@ -1784,6 +1800,7 @@ function generateStudyGuidePDF(topicKey, topic) {
   doc.addPage();
   drawPageChrome(doc, GREEN, `${skill}  |  Practice`);
   y = 98;
+  y = drawSectionIntro(doc, 'Independent Practice Set', y, [236, 253, 245], [167, 243, 208]);
   y = drawHeader(doc, 'Practice Questions', y);
   y = drawBody(doc, 'Try these on your own first, then check the answer key on the next page.', y);
 
@@ -1810,6 +1827,7 @@ function generateStudyGuidePDF(topicKey, topic) {
   doc.addPage();
   drawPageChrome(doc, BRAND_BLUE, `${skill}  |  Review`);
   y = 98;
+  y = drawSectionIntro(doc, 'Answers, Rationales, and Final Takeaways', y, [239, 246, 255], [191, 219, 254]);
   y = drawHeader(doc, 'Answer Key', y);
 
   drawBox(doc, 40, y, doc.page.width - 80, 200, rgb([239, 246, 255]), [191, 219, 254]);

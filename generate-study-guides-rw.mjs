@@ -2358,6 +2358,12 @@ function rgb(arr) {
 function drawPageChrome(doc, accentColor, sectionLabel) {
   doc.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT).fill(rgb([251, 253, 255]));
 
+  doc.save();
+  doc.fillOpacity(0.08);
+  doc.circle(PAGE_WIDTH - 82, 120, 64).fill(rgb([191, 219, 254]));
+  doc.circle(PAGE_WIDTH - 30, 70, 40).fill(rgb([147, 197, 253]));
+  doc.restore();
+
   doc.rect(0, 0, PAGE_WIDTH, 76).fill(rgb(NAVY));
   doc.rect(0, 70, PAGE_WIDTH, 6).fill(rgb(accentColor));
 
@@ -2372,6 +2378,16 @@ function drawPageChrome(doc, accentColor, sectionLabel) {
     .fontSize(9)
     .fillColor(rgb(WHITE))
     .text(sectionLabel, CONTENT_X, 34, { width: CONTENT_W });
+}
+
+function drawSectionIntro(doc, label, y, fillColor = [239, 246, 255], strokeColor = [191, 219, 254]) {
+  drawBox(doc, CONTENT_X, y, CONTENT_W, 32, fillColor, strokeColor);
+  doc
+    .font('Helvetica-Bold')
+    .fontSize(8.8)
+    .fillColor(rgb(BRAND_BLUE))
+    .text(label.toUpperCase(), CONTENT_X + 12, y + 11, { width: CONTENT_W - 24, characterSpacing: 0.6 });
+  return y + 44;
 }
 
 function drawFooter(doc, pageNum, skill) {
@@ -2478,7 +2494,7 @@ function drawThinAccent(doc, color) {
 
 function drawBox(doc, x, y, w, h, fillColor, strokeColor = null) {
   doc.save();
-  doc.roundedRect(x, y + 2, w, h, 8).fill(rgb([241, 245, 249]));
+  doc.roundedRect(x, y + 3, w, h, 10).fill(rgb([226, 232, 240]));
   doc.roundedRect(x, y, w, h, 8).fill(rgb(fillColor));
   if (strokeColor) {
     doc
@@ -2533,6 +2549,7 @@ function drawCoverPage(doc, topic) {
     });
 
   let y = 210;
+  y = drawSectionIntro(doc, 'Overview and Concept Map', y - 2, [255, 251, 235], [253, 230, 138]);
   y = sectionHeader(doc, 'Topic Overview', y);
   bodyText(doc, topic.overview, CONTENT_X, y, CONTENT_W, 86);
 
@@ -2551,6 +2568,7 @@ function drawCoreRulesPage(doc, topic) {
   drawPageChrome(doc, BRAND_BLUE, `${topic.skill}  |  Core Toolkit`);
 
   let y = 98;
+  y = drawSectionIntro(doc, 'Core Moves and Signal Patterns', y, [239, 246, 255], [191, 219, 254]);
   y = sectionHeader(doc, 'Core Strategies', y);
   numberedList(doc, topic.coreStrategies, 50, y, PAGE_WIDTH - 100);
 
@@ -2585,6 +2603,7 @@ function drawWorkedExamplesPage(doc, topic) {
   drawPageChrome(doc, GOLD, `${topic.skill}  |  Worked Examples`);
 
   let y = 98;
+  y = drawSectionIntro(doc, 'See How Top Scorers Think', y, [255, 251, 235], [253, 230, 138]);
   y = sectionHeader(doc, 'Worked Examples', y);
 
   const blockHeight = 318;
@@ -2649,6 +2668,7 @@ function drawPracticePage(doc, topic) {
   drawPageChrome(doc, GREEN, `${topic.skill}  |  Practice`);
 
   let y = 98;
+  y = drawSectionIntro(doc, 'Timed Independent Practice', y, [236, 253, 245], [167, 243, 208]);
   y = sectionHeader(doc, 'Practice Questions', y);
 
   const qBoxHeight = 208;
@@ -2684,6 +2704,7 @@ function drawAnswerKeyPage(doc, topic) {
   drawPageChrome(doc, BRAND_BLUE, `${topic.skill}  |  Review`);
 
   let y = 98;
+  y = drawSectionIntro(doc, 'Answers, Rationales, and Quick Recap', y, [239, 246, 255], [191, 219, 254]);
   y = sectionHeader(doc, 'Answer Key', y);
 
   const answerHeight = 246;
