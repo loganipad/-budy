@@ -3549,7 +3549,10 @@ button,input,select{font:inherit}
     }
 
     function slugifyTopicForPdf(section, label) {
-      return slugifyTopic(section) + '-' + slugifyTopic(label) + '.pdf';
+      const sectionSlug = section === 'english' || section === 'reading_writing'
+        ? 'reading-writing'
+        : slugifyTopic(section);
+      return sectionSlug + '-' + slugifyTopic(label) + '.pdf';
     }
 
     function renderTopicDetail(topic) {
