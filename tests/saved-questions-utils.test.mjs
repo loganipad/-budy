@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { normalizeSavedQuestionRow } from '../api/saved-questions-utils.mjs';
+import { normalizeSavedQuestionRow } from '../api/lib/saved-questions-utils.mjs';
 
 test('normalizeSavedQuestionRow maps stored rows to API response shape', () => {
   const normalized = normalizeSavedQuestionRow({

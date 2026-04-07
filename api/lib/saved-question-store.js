@@ -1,5 +1,5 @@
-import { buildListSavedQuestionsPath, buildUpsertSavedQuestionsPayload } from './_saved-question-store-core.mjs';
-import { supabaseRequest } from './_supabase-rest.js';
+import { buildListSavedQuestionsPath, buildUpsertSavedQuestionsPayload } from './saved-question-store-core.mjs';
+import { supabaseRequest } from './supabase-rest.js';
 
 const SAVED_QUESTION_STORE_DISABLED_ERROR = 'Saved-question store is not configured.';
 

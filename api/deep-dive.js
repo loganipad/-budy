@@ -1,8 +1,8 @@
-import { resolveAuthUser } from './_auth.js';
-import { withApiErrorBoundary } from './_observability.js';
-import { getSubscriptionByUserId, isPremiumFromStatus } from './_subscription-store.js';
-import { consumeDeepDiveCredit, getCurrentPeriodKey, getDeepDiveUsage, getMonthlyCreditLimit } from './_ai-deep-dive-store.js';
-import { json } from './_http.js';
+import { resolveAuthUser } from './lib/auth.js';
+import { withApiErrorBoundary } from './lib/observability.js';
+import { getSubscriptionByUserId, isPremiumFromStatus } from './lib/subscription-store.js';
+import { consumeDeepDiveCredit, getCurrentPeriodKey, getDeepDiveUsage, getMonthlyCreditLimit } from './lib/ai-deep-dive-store.js';
+import { json } from './lib/http.js';
 
 function cleanText(value, maxLength) {
   const text = String(value || '').replace(/\s+/g, ' ').trim();

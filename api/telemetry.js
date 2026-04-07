@@ -1,4 +1,4 @@
-import { logTelemetryEvent, withApiErrorBoundary } from './_observability.js';
+import { logTelemetryEvent, withApiErrorBoundary } from './lib/observability.js';
 
 const ALLOWED_TYPES = new Set([
   'pageview',

@@ -2,7 +2,7 @@
   "name": "budy-study",
   "version": "1.0.0",
   "description": "",
-  "main": "footer-loader.js",
+  "main": "assets/layout/footer-loader.js",
   "directories": {
     "test": "tests"
   },

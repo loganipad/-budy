@@ -1,4 +1,4 @@
-import { supabaseRequest } from './_supabase-rest.js';
+import { supabaseRequest } from './supabase-rest.js';
 
 const AI_DEEP_DIVE_STORE_DISABLED_ERROR = 'AI Deep Dive credit store is not configured.';
 

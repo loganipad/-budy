@@ -1,8 +1,8 @@
-import { resolveAuthUser } from './_auth.js';
-import { withApiErrorBoundary } from './_observability.js';
-import { listSavedQuestionsByUserId, upsertSavedQuestions } from './_saved-question-store.js';
-import { normalizeSavedQuestionRow } from './saved-questions-utils.mjs';
-import { json } from './_http.js';
+import { resolveAuthUser } from './lib/auth.js';
+import { withApiErrorBoundary } from './lib/observability.js';
+import { listSavedQuestionsByUserId, upsertSavedQuestions } from './lib/saved-question-store.js';
+import { normalizeSavedQuestionRow } from './lib/saved-questions-utils.mjs';
+import { json } from './lib/http.js';
 
 async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {

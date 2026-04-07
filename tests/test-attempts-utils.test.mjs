@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { normalizeAttemptRow } from '../api/test-attempts-utils.mjs';
+import { normalizeAttemptRow } from '../api/lib/test-attempts-utils.mjs';
 
 test('normalizeAttemptRow maps stored attempt rows to API response shape', () => {
   const normalized = normalizeAttemptRow({

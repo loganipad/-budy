@@ -1,8 +1,8 @@
-import { resolveAuthUser } from './_auth.js';
-import { withApiErrorBoundary } from './_observability.js';
-import { getSubscriptionByUserId } from './_subscription-store.js';
-import { json } from './_http.js';
-import { normalizeSecretKey } from './_stripe-key.js';
+import { resolveAuthUser } from './lib/auth.js';
+import { withApiErrorBoundary } from './lib/observability.js';
+import { getSubscriptionByUserId } from './lib/subscription-store.js';
+import { json } from './lib/http.js';
+import { normalizeSecretKey } from './lib/stripe-key.js';
 
 function toIso(input) {
   const unixSeconds = Number(input);

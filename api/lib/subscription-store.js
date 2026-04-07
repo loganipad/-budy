@@ -1,4 +1,4 @@
-import { supabaseRequest } from './_supabase-rest.js';
+import { supabaseRequest } from './supabase-rest.js';
 
 const ACTIVE_STATUSES = new Set(['active', 'trialing']);
 

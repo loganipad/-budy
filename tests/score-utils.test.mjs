@@ -8,7 +8,7 @@ const {
   getScoreSummaryValue,
   getSectionPerformanceSummary,
   getSessionScoreBreakdown
-} = require('../assets/score-utils.js');
+} = require('../assets/shared/score-utils.js');
 
 test('estimateSectionScore maps accuracy to SAT-style section band', () => {
   assert.equal(estimateSectionScore(0, 50), 200);

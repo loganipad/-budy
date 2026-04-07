@@ -1,8 +1,8 @@
-import { resolveAuthUser } from './_auth.js';
-import { withApiErrorBoundary } from './_observability.js';
-import { createAttempt, listAttemptsByUserId } from './_score-store.js';
-import { normalizeAttemptRow } from './test-attempts-utils.mjs';
-import { json } from './_http.js';
+import { resolveAuthUser } from './lib/auth.js';
+import { withApiErrorBoundary } from './lib/observability.js';
+import { createAttempt, listAttemptsByUserId } from './lib/score-store.js';
+import { normalizeAttemptRow } from './lib/test-attempts-utils.mjs';
+import { json } from './lib/http.js';
 
 async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {

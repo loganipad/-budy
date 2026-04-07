@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildCreateAttemptPayload, buildListAttemptsPath, clampAttemptLimit } from '../api/_score-store-core.mjs';
+import { buildCreateAttemptPayload, buildListAttemptsPath, clampAttemptLimit } from '../api/lib/score-store-core.mjs';
 
 test('clampAttemptLimit bounds values to supported range', () => {
   assert.equal(clampAttemptLimit(-5), 1);

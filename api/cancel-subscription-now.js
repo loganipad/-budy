@@ -1,8 +1,8 @@
-import { resolveAuthUser } from './_auth.js';
-import { withApiErrorBoundary } from './_observability.js';
-import { getSubscriptionByUserId, upsertSubscription } from './_subscription-store.js';
-import { json } from './_http.js';
-import { looksMaskedKey, normalizeSecretKey } from './_stripe-key.js';
+import { resolveAuthUser } from './lib/auth.js';
+import { withApiErrorBoundary } from './lib/observability.js';
+import { getSubscriptionByUserId, upsertSubscription } from './lib/subscription-store.js';
+import { json } from './lib/http.js';
+import { looksMaskedKey, normalizeSecretKey } from './lib/stripe-key.js';
 
 function canCancelNow(subscriptionRow) {
   if (!subscriptionRow) return false;

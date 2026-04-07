@@ -6,7 +6,7 @@ import {
   buildSavedQuestionKey,
   buildUpsertSavedQuestionPayload,
   clampSavedQuestionLimit
-} from '../api/_saved-question-store-core.mjs';
+} from '../api/lib/saved-question-store-core.mjs';
 
 test('clampSavedQuestionLimit bounds values to supported range', () => {
   assert.equal(clampSavedQuestionLimit(-10), 1);

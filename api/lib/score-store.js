@@ -1,5 +1,5 @@
-import { buildCreateAttemptPayload, buildListAttemptsPath } from './_score-store-core.mjs';
-import { supabaseRequest } from './_supabase-rest.js';
+import { buildCreateAttemptPayload, buildListAttemptsPath } from './score-store-core.mjs';
+import { supabaseRequest } from './supabase-rest.js';
 
 const SCORE_STORE_DISABLED_ERROR = 'Score store is not configured.';
 
