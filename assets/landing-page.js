@@ -3254,7 +3254,9 @@ function ensurePrimaryViewVisible() {
 }
 
 async function init() {
-  setView('landing', { preserveScroll: true });
+  const initialSearchParams = new URLSearchParams(window.location.search);
+  const initialSid = normalizeSessionId(initialSearchParams.get('sid'));
+  setView(initialSid ? 'loading' : 'landing', { preserveScroll: true });
   preloadQuestionBank();
   if (typeof window.__budyRestoreLandingScroll === 'function') {
     window.__budyRestoreLandingScroll();
