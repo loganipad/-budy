@@ -1811,7 +1811,7 @@ function generateStudyGuidePDF(topicKey, topic) {
 
     y += 6;
     doc.moveTo(50, y).lineTo(doc.page.width - 50, y).lineWidth(1).strokeColor(rgb([254, 215, 170])).stroke();
-    y = drawSubheader(doc, `✓ Correct Answer: ${ex.answer}`, y + 4);
+    y = drawSubheader(doc, `Correct Answer: ${ex.answer}`, y + 4);
     y = drawBody(doc, ex.steps, y);
 
     y = drawSubheader(doc, 'Why the Wrong Answers Fail:', y + 2);

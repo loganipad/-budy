@@ -371,7 +371,7 @@ function generateStudyGuidePDF(topic) {
 
   y += 10;
   drawBox(doc, 40, y, doc.page.width - 80, 1, rgb([232, 245, 233]));
-  y = drawSubheader(doc, `✓ Correct Answer: ${content.workedExample.answer}`, y + 4);
+  y = drawSubheader(doc, `Correct Answer: ${content.workedExample.answer}`, y + 4);
   y = drawBody(doc, content.workedExample.explanation, y);
 
   y = drawHeader(doc, 'Solution Walkthrough', y + 8);
