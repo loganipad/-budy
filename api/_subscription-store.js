@@ -1,23 +1,8 @@
+import { supabaseRequest } from './_supabase-rest.js';
+
 const ACTIVE_STATUSES = new Set(['active', 'trialing']);
 
-function getConfig() {
-  const baseUrl = process.env.SUPABASE_URL || '';
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-  return {
-    enabled: Boolean(baseUrl && serviceRoleKey),
-    baseUrl: baseUrl.replace(/\/$/, ''),
-    serviceRoleKey
-  };
-}
-
-function headers(serviceRoleKey, extra) {
-  return {
-    apikey: serviceRoleKey,
-    Authorization: `Bearer ${serviceRoleKey}`,
-    'Content-Type': 'application/json',
-    ...(extra || {})
-  };
-}
+const SUBSCRIPTION_STORE_DISABLED_ERROR = 'Subscription store is not configured.';
 
 function isPremiumFromStatus(status) {
   const normalized = String(status || '').toLowerCase();
@@ -25,38 +10,9 @@ function isPremiumFromStatus(status) {
 }
 
 async function request(path, options) {
-  const cfg = getConfig();
-  if (!cfg.enabled) {
-    return { ok: false, disabled: true, error: 'Subscription store is not configured.' };
-  }
-
-  try {
-    const response = await fetch(`${cfg.baseUrl}${path}`, {
-      ...options,
-      headers: headers(cfg.serviceRoleKey, options && options.headers)
-    });
-
-    const text = await response.text();
-    let data = null;
-    try {
-      data = text ? JSON.parse(text) : null;
-    } catch {
-      data = text;
-    }
-
-    if (!response.ok) {
-      return {
-        ok: false,
-        status: response.status,
-        error: data && data.message ? data.message : 'Supabase request failed.',
-        data
-      };
-    }
-
-    return { ok: true, data };
-  } catch {
-    return { ok: false, error: 'Supabase request failed.' };
-  }
+  return supabaseRequest(path, options, {
+    disabledError: SUBSCRIPTION_STORE_DISABLED_ERROR
+  });
 }
 
 export async function getSubscriptionByUserId(userId) {

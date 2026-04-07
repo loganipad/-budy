@@ -2,11 +2,7 @@ import { resolveAuthUser } from './_auth.js';
 import { withApiErrorBoundary } from './_observability.js';
 import { getSubscriptionByUserId, isPremiumFromStatus } from './_subscription-store.js';
 import { consumeDeepDiveCredit, getCurrentPeriodKey, getDeepDiveUsage, getMonthlyCreditLimit } from './_ai-deep-dive-store.js';
-
-function json(res, status, payload) {
-  res.status(status).setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(payload));
-}
+import { json } from './_http.js';
 
 function cleanText(value, maxLength) {
   const text = String(value || '').replace(/\s+/g, ' ').trim();

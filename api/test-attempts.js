@@ -2,11 +2,7 @@ import { resolveAuthUser } from './_auth.js';
 import { withApiErrorBoundary } from './_observability.js';
 import { createAttempt, listAttemptsByUserId } from './_score-store.js';
 import { normalizeAttemptRow } from './test-attempts-utils.mjs';
-
-function json(res, status, payload) {
-  res.status(status).setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(payload));
-}
+import { json } from './_http.js';
 
 async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {

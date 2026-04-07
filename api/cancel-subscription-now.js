@@ -1,36 +1,8 @@
 import { resolveAuthUser } from './_auth.js';
 import { withApiErrorBoundary } from './_observability.js';
 import { getSubscriptionByUserId, upsertSubscription } from './_subscription-store.js';
-
-function json(res, status, payload) {
-  res.status(status).setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(payload));
-}
-
-function normalizeSecretKey(input) {
-  if (!input) return '';
-
-  let key = String(input).trim();
-  const assignMatch = key.match(/^[A-Za-z_][A-Za-z0-9_]*=(.+)$/);
-  if (assignMatch) key = assignMatch[1].trim();
-
-  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
-    key = key.slice(1, -1).trim();
-  }
-
-  key = key.replace(/^Bearer\s+/i, '');
-  key = key
-    .replace(/^sklive_?/i, 'sk_live_')
-    .replace(/^sktest_?/i, 'sk_test_')
-    .replace(/^sk[_-]?live_?/i, 'sk_live_')
-    .replace(/^sk[_-]?test_?/i, 'sk_test_');
-
-  return key;
-}
-
-function looksMaskedKey(key) {
-  return key.includes('*') || key.endsWith('...') || /<|>|\[|\]/.test(key);
-}
+import { json } from './_http.js';
+import { looksMaskedKey, normalizeSecretKey } from './_stripe-key.js';
 
 function canCancelNow(subscriptionRow) {
   if (!subscriptionRow) return false;

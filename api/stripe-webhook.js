@@ -6,17 +6,13 @@ import {
   upsertSubscription
 } from './_subscription-store.js';
 import { withApiErrorBoundary } from './_observability.js';
+import { json } from './_http.js';
 
 export const config = {
   api: {
     bodyParser: false
   }
 };
-
-function json(res, status, payload) {
-  res.status(status).setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(payload));
-}
 
 function timingSafeEquals(a, b) {
   const aa = Buffer.from(a, 'utf8');

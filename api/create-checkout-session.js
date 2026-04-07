@@ -1,78 +1,14 @@
 import { resolveAuthUser } from './_auth.js';
 import { withApiErrorBoundary } from './_observability.js';
+import { json } from './_http.js';
+import { resolveSafeOrigin } from './_origin.js';
+import { looksMaskedKey, normalizeSecretKey } from './_stripe-key.js';
 
 const PLAN_TO_ENV = {
   weekly: 'STRIPE_PRICE_ID_WEEKLY',
   monthly: 'STRIPE_PRICE_ID_MONTHLY',
   annual: 'STRIPE_PRICE_ID_YEARLY'
 };
-
-function getAllowedOrigins() {
-  const raw = process.env.ALLOWED_ORIGINS || 'https://www.budy.study,http://localhost:3000,http://localhost:5173';
-  return raw
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function getOriginFromReferer(referer) {
-  try {
-    return referer ? new URL(referer).origin : '';
-  } catch {
-    return '';
-  }
-}
-
-function resolveSafeOrigin(req) {
-  const allowed = getAllowedOrigins();
-  const requestOrigin = req.headers.origin || '';
-  const refererOrigin = getOriginFromReferer(req.headers.referer || '');
-  const candidate = requestOrigin || refererOrigin;
-
-  if (candidate && allowed.includes(candidate)) {
-    return candidate;
-  }
-
-  return allowed[0] || 'https://www.budy.study';
-}
-
-function json(res, status, payload) {
-  res.status(status).setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(payload));
-}
-
-function normalizeSecretKey(input) {
-  if (!input) return '';
-
-  let key = String(input).trim();
-
-  // Handle values pasted as env assignments, e.g. STRIPE_SECRET_KEY=sk_live_...
-  const assignMatch = key.match(/^[A-Za-z_][A-Za-z0-9_]*=(.+)$/);
-  if (assignMatch) {
-    key = assignMatch[1].trim();
-  }
-
-  // Remove wrapping quotes if they were pasted with quotes in env vars.
-  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
-    key = key.slice(1, -1).trim();
-  }
-
-  // Handle values pasted as Authorization headers.
-  key = key.replace(/^Bearer\s+/i, '');
-
-  // Handle common typo variants like SKlive... / sklive... / SKtest... / sktest...
-  key = key
-    .replace(/^sklive_?/i, 'sk_live_')
-    .replace(/^sktest_?/i, 'sk_test_')
-    .replace(/^sk[_-]?live_?/i, 'sk_live_')
-    .replace(/^sk[_-]?test_?/i, 'sk_test_');
-
-  return key;
-}
-
-function looksMaskedKey(key) {
-  return key.includes('*') || key.endsWith('...') || /<|>|\[|\]/.test(key);
-}
 
 async function createStripeSession({ secretKey, priceId, successUrl, cancelUrl, userId, email, plan }) {
   const body = new URLSearchParams();
