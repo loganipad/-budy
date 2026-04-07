@@ -2620,18 +2620,99 @@ button,input,select{font:inherit}
       ];
     }
 
-    function buildDynamicFlashcards(label, section) {
+    function buildDynamicFlashcards(label, section, domain) {
+      const topicLabel = String(label || '').trim() || 'Core topic';
+      const lowerLabel = topicLabel.toLowerCase();
+      const lowerDomain = String(domain || '').trim().toLowerCase();
+
       if (section === 'math') {
+        let concept = 'Translate the prompt into math structure first, then solve with clean algebra and verify against the condition.';
+        let spotPattern = 'Look for givens, unknowns, and constraints before writing anything. Underline what must stay true in the final answer.';
+        let sequence = '1) Define variables and units. 2) Build the equation/model. 3) Solve and check against the exact question ask.';
+        let trap = 'Doing arithmetic too early, dropping a condition, or accepting an answer that is mathematically valid but not what the question asked.';
+        let quickCheck = 'In 10 seconds: substitute your result back, confirm units, and verify the value matches the wording (value, expression, or count).';
+
+        if (lowerDomain === 'algebra') {
+          concept = 'Algebra is about preserving equivalence: each operation must keep both sides balanced while isolating the target quantity.';
+          sequence = '1) Mark target variable. 2) Reverse operations in order. 3) Simplify carefully and test in original equation.';
+          trap = 'Sign mistakes, distributing errors, or solving for x when the question asks for a transformed expression or another quantity.';
+        } else if (lowerDomain === 'advanced math') {
+          concept = 'Advanced math rewards structure recognition: factor forms, exponent rules, and function behavior are often faster than expansion.';
+          sequence = '1) Identify form (quadratic, polynomial, exponential, rational). 2) Choose transformation. 3) Interpret roots/intercepts/behavior.';
+          trap = 'Expanding everything by default, ignoring domain restrictions, or missing special forms like difference of squares.';
+        } else if (lowerDomain === 'problem-solving and data analysis') {
+          concept = 'PSDA is context math: ratios, rates, percentages, and probability must stay tied to what each number represents.';
+          sequence = '1) Define the reference set. 2) Build proportion/table/equation. 3) Convert and interpret result in context.';
+          trap = 'Using the wrong base for percent change, mixing units, or treating conditional probability like simple probability.';
+        } else if (lowerDomain === 'geometry and trigonometry') {
+          concept = 'Geometry/trig is constraint-driven: diagrams plus relationships (angles, similarity, trig ratios) should guide every step.';
+          sequence = '1) Annotate known measures. 2) Pick the governing rule. 3) Solve, then sanity-check magnitude and geometric reasonableness.';
+          trap = 'Assuming a diagram is to scale, confusing radius/diameter, or applying a theorem without checking prerequisites.';
+        }
+
+        if (/system/.test(lowerLabel)) {
+          spotPattern = 'Systems clues: two equations, two unknowns, intersection language, or simultaneous constraints.';
+          quickCheck = 'Plug ordered pair into both equations; both must be true.';
+        } else if (/quadratic|polynomial/.test(lowerLabel)) {
+          spotPattern = 'Quadratic clues: squared term, parabolic behavior, factorable form, or roots/intercepts language.';
+          quickCheck = 'If you found roots, verify both by substitution and watch for extraneous values.';
+        } else if (/ratio|percent|rate|probability|statistics|scatter|line of best fit/.test(lowerLabel)) {
+          spotPattern = 'Data clues: comparisons, changes over time, sample summaries, or model-fit interpretation.';
+          quickCheck = 'Recompute using units and base quantities; ensure interpretation matches context.';
+        } else if (/triangle|circle|area|volume|trigonometry|coordinate/.test(lowerLabel)) {
+          spotPattern = 'Geometry clues: shape constraints, right-triangle cues, coordinate distances, or area/volume requests.';
+          quickCheck = 'Check dimensions and whether answer size is reasonable for the figure.';
+        }
+
         return [
-          { label: 'Concept', front: label, back: 'Know the rule, formula, or pattern that controls this math topic before you race the clock.' },
-          { label: 'Watch for', front: 'Common trap', back: 'Rushing past the setup, mixing values, or skipping the unit check.' },
-          { label: 'Quick check', front: 'How do you verify it?', back: 'Re-read the condition and confirm the answer actually fits the problem.' }
+          { label: 'Concept', front: topicLabel, back: concept },
+          { label: 'Spot it fast', front: 'What clues signal this skill?', back: spotPattern },
+          { label: 'Solve sequence', front: 'What is the best 3-step approach?', back: sequence },
+          { label: 'Common trap', front: 'What mistake is most likely?', back: trap },
+          { label: '10-second check', front: 'How do you verify before moving on?', back: quickCheck }
         ];
       }
+
+      let concept = 'Reading/Writing is evidence-first: the credited answer must match meaning, purpose, and sentence-level logic.';
+      let spotPattern = 'Identify whether the question is asking for meaning, structure, rhetoric, or grammar before reading choices.';
+      let sequence = '1) Predict what should happen. 2) Test choices against evidence/grammar. 3) Eliminate traps that distort meaning.';
+      let trap = 'Choosing what sounds polished instead of what is text-supported, logically consistent, and grammatically correct.';
+      let quickCheck = 'Point to the exact word, line, or grammar rule that proves your answer. If you cannot, keep checking.';
+
+      if (lowerDomain === 'information and ideas') {
+        concept = 'Information and Ideas questions are claim-and-evidence tasks: answer only what the text/graphic supports.';
+        sequence = '1) Locate claim or data point. 2) Match choice to strongest support. 3) Reject overstatements and unsupported inferences.';
+        trap = 'Picking an answer that is plausible in general but not explicitly supported by passage evidence.';
+      } else if (lowerDomain === 'craft and structure') {
+        concept = 'Craft and Structure focuses on author decisions: tone, purpose, word choice, and text relationships.';
+        sequence = '1) Identify function of the line/word. 2) Evaluate effect on passage meaning. 3) Select the choice that preserves intent.';
+        trap = 'Ignoring context and choosing dictionary meaning or tone labels that do not match surrounding sentences.';
+      } else if (lowerDomain === 'expression of ideas') {
+        concept = 'Expression of Ideas is about organization and clarity: transitions, synthesis, and placement must improve flow and purpose.';
+        sequence = '1) Define sentence/paragraph job. 2) Choose transition/placement for logic. 3) Confirm cohesion and concision.';
+        trap = 'Selecting a transition by vibe instead of logical relationship (contrast, cause, example, continuation).';
+      } else if (lowerDomain === 'standard english conventions') {
+        concept = 'SEC questions are rule checks: clauses, punctuation, modifiers, and agreement must be structurally valid.';
+        sequence = '1) Find grammatical core. 2) Apply one governing rule. 3) Re-read sentence for correctness and clarity.';
+        trap = 'Fixing one issue while introducing another (comma splice, agreement error, or unclear modifier).';
+      }
+
+      if (/inference|central idea|command of evidence|quantitative/.test(lowerLabel)) {
+        spotPattern = 'Ask: what does the text directly support? For graphics, match exact quantities/trends before inferring.';
+      } else if (/words in context|text structure|rhetorical purpose|cross-text/.test(lowerLabel)) {
+        spotPattern = 'Track function in context: why this sentence/word is here and how it shapes meaning or argument.';
+      } else if (/transition|synthesis|sentence placement|concision/.test(lowerLabel)) {
+        spotPattern = 'Identify the logical relationship first, then choose the most concise choice that preserves meaning.';
+      } else if (/grammar|punctuation|pronoun|modifier|parallel|verb/.test(lowerLabel)) {
+        spotPattern = 'Isolate subject-verb, clause boundaries, and referents; then test punctuation and agreement rules directly.';
+      }
+
       return [
-        { label: 'Concept', front: label, back: 'Know what this skill is asking you to notice in a sentence or passage before choosing an answer.' },
-        { label: 'Watch for', front: 'Common trap', back: 'Picking what sounds smooth instead of what the evidence or grammar structure supports.' },
-        { label: 'Quick check', front: 'How do you verify it?', back: 'Point to the exact word, line, or logic that proves the answer choice is right.' }
+        { label: 'Concept', front: topicLabel, back: concept },
+        { label: 'Spot it fast', front: 'What clues signal this skill?', back: spotPattern },
+        { label: 'Solve sequence', front: 'What is the best 3-step approach?', back: sequence },
+        { label: 'Common trap', front: 'What mistake is most likely?', back: trap },
+        { label: '10-second check', front: 'How do you verify before moving on?', back: quickCheck }
       ];
     }
 
@@ -2693,7 +2774,7 @@ button,input,select{font:inherit}
               label: skill,
               summary: buildBlueprintSummary(section, domain, skill),
               guidePoints: buildBlueprintGuidePoints(section, domain, skill),
-              flashcards: buildDynamicFlashcards(skill, section),
+              flashcards: buildDynamicFlashcards(skill, section, domain),
               sampleQuestion: buildBlueprintSampleQuestion(section, domain, skill)
             });
           });
@@ -2727,7 +2808,7 @@ button,input,select{font:inherit}
           label: seed.label,
           summary: seed.summary,
           guidePoints: seed.guidePoints.slice(),
-          flashcards: buildDynamicFlashcards(seed.label, seed.section),
+          flashcards: buildDynamicFlashcards(seed.label, seed.section, seed.domain),
           sampleQuestion: seed.sampleQuestion,
           questions: [],
           flaggedCount: 0,
@@ -2746,7 +2827,7 @@ button,input,select{font:inherit}
           label: question.topic,
           summary: createDynamicSummary(question.section, question.topic),
           guidePoints: buildDynamicGuidePoints(question.topic, question.section),
-          flashcards: buildDynamicFlashcards(question.topic, question.section),
+          flashcards: buildDynamicFlashcards(question.topic, question.section, question.domain),
           sampleQuestion: question.prompt,
           questions: [],
           flaggedCount: 0,
