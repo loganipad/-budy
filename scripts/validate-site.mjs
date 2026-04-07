@@ -47,6 +47,34 @@ function checkJavaScriptSyntax(filePath) {
   }
 }
 
+function validateApiFunctionLayout() {
+  const apiDir = path.join(root, 'api');
+  if (!existsSync(apiDir)) {
+    return;
+  }
+
+  for (const entry of readdirSync(apiDir)) {
+    const fullPath = path.join(apiDir, entry);
+    const stats = statSync(fullPath);
+
+    if (stats.isDirectory()) {
+      throw new Error(
+        `Unexpected directory in api/: ${entry}. Move helper modules outside api/ to avoid Vercel treating them as routes.`
+      );
+    }
+
+    if (!entry.endsWith('.js') && !entry.endsWith('.mjs')) {
+      continue;
+    }
+
+    const source = readFileSync(fullPath, 'utf8');
+    const hasDefaultHandler = /export\s+default\b|module\.exports\s*=|exports\.default\s*=/.test(source);
+    if (!hasDefaultHandler) {
+      throw new Error(`API route missing default handler export: api/${entry}`);
+    }
+  }
+}
+
 function walk(dirPath) {
   for (const entry of readdirSync(dirPath)) {
     if (entry === '.git' || entry === '.venv' || entry === '.venv-1' || entry === 'node_modules') {
@@ -142,6 +170,7 @@ for (const file of htmlLinkFiles) {
 }
 
 walk(root);
+validateApiFunctionLayout();
 
 for (const file of jsFiles) {
   checkJavaScriptSyntax(file);
