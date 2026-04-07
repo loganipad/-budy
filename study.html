@@ -1054,11 +1054,77 @@ button,input,select{font:inherit}
 .guide-bullets,
 .flashcard-sheet-grid{display:grid;gap:12px}
 
+.guide-bullets{
+  margin:0;
+  padding-left:20px;
+  list-style:disc;
+}
+
 .guide-bullets li{
-  margin-left:18px;
+  margin-left:0;
   color:var(--muted);
-  font-size:.83rem;
-  line-height:1.65;
+  font-size:.87rem;
+  line-height:1.72;
+}
+
+.guide-sequence{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  gap:10px;
+  counter-reset:guide-steps;
+}
+
+.guide-sequence li{
+  position:relative;
+  padding-left:34px;
+  color:var(--muted);
+  font-size:.87rem;
+  line-height:1.72;
+}
+
+.guide-sequence li::before{
+  counter-increment:guide-steps;
+  content:counter(guide-steps);
+  position:absolute;
+  left:0;
+  top:2px;
+  width:22px;
+  height:22px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  font-size:.72rem;
+  font-weight:800;
+  color:#dbeafe;
+  background:rgba(37,99,235,.22);
+  border:1px solid rgba(96,165,250,.35);
+}
+
+.topic-detail .guide-page-card .budy-keyword-highlight,
+.topic-detail .guide-page-overview .budy-keyword-highlight,
+.topic-detail .guide-preview-card .budy-keyword-highlight{
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  text-decoration:underline;
+  text-underline-offset:2px;
+  text-decoration-thickness:1px;
+  text-decoration-color:rgba(147,197,253,.55);
+}
+
+.topic-detail .guide-page-card .budy-keyword-highlight:hover,
+.topic-detail .guide-page-overview .budy-keyword-highlight:hover,
+.topic-detail .guide-preview-card .budy-keyword-highlight:hover,
+.topic-detail .guide-page-card .budy-keyword-highlight:focus-visible,
+.topic-detail .guide-page-overview .budy-keyword-highlight:focus-visible,
+.topic-detail .guide-preview-card .budy-keyword-highlight:focus-visible{
+  background:transparent !important;
+  box-shadow:none !important;
+  text-decoration-color:rgba(191,219,254,.9);
 }
 
 .guide-example-stack{display:grid;gap:12px}
@@ -2981,11 +3047,42 @@ button,input,select{font:inherit}
       };
     }
 
+    function cleanGuidePoint(value) {
+      const text = String(value || '').replace(/\s+/g, ' ').trim();
+      const normalized = text.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9.!?]+$/g, '').trim();
+      if (!normalized || normalized.length < 5) return '';
+      return /[.!?]$/.test(normalized) ? normalized : (normalized + '.');
+    }
+
     function buildGuideHighlightList(topic) {
+      const defaults = [
+        'Start with the main pattern this topic is testing.',
+        'Work one clean example before you speed up.',
+        'Use the answer explanation to check why the trap fails.'
+      ];
+      const points = [
+        topic.guidePoints[0] || defaults[0],
+        topic.guidePoints[1] || defaults[1],
+        topic.guidePoints[2] || defaults[2]
+      ]
+        .map(cleanGuidePoint)
+        .filter(Boolean);
+      return Array.from(new Set(points)).slice(0, 3);
+    }
+
+    function buildGuideSequence(topic) {
+      if (topic.section === 'math') {
+        return [
+          'Name the exact pattern or equation type before solving.',
+          'Complete one untimed setup and solution with full steps.',
+          'Verify the final value against the condition in the prompt.'
+        ];
+      }
+
       return [
-        topic.guidePoints[0] || 'Start with the main pattern this topic is testing.',
-        topic.guidePoints[1] || 'Work one clean example before you speed up.',
-        topic.guidePoints[2] || 'Use the answer explanation to check why the trap fails.'
+        'Name the reading or grammar job the question is testing.',
+        'Prove the credited answer with line-level evidence or sentence logic.',
+        'Eliminate trap choices by stating why each one fails the task.'
       ];
     }
 
@@ -3195,7 +3292,7 @@ button,input,select{font:inherit}
       const focusLabel = document.createElement('span');
       focusLabel.textContent = 'What the PDF covers';
       const focusTitle = document.createElement('strong');
-      focusTitle.textContent = 'Highlighted ideas first';
+      focusTitle.textContent = 'Core ideas to memorize';
       const focusList = document.createElement('ul');
       focusList.className = 'guide-bullets';
       buildGuideHighlightList(topic).forEach((point) => {
@@ -3207,6 +3304,24 @@ button,input,select{font:inherit}
       focusCard.appendChild(focusTitle);
       focusCard.appendChild(focusList);
       left.appendChild(focusCard);
+
+      const sequenceCard = document.createElement('article');
+      sequenceCard.className = 'guide-preview-card';
+      const sequenceLabel = document.createElement('span');
+      sequenceLabel.textContent = 'Study sequence';
+      const sequenceTitle = document.createElement('strong');
+      sequenceTitle.textContent = 'Use this order on every attempt';
+      const sequenceList = document.createElement('ol');
+      sequenceList.className = 'guide-sequence';
+      buildGuideSequence(topic).forEach((step) => {
+        const item = document.createElement('li');
+        item.textContent = step;
+        sequenceList.appendChild(item);
+      });
+      sequenceCard.appendChild(sequenceLabel);
+      sequenceCard.appendChild(sequenceTitle);
+      sequenceCard.appendChild(sequenceList);
+      left.appendChild(sequenceCard);
 
       const feedbackCard = document.createElement('article');
       feedbackCard.className = 'guide-preview-card';
