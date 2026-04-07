@@ -4,9 +4,9 @@ import {
   isPremiumFromStatus,
   markEventProcessed,
   upsertSubscription
-} from './lib/subscription-store.js';
-import { withApiErrorBoundary } from './lib/observability.js';
-import { json } from './lib/http.js';
+} from '../lib/subscription-store.js';
+import { withApiErrorBoundary } from '../lib/observability.js';
+import { json } from '../lib/http.js';
 
 export const config = {
   api: {

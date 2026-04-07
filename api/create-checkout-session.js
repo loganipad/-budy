@@ -1,8 +1,8 @@
-import { resolveAuthUser } from './lib/auth.js';
-import { withApiErrorBoundary } from './lib/observability.js';
-import { json } from './lib/http.js';
-import { resolveSafeOrigin } from './lib/origin.js';
-import { looksMaskedKey, normalizeSecretKey } from './lib/stripe-key.js';
+import { resolveAuthUser } from '../lib/auth.js';
+import { withApiErrorBoundary } from '../lib/observability.js';
+import { json } from '../lib/http.js';
+import { resolveSafeOrigin } from '../lib/origin.js';
+import { looksMaskedKey, normalizeSecretKey } from '../lib/stripe-key.js';
 
 const PLAN_TO_ENV = {
   weekly: 'STRIPE_PRICE_ID_WEEKLY',

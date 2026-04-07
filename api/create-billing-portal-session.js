@@ -1,9 +1,9 @@
-import { resolveAuthUser } from './lib/auth.js';
-import { withApiErrorBoundary } from './lib/observability.js';
-import { getSubscriptionByUserId } from './lib/subscription-store.js';
-import { json } from './lib/http.js';
-import { resolveSafeOrigin } from './lib/origin.js';
-import { looksMaskedKey, normalizeSecretKey } from './lib/stripe-key.js';
+import { resolveAuthUser } from '../lib/auth.js';
+import { withApiErrorBoundary } from '../lib/observability.js';
+import { getSubscriptionByUserId } from '../lib/subscription-store.js';
+import { json } from '../lib/http.js';
+import { resolveSafeOrigin } from '../lib/origin.js';
+import { looksMaskedKey, normalizeSecretKey } from '../lib/stripe-key.js';
 
 async function stripeRequest(path, secretKey, body) {
   const response = await fetch(`https://api.stripe.com${path}`, {
