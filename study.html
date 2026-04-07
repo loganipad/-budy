@@ -931,14 +931,15 @@ button,input,select{font:inherit}
 
 .preview-hero{
   display:grid;
-  gap:12px;
+  gap:14px;
   border-radius:24px;
   padding:22px;
-  background:linear-gradient(180deg, rgba(37,99,235,.16) 0%, rgba(255,255,255,.04) 100%);
-  border:1px solid rgba(96,165,250,.24);
+  background:linear-gradient(180deg, rgba(37,99,235,.2) 0%, rgba(255,255,255,.04) 100%);
+  border:1px solid rgba(96,165,250,.3);
 }
 
-.preview-hero h3{font-size:1.45rem;margin:0}
+.preview-hero h3{font-size:1.5rem;margin:0;line-height:1.2}
+.preview-hero p{margin:0;max-width:72ch}
 
 .preview-meta{
   display:flex;
@@ -964,7 +965,7 @@ button,input,select{font:inherit}
 .guide-preview-layout,
 .flashcard-preview-layout{
   display:grid;
-  grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);
+  grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);
   gap:16px;
   align-items:start;
 }
@@ -976,14 +977,49 @@ button,input,select{font:inherit}
 .guide-page-card{
   border-radius:22px;
   padding:18px;
-  background:rgba(255,255,255,.045);
-  border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,255,255,.1);
+  backdrop-filter:blur(2px);
 }
 
 .guide-page-strip{
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(190px,1fr);
   gap:10px;
+  overflow-x:auto;
+  padding-bottom:6px;
+  scroll-snap-type:x proximity;
+}
+
+.guide-page-strip::-webkit-scrollbar{height:8px}
+.guide-page-strip::-webkit-scrollbar-thumb{background:rgba(148,163,184,.34);border-radius:999px}
+
+.guide-page-card{
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+  scroll-snap-align:start;
+}
+
+.guide-page-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(96,165,250,.35);
+}
+
+.guide-page-card.is-active{
+  border-color:rgba(59,130,246,.58);
+  background:linear-gradient(180deg, rgba(26,86,219,.2) 0%, rgba(255,255,255,.06) 100%);
+  box-shadow:0 0 0 2px rgba(59,130,246,.18);
+}
+
+.guide-page-overview strong{font-size:1.02rem}
+.guide-page-overview p{font-size:.87rem}
+
+.guide-hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
 }
 
 .guide-page-card span,
@@ -1028,11 +1064,15 @@ button,input,select{font:inherit}
 .guide-example-stack{display:grid;gap:12px}
 
 .guide-callout{
+  position:relative;
   border-radius:18px;
   padding:16px;
-  background:rgba(15,23,42,.72);
+  background:rgba(15,23,42,.68);
   border:1px solid rgba(255,255,255,.08);
 }
+
+.guide-callout.is-correct{border-color:rgba(16,185,129,.32);background:rgba(16,185,129,.1)}
+.guide-callout.is-wrong{border-color:rgba(244,63,94,.28);background:rgba(244,63,94,.08)}
 
 .flashcard-count-row{display:flex;flex-wrap:wrap;gap:8px}
 
@@ -1200,8 +1240,10 @@ button,input,select{font:inherit}
 .fc-download-btn:hover{background:rgba(26,86,219,.16);border-color:rgba(59,130,246,.28);color:#dbeafe}
 
 /* Study guide download button */
-.guide-download-btn{min-height:44px;padding:0 22px;border-radius:999px;border:2px solid rgba(26,86,219,.32);background:rgba(26,86,219,.14);color:#93c5fd;font-size:.86rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s}
+.guide-download-btn{min-height:44px;padding:0 22px;border-radius:999px;border:2px solid rgba(26,86,219,.32);background:rgba(26,86,219,.14);color:#93c5fd;font-size:.84rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s;text-decoration:none}
 .guide-download-btn:hover{background:rgba(26,86,219,.24);border-color:rgba(59,130,246,.48);color:#dbeafe}
+.guide-download-btn.secondary{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:rgba(240,244,255,.86)}
+.guide-download-btn.secondary:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.24)}
 
 @keyframes fcBounce{
   0%{transform:scale(1)}
@@ -1633,7 +1675,6 @@ button,input,select{font:inherit}
   .flashcard-stack,
   .guide-preview-layout,
   .flashcard-preview-layout,
-  .guide-page-strip,
   .recommended-row,
   .library-body,
   .library-body.detail-open{
@@ -1731,6 +1772,8 @@ button,input,select{font:inherit}
 
   .flashcard-sheet-row{grid-template-columns:1fr}
 
+  .guide-page-strip{grid-auto-columns:minmax(240px,82vw)}
+
   .flashcard-sheet-front{border-right:none;border-bottom:1px dashed rgba(255,255,255,.18)}
 
   .review-config-field,
@@ -1749,6 +1792,8 @@ button,input,select{font:inherit}
 
   .recent-test-summary{padding:16px}
   .recent-test-reveal{padding:0 16px 16px}
+  .guide-hero-actions{width:100%}
+  .guide-download-btn,a.guide-download-btn{width:100%;justify-content:center}
   .guide-block,
   .flashcard-item,
   .recent-test-question,
@@ -3049,6 +3094,7 @@ button,input,select{font:inherit}
       title.textContent = topic.label;
       const copy = document.createElement('p');
       copy.textContent = 'This preview represents a 4 to 6 page PDF guide with the core skill, worked examples, and the answer breakdown students need before they go back into timed practice.';
+      const guidePages = buildGuidePreviewPages(topic);
       const meta = document.createElement('div');
       meta.className = 'preview-meta';
       ['PDF preview', '5 pages', sectionLabel(topic.section), topic.domain || 'Core topic'].forEach((label) => {
@@ -3062,36 +3108,81 @@ button,input,select{font:inherit}
       hero.appendChild(copy);
       hero.appendChild(meta);
 
-      /* PDF download button */
+      /* PDF actions */
+      const heroActions = document.createElement('div');
+      heroActions.className = 'guide-hero-actions';
+
       const dlBtn = document.createElement('a');
       dlBtn.className = 'guide-download-btn';
-      dlBtn.style.marginTop = '14px';
-      dlBtn.style.display = 'inline-flex';
       const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
       dlBtn.href = '/data/study-guides/' + pdfFilename;
       dlBtn.download = pdfFilename;
-      dlBtn.textContent = '📥 Download PDF Study Guide';
-      hero.appendChild(dlBtn);
+      dlBtn.textContent = 'Download PDF Study Guide';
+
+      const openBtn = document.createElement('a');
+      openBtn.className = 'guide-download-btn secondary';
+      openBtn.href = '/data/study-guides/' + pdfFilename;
+      openBtn.target = '_blank';
+      openBtn.rel = 'noopener noreferrer';
+      openBtn.textContent = 'Open PDF in New Tab';
+
+      heroActions.appendChild(dlBtn);
+      heroActions.appendChild(openBtn);
+      hero.appendChild(heroActions);
 
       shell.appendChild(hero);
 
       const pageStrip = document.createElement('div');
       pageStrip.className = 'guide-page-strip';
-      buildGuidePreviewPages(topic).forEach((page) => {
+      const pageOverview = document.createElement('article');
+      pageOverview.className = 'guide-preview-card guide-page-overview';
+      const overviewLabel = document.createElement('span');
+      overviewLabel.textContent = 'Current preview page';
+      const overviewTitle = document.createElement('strong');
+      const overviewCopy = document.createElement('p');
+      pageOverview.appendChild(overviewLabel);
+      pageOverview.appendChild(overviewTitle);
+      pageOverview.appendChild(overviewCopy);
+
+      const pageCards = [];
+      function setActivePage(index) {
+        pageCards.forEach(function (item, itemIndex) {
+          item.classList.toggle('is-active', itemIndex === index);
+        });
+        const page = guidePages[index] || guidePages[0];
+        if (!page) return;
+        overviewTitle.textContent = page.page + ': ' + page.title;
+        overviewCopy.textContent = page.text;
+      }
+
+      guidePages.forEach((page, index) => {
         const card = document.createElement('article');
         card.className = 'guide-page-card';
+        card.setAttribute('role', 'button');
+        card.tabIndex = 0;
         const pageLabel = document.createElement('span');
         pageLabel.textContent = page.page;
         const pageTitle = document.createElement('strong');
         pageTitle.textContent = page.title;
         const pageCopy = document.createElement('p');
         pageCopy.textContent = page.text;
+        card.addEventListener('click', function () { setActivePage(index); });
+        card.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setActivePage(index);
+          }
+        });
         card.appendChild(pageLabel);
         card.appendChild(pageTitle);
         card.appendChild(pageCopy);
         pageStrip.appendChild(card);
+        pageCards.push(card);
       });
+
+      setActivePage(0);
       shell.appendChild(pageStrip);
+      shell.appendChild(pageOverview);
 
       const layout = document.createElement('div');
       layout.className = 'guide-preview-layout';
@@ -3125,10 +3216,10 @@ button,input,select{font:inherit}
       feedbackTitle.textContent = 'Why the right answer wins';
       const reasoning = buildGuideReasoning(topic);
       const correct = document.createElement('div');
-      correct.className = 'guide-callout';
+      correct.className = 'guide-callout is-correct';
       correct.innerHTML = '<strong>Correct answer</strong><p>' + reasoning.correct + '</p>';
       const wrong = document.createElement('div');
-      wrong.className = 'guide-callout';
+      wrong.className = 'guide-callout is-wrong';
       wrong.innerHTML = '<strong>Wrong answers</strong><p>' + reasoning.wrong + '</p>';
       feedbackCard.appendChild(feedbackLabel);
       feedbackCard.appendChild(feedbackTitle);
