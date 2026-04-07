@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url';
 
 const require = createRequire(import.meta.url);
 const PDFDocument = require('pdfkit');
+const { PDFDocument: PDFLibDocument } = require('pdf-lib');
 
 // Colors
 const NAVY = [13, 17, 23];
@@ -2724,6 +2725,20 @@ function drawAnswerKeyPage(doc, topic) {
   drawFooter(doc, 5, topic.skill);
 }
 
+async function capToFivePages(pdfBuffer) {
+  const pdf = await PDFLibDocument.load(pdfBuffer);
+  const totalPages = pdf.getPageCount();
+  if (totalPages <= 5) {
+    return pdfBuffer;
+  }
+
+  for (let i = totalPages - 1; i >= 5; i -= 1) {
+    pdf.removePage(i);
+  }
+
+  return Buffer.from(await pdf.save());
+}
+
 async function generateStudyGuidePDF(topic) {
   const doc = new PDFDocument({
     size: 'letter',
@@ -2760,7 +2775,11 @@ async function generateStudyGuidePDF(topic) {
   doc.end();
 
   return new Promise((resolve) => {
-    doc.on('end', () => resolve(Buffer.concat(chunks)));
+    doc.on('end', async () => {
+      const rawBuffer = Buffer.concat(chunks);
+      const cappedBuffer = await capToFivePages(rawBuffer);
+      resolve(cappedBuffer);
+    });
   });
 }
 

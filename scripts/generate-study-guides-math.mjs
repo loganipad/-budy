@@ -8,6 +8,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const PDFDocument = require('pdfkit');
+const { PDFDocument: PDFLibDocument } = require('pdf-lib');
 
 import fs from 'fs';
 import path from 'path';
@@ -1667,6 +1668,20 @@ function drawBox(doc, x, y, w, h, fillColor, strokeColor = [219, 234, 254]) {
   return y;
 }
 
+async function capToFivePages(pdfBuffer) {
+  const pdf = await PDFLibDocument.load(pdfBuffer);
+  const totalPages = pdf.getPageCount();
+  if (totalPages <= 5) {
+    return pdfBuffer;
+  }
+
+  for (let i = totalPages - 1; i >= 5; i -= 1) {
+    pdf.removePage(i);
+  }
+
+  return Buffer.from(await pdf.save());
+}
+
 // ─── Generate a single study guide PDF ───────────────────────────────
 
 function generateStudyGuidePDF(topicKey, topic) {
@@ -1824,7 +1839,11 @@ function generateStudyGuidePDF(topicKey, topic) {
   doc.end();
 
   return new Promise((resolve) => {
-    doc.on('end', () => resolve(Buffer.concat(chunks)));
+    doc.on('end', async () => {
+      const rawBuffer = Buffer.concat(chunks);
+      const cappedBuffer = await capToFivePages(rawBuffer);
+      resolve(cappedBuffer);
+    });
   });
 }
 
