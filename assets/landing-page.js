@@ -3254,7 +3254,7 @@ function ensurePrimaryViewVisible() {
 }
 
 async function init() {
-  setView('loading', { preserveScroll: true });
+  setView('landing', { preserveScroll: true });
   preloadQuestionBank();
   if (typeof window.__budyRestoreLandingScroll === 'function') {
     window.__budyRestoreLandingScroll();
@@ -3297,6 +3297,7 @@ async function init() {
   }
 
   if (sidFromUrl) {
+    setView('loading', { preserveScroll: true });
     const restored = await restoreDraftSessionBySid(sidFromUrl);
     if (restored) {
       return;
@@ -3306,6 +3307,7 @@ async function init() {
     const nextQuery = searchParams.toString();
     const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
     window.history.replaceState({}, document.title, nextUrl);
+    setView('landing', { preserveScroll: true });
     toast('We could not restore your previous test session.', 'wn', 4200);
   }
 
