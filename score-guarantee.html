@@ -6,54 +6,28 @@
 <title>Budy.Study | Score Guarantee</title>
 <meta name="description" content="See how the Budy.Study score guarantee works, who it applies to, and what students need to do to stay eligible.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="/assets/shared/observability.js" defer></script>
 <style>
-:root {
-  --ink:#0d1117;
-  --panel:rgba(20,29,45,.82);
-  --line:rgba(255,255,255,.1);
-  --text:#f8fafc;
-  --muted:rgba(240,244,255,.66);
-  --brand:#1a56db;
-  --gold:#f59e0b;
-  --green:#10b981;
-  --rose:#f43f5e;
-  --shadow:0 24px 80px rgba(0,0,0,.28);
-  --font-h:'Sora',system-ui,sans-serif;
-  --font-b:'Sora',system-ui,sans-serif;
-}
+:root{--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:rgba(240,244,255,.68);--font:'Sora',system-ui,sans-serif;--shadow:0 24px 70px rgba(0,0,0,.26)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:var(--ink)}
-body{font-family:var(--font-b);background:radial-gradient(circle at top left, rgba(26,86,219,.26), transparent 34%),radial-gradient(circle at bottom right, rgba(245,158,11,.12), transparent 28%),linear-gradient(180deg, #0b1018 0%, #111827 54%, #0b1018 100%);color:var(--text);min-height:100vh}
-a{text-decoration:none;color:inherit}
-.wrap{width:min(1120px,calc(100% - 40px));margin:0 auto}
-.page-shell{padding-top:112px;padding-bottom:88px}
-.hero,.section-card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
-.hero{border-radius:36px;padding:38px;margin-bottom:24px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;right:-80px;top:-80px;width:240px;height:240px;background:radial-gradient(circle, rgba(245,158,11,.22), transparent 68%)}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}
-.hero h1{font-family:var(--font-h);font-size:clamp(2.3rem,5vw,4.5rem);line-height:1.02;letter-spacing:-.04em;max-width:760px;margin-bottom:16px}
-.hero p{max-width:760px;color:var(--muted);font-size:1.03rem;line-height:1.8}
-.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-bottom:24px}
-.section-card{border-radius:28px;padding:28px}
-.section-card h2{font-size:1.4rem;margin-bottom:10px}
-.copy{color:var(--muted);font-size:.94rem;line-height:1.75;margin-bottom:18px}
-.checklist,.steps{display:grid;gap:12px}
-.check-item,.step-item{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;border-radius:18px;padding:15px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
-.mark,.step-num{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-size:.8rem;font-weight:800;flex-shrink:0}
-.mark{background:rgba(16,185,129,.18);color:#6ee7b7}
-.step-num{background:rgba(26,86,219,.18);color:#bfdbfe}
-.check-item strong,.step-item strong{display:block;font-size:.92rem;margin-bottom:5px}
-.check-item span,.step-item span{display:block;font-size:.83rem;line-height:1.6;color:var(--muted)}
-.highlight{border-radius:22px;padding:20px;background:linear-gradient(135deg, rgba(26,86,219,.18), rgba(15,23,40,.9));border:1px solid rgba(59,130,246,.22)}
-.highlight strong{display:block;margin-bottom:8px;font-size:1rem}
-.faq-list{display:grid;gap:12px}
-.faq-item{border-radius:18px;padding:16px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
-.faq-item h3{font-size:.96rem;margin-bottom:6px}
-.faq-item p{font-size:.84rem;line-height:1.65;color:var(--muted)}
-@media (max-width: 900px){.grid{grid-template-columns:1fr}}
-@media (max-width: 720px){.page-shell{padding-top:96px}.hero,.section-card{padding:22px}}
+body{font-family:var(--font);background:radial-gradient(circle at 0% 0%,rgba(26,86,219,.16),transparent 30%),linear-gradient(180deg,#0b1018 0%,#111827 56%,#0b1018 100%);color:var(--text);min-height:100vh}
+a{color:#bfdbfe}
+.wrap{width:min(900px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding:108px 0 78px}
+.hero,.doc{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.hero{border-radius:26px;padding:30px 30px 26px;margin-bottom:16px}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#93c5fd;margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.hero p{color:var(--muted);line-height:1.75}
+.doc{border-radius:26px;padding:8px 28px}
+.doc section{padding:22px 0}
+.doc section+section{border-top:1px solid rgba(255,255,255,.1)}
+.doc h2{font-size:1.08rem;margin-bottom:10px}
+.doc p,.doc li{color:var(--muted);line-height:1.75;font-size:.93rem}
+.doc ul,.doc ol{padding-left:18px;display:grid;gap:6px}
+@media (max-width:720px){.page-shell{padding-top:92px}.hero,.doc{padding-left:20px;padding-right:20px}}
 </style>
 </head>
 <body data-page-type="score-guarantee">
@@ -63,41 +37,137 @@ a{text-decoration:none;color:inherit}
     <div class="wrap">
       <section class="hero">
         <div class="eyebrow">Score Guarantee</div>
-        <h1>A clear score-improvement path with real accountability.</h1>
-        <p>Budy.Study is built to help students improve, not just log hours. Our score guarantee is meant for students who follow the plan, complete the practice, and use the review system consistently. This page explains what qualifies, what we track, and what happens if the improvement does not show up.</p>
+        <h1>A guarantee tied to measurable work and measurable improvement.</h1>
+        <p>The guarantee is for students who complete the required study plan, stay active through the full window, and provide a valid baseline and comparison result.</p>
       </section>
 
-      <section class="grid">
-        <article class="section-card">
-          <h2>What the guarantee covers</h2>
-          <p class="copy">The guarantee is based on measurable participation and measurable improvement. It applies when a student starts from a documented baseline, follows the assigned prep workflow, and completes the required study volume inside the guarantee window.</p>
-          <div class="checklist">
-            <div class="check-item"><div class="mark">1</div><div><strong>Baseline score required</strong><span>The student must complete an initial diagnostic or upload a recent score baseline before the guarantee period starts.</span></div></div>
-            <div class="check-item"><div class="mark">2</div><div><strong>Consistent study activity</strong><span>The student must complete the assigned practice sessions, review missed questions, and stay active across the required weeks.</span></div></div>
-            <div class="check-item"><div class="mark">3</div><div><strong>Improvement measured on a comparable test</strong><span>We compare the starting point to a later official-style result or qualifying assessment captured within the guarantee window.</span></div></div>
-          </div>
-        </article>
+      <article class="doc">
+        <section>
+          <h2>Eligibility requirements</h2>
+          <ol>
+            <li>A baseline score (or qualifying diagnostic) must be documented before the guarantee window begins.</li>
+            <li>Required study activity must be completed consistently throughout the program period.</li>
+            <li>A qualifying follow-up result must be provided within the active guarantee window.</li>
+          </ol>
+        </section>
 
-        <aside class="section-card">
-          <h2>What students need to do</h2>
-          <div class="steps">
-            <div class="step-item"><div class="step-num">1</div><div><strong>Follow the assigned lane</strong><span>Students need to complete the recommended workflow instead of skipping directly to random sections.</span></div></div>
-            <div class="step-item"><div class="step-num">2</div><div><strong>Finish full review loops</strong><span>Missed questions need to be reviewed, not just attempted once and ignored.</span></div></div>
-            <div class="step-item"><div class="step-num">3</div><div><strong>Stay inside the guarantee window</strong><span>The work and re-test have to happen inside the active program period defined at purchase.</span></div></div>
-          </div>
-          <div class="highlight" style="margin-top:18px"><strong>Important</strong><span>The guarantee is designed for students who use the platform as intended. It is not a promise that passive access alone will raise a score.</span></div>
-        </aside>
+        <section>
+          <h2>How participation is evaluated</h2>
+          <ul>
+            <li>Practice completion and test attempt records.</li>
+            <li>Review behavior on missed and flagged questions.</li>
+            <li>Use of assigned study workflows versus incomplete or partial usage.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What can invalidate eligibility</h2>
+          <ul>
+            <li>Missing baseline documentation.</li>
+            <li>Insufficient activity relative to required thresholds.</li>
+            <li>Follow-up score outside the guarantee window.</li>
+            <li>Inability to verify that qualifying conditions were met.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>If conditions are met and score does not improve</h2>
+          <p>If a student satisfies all published requirements for a qualifying plan and still does not meet the defined improvement standard, Budy.Study will honor the guarantee based on the active purchase terms.</p>
+        </section>
+
+        <section>
+          <h2>Questions about your case</h2>
+          <p>Email <a href="mailto:guarantee@budy.study">guarantee@budy.study</a> with the plan, study timeline, and relevant score documentation so the request can be reviewed quickly.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+  <div id="footer-slot"></div>
+  <script src="/assets/layout/footer-loader.js" defer></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study | Score Guarantee</title>
+<meta name="description" content="See how the Budy.Study score guarantee works, who it applies to, and what students need to do to stay eligible.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/assets/shared/observability.js" defer></script>
+<style>
+:root{--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:rgba(240,244,255,.68);--font:'Sora',system-ui,sans-serif;--shadow:0 24px 70px rgba(0,0,0,.26)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{font-family:var(--font);background:radial-gradient(circle at 0% 0%,rgba(26,86,219,.16),transparent 30%),linear-gradient(180deg,#0b1018 0%,#111827 56%,#0b1018 100%);color:var(--text);min-height:100vh}
+a{color:#bfdbfe}
+.wrap{width:min(900px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding:108px 0 78px}
+.hero,.doc{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.hero{border-radius:26px;padding:30px 30px 26px;margin-bottom:16px}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#93c5fd;margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.hero p{color:var(--muted);line-height:1.75}
+.doc{border-radius:26px;padding:8px 28px}
+.doc section{padding:22px 0}
+.doc section+section{border-top:1px solid rgba(255,255,255,.1)}
+.doc h2{font-size:1.08rem;margin-bottom:10px}
+.doc p,.doc li{color:var(--muted);line-height:1.75;font-size:.93rem}
+.doc ul,.doc ol{padding-left:18px;display:grid;gap:6px}
+@media (max-width:720px){.page-shell{padding-top:92px}.hero,.doc{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body data-page-type="score-guarantee">
+  <div id="navbar-slot"></div>
+  <script src="/assets/layout/navbar-loader.js" defer></script>
+  <main class="page-shell">
+    <div class="wrap">
+      <section class="hero">
+        <div class="eyebrow">Score Guarantee</div>
+        <h1>A guarantee tied to measurable work and measurable improvement.</h1>
+        <p>The guarantee is for students who complete the required study plan, stay active through the full window, and provide a valid baseline and comparison result.</p>
       </section>
 
-      <section class="section-card">
-        <h2>Common questions</h2>
-        <div class="faq-list">
-          <div class="faq-item"><h3>Does every plan include the guarantee?</h3><p>No. The guarantee only applies to qualifying paid plans and only after the required study and review thresholds are met.</p></div>
-          <div class="faq-item"><h3>How do you verify activity?</h3><p>We use platform records like completed tests, timing, review activity, and study-plan progress to confirm that the required work was actually done.</p></div>
-          <div class="faq-item"><h3>What if a student misses weeks?</h3><p>If the required consistency is not met, the guarantee may no longer apply. The point is measured progress with real participation.</p></div>
-          <div class="faq-item"><h3>What happens if the guarantee conditions are met but the score does not improve?</h3><p>If a qualifying student satisfies the documented requirements and still does not meet the improvement standard, Budy.Study will honor the guarantee under the active purchase terms.</p></div>
-        </div>
-      </section>
+      <article class="doc">
+        <section>
+          <h2>Eligibility requirements</h2>
+          <ol>
+            <li>A baseline score (or qualifying diagnostic) must be documented before the guarantee window begins.</li>
+            <li>Required study activity must be completed consistently throughout the program period.</li>
+            <li>A qualifying follow-up result must be provided within the active guarantee window.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>How participation is evaluated</h2>
+          <ul>
+            <li>Practice completion and test attempt records.</li>
+            <li>Review behavior on missed and flagged questions.</li>
+            <li>Use of assigned study workflows versus incomplete or partial usage.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What can invalidate eligibility</h2>
+          <ul>
+            <li>Missing baseline documentation.</li>
+            <li>Insufficient activity relative to required thresholds.</li>
+            <li>Follow-up score outside the guarantee window.</li>
+            <li>Inability to verify that qualifying conditions were met.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>If conditions are met and score does not improve</h2>
+          <p>If a student satisfies all published requirements for a qualifying plan and still does not meet the defined improvement standard, Budy.Study will honor the guarantee based on the active purchase terms.</p>
+        </section>
+
+        <section>
+          <h2>Questions about your case</h2>
+          <p>Email <a href="mailto:guarantee@budy.study">guarantee@budy.study</a> with the plan, study timeline, and relevant score documentation so the request can be reviewed quickly.</p>
+        </section>
+      </article>
     </div>
   </main>
   <div id="footer-slot"></div>

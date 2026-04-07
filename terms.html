@@ -9,7 +9,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="/assets/shared/observability.js" defer></script>
 <style>
-:root {--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.1);--text:#f8fafc;--muted:rgba(240,244,255,.66);--shadow:0 24px 80px rgba(0,0,0,.28);--font-h:'Sora',system-ui,sans-serif;--font-b:'Sora',system-ui,sans-serif;}*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;background:var(--ink)}body{font-family:var(--font-b);background:linear-gradient(180deg, #0b1018 0%, #111827 54%, #0b1018 100%);color:var(--text);min-height:100vh}a{text-decoration:none;color:inherit}.wrap{width:min(980px,calc(100% - 40px));margin:0 auto}.page-shell{padding-top:112px;padding-bottom:88px}.hero,.terms-card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px)}.hero{border-radius:36px;padding:38px;margin-bottom:24px}.eyebrow{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}.hero h1{font-family:var(--font-h);font-size:clamp(2.2rem,5vw,4rem);line-height:1.04;letter-spacing:-.04em;margin-bottom:14px}.hero p{color:var(--muted);line-height:1.8}.terms-card{border-radius:28px;padding:28px;display:grid;gap:22px}.block h2{font-size:1.12rem;margin-bottom:8px}.block p,.block li{color:var(--muted);font-size:.92rem;line-height:1.75}.block ul{padding-left:18px;display:grid;gap:6px}.updated{color:rgba(240,244,255,.5);font-size:.82rem;margin-top:10px}@media (max-width: 720px){.page-shell{padding-top:96px}.hero,.terms-card{padding:22px}}
+:root{--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:rgba(240,244,255,.68);--font:'Sora',system-ui,sans-serif;--shadow:0 24px 70px rgba(0,0,0,.26)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{font-family:var(--font);background:radial-gradient(circle at 0% 0%,rgba(26,86,219,.16),transparent 30%),linear-gradient(180deg,#0b1018 0%,#111827 56%,#0b1018 100%);color:var(--text);min-height:100vh}
+a{color:#bfdbfe}
+.wrap{width:min(900px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding:108px 0 78px}
+.hero,.doc{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.hero{border-radius:26px;padding:30px 30px 26px;margin-bottom:16px}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#93c5fd;margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.hero p{color:var(--muted);line-height:1.75}
+.updated{margin-top:10px;font-size:.82rem;color:rgba(240,244,255,.52)}
+.doc{border-radius:26px;padding:8px 28px}
+.doc section{padding:22px 0}
+.doc section+section{border-top:1px solid rgba(255,255,255,.1)}
+.doc h2{font-size:1.08rem;margin-bottom:10px}
+.doc p,.doc li{color:var(--muted);line-height:1.75;font-size:.93rem}
+.doc ul{padding-left:18px;display:grid;gap:6px}
+@media (max-width:720px){.page-shell{padding-top:92px}.hero,.doc{padding-left:20px;padding-right:20px}}
 </style>
 </head>
 <body data-page-type="terms">
@@ -19,21 +38,144 @@
     <div class="wrap">
       <section class="hero">
         <div class="eyebrow">Terms of Use</div>
-        <h1>Rules for using Budy.Study.</h1>
-        <p>These terms govern access to Budy.Study, including the public website, practice-test flows, Study Hub, dashboard, subscriptions, support, and related services.</p>
+        <h1>Rules for accessing and using Budy.Study.</h1>
+        <p>These terms apply to the Budy.Study website, practice tools, Study Hub, subscriptions, and support services.</p>
         <div class="updated">Last updated: March 31, 2026</div>
       </section>
-      <section class="terms-card">
-        <div class="block"><h2>Use of the service</h2><p>Budy.Study is provided for educational and personal use. Users agree not to abuse the platform, disrupt service operation, or attempt unauthorized access to accounts, systems, or stored data.</p></div>
-        <div class="block"><h2>Accounts</h2><p>Users are responsible for maintaining the security of their login credentials and for activity that occurs through their account. Access may be suspended if account misuse, fraud, or abuse is detected.</p></div>
-        <div class="block"><h2>Free access and demo use</h2><p>Some Budy.Study features may be available without payment or with limited guest/demo access. Free experiences may be changed, limited, or removed as the product evolves.</p></div>
-        <div class="block"><h2>Subscriptions and billing</h2><p>Paid access may renew according to the plan selected at checkout unless canceled in accordance with the active subscription terms. Billing may be processed through Stripe on the web or through a future mobile platform if Budy.Study launches in app stores.</p></div>
-        <div class="block"><h2>Guarantees, refunds, and plan-specific promises</h2><p>Refund policies, score guarantees, and plan-specific commitments only apply when they are explicitly offered and when the qualifying conditions are met. Students should review the active guarantee page and checkout terms before relying on those benefits.</p></div>
-        <div class="block"><h2>Content and product changes</h2><p>Budy.Study may update, improve, suspend, or remove features, pages, pricing structures, launch materials, or educational content at any time to maintain or improve the service.</p></div>
-        <div class="block"><h2>No academic or score promise by default</h2><p>Except where an explicit qualifying guarantee applies, Budy.Study does not promise a specific score result from access alone. Outcomes depend on student participation, baseline, timing, consistency, and outside factors that the service cannot control.</p></div>
-        <div class="block"><h2>Limitation</h2><p>The service is provided on an as-available basis. To the fullest extent allowed by law, Budy.Study is not liable for indirect, incidental, or consequential damages arising from use of the platform.</p></div>
-        <div class="block"><h2>Questions about these terms</h2><p>Questions about subscriptions or support can be sent through <a href="/contact.html">the contact page</a> or by emailing support@budy.study.</p></div>
+
+      <article class="doc">
+        <section>
+          <h2>Use of the service</h2>
+          <p>Budy.Study is provided for educational and personal use. Users may not misuse the platform, interfere with service operation, or attempt unauthorized access to accounts or data.</p>
+        </section>
+
+        <section>
+          <h2>Accounts</h2>
+          <p>Users are responsible for account security and account activity. Access may be limited or suspended for abuse, fraud, or policy violations.</p>
+        </section>
+
+        <section>
+          <h2>Free and paid access</h2>
+          <p>Some features may be available for free with limits. Paid plans may renew according to checkout terms unless canceled through the appropriate billing path.</p>
+        </section>
+
+        <section>
+          <h2>Billing, guarantees, and refunds</h2>
+          <p>Guarantees, refunds, and plan-specific commitments apply only when explicitly offered and when all qualifying conditions are met. Users should review active checkout and guarantee terms before purchase.</p>
+        </section>
+
+        <section>
+          <h2>Service changes</h2>
+          <p>Budy.Study may add, modify, limit, or remove features, pricing, and content as the product evolves.</p>
+        </section>
+
+        <section>
+          <h2>No automatic score promise</h2>
+          <p>Except where an explicit qualifying guarantee applies, Budy.Study does not promise specific score outcomes from access alone.</p>
+        </section>
+
+        <section>
+          <h2>Limitation of liability</h2>
+          <p>The service is provided on an as-available basis. To the fullest extent permitted by law, Budy.Study is not liable for indirect or consequential damages related to platform use.</p>
+        </section>
+
+        <section>
+          <h2>Questions</h2>
+          <p>For terms, billing, or account questions, use <a href="/contact.html">the contact page</a> or email <a href="mailto:support@budy.study">support@budy.study</a>.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+  <div id="footer-slot"></div>
+  <script src="/assets/layout/footer-loader.js" defer></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study | Terms of Use</title>
+<meta name="description" content="Read the Budy.Study terms of use, including access rules, subscription expectations, and product limitations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/assets/shared/observability.js" defer></script>
+<style>
+:root{--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:rgba(240,244,255,.68);--font:'Sora',system-ui,sans-serif;--shadow:0 24px 70px rgba(0,0,0,.26)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{font-family:var(--font);background:radial-gradient(circle at 0% 0%,rgba(26,86,219,.16),transparent 30%),linear-gradient(180deg,#0b1018 0%,#111827 56%,#0b1018 100%);color:var(--text);min-height:100vh}
+a{color:#bfdbfe}
+.wrap{width:min(900px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding:108px 0 78px}
+.hero,.doc{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.hero{border-radius:26px;padding:30px 30px 26px;margin-bottom:16px}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#93c5fd;margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.hero p{color:var(--muted);line-height:1.75}
+.updated{margin-top:10px;font-size:.82rem;color:rgba(240,244,255,.52)}
+.doc{border-radius:26px;padding:8px 28px}
+.doc section{padding:22px 0}
+.doc section+section{border-top:1px solid rgba(255,255,255,.1)}
+.doc h2{font-size:1.08rem;margin-bottom:10px}
+.doc p,.doc li{color:var(--muted);line-height:1.75;font-size:.93rem}
+.doc ul{padding-left:18px;display:grid;gap:6px}
+@media (max-width:720px){.page-shell{padding-top:92px}.hero,.doc{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body data-page-type="terms">
+  <div id="navbar-slot"></div>
+  <script src="/assets/layout/navbar-loader.js" defer></script>
+  <main class="page-shell">
+    <div class="wrap">
+      <section class="hero">
+        <div class="eyebrow">Terms of Use</div>
+        <h1>Rules for accessing and using Budy.Study.</h1>
+        <p>These terms apply to the Budy.Study website, practice tools, Study Hub, subscriptions, and support services.</p>
+        <div class="updated">Last updated: March 31, 2026</div>
       </section>
+
+      <article class="doc">
+        <section>
+          <h2>Use of the service</h2>
+          <p>Budy.Study is provided for educational and personal use. Users may not misuse the platform, interfere with service operation, or attempt unauthorized access to accounts or data.</p>
+        </section>
+
+        <section>
+          <h2>Accounts</h2>
+          <p>Users are responsible for account security and account activity. Access may be limited or suspended for abuse, fraud, or policy violations.</p>
+        </section>
+
+        <section>
+          <h2>Free and paid access</h2>
+          <p>Some features may be available for free with limits. Paid plans may renew according to checkout terms unless canceled through the appropriate billing path.</p>
+        </section>
+
+        <section>
+          <h2>Billing, guarantees, and refunds</h2>
+          <p>Guarantees, refunds, and plan-specific commitments apply only when explicitly offered and when all qualifying conditions are met. Users should review active checkout and guarantee terms before purchase.</p>
+        </section>
+
+        <section>
+          <h2>Service changes</h2>
+          <p>Budy.Study may add, modify, limit, or remove features, pricing, and content as the product evolves.</p>
+        </section>
+
+        <section>
+          <h2>No automatic score promise</h2>
+          <p>Except where an explicit qualifying guarantee applies, Budy.Study does not promise specific score outcomes from access alone.</p>
+        </section>
+
+        <section>
+          <h2>Limitation of liability</h2>
+          <p>The service is provided on an as-available basis. To the fullest extent permitted by law, Budy.Study is not liable for indirect or consequential damages related to platform use.</p>
+        </section>
+
+        <section>
+          <h2>Questions</h2>
+          <p>For terms, billing, or account questions, use <a href="/contact.html">the contact page</a> or email <a href="mailto:support@budy.study">support@budy.study</a>.</p>
+        </section>
+      </article>
     </div>
   </main>
   <div id="footer-slot"></div>

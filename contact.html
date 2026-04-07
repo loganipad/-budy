@@ -6,248 +6,31 @@
 <title>Budy.Study | Contact</title>
 <meta name="description" content="Get in touch with Budy.Study for support, billing help, score guarantee questions, or general product questions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="/assets/shared/observability.js" defer></script>
 <style>
-:root {
-  --ink:#0d1117;
-  --panel:rgba(20,29,45,.82);
-  --line:rgba(255,255,255,.1);
-  --text:#f8fafc;
-  --muted:rgba(240,244,255,.66);
-  --brand:#1a56db;
-  --gold:#f59e0b;
-  --green:#10b981;
-  --rose:#f43f5e;
-  --shadow:0 24px 80px rgba(0,0,0,.28);
-  --font-h:'Sora',system-ui,sans-serif;
-  --font-b:'Sora',system-ui,sans-serif;
-  --font-serif:'Lora',Georgia,serif;
-}
+:root{--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:rgba(240,244,255,.68);--font:'Sora',system-ui,sans-serif;--shadow:0 24px 70px rgba(0,0,0,.26)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:var(--ink)}
-body{
-  font-family:var(--font-b);
-  background:
-    radial-gradient(circle at top left, rgba(26,86,219,.26), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(245,158,11,.12), transparent 28%),
-    linear-gradient(180deg, #0b1018 0%, #111827 54%, #0b1018 100%);
-  color:var(--text);
-  min-height:100vh;
-}
-a{text-decoration:none;color:inherit}
-.wrap{width:min(1120px,calc(100% - 40px));margin:0 auto}
-.page-shell{padding-top:112px;padding-bottom:88px}
-.hero,.section-card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(14px);
-}
-.hero{
-  border-radius:38px;
-  padding:38px;
-  margin-bottom:24px;
-  position:relative;
-  overflow:hidden;
-}
-.hero::before{
-  content:'';
-  position:absolute;
-  right:-80px;
-  top:-80px;
-  width:260px;
-  height:260px;
-  background:radial-gradient(circle, rgba(26,86,219,.22), transparent 68%);
-}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;position:relative;z-index:1}
-.eyebrow{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  border-radius:999px;
-  padding:8px 14px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.09);
-  color:rgba(255,255,255,.82);
-  font-size:.78rem;
-  font-weight:700;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  margin-bottom:18px;
-}
-.hero h1{
-  font-family:var(--font-h);
-  font-size:clamp(2.3rem,5vw,4.3rem);
-  line-height:1.02;
-  letter-spacing:-.04em;
-  max-width:720px;
-  margin-bottom:16px;
-}
-.hero p{
-  color:var(--muted);
-  line-height:1.8;
-  max-width:720px;
-  font-size:1rem;
-}
-.hero-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}
-.hero-point{
-  border-radius:20px;
-  padding:16px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-}
-.hero-point strong{display:block;font-size:1rem;margin-bottom:6px}
-.hero-point span{display:block;font-size:.82rem;line-height:1.6;color:var(--muted)}
-.hero-panel{
-  border-radius:28px;
-  padding:24px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-.panel-kicker{
-  font-size:.72rem;
-  font-weight:800;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:#93c5fd;
-}
-.hero-panel h2{font-size:1.45rem;line-height:1.12}
-.hero-panel p{font-size:.9rem;line-height:1.7;max-width:none}
-.quick-list{display:grid;gap:12px}
-.quick-item{
-  border-radius:18px;
-  padding:14px 16px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.07);
-}
-.quick-item strong{display:block;font-size:.92rem;margin-bottom:4px}
-.quick-item span{display:block;font-size:.82rem;line-height:1.6;color:var(--muted)}
-.main-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:24px;margin-bottom:24px}
-.section-card{border-radius:28px;padding:28px}
-.section-card h2{font-size:1.38rem;margin-bottom:10px}
-.copy{color:var(--muted);font-size:.94rem;line-height:1.75;margin-bottom:18px}
-.route-list{display:grid;gap:14px}
-.route-card{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  gap:14px;
-  border-radius:22px;
-  padding:18px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
-}
-.route-card:hover{
-  transform:translateY(-2px);
-  border-color:rgba(96,165,250,.34);
-  box-shadow:0 18px 36px rgba(4,10,20,.16);
-  background:rgba(255,255,255,.07);
-}
-.route-mark{
-  width:46px;
-  height:46px;
-  border-radius:16px;
-  display:grid;
-  place-items:center;
-  font-size:.9rem;
-  font-weight:800;
-}
-.route-mark.support{background:rgba(26,86,219,.18);color:#bfdbfe}
-.route-mark.billing{background:rgba(245,158,11,.16);color:#fde68a}
-.route-mark.guarantee{background:rgba(16,185,129,.18);color:#a7f3d0}
-.route-copy strong{display:block;font-size:.98rem;margin-bottom:4px}
-.route-copy span{display:block;font-size:.84rem;line-height:1.6;color:var(--muted)}
-.route-cta{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:38px;
-  padding:0 14px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.03);
-  color:#dbeafe;
-  font-size:.72rem;
-  font-weight:800;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-.service-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
-.service-card{
-  border-radius:20px;
-  padding:16px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-}
-.service-card span{display:block;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.42);margin-bottom:8px}
-.service-card strong{display:block;font-size:.95rem;line-height:1.5}
-.prep-list{display:grid;gap:12px}
-.prep-item{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:12px;
-  align-items:start;
-  border-radius:20px;
-  padding:16px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-}
-.prep-num{
-  width:30px;
-  height:30px;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  background:rgba(245,158,11,.16);
-  color:#fde68a;
-  font-size:.82rem;
-  font-weight:800;
-}
-.prep-item strong{display:block;font-size:.93rem;margin-bottom:5px}
-.prep-item span{display:block;font-size:.84rem;line-height:1.6;color:var(--muted)}
-.note-box{
-  margin-top:18px;
-  border-radius:22px;
-  padding:18px 20px;
-  background:linear-gradient(135deg, rgba(26,86,219,.18), rgba(15,23,40,.9));
-  border:1px solid rgba(59,130,246,.24);
-}
-.note-box strong{display:block;font-size:.96rem;margin-bottom:6px}
-.note-box span{display:block;font-size:.84rem;line-height:1.6;color:var(--muted)}
-.request-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.request-card{
-  border-radius:22px;
-  padding:20px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-}
-.request-card h3{font-size:1rem;line-height:1.35;margin-bottom:8px}
-.request-card p{font-size:.86rem;line-height:1.65;color:var(--muted)}
-.request-detail{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,.08);
-  font-size:.82rem;
-  line-height:1.6;
-  color:rgba(240,244,255,.72);
-}
-.request-detail strong{color:#f8fafc}
-@media (max-width: 980px){
-  .hero-grid,.main-grid{grid-template-columns:1fr}
-  .hero-points,.request-grid{grid-template-columns:1fr 1fr}
-}
-@media (max-width: 720px){
-  .page-shell{padding-top:96px}
-  .hero,.section-card{padding:22px}
-  .hero-points,.service-strip,.request-grid{grid-template-columns:1fr}
-  .route-card{grid-template-columns:auto 1fr}
-  .route-cta{grid-column:2}
-}
+body{font-family:var(--font);background:radial-gradient(circle at 0% 0%,rgba(26,86,219,.16),transparent 30%),linear-gradient(180deg,#0b1018 0%,#111827 56%,#0b1018 100%);color:var(--text);min-height:100vh}
+a{color:#bfdbfe}
+.wrap{width:min(860px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding:108px 0 78px}
+.hero,.doc{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.hero{border-radius:26px;padding:30px 30px 26px;margin-bottom:16px}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#93c5fd;margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.hero p{color:var(--muted);line-height:1.75}
+.doc{border-radius:26px;padding:8px 28px}
+.doc section{padding:22px 0}
+.doc section+section{border-top:1px solid rgba(255,255,255,.1)}
+.doc h2{font-size:1.08rem;margin-bottom:10px}
+.doc p,.doc li{color:var(--muted);line-height:1.75;font-size:.93rem}
+.doc ul,.doc ol{padding-left:18px;display:grid;gap:6px}
+.route-list{list-style:none;padding-left:0;display:grid;gap:10px}
+.route-list li{padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.12)}
+.route-list li:last-child{border-bottom:none}
+@media (max-width:720px){.page-shell{padding-top:92px}.hero,.doc{padding-left:20px;padding-right:20px}}
 </style>
 </head>
 <body data-page-type="contact">
@@ -256,109 +39,131 @@ a{text-decoration:none;color:inherit}
   <main class="page-shell">
     <div class="wrap">
       <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Contact Budy.Study</div>
-            <h1>Get to the right inbox without wasting a reply cycle.</h1>
-            <p>Whether you need help with access, billing, score guarantees, or product questions, this page is meant to make the next step obvious. Pick the right route, send the right details once, and support can move faster.</p>
-            <div class="hero-points">
-              <div class="hero-point"><strong>1 to 2 business days</strong><span>Most email requests should receive a response within the normal support window.</span></div>
-              <div class="hero-point"><strong>3 clear routes</strong><span>General support, billing help, and guarantee questions each have a dedicated inbox.</span></div>
-              <div class="hero-point"><strong>Faster if you include context</strong><span>Account email, dates, and screenshots usually prevent an extra round-trip.</span></div>
-            </div>
-          </div>
-          <aside class="hero-panel">
-            <div class="panel-kicker">Fastest Path</div>
-            <h2>Email beats guesswork.</h2>
-            <p>The best first message is short and specific. Start with the account email, explain what happened, and add any timing or screenshot details that help us locate the issue quickly.</p>
-            <div class="quick-list">
-              <div class="quick-item"><strong>Access problems</strong><span>Tell us the login email and what blocked you so we can trace the account path.</span></div>
-              <div class="quick-item"><strong>Billing questions</strong><span>Include the checkout email and approximate purchase time for faster subscription lookup.</span></div>
-              <div class="quick-item"><strong>Score or history issues</strong><span>Tell us the section, approximate date, and what result you expected to see.</span></div>
-            </div>
-          </aside>
-        </div>
-      </section>
-      <section class="main-grid">
-        <article class="section-card">
-          <h2>Choose the right contact route</h2>
-          <p class="copy">If you are unsure where the request belongs, use general support and we will route it from there. Otherwise, pick the lane that matches the issue so the first response is useful.</p>
-          <div class="route-list">
-            <a class="route-card" href="mailto:support@budy.study">
-              <div class="route-mark support">S</div>
-              <div class="route-copy">
-                <strong>General support</strong>
-                <span>Login trouble, product questions, account confusion, or anything that does not clearly belong to billing or guarantee review.</span>
-              </div>
-              <span class="route-cta">Email</span>
-            </a>
-            <a class="route-card" href="mailto:billing@budy.study">
-              <div class="route-mark billing">B</div>
-              <div class="route-copy">
-                <strong>Billing and subscription help</strong>
-                <span>Checkout issues, missing premium access, renewal questions, cancellation questions, or payment-related follow-up.</span>
-              </div>
-              <span class="route-cta">Email</span>
-            </a>
-            <a class="route-card" href="mailto:guarantee@budy.study">
-              <div class="route-mark guarantee">G</div>
-              <div class="route-copy">
-                <strong>Score guarantee questions</strong>
-                <span>Eligibility review, guarantee documentation, program compliance questions, or requests tied to score-improvement terms.</span>
-              </div>
-              <span class="route-cta">Email</span>
-            </a>
-          </div>
-          <div class="service-strip">
-            <div class="service-card"><span>Best first message</span><strong>Account email, short issue summary, and any screenshot or date that helps us verify it.</strong></div>
-            <div class="service-card"><span>Normal response window</span><strong>Most requests should receive a reply within 1 to 2 business days.</strong></div>
-          </div>
-        </article>
-        <aside class="section-card">
-          <h2>Before you hit send</h2>
-          <p class="copy">A little context up front usually makes the first reply useful instead of just asking for basic details.</p>
-          <div class="prep-list">
-            <div class="prep-item"><div class="prep-num">1</div><div><strong>Use the account email</strong><span>Tell us which email you used for login or checkout so we can find the right account and subscription record.</span></div></div>
-            <div class="prep-item"><div class="prep-num">2</div><div><strong>Name the exact issue</strong><span>Say what broke, what page or flow it happened on, and whether the problem is billing, access, score history, or guarantee-related.</span></div></div>
-            <div class="prep-item"><div class="prep-num">3</div><div><strong>Add timing or proof</strong><span>If the issue is visual, billing-related, or tied to a specific test result, include a screenshot and the approximate date or purchase time.</span></div></div>
-          </div>
-          <div class="note-box"><strong>Visual or payment issue?</strong><span>Screenshots, checkout timing, and the exact email used at purchase are the fastest way to reduce back-and-forth.</span></div>
-        </aside>
+        <div class="eyebrow">Contact</div>
+        <h1>Send one clear message and get routed quickly.</h1>
+        <p>The fastest way to resolve issues is to send the request to the right inbox with the account email and relevant context in the first message.</p>
       </section>
 
-      <section class="section-card">
-        <h2>Common request types</h2>
-        <p class="copy">These are the issues that usually benefit from a little extra context in the first email.</p>
-        <div class="request-grid">
-          <article class="request-card">
-            <h3>Missing premium access</h3>
-            <p>Premium is not showing up, the plan status looks wrong, or access did not update after checkout.</p>
-            <div class="request-detail"><strong>Include:</strong> the email used at checkout and the approximate purchase time.</div>
-          </article>
-          <article class="request-card">
-            <h3>Wrong score or test-history issue</h3>
-            <p>A result looks off, a score is missing, or a test attempt did not save the way you expected.</p>
-            <div class="request-detail"><strong>Include:</strong> the section, approximate date, and what result you expected to see.</div>
-          </article>
-          <article class="request-card">
-            <h3>Refund or guarantee review</h3>
-            <p>You need clarification on program terms, guarantee status, or a support review tied to a qualifying plan.</p>
-            <div class="request-detail"><strong>Include:</strong> the plan used, study period, and any qualifying score evidence relevant to the request.</div>
-          </article>
-        </div>
+      <article class="doc">
+        <section>
+          <h2>Contact routes</h2>
+          <ul class="route-list">
+            <li><strong>General support:</strong> <a href="mailto:support@budy.study">support@budy.study</a> for login, product, and account questions.</li>
+            <li><strong>Billing and subscriptions:</strong> <a href="mailto:billing@budy.study">billing@budy.study</a> for premium access, renewals, and cancellations.</li>
+            <li><strong>Score guarantee:</strong> <a href="mailto:guarantee@budy.study">guarantee@budy.study</a> for eligibility and guarantee documentation review.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What to include for faster support</h2>
+          <ol>
+            <li>The exact account email used for login or checkout.</li>
+            <li>A one-line description of what is broken or unclear.</li>
+            <li>The page or flow where it happened.</li>
+            <li>Approximate date/time and screenshot if relevant.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Common request types</h2>
+          <ul>
+            <li><strong>Missing premium access:</strong> include checkout email and purchase time.</li>
+            <li><strong>Score or test history issue:</strong> include section, date, and expected result.</li>
+            <li><strong>Refund or guarantee review:</strong> include plan details and qualifying timeline.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Partnership and press</h2>
+          <p>For creator collaborations, partnerships, or press requests, use <a href="mailto:support@budy.study?subject=Budy.Study%20Partnership">support@budy.study</a> with the subject line "Budy.Study Partnership".</p>
+        </section>
+      </article>
+    </div>
+  </main>
+  <div id="footer-slot"></div>
+  <script src="/assets/layout/footer-loader.js" defer></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study | Contact</title>
+<meta name="description" content="Get in touch with Budy.Study for support, billing help, score guarantee questions, or general product questions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/assets/shared/observability.js" defer></script>
+<style>
+:root{--ink:#0d1117;--panel:rgba(20,29,45,.82);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:rgba(240,244,255,.68);--font:'Sora',system-ui,sans-serif;--shadow:0 24px 70px rgba(0,0,0,.26)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{font-family:var(--font);background:radial-gradient(circle at 0% 0%,rgba(26,86,219,.16),transparent 30%),linear-gradient(180deg,#0b1018 0%,#111827 56%,#0b1018 100%);color:var(--text);min-height:100vh}
+a{color:#bfdbfe}
+.wrap{width:min(860px,calc(100% - 40px));margin:0 auto}
+.page-shell{padding:108px 0 78px}
+.hero,.doc{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.hero{border-radius:26px;padding:30px 30px 26px;margin-bottom:16px}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#93c5fd;margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.hero p{color:var(--muted);line-height:1.75}
+.doc{border-radius:26px;padding:8px 28px}
+.doc section{padding:22px 0}
+.doc section+section{border-top:1px solid rgba(255,255,255,.1)}
+.doc h2{font-size:1.08rem;margin-bottom:10px}
+.doc p,.doc li{color:var(--muted);line-height:1.75;font-size:.93rem}
+.doc ul,.doc ol{padding-left:18px;display:grid;gap:6px}
+.route-list{list-style:none;padding-left:0;display:grid;gap:10px}
+.route-list li{padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.12)}
+.route-list li:last-child{border-bottom:none}
+@media (max-width:720px){.page-shell{padding-top:92px}.hero,.doc{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body data-page-type="contact">
+  <div id="navbar-slot"></div>
+  <script src="/assets/layout/navbar-loader.js" defer></script>
+  <main class="page-shell">
+    <div class="wrap">
+      <section class="hero">
+        <div class="eyebrow">Contact</div>
+        <h1>Send one clear message and get routed quickly.</h1>
+        <p>The fastest way to resolve issues is to send the request to the right inbox with the account email and relevant context in the first message.</p>
       </section>
 
-      <section class="section-card">
-        <h2>Partnership and press requests</h2>
-        <p class="copy">If the request is about partnerships, creator campaigns, or press, use this route so the context stays attached from the start.</p>
-        <div class="request-grid">
-          <article class="request-card">
-            <h3>Partnerships, press, or creator outreach</h3>
-            <p>For cross-promotion, parent communities, student ambassadors, and education creator collaborations.</p>
-            <div class="request-detail"><strong>Contact:</strong> <a href="mailto:support@budy.study?subject=Budy.Study%20Partnership">support@budy.study</a></div>
-          </article>
-        </div>
-      </section>
+      <article class="doc">
+        <section>
+          <h2>Contact routes</h2>
+          <ul class="route-list">
+            <li><strong>General support:</strong> <a href="mailto:support@budy.study">support@budy.study</a> for login, product, and account questions.</li>
+            <li><strong>Billing and subscriptions:</strong> <a href="mailto:billing@budy.study">billing@budy.study</a> for premium access, renewals, and cancellations.</li>
+            <li><strong>Score guarantee:</strong> <a href="mailto:guarantee@budy.study">guarantee@budy.study</a> for eligibility and guarantee documentation review.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What to include for faster support</h2>
+          <ol>
+            <li>The exact account email used for login or checkout.</li>
+            <li>A one-line description of what is broken or unclear.</li>
+            <li>The page or flow where it happened.</li>
+            <li>Approximate date/time and screenshot if relevant.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Common request types</h2>
+          <ul>
+            <li><strong>Missing premium access:</strong> include checkout email and purchase time.</li>
+            <li><strong>Score or test history issue:</strong> include section, date, and expected result.</li>
+            <li><strong>Refund or guarantee review:</strong> include plan details and qualifying timeline.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Partnership and press</h2>
+          <p>For creator collaborations, partnerships, or press requests, use <a href="mailto:support@budy.study?subject=Budy.Study%20Partnership">support@budy.study</a> with the subject line "Budy.Study Partnership".</p>
+        </section>
+      </article>
     </div>
   </main>
   <div id="footer-slot"></div>
