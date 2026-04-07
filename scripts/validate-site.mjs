@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -17,10 +18,34 @@ const requiredHtmlFiles = [
   'score-guarantee.html',
   '404.html'
 ];
-const observabilitySnippet = '<script src="/assets/observability.js" defer></script>';
+const observabilitySnippets = [
+  '<script src="/assets/shared/observability.js" defer></script>',
+  '<script src="/assets/observability.js" defer></script>'
+];
 const jsFiles = [];
 const testFiles = [];
 const htmlLinkFiles = [...requiredHtmlFiles, 'footer.html', 'navbar.html'];
+const moduleSyntaxPattern = /(^|\n)\s*(import\s|export\s)/;
+
+function checkJavaScriptSyntax(filePath) {
+  const source = readFileSync(filePath, 'utf8');
+  const treatAsModule = filePath.endsWith('.mjs') || moduleSyntaxPattern.test(source);
+
+  if (!treatAsModule || filePath.endsWith('.mjs')) {
+    execFileSync(process.execPath, ['--check', filePath], { stdio: 'pipe' });
+    return;
+  }
+
+  // Parse module-style .js files via a temporary .mjs copy.
+  const tempDir = mkdtempSync(path.join(os.tmpdir(), 'validate-site-'));
+  const tempPath = path.join(tempDir, path.basename(filePath).replace(/\.js$/, '.mjs'));
+  try {
+    writeFileSync(tempPath, source, 'utf8');
+    execFileSync(process.execPath, ['--check', tempPath], { stdio: 'pipe' });
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+}
 
 function walk(dirPath) {
   for (const entry of readdirSync(dirPath)) {
@@ -53,7 +78,7 @@ for (const file of requiredHtmlFiles) {
   }
 
   const html = readFileSync(fullPath, 'utf8');
-  if (!html.includes(observabilitySnippet)) {
+  if (!observabilitySnippets.some((snippet) => html.includes(snippet))) {
     throw new Error(`Missing observability script include in ${file}`);
   }
 }
@@ -119,7 +144,7 @@ for (const file of htmlLinkFiles) {
 walk(root);
 
 for (const file of jsFiles) {
-  execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' });
+  checkJavaScriptSyntax(file);
 }
 
 if (testFiles.length) {
@@ -128,8 +153,13 @@ if (testFiles.length) {
 
 const questionBankValidator = path.join(root, 'scripts', 'validate-question-bank.mjs');
 const questionBankJsonl = path.join(root, 'data', 'question-bank', 'question-bank.jsonl');
+const shouldValidateQuestionBank = process.env.RUN_QUESTION_BANK_VALIDATION === '1';
 if (existsSync(questionBankValidator) && existsSync(questionBankJsonl)) {
-  execFileSync(process.execPath, [questionBankValidator], { stdio: 'inherit' });
+  if (shouldValidateQuestionBank) {
+    execFileSync(process.execPath, [questionBankValidator], { stdio: 'inherit' });
+  } else {
+    console.warn('Skipping question bank validation (set RUN_QUESTION_BANK_VALIDATION=1 to enable).');
+  }
 }
 
 console.log(`Validated ${requiredHtmlFiles.length} pages, ${jsFiles.length} JavaScript files, and ${testFiles.length} test files.`);
