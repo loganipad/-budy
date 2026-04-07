@@ -1359,22 +1359,6 @@ async function handlePurchase() {
     return;
   }
 
-  // ── Native store detection ────────────────────────────────────────────────
-  const nativeEnv = detectNativeStoreEnv();
-  if (nativeEnv.usesNativeStore) {
-    const cta = document.getElementById('pw-cta-btn');
-    if (cta) { cta.disabled = true; cta.textContent = 'Opening ' + nativeEnv.storeLabel + '...'; }
-    const sent = requestNativeStorePurchase(S.selectedPlan || 'monthly');
-    if (sent) {
-      toast('Opening ' + nativeEnv.storeLabel + ' purchase flow...', 'ok');
-      closePaywall();
-    } else {
-      toast(nativeEnv.storeLabel + ' purchase bridge is not connected in this build.', 'wn');
-      if (cta) { cta.disabled = false; cta.textContent = 'Start ' + nativeEnv.storeLabel; }
-    }
-    return;
-  }
-
   const cta = document.getElementById('pw-cta-btn');
   const originalText = cta ? cta.textContent : '';
   if (cta) {
