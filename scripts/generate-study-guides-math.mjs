@@ -1577,38 +1577,70 @@ const TOPIC_CONTENT = {
 
 function rgb(arr) { return arr; }
 
+const PAGE_WIDTH = 612;
+const PAGE_HEIGHT = 792;
+const CONTENT_X = 40;
+const CONTENT_W = PAGE_WIDTH - 80;
+
+function drawPageChrome(doc, accentColor, sectionLabel) {
+  doc.rect(0, 0, doc.page.width, doc.page.height).fill(rgb([251, 253, 255]));
+
+  doc.rect(0, 0, doc.page.width, 76).fill(rgb(NAVY));
+  doc.rect(0, 70, doc.page.width, 6).fill(rgb(accentColor));
+
+  doc.fontSize(8).fillColor(rgb([191, 219, 254])).font('Helvetica-Bold')
+    .text('BUDY.STUDY', CONTENT_X, 18, { width: 140 });
+
+  doc.fontSize(9).fillColor(rgb(WHITE)).font('Helvetica')
+    .text(sectionLabel, CONTENT_X, 34, { width: doc.page.width - 80 });
+}
+
 function drawFooter(doc, pageNum, skill) {
-  doc.fontSize(7).fillColor(rgb(MID_GRAY)).font('Helvetica')
-    .text(`Budy.Study  |  Math  |  ${skill}  |  Page ${pageNum} of 5`,
-      40, doc.page.height - 30,
-      { align: 'center', width: doc.page.width - 80 });
+  const footerY = doc.page.height - 32;
+  doc.moveTo(CONTENT_X, footerY - 8).lineTo(doc.page.width - CONTENT_X, footerY - 8)
+    .lineWidth(0.8).strokeColor(rgb([224, 231, 255])).stroke();
+
+  doc.fontSize(7.5).fillColor(rgb(MID_GRAY)).font('Helvetica')
+    .text(`Budy.Study  |  SAT Math  |  ${skill}`,
+      CONTENT_X, footerY,
+      { align: 'left', width: 340 });
+
+  doc.fontSize(7.5).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
+    .text(`Page ${pageNum} of 5`,
+      doc.page.width - 140, footerY,
+      { align: 'right', width: 100 });
 }
 
 function drawHeader(doc, text, y) {
-  doc.fontSize(16).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
-    .text(text, 40, y, { width: doc.page.width - 80 });
-  const afterY = doc.y + 8;
-  doc.moveTo(40, afterY).lineTo(doc.page.width - 40, afterY)
-    .strokeColor(rgb(BRAND_BLUE)).lineWidth(1).stroke();
-  return afterY + 14;
+  doc.fontSize(15).fillColor(rgb(NAVY)).font('Helvetica-Bold')
+    .text(text, CONTENT_X, y, { width: CONTENT_W });
+
+  const lineY = doc.y + 5;
+  doc.moveTo(CONTENT_X, lineY).lineTo(doc.page.width - CONTENT_X, lineY)
+    .strokeColor(rgb([203, 213, 225])).lineWidth(0.8).stroke();
+
+  doc.roundedRect(CONTENT_X, lineY - 2, 54, 4, 2).fill(rgb(BRAND_BLUE));
+  return lineY + 10;
 }
 
 function drawSubheader(doc, text, y) {
-  doc.fontSize(11).fillColor(rgb(NAVY)).font('Helvetica-Bold')
-    .text(text, 40, y, { width: doc.page.width - 80 });
-  return doc.y + 6;
+  doc.fontSize(10).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
+    .text(text, CONTENT_X, y, { width: CONTENT_W });
+  return doc.y + 5;
 }
 
 function drawBody(doc, text, y) {
-  doc.fontSize(9.5).fillColor(rgb(NAVY)).font('Helvetica')
-    .text(text, 40, y, { width: doc.page.width - 80, lineGap: 4 });
+  doc.fontSize(9.6).fillColor(rgb(NAVY)).font('Helvetica')
+    .text(text, CONTENT_X, y, { width: CONTENT_W, lineGap: 4 });
   return doc.y + 8;
 }
 
 function drawBullets(doc, items, y) {
   items.forEach((item) => {
-    doc.fontSize(9.5).fillColor(rgb(NAVY)).font('Helvetica');
-    doc.text(`•  ${item}`, 50, y, { width: doc.page.width - 100, lineGap: 3 });
+    doc.fontSize(9.5).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
+      .text('•', 50, y + 0.5, { width: 10 });
+    doc.fontSize(9.5).fillColor(rgb(NAVY)).font('Helvetica')
+      .text(item, 62, y, { width: doc.page.width - 114, lineGap: 3 });
     y = doc.y + 4;
   });
   return y + 4;
@@ -1616,16 +1648,21 @@ function drawBullets(doc, items, y) {
 
 function drawNumberedList(doc, items, y) {
   items.forEach((item, i) => {
-    doc.fontSize(9.5).fillColor(rgb(NAVY)).font('Helvetica');
-    doc.text(`${i + 1}.  ${item}`, 50, y, { width: doc.page.width - 100, lineGap: 3 });
+    doc.roundedRect(50, y + 1, 14, 14, 4).fill(rgb([219, 234, 254]));
+    doc.fontSize(8.5).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
+      .text(String(i + 1), 50, y + 4, { width: 14, align: 'center' });
+    doc.fontSize(9.5).fillColor(rgb(NAVY)).font('Helvetica')
+      .text(item, 70, y, { width: doc.page.width - 120, lineGap: 3 });
     y = doc.y + 4;
   });
   return y + 4;
 }
 
-function drawBox(doc, x, y, w, h, fillColor) {
+function drawBox(doc, x, y, w, h, fillColor, strokeColor = [219, 234, 254]) {
   doc.save();
-  doc.roundedRect(x, y, w, h, 6).fill(fillColor || rgb([245, 247, 255]));
+  doc.roundedRect(x, y + 2, w, h, 8).fill(rgb([241, 245, 249]));
+  doc.roundedRect(x, y, w, h, 8).fill(fillColor || rgb([245, 247, 255]));
+  doc.roundedRect(x, y, w, h, 8).lineWidth(1).strokeColor(rgb(strokeColor)).stroke();
   doc.restore();
   return y;
 }
@@ -1650,86 +1687,95 @@ function generateStudyGuidePDF(topicKey, topic) {
   doc.on('data', (chunk) => chunks.push(chunk));
 
   // ──── PAGE 1: Cover + Topic Overview ────
-  doc.rect(0, 0, doc.page.width, 140).fill(rgb(NAVY));
+  drawPageChrome(doc, GOLD, `Math  |  ${domain}`);
   doc.fontSize(10).fillColor(rgb(GOLD)).font('Helvetica-Bold')
-    .text('BUDY.STUDY  |  SAT PREP STUDY GUIDE', 40, 30, { width: doc.page.width - 80 });
-  doc.fontSize(24).fillColor(rgb(WHITE)).font('Helvetica-Bold')
-    .text(skill, 40, 55, { width: doc.page.width - 80 });
-  doc.fontSize(11).fillColor(rgb(LIGHT_GRAY)).font('Helvetica')
-    .text(`Math  •  ${domain}`, 40, 95, { width: doc.page.width - 80 });
-  doc.fontSize(8).fillColor(rgb(MID_GRAY))
-    .text('5-Page Study Guide  |  budy.study', 40, 118, { width: doc.page.width - 80 });
+    .text('SAT PREP STUDY GUIDE', 40, 48, { width: doc.page.width - 80 });
 
-  let y = 160;
+  doc.roundedRect(40, 92, 190, 20, 10).fill(rgb([30, 41, 59]));
+  doc.fontSize(9).fillColor(rgb([147, 197, 253])).font('Helvetica-Bold')
+    .text(domain.toUpperCase(), 40, 98, { width: 190, align: 'center' });
+
+  doc.fontSize(24).fillColor(rgb(WHITE)).font('Helvetica-Bold')
+    .text(skill, 40, 118, { width: doc.page.width - 80 });
+  doc.fontSize(11).fillColor(rgb(LIGHT_GRAY)).font('Helvetica')
+    .text('Math Study Guide', 40, 150, { width: doc.page.width - 80 });
+  doc.fontSize(8).fillColor(rgb(MID_GRAY))
+    .text('5 pages  |  built for fast revision', 40, 166, { width: doc.page.width - 80 });
+
+  let y = 210;
   y = drawHeader(doc, 'Topic Overview', y);
   y = drawBody(doc, overview, y);
 
-  y = drawHeader(doc, 'Key Concepts', y + 6);
+  y = drawHeader(doc, 'Key Concepts', y + 10);
   y = drawBullets(doc, concepts, y);
 
-  y = drawHeader(doc, 'Why This Matters on the SAT', y + 2);
+  y = drawHeader(doc, 'Why This Matters on the SAT', y + 8);
   y = drawBody(doc, `The SAT frequently tests ${skill.toLowerCase()} within the ${domain} domain. Understanding this skill helps you answer questions faster, avoid common traps, and build the confidence you need on test day. Each question in this domain is worth the same points, so mastering even one skill area can make a meaningful score difference.`, y);
 
   drawFooter(doc, 1, skill);
 
   // ──── PAGE 2: Core Rules, Formulas & Strategies ────
   doc.addPage();
-  doc.rect(0, 0, doc.page.width, 6).fill(rgb(BRAND_BLUE));
-  y = 30;
+  drawPageChrome(doc, BRAND_BLUE, `${skill}  |  Core Toolkit`);
+  y = 98;
   y = drawHeader(doc, 'Core Strategies', y);
   y = drawNumberedList(doc, strategies, y);
 
-  y = drawHeader(doc, 'Key Formulas & Rules', y + 6);
+  y = drawHeader(doc, 'Key Formulas & Rules', y + 8);
   y = drawBullets(doc, formulas, y);
 
-  y = drawHeader(doc, 'Step-by-Step Approach', y + 6);
+  y = drawHeader(doc, 'Step-by-Step Approach', y + 8);
   y = drawNumberedList(doc, stepByStep, y);
 
   y = drawHeader(doc, 'Time Management Tip', y + 6);
-  drawBox(doc, 40, y, doc.page.width - 80, 50, rgb([240, 247, 255]));
-  y = drawBody(doc, '⏱ Aim for ~90 seconds per question. If you\'re stuck after 60 seconds, mark it and move on. Come back to it in the remaining time.', y + 10);
+  drawBox(doc, 40, y, doc.page.width - 80, 58, rgb([239, 246, 255]), [191, 219, 254]);
+  y = drawBody(doc, 'Aim for about 90 seconds per question. If progress stalls after about a minute, mark it, move on, and return with fresh context in the final pass.', y + 13);
 
   drawFooter(doc, 2, skill);
 
   // ──── PAGE 3: Worked Examples ────
   doc.addPage();
-  doc.rect(0, 0, doc.page.width, 6).fill(rgb(GOLD));
-  y = 30;
+  drawPageChrome(doc, GOLD, `${skill}  |  Worked Examples`);
+  y = 98;
   y = drawHeader(doc, 'Worked Examples', y);
 
   workedExamples.forEach((ex, idx) => {
+    drawBox(doc, 40, y + 4, doc.page.width - 80, 278, rgb([255, 251, 235]), [253, 230, 138]);
+    y += 14;
     y = drawSubheader(doc, `Example ${idx + 1}`, y);
     y = drawSubheader(doc, 'Problem:', y);
     y = drawBody(doc, ex.problem, y);
 
     y = drawSubheader(doc, 'Answer Choices:', y + 2);
     ex.choices.forEach((choice) => {
-      doc.fontSize(9.5).fillColor(rgb(NAVY)).font('Helvetica')
+      doc.fontSize(9.4).fillColor(rgb(NAVY)).font('Helvetica')
         .text(`   ${choice}`, 50, y, { width: doc.page.width - 100 });
       y = doc.y + 3;
     });
 
     y += 6;
-    drawBox(doc, 40, y, doc.page.width - 80, 1, rgb([232, 245, 233]));
+    doc.moveTo(50, y).lineTo(doc.page.width - 50, y).lineWidth(1).strokeColor(rgb([254, 215, 170])).stroke();
     y = drawSubheader(doc, `✓ Correct Answer: ${ex.answer}`, y + 4);
     y = drawBody(doc, ex.steps, y);
 
     y = drawSubheader(doc, 'Why the Wrong Answers Fail:', y + 2);
     y = drawBody(doc, ex.whyWrong, y);
-    y += 8;
+    y += 16;
   });
 
   drawFooter(doc, 3, skill);
 
   // ──── PAGE 4: Practice Questions ────
   doc.addPage();
-  doc.rect(0, 0, doc.page.width, 6).fill(rgb(GREEN));
-  y = 30;
+  drawPageChrome(doc, GREEN, `${skill}  |  Practice`);
+  y = 98;
   y = drawHeader(doc, 'Practice Questions', y);
   y = drawBody(doc, 'Try these on your own first, then check the answer key on the next page.', y);
 
   practiceQuestions.forEach((pq, i) => {
-    y += 6;
+    y += 8;
+    drawBox(doc, 40, y, doc.page.width - 80, 140, rgb([236, 253, 245]), [167, 243, 208]);
+    y += 10;
     y = drawSubheader(doc, `Question ${i + 1}`, y);
     y = drawBody(doc, pq.question, y);
     pq.choices.forEach((choice) => {
@@ -1740,36 +1786,38 @@ function generateStudyGuidePDF(topicKey, topic) {
     y += 4;
     doc.fontSize(8).fillColor(rgb(MID_GRAY)).font('Helvetica')
       .text('Your answer: ____', 55, y);
-    y = doc.y + 8;
+    y = doc.y + 10;
   });
 
   drawFooter(doc, 4, skill);
 
   // ──── PAGE 5: Answer Key + Common Mistakes + Quick Reference ────
   doc.addPage();
-  doc.rect(0, 0, doc.page.width, 6).fill(rgb(BRAND_BLUE));
-  y = 30;
+  drawPageChrome(doc, BRAND_BLUE, `${skill}  |  Review`);
+  y = 98;
   y = drawHeader(doc, 'Answer Key', y);
 
+  drawBox(doc, 40, y, doc.page.width - 80, 200, rgb([239, 246, 255]), [191, 219, 254]);
+  y += 10;
   practiceQuestions.forEach((pq, i) => {
     y = drawSubheader(doc, `Question ${i + 1}: ${pq.answer}`, y);
     y = drawBody(doc, pq.rationale, y);
     y += 4;
   });
 
-  y = drawHeader(doc, 'Common Mistakes to Avoid', y + 4);
+  y = drawHeader(doc, 'Common Mistakes to Avoid', y + 8);
   y = drawBullets(doc, commonMistakes, y);
 
-  y = drawHeader(doc, 'Quick Reference Card', y + 4);
-  drawBox(doc, 40, y, doc.page.width - 80, 1, rgb([255, 249, 235]));
+  y = drawHeader(doc, 'Quick Reference Card', y + 6);
+  drawBox(doc, 40, y, doc.page.width - 80, 74, rgb([255, 251, 235]), [252, 211, 77]);
   doc.fontSize(10).fillColor(rgb(NAVY)).font('Helvetica-Bold')
-    .text(quickRef, 50, y + 8, { width: doc.page.width - 100, lineGap: 4 });
+    .text(quickRef, 50, y + 12, { width: doc.page.width - 100, lineGap: 4 });
   y = doc.y + 20;
 
-  drawBox(doc, 40, y, doc.page.width - 80, 1, rgb([240, 244, 255]));
+  drawBox(doc, 40, y, doc.page.width - 80, 42, rgb([240, 244, 255]), [226, 232, 240]);
   doc.fontSize(8).fillColor(rgb(BRAND_BLUE)).font('Helvetica-Bold')
     .text('Need more help? Visit budy.study for practice tests, AI explanations, and score tracking.',
-      50, y + 8, { width: doc.page.width - 100, align: 'center' });
+      50, y + 15, { width: doc.page.width - 100, align: 'center' });
 
   drawFooter(doc, 5, skill);
 

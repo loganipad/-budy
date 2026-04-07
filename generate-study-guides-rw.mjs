@@ -33,6 +33,8 @@ const MARGIN_LEFT = 40;
 const MARGIN_RIGHT = 40;
 const MARGIN_TOP = 50;
 const MARGIN_BOTTOM = 50;
+const CONTENT_X = 40;
+const CONTENT_W = PAGE_WIDTH - 80;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -2352,27 +2354,69 @@ function rgb(arr) {
   return arr;
 }
 
-function drawFooter(doc, pageNum, skill) {
-  const footerY = PAGE_HEIGHT - MARGIN_BOTTOM - 12;
+function drawPageChrome(doc, accentColor, sectionLabel) {
+  doc.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT).fill(rgb([251, 253, 255]));
+
+  doc.rect(0, 0, PAGE_WIDTH, 76).fill(rgb(NAVY));
+  doc.rect(0, 70, PAGE_WIDTH, 6).fill(rgb(accentColor));
+
+  doc
+    .font('Helvetica-Bold')
+    .fontSize(8)
+    .fillColor(rgb([191, 219, 254]))
+    .text('BUDY.STUDY', CONTENT_X, 18, { width: 140 });
+
   doc
     .font('Helvetica')
-    .fontSize(7)
+    .fontSize(9)
+    .fillColor(rgb(WHITE))
+    .text(sectionLabel, CONTENT_X, 34, { width: CONTENT_W });
+}
+
+function drawFooter(doc, pageNum, skill) {
+  const footerY = PAGE_HEIGHT - 32;
+  doc
+    .moveTo(CONTENT_X, footerY - 8)
+    .lineTo(PAGE_WIDTH - CONTENT_X, footerY - 8)
+    .lineWidth(0.8)
+    .strokeColor(rgb([224, 231, 255]))
+    .stroke();
+
+  doc
+    .font('Helvetica')
+    .fontSize(7.5)
     .fillColor(rgb(MID_GRAY))
     .text(
-      `Budy.Study | Reading & Writing | ${skill} | Page ${pageNum} of 5`,
-      MARGIN_LEFT,
+      `Budy.Study | SAT Reading & Writing | ${skill}`,
+      CONTENT_X,
       footerY,
-      { width: PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT, align: 'center' }
+      { width: 360, align: 'left' }
     );
+
+  doc
+    .font('Helvetica-Bold')
+    .fontSize(7.5)
+    .fillColor(rgb(BRAND_BLUE))
+    .text(`Page ${pageNum} of 5`, PAGE_WIDTH - 140, footerY, { width: 100, align: 'right' });
 }
 
 function sectionHeader(doc, text, y) {
   doc
     .font('Helvetica-Bold')
-    .fontSize(16)
-    .fillColor(rgb(BRAND_BLUE))
-    .text(text, MARGIN_LEFT, y, { width: PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT });
-  return doc.y + 6;
+    .fontSize(15)
+    .fillColor(rgb(NAVY))
+    .text(text, CONTENT_X, y, { width: CONTENT_W });
+
+  const lineY = doc.y + 5;
+  doc
+    .moveTo(CONTENT_X, lineY)
+    .lineTo(PAGE_WIDTH - CONTENT_X, lineY)
+    .lineWidth(0.8)
+    .strokeColor(rgb([203, 213, 225]))
+    .stroke();
+
+  doc.roundedRect(CONTENT_X, lineY - 2, 54, 4, 2).fill(rgb(BRAND_BLUE));
+  return lineY + 10;
 }
 
 function bodyText(doc, text, x, y, width, height, size = 9.5) {
@@ -2392,10 +2436,16 @@ function bulletList(doc, items, x, y, width, lineGap = 3) {
   let currentY = y;
   for (const item of items) {
     doc
+      .font('Helvetica-Bold')
+      .fontSize(9.5)
+      .fillColor(rgb(BRAND_BLUE))
+      .text('•', x, currentY + 0.5, { width: 10 });
+
+    doc
       .font('Helvetica')
       .fontSize(9.5)
       .fillColor(rgb(NAVY))
-      .text(`• ${item}`, x, currentY, { width, lineGap });
+      .text(item, x + 12, currentY, { width: width - 12, lineGap });
     currentY = doc.y + 3;
   }
   return currentY;
@@ -2404,11 +2454,18 @@ function bulletList(doc, items, x, y, width, lineGap = 3) {
 function numberedList(doc, items, x, y, width) {
   let currentY = y;
   items.forEach((item, idx) => {
+    doc.roundedRect(x, currentY + 1, 14, 14, 4).fill(rgb([219, 234, 254]));
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(8.5)
+      .fillColor(rgb(BRAND_BLUE))
+      .text(String(idx + 1), x, currentY + 4, { width: 14, align: 'center' });
+
     doc
       .font('Helvetica')
       .fontSize(9.5)
       .fillColor(rgb(NAVY))
-      .text(`${idx + 1}. ${item}`, x, currentY, { width, lineGap: 3 });
+      .text(item, x + 20, currentY, { width: width - 20, lineGap: 3 });
     currentY = doc.y + 3;
   });
   return currentY;
@@ -2420,10 +2477,11 @@ function drawThinAccent(doc, color) {
 
 function drawBox(doc, x, y, w, h, fillColor, strokeColor = null) {
   doc.save();
-  doc.roundedRect(x, y, w, h, 6).fill(rgb(fillColor));
+  doc.roundedRect(x, y + 2, w, h, 8).fill(rgb([241, 245, 249]));
+  doc.roundedRect(x, y, w, h, 8).fill(rgb(fillColor));
   if (strokeColor) {
     doc
-      .roundedRect(x, y, w, h, 6)
+      .roundedRect(x, y, w, h, 8)
       .lineWidth(1)
       .strokeColor(rgb(strokeColor))
       .stroke();
@@ -2432,59 +2490,66 @@ function drawBox(doc, x, y, w, h, fillColor, strokeColor = null) {
 }
 
 function drawCoverPage(doc, topic) {
-  doc.rect(0, 0, PAGE_WIDTH, 140).fill(rgb(NAVY));
+  drawPageChrome(doc, GOLD, `Reading & Writing  |  ${topic.domain}`);
 
   doc
     .font('Helvetica-Bold')
     .fontSize(10)
     .fillColor(rgb(GOLD))
-    .text('BUDY.STUDY | SAT PREP STUDY GUIDE', MARGIN_LEFT, 28, {
-      width: PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT
+    .text('SAT PREP STUDY GUIDE', CONTENT_X, 48, {
+      width: CONTENT_W
     });
+
+  doc.roundedRect(CONTENT_X, 92, 240, 20, 10).fill(rgb([30, 41, 59]));
+  doc
+    .font('Helvetica-Bold')
+    .fontSize(9)
+    .fillColor(rgb([147, 197, 253]))
+    .text(topic.domain.toUpperCase(), CONTENT_X, 98, { width: 240, align: 'center' });
 
   doc
     .font('Helvetica-Bold')
     .fontSize(24)
     .fillColor(rgb(WHITE))
-    .text(topic.skill, MARGIN_LEFT, 56, {
-      width: PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT
+    .text(topic.skill, CONTENT_X, 118, {
+      width: CONTENT_W
     });
 
   doc
     .font('Helvetica')
     .fontSize(11)
     .fillColor(rgb(LIGHT_GRAY))
-    .text(`Reading & Writing • ${topic.domain}`, MARGIN_LEFT, 96, {
-      width: PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT
+    .text('Reading & Writing Study Guide', CONTENT_X, 150, {
+      width: CONTENT_W
     });
 
   doc
     .font('Helvetica')
     .fontSize(8)
     .fillColor(rgb(MID_GRAY))
-    .text('5-Page Study Guide | budy.study', MARGIN_LEFT, 118, {
-      width: PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT
+    .text('5 pages  |  built for fast revision', CONTENT_X, 166, {
+      width: CONTENT_W
     });
 
-  let y = 160;
+  let y = 210;
   y = sectionHeader(doc, 'Topic Overview', y);
-  bodyText(doc, topic.overview, MARGIN_LEFT, y, PAGE_WIDTH - 80, 80);
+  bodyText(doc, topic.overview, CONTENT_X, y, CONTENT_W, 86);
 
-  y = 272;
+  y = 306;
   y = sectionHeader(doc, 'Key Concepts', y);
   bulletList(doc, topic.keyConcepts, 50, y, PAGE_WIDTH - 100);
 
-  y = 500;
+  y = 552;
   y = sectionHeader(doc, 'Why This Matters on the SAT', y);
-  bodyText(doc, topic.whyMatters, MARGIN_LEFT, y, PAGE_WIDTH - 80, 170);
+  bodyText(doc, topic.whyMatters, CONTENT_X, y, CONTENT_W, 130);
 
   drawFooter(doc, 1, topic.skill);
 }
 
 function drawCoreRulesPage(doc, topic) {
-  drawThinAccent(doc, BRAND_BLUE);
+  drawPageChrome(doc, BRAND_BLUE, `${topic.skill}  |  Core Toolkit`);
 
-  let y = 30;
+  let y = 98;
   y = sectionHeader(doc, 'Core Strategies', y);
   numberedList(doc, topic.coreStrategies, 50, y, PAGE_WIDTH - 100);
 
@@ -2507,7 +2572,7 @@ function drawCoreRulesPage(doc, topic) {
     .font('Helvetica')
     .fontSize(9.5)
     .fillColor(rgb(NAVY))
-    .text('⏱ Target about 75 seconds per question. If you are stuck at 50 seconds, eliminate two choices and move on.', 52, y + 28, {
+    .text('Target about 75 seconds per question. If you are stuck at 50 seconds, eliminate two choices and move on.', 52, y + 28, {
       width: PAGE_WIDTH - 104,
       lineGap: 3
     });
@@ -2516,9 +2581,9 @@ function drawCoreRulesPage(doc, topic) {
 }
 
 function drawWorkedExamplesPage(doc, topic) {
-  drawThinAccent(doc, GOLD);
+  drawPageChrome(doc, GOLD, `${topic.skill}  |  Worked Examples`);
 
-  let y = 30;
+  let y = 98;
   y = sectionHeader(doc, 'Worked Examples', y);
 
   const blockHeight = 318;
@@ -2580,9 +2645,9 @@ function drawWorkedExamplesPage(doc, topic) {
 }
 
 function drawPracticePage(doc, topic) {
-  drawThinAccent(doc, GREEN);
+  drawPageChrome(doc, GREEN, `${topic.skill}  |  Practice`);
 
-  let y = 30;
+  let y = 98;
   y = sectionHeader(doc, 'Practice Questions', y);
 
   const qBoxHeight = 208;
@@ -2615,9 +2680,9 @@ function drawPracticePage(doc, topic) {
 }
 
 function drawAnswerKeyPage(doc, topic) {
-  drawThinAccent(doc, BRAND_BLUE);
+  drawPageChrome(doc, BRAND_BLUE, `${topic.skill}  |  Review`);
 
-  let y = 30;
+  let y = 98;
   y = sectionHeader(doc, 'Answer Key', y);
 
   const answerHeight = 246;
