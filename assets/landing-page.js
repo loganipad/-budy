@@ -23,6 +23,9 @@ const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
 const REVIEW_TEST_STORAGE_KEY = 'budy_review_test_v1';
+const TEST_DRAFT_LOCAL_PREFIX = 'budy_test_draft_v1:';
+const TEST_DRAFT_AUTOSAVE_DEBOUNCE_MS = 1200;
+const TEST_DRAFT_AUTOSAVE_INTERVAL_MS = 15000;
 const ADMIN_PREMIUM_EMAILS = [];
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
@@ -60,6 +63,11 @@ const LANDING_DEMO_QUESTIONS = [
 ];
 
 let actionConfirmResolver = null;
+let draftAutosaveDebounceTimer = null;
+let draftAutosaveIntervalTimer = null;
+let draftAutosaveInFlight = false;
+let draftAutosaveQueued = false;
+let draftBackendUnavailable = false;
 
 function spriteIcon(name, className) {
   const cls = className || 'ui-icon ui-icon-md';
@@ -131,7 +139,9 @@ const S = {
   leaveTestDestination: 'landing',
   demoCompleted: false,
   demoGrading: false,
-  customTestLabel: ''
+  customTestLabel: '',
+  testSessionId: '',
+  testSessionStartedAt: null
 };
 
 /* ── FREE TIER LIMITS ── */
@@ -255,7 +265,463 @@ function getSectionDisplayLabel(section, customLabel) {
   return section || 'Practice Test';
 }
 
-function beginPreparedTestSession({ questions, section, timeLimitSeconds, label }) {
+function normalizeSessionId(value) {
+  const sid = String(value == null ? '' : value).trim();
+  if (!/^[A-Za-z0-9_-]{8,120}$/.test(sid)) return '';
+  return sid;
+}
+
+function createTestSessionId() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
+  }
+  return `sid_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 11)}`;
+}
+
+function getSidFromUrl() {
+  const searchParams = new URLSearchParams(window.location.search);
+  return normalizeSessionId(searchParams.get('sid'));
+}
+
+function replaceUrlSearchParams(searchParams) {
+  const query = searchParams.toString();
+  const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  window.history.replaceState({}, document.title, nextUrl);
+}
+
+function upsertSidInUrl(sid) {
+  const normalizedSid = normalizeSessionId(sid);
+  if (!normalizedSid) return;
+  const searchParams = new URLSearchParams(window.location.search);
+  searchParams.set('sid', normalizedSid);
+  replaceUrlSearchParams(searchParams);
+}
+
+function clearSidFromUrl() {
+  const searchParams = new URLSearchParams(window.location.search);
+  if (!searchParams.has('sid')) return;
+  searchParams.delete('sid');
+  replaceUrlSearchParams(searchParams);
+}
+
+function getDraftStorageKey(sid) {
+  return `${TEST_DRAFT_LOCAL_PREFIX}${sid}`;
+}
+
+function readDraftLocal(sid) {
+  const normalizedSid = normalizeSessionId(sid);
+  if (!normalizedSid) return null;
+  try {
+    const raw = localStorage.getItem(getDraftStorageKey(normalizedSid));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraftLocal(snapshot) {
+  if (!snapshot || typeof snapshot !== 'object') return;
+  const sid = normalizeSessionId(snapshot.sid);
+  if (!sid) return;
+  try {
+    localStorage.setItem(getDraftStorageKey(sid), JSON.stringify(snapshot));
+  } catch {}
+}
+
+function deleteDraftLocal(sid) {
+  const normalizedSid = normalizeSessionId(sid);
+  if (!normalizedSid) return;
+  try {
+    localStorage.removeItem(getDraftStorageKey(normalizedSid));
+  } catch {}
+}
+
+function buildDraftQuestionIds(questions) {
+  if (!Array.isArray(questions)) return [];
+  return questions.map((question, index) => {
+    const id = question && question.id ? String(question.id).trim() : '';
+    return id || `idx-${index + 1}`;
+  });
+}
+
+function normalizeDraftAnswers(answers, maxQuestions) {
+  if (!answers || typeof answers !== 'object' || Array.isArray(answers)) return {};
+  const safeMax = Math.max(1, Number(maxQuestions) || 1);
+  return Object.entries(answers).reduce((acc, [key, value]) => {
+    const index = Number(key);
+    if (!Number.isInteger(index) || index < 0 || index >= safeMax) return acc;
+    const normalized = String(value == null ? '' : value).trim();
+    if (!normalized) return acc;
+    acc[String(index)] = normalized;
+    return acc;
+  }, {});
+}
+
+function normalizeDraftFlags(flags, maxQuestions) {
+  const safeMax = Math.max(1, Number(maxQuestions) || 1);
+  if (!Array.isArray(flags)) return new Set();
+  const next = new Set();
+  flags.forEach((entry) => {
+    const index = Number(entry);
+    if (Number.isInteger(index) && index >= 0 && index < safeMax) {
+      next.add(index);
+    }
+  });
+  return next;
+}
+
+function buildDraftSnapshot(reason = '') {
+  const sid = normalizeSessionId(S.testSessionId);
+  if (!sid || !Array.isArray(S.questions) || !S.questions.length) return null;
+  if (!S.testActive) return null;
+
+  return {
+    sid,
+    section: S.section || 'unknown',
+    questionIds: buildDraftQuestionIds(S.questions),
+    questionsSnapshot: S.questions,
+    answers: normalizeDraftAnswers(S.answers, S.questions.length),
+    flags: Array.from(S.flags || []),
+    currentQuestionIndex: Number.isInteger(S.curQ) ? S.curQ : 0,
+    remainingTimeSeconds: Math.max(0, Number(S.timeLeft) || 0),
+    timerPaused: Boolean(S.timerPaused),
+    testActive: true,
+    customTestLabel: S.customTestLabel || '',
+    startedAt: S.testSessionStartedAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    source: 'web',
+    metadata: {
+      reason: String(reason || ''),
+      isPremium: Boolean(S.isPremium)
+    }
+  };
+}
+
+async function fetchDraftSessionRemote(sid) {
+  const normalizedSid = normalizeSessionId(sid);
+  if (!normalizedSid) return { ok: false, error: 'Invalid sid.' };
+
+  const token = await getAccessToken();
+  if (!token) return { ok: false, unauthorized: true, error: 'Missing access token.' };
+
+  try {
+    const response = await fetch(`/api/test-session?sid=${encodeURIComponent(normalizedSid)}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      return {
+        ok: false,
+        status: response.status,
+        disabled: Boolean(data && data.disabled),
+        notFound: response.status === 404,
+        error: data && data.error ? String(data.error) : 'Unable to fetch draft session.'
+      };
+    }
+    return { ok: true, draft: data && data.draft ? data.draft : null };
+  } catch {
+    return { ok: false, error: 'Draft session request failed.' };
+  }
+}
+
+async function saveDraftSessionRemote(snapshot) {
+  const sid = normalizeSessionId(snapshot && snapshot.sid);
+  if (!sid) return { ok: false, error: 'Invalid sid.' };
+
+  const token = await getAccessToken();
+  if (!token) return { ok: false, unauthorized: true, error: 'Missing access token.' };
+
+  try {
+    const response = await fetch('/api/test-session', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ sid, draft: snapshot })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      return {
+        ok: false,
+        status: response.status,
+        disabled: Boolean(data && data.disabled),
+        error: data && data.error ? String(data.error) : 'Unable to save draft session.'
+      };
+    }
+    return { ok: true, draft: data && data.draft ? data.draft : null };
+  } catch {
+    return { ok: false, error: 'Draft session save failed.' };
+  }
+}
+
+async function deleteDraftSessionRemote(sid) {
+  const normalizedSid = normalizeSessionId(sid);
+  if (!normalizedSid) return { ok: false, error: 'Invalid sid.' };
+
+  const token = await getAccessToken();
+  if (!token) return { ok: false, unauthorized: true, error: 'Missing access token.' };
+
+  try {
+    const response = await fetch(`/api/test-session?sid=${encodeURIComponent(normalizedSid)}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      return {
+        ok: false,
+        status: response.status,
+        disabled: Boolean(data && data.disabled),
+        error: data && data.error ? String(data.error) : 'Unable to delete draft session.'
+      };
+    }
+    return { ok: true };
+  } catch {
+    return { ok: false, error: 'Draft session delete failed.' };
+  }
+}
+
+async function persistDraftNow(reason = 'manual') {
+  const snapshot = buildDraftSnapshot(reason);
+  if (!snapshot) return;
+
+  saveDraftLocal(snapshot);
+  if (!S.isLoggedIn || draftBackendUnavailable) return;
+
+  const result = await saveDraftSessionRemote(snapshot);
+  if (!result.ok && result.disabled) {
+    draftBackendUnavailable = true;
+  }
+}
+
+async function flushDraftAutosave(reason = 'debounced') {
+  if (!S.testActive) return;
+  if (draftAutosaveInFlight) {
+    draftAutosaveQueued = true;
+    return;
+  }
+
+  draftAutosaveInFlight = true;
+  try {
+    await persistDraftNow(reason);
+  } finally {
+    draftAutosaveInFlight = false;
+    if (draftAutosaveQueued) {
+      draftAutosaveQueued = false;
+      void flushDraftAutosave('queued');
+    }
+  }
+}
+
+function scheduleDraftAutosave(reason = 'interaction') {
+  if (!S.testActive) return;
+  if (draftAutosaveDebounceTimer) clearTimeout(draftAutosaveDebounceTimer);
+  draftAutosaveDebounceTimer = setTimeout(() => {
+    draftAutosaveDebounceTimer = null;
+    void flushDraftAutosave(reason);
+  }, TEST_DRAFT_AUTOSAVE_DEBOUNCE_MS);
+}
+
+function startDraftAutosaveLoop() {
+  if (draftAutosaveIntervalTimer) {
+    clearInterval(draftAutosaveIntervalTimer);
+    draftAutosaveIntervalTimer = null;
+  }
+  if (!S.testActive) return;
+
+  draftAutosaveIntervalTimer = setInterval(() => {
+    void flushDraftAutosave('interval');
+  }, TEST_DRAFT_AUTOSAVE_INTERVAL_MS);
+}
+
+function stopDraftAutosaveLoop() {
+  if (draftAutosaveDebounceTimer) {
+    clearTimeout(draftAutosaveDebounceTimer);
+    draftAutosaveDebounceTimer = null;
+  }
+  if (draftAutosaveIntervalTimer) {
+    clearInterval(draftAutosaveIntervalTimer);
+    draftAutosaveIntervalTimer = null;
+  }
+}
+
+function persistDraftOnPageExit() {
+  const snapshot = buildDraftSnapshot('page_exit');
+  if (!snapshot) return;
+  saveDraftLocal(snapshot);
+}
+
+function inferDraftSection(draft, questions) {
+  if (draft && typeof draft.section === 'string' && draft.section.trim()) {
+    return draft.section.trim().toLowerCase();
+  }
+  if (!Array.isArray(questions) || !questions.length) return 'unknown';
+  const hasEnglish = questions.some((question) => question && question.section === 'english');
+  const hasMath = questions.some((question) => question && question.section === 'math');
+  if (hasEnglish && hasMath) return 'full';
+  if (hasEnglish) return 'english';
+  if (hasMath) return 'math';
+  return 'unknown';
+}
+
+function mapQuestionPoolById(pools) {
+  const map = new Map();
+  const all = [
+    ...(Array.isArray(pools && pools.english) ? pools.english : []),
+    ...(Array.isArray(pools && pools.math) ? pools.math : [])
+  ];
+  all.forEach((question) => {
+    const id = question && question.id ? String(question.id).trim() : '';
+    if (!id || map.has(id)) return;
+    map.set(id, question);
+  });
+  return map;
+}
+
+async function materializeDraftQuestions(draft) {
+  const snapshotQuestions = Array.isArray(draft && draft.questionsSnapshot)
+    ? draft.questionsSnapshot.filter((item) => item && typeof item === 'object')
+    : [];
+  if (snapshotQuestions.length) return snapshotQuestions;
+
+  const questionIds = Array.isArray(draft && draft.questionIds)
+    ? draft.questionIds.map((item) => String(item || '').trim()).filter(Boolean)
+    : [];
+  if (!questionIds.length) return [];
+
+  const pools = await loadGeneratedQuestionBank();
+  const byId = mapQuestionPoolById(pools);
+  const restored = questionIds
+    .map((id) => byId.get(id))
+    .filter(Boolean);
+
+  if (restored.length !== questionIds.length) {
+    return [];
+  }
+  return restored;
+}
+
+function applyDraftState(draft, sid, questions) {
+  const safeQuestions = Array.isArray(questions) ? questions : [];
+  if (!safeQuestions.length) return false;
+
+  const section = inferDraftSection(draft, safeQuestions);
+  const timeLimitSeconds = Math.max(1, Number(draft && draft.remainingTimeSeconds) || 0);
+  const curIndex = Number.isInteger(Number(draft && draft.currentQuestionIndex)) ? Number(draft.currentQuestionIndex) : 0;
+  const clampedIndex = Math.min(Math.max(curIndex, 0), safeQuestions.length - 1);
+
+  S.questions = safeQuestions;
+  S.answers = normalizeDraftAnswers(draft && draft.answers, safeQuestions.length);
+  S.flags = normalizeDraftFlags(draft && draft.flags, safeQuestions.length);
+  S.curQ = clampedIndex;
+  S.timerPaused = Boolean(draft && draft.timerPaused);
+  S.timeLeft = timeLimitSeconds;
+  S.testActive = true;
+  S.section = section;
+  S.customTestLabel = draft && draft.customTestLabel ? String(draft.customTestLabel) : '';
+  S.testSessionId = sid;
+  S.testSessionStartedAt = draft && draft.startedAt ? String(draft.startedAt) : new Date().toISOString();
+
+  document.getElementById('tb-sec-lbl').textContent = getSectionDisplayLabel(section, S.customTestLabel);
+  updTimerPauseButton();
+  updTimerDisplay();
+
+  setView('test');
+  requestAnimationFrame(() => {
+    buildQNav();
+    renderQ(S.curQ);
+    if (S.timerPaused) {
+      clearTimer();
+      updTimerPauseButton();
+      updTimerDisplay();
+      return;
+    }
+    startTimer();
+  });
+
+  return true;
+}
+
+async function restoreDraftSessionBySid(sid) {
+  const normalizedSid = normalizeSessionId(sid);
+  if (!normalizedSid) return false;
+
+  let remoteDraft = null;
+  if (S.isLoggedIn) {
+    const remote = await fetchDraftSessionRemote(normalizedSid);
+    if (remote.ok && remote.draft) {
+      remoteDraft = remote.draft;
+    }
+    if (!remote.ok && remote.disabled) {
+      draftBackendUnavailable = true;
+    }
+  }
+
+  const draft = remoteDraft || readDraftLocal(normalizedSid);
+  if (!draft || typeof draft !== 'object') return false;
+
+  let questions;
+  try {
+    questions = await materializeDraftQuestions(draft);
+  } catch {
+    return false;
+  }
+
+  if (!applyDraftState(draft, normalizedSid, questions)) {
+    return false;
+  }
+
+  upsertSidInUrl(normalizedSid);
+  startDraftAutosaveLoop();
+  scheduleDraftAutosave('restore');
+  return true;
+}
+
+function clearActiveDraftSession(options = {}) {
+  const clearUrl = options && Object.prototype.hasOwnProperty.call(options, 'clearUrl')
+    ? Boolean(options.clearUrl)
+    : true;
+  const sid = normalizeSessionId(S.testSessionId || getSidFromUrl());
+
+  stopDraftAutosaveLoop();
+
+  if (!sid) {
+    S.testSessionId = '';
+    S.testSessionStartedAt = null;
+    if (clearUrl) clearSidFromUrl();
+    return;
+  }
+
+  deleteDraftLocal(sid);
+  if (S.isLoggedIn && !draftBackendUnavailable) {
+    void deleteDraftSessionRemote(sid);
+  }
+
+  S.testSessionId = '';
+  S.testSessionStartedAt = null;
+  if (clearUrl) clearSidFromUrl();
+}
+
+function beginPreparedTestSession({ questions, section, timeLimitSeconds, label, sid }) {
+  const previousSid = normalizeSessionId(S.testSessionId || getSidFromUrl());
+  const nextSid = normalizeSessionId(sid) || createTestSessionId();
+  stopDraftAutosaveLoop();
+
+  if (previousSid && previousSid !== nextSid) {
+    deleteDraftLocal(previousSid);
+    if (S.isLoggedIn && !draftBackendUnavailable) {
+      void deleteDraftSessionRemote(previousSid);
+    }
+  }
+
   S.questions = Array.isArray(questions) ? questions : [];
   S.answers = {};
   S.flags = new Set();
@@ -265,6 +731,11 @@ function beginPreparedTestSession({ questions, section, timeLimitSeconds, label 
   S.testActive = true;
   S.section = section;
   S.customTestLabel = label || '';
+  S.testSessionId = nextSid;
+  S.testSessionStartedAt = new Date().toISOString();
+  draftBackendUnavailable = false;
+
+  upsertSidInUrl(nextSid);
 
   document.getElementById('tb-sec-lbl').textContent = getSectionDisplayLabel(section, label);
   updTimerPauseButton();
@@ -275,6 +746,8 @@ function beginPreparedTestSession({ questions, section, timeLimitSeconds, label 
     buildQNav();
     renderQ(0);
     startTimer();
+    startDraftAutosaveLoop();
+    scheduleDraftAutosave('start');
   });
 }
 
@@ -848,6 +1321,7 @@ function confirmLeaveTest() {
   closeLeaveTestModal();
   clearTimer();
   S.testActive = false;
+  clearActiveDraftSession({ clearUrl: true });
 
   if (destination === 'dash') {
     window.location.href = '/my-account.html';
@@ -859,6 +1333,7 @@ function confirmLeaveTest() {
 
 function requestLeaveTest(destination) {
   if (!S.testActive) {
+    clearActiveDraftSession({ clearUrl: true });
     if (destination === 'dash') {
       window.location.href = '/my-account.html';
       return;
@@ -1827,13 +2302,15 @@ function attachRipple() {
 function selAns(qi,l,el){
   document.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');S.answers[qi]=l;updQNav();
+  scheduleDraftAutosave('answer_select');
 }
-function saveSpr(qi,v){if(v.trim())S.answers[qi]=v.trim();else delete S.answers[qi];updQNav();}
+function saveSpr(qi,v){if(v.trim())S.answers[qi]=v.trim();else delete S.answers[qi];updQNav();scheduleDraftAutosave('answer_input');}
 
 function goQ(i){
   const spr=document.getElementById('spr-'+S.curQ);
   if(spr)saveSpr(S.curQ,spr.value);
   renderQ(i);
+  scheduleDraftAutosave('question_nav');
 }
 function goNext(){goQ(Math.min(S.curQ+1,S.questions.length-1))}
 function goPrev(){goQ(Math.max(S.curQ-1,0))}
@@ -1843,6 +2320,7 @@ function toggleFlag(){
   if(S.flags.has(S.curQ)){S.flags.delete(S.curQ);toast('Flag removed')}
   else{S.flags.add(S.curQ);toast('Question flagged.','wn')}
   updFlag();updQNav();
+  scheduleDraftAutosave('flag_toggle');
 }
 function updFlag(){
   const on=S.flags.has(S.curQ);
@@ -1888,6 +2366,7 @@ function toggleTimerPause(){
   if(S.timerPaused)clearTimer();
   else runTimerLoop();
   updTimerPauseButton();
+  scheduleDraftAutosave('timer_toggle');
 }
 function updTimerPauseButton(){
   const btn=document.getElementById('timer-toggle-btn');
@@ -1927,6 +2406,7 @@ async function confirmSubmit(){
 }
 function submitTest(){
   clearTimer();S.timerPaused=false;updTimerPauseButton();S.testActive=false;
+  clearActiveDraftSession({ clearUrl: true });
   const qs=S.questions;
   let correct=0,wrong=0,skipped=0;
   const skillMap={};
@@ -2774,7 +3254,7 @@ function ensurePrimaryViewVisible() {
 }
 
 async function init() {
-  setView('landing', { preserveScroll: true });
+  setView('loading', { preserveScroll: true });
   preloadQuestionBank();
   if (typeof window.__budyRestoreLandingScroll === 'function') {
     window.__budyRestoreLandingScroll();
@@ -2806,6 +3286,31 @@ async function init() {
   await handleCheckoutReturn();
 
   const searchParams = new URLSearchParams(window.location.search);
+  const sidQueryValue = String(searchParams.get('sid') || '');
+  const sidFromUrl = normalizeSessionId(sidQueryValue);
+
+  if (sidQueryValue && !sidFromUrl) {
+    searchParams.delete('sid');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+  }
+
+  if (sidFromUrl) {
+    const restored = await restoreDraftSessionBySid(sidFromUrl);
+    if (restored) {
+      return;
+    }
+
+    searchParams.delete('sid');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+    toast('We could not restore your previous test session.', 'wn', 4200);
+  }
+
+  setView('landing', { preserveScroll: true });
+
   if (searchParams.get('review') === '1') {
     searchParams.delete('review');
     const nextQuery = searchParams.toString();
@@ -2883,6 +3388,9 @@ document.addEventListener('click', e => {
   if (!panel || !wrap) return;
   if (!wrap.contains(e.target)) panel.classList.remove('open');
 });
+
+window.addEventListener('pagehide', persistDraftOnPageExit);
+window.addEventListener('beforeunload', persistDraftOnPageExit);
 
 // Prevent pull-down overscroll when the page is already at the top.
 (function lockTopOverscroll() {
