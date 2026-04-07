@@ -2689,6 +2689,89 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 
 /* ── INIT ── */
+function initLandingCounters() {
+  /* Scholarship counter, triggers when scrolled into view */
+  const counterEl = document.getElementById('impact-counter');
+  if (counterEl && counterEl.dataset.budyInit !== '1') {
+    counterEl.dataset.budyInit = '1';
+    const target = 100000;
+    const finalCounterLabel = '$100K';
+    let started = false;
+
+    const formatDollar = n => {
+      if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
+      return '$' + Math.round(n).toLocaleString('en-US');
+    };
+
+    const runCounter = () => {
+      if (started) return;
+      started = true;
+      const duration = 2600;
+      let startTime = null;
+      const step = ts => {
+        if (!startTime) startTime = ts;
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const current = Math.round(eased * target);
+        counterEl.textContent = formatDollar(current);
+        if (progress < 1) requestAnimationFrame(step);
+        else counterEl.textContent = finalCounterLabel;
+      };
+      requestAnimationFrame(step);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) { runCounter(); obs.disconnect(); }
+      }, { threshold: 0.4 });
+      obs.observe(counterEl);
+    } else {
+      counterEl.textContent = finalCounterLabel;
+    }
+  }
+
+  /* Hero user counter */
+  const heroUserCounterEl = document.getElementById('hero-user-counter');
+  if (heroUserCounterEl && heroUserCounterEl.dataset.budyInit !== '1') {
+    heroUserCounterEl.dataset.budyInit = '1';
+    const baseUsers = 49100;
+    const counterStart = new Date('2026-03-23T22:48:42-0700').getTime();
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const msPerWeek = 7 * msPerDay;
+
+    const formatExactNumber = n => Math.max(baseUsers, Math.floor(n)).toLocaleString('en-US');
+    const getCurrentUserCount = () => {
+      const elapsedMs = Math.max(0, Date.now() - counterStart);
+      const elapsedDays = elapsedMs / msPerDay;
+      const elapsedWeeks = elapsedMs / msPerWeek;
+      const weeklyGrowth = baseUsers * Math.pow(1.01, elapsedWeeks);
+      const dailyGrowth = 200 * elapsedDays;
+      return weeklyGrowth + dailyGrowth;
+    };
+
+    const updateHeroUserCounter = () => {
+      heroUserCounterEl.textContent = formatExactNumber(getCurrentUserCount()) + '+';
+    };
+
+    updateHeroUserCounter();
+    window.setInterval(updateHeroUserCounter, 1000);
+  }
+}
+
+function ensurePrimaryViewVisible() {
+  const ids = ['landing-screen', 'loading-screen', 'test-screen', 'results-screen', 'dash-screen'];
+  const hasVisible = ids.some((id) => {
+    const el = document.getElementById(id);
+    return el && window.getComputedStyle(el).display !== 'none';
+  });
+  if (hasVisible) return;
+  setView('landing', { preserveScroll: true });
+  renderLandingDemo(0);
+}
+
 async function init() {
   setView('landing', { preserveScroll: true });
   preloadQuestionBank();
@@ -2705,6 +2788,7 @@ async function init() {
   renderLandingDemo(0);
   attachDemoSwipe();
   attachRipple();
+  initLandingCounters();
   updateAuthUI();
   document.addEventListener('navbar:mounted', applyHomeStudyNavOverride);
   try {
@@ -2758,77 +2842,7 @@ async function init() {
     window.history.replaceState({}, document.title, nextUrl);
   }
 
-  /* Scholarship counter, triggers when scrolled into view */
-  const counterEl = document.getElementById('impact-counter');
-  if (counterEl) {
-    const target = 100000;
-    const finalCounterLabel = '$100K';
-    let started = false;
-
-    const formatDollar = n => {
-      if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
-      return '$' + Math.round(n).toLocaleString('en-US');
-    };
-
-    const runCounter = () => {
-      if (started) return;
-      started = true;
-      const duration = 2600;
-      let startTime = null;
-      const step = ts => {
-        if (!startTime) startTime = ts;
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        // Ease in-out for a smoother start and finish.
-        const eased = progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        const current = Math.round(eased * target);
-        counterEl.textContent = formatDollar(current);
-        if (progress < 1) requestAnimationFrame(step);
-        else counterEl.textContent = finalCounterLabel;
-      };
-      requestAnimationFrame(step);
-    };
-
-    // Use IntersectionObserver to trigger on scroll into view
-    if ('IntersectionObserver' in window) {
-      const obs = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) { runCounter(); obs.disconnect(); }
-      }, { threshold: 0.4 });
-      obs.observe(counterEl);
-    } else {
-      // Fallback: run immediately
-      counterEl.textContent = finalCounterLabel;
-    }
-  }
-
-  /* Hero user counter, grows from this request timestamp */
-  const heroUserCounterEl = document.getElementById('hero-user-counter');
-  if (heroUserCounterEl) {
-    const baseUsers = 49100;
-    const counterStart = new Date('2026-03-23T22:48:42-0700').getTime();
-    const msPerDay = 24 * 60 * 60 * 1000;
-    const msPerWeek = 7 * msPerDay;
-
-    const formatExactNumber = n => Math.max(baseUsers, Math.floor(n)).toLocaleString('en-US');
-
-    const getCurrentUserCount = () => {
-      const elapsedMs = Math.max(0, Date.now() - counterStart);
-      const elapsedDays = elapsedMs / msPerDay;
-      const elapsedWeeks = elapsedMs / msPerWeek;
-      const weeklyGrowth = baseUsers * Math.pow(1.01, elapsedWeeks);
-      const dailyGrowth = 200 * elapsedDays;
-      return weeklyGrowth + dailyGrowth;
-    };
-
-    const updateHeroUserCounter = () => {
-      heroUserCounterEl.textContent = formatExactNumber(getCurrentUserCount()) + '+';
-    };
-
-    updateHeroUserCounter();
-    setInterval(updateHeroUserCounter, 1000);
-  }
+  ensurePrimaryViewVisible();
 
   /* Register service worker for PWA offline support */
   if ('serviceWorker' in navigator) {
@@ -2837,11 +2851,30 @@ async function init() {
 }
 
 // Run after full DOM is parsed
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => { init(); });
-} else {
-  init();
+function bootLanding() {
+  init().catch((err) => {
+    console.error('Landing init failed:', err);
+    try {
+      setView('landing', { preserveScroll: true });
+      renderLandingDemo(0);
+      initLandingCounters();
+      ensurePrimaryViewVisible();
+    } catch {}
+  });
 }
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => { bootLanding(); });
+} else {
+  bootLanding();
+}
+
+window.addEventListener('load', () => {
+  try {
+    initLandingCounters();
+    ensurePrimaryViewVisible();
+  } catch {}
+});
 
 document.addEventListener('click', e => {
   const panel = document.getElementById('mobile-menu-panel');
