@@ -701,9 +701,12 @@
       state.surfaces = getSurfaces(state);
       const terms = normalizeTerms(DEFAULT_TERMS.concat(state.config.glossaryTerms || []));
       const regex = buildRegex(terms);
+      const shouldHighlight = state.config.enableKeywordHighlights !== false;
       state.surfaces.forEach((surface) => {
         unwrapHighlights(surface);
-        highlightSurface(surface, regex);
+        if (shouldHighlight) {
+          highlightSurface(surface, regex);
+        }
       });
     } finally {
       state.isApplyingHighlights = false;
@@ -787,6 +790,7 @@
       config: mergeConfig({
         selectors: [],
         glossaryTerms: [],
+        enableKeywordHighlights: true,
         upgradeUrl: '/checkout.html',
         loginUrl: '/login.html',
         getAccessToken: null,
