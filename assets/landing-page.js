@@ -211,6 +211,7 @@ function syncLandingDeepDive() {
   const nextConfig = {
     selectors,
     glossaryTerms: buildLandingDeepDiveKeywords(),
+    enableKeywordHighlights: false,
     getAccessToken,
     getRuntimeContext: getLandingDeepDiveContext,
     upgradeUrl: '/checkout.html',
