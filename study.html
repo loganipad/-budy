@@ -2626,93 +2626,101 @@ button,input,select{font:inherit}
       const lowerDomain = String(domain || '').trim().toLowerCase();
 
       if (section === 'math') {
-        let concept = 'Translate the prompt into math structure first, then solve with clean algebra and verify against the condition.';
-        let spotPattern = 'Look for givens, unknowns, and constraints before writing anything. Underline what must stay true in the final answer.';
-        let sequence = '1) Define variables and units. 2) Build the equation/model. 3) Solve and check against the exact question ask.';
-        let trap = 'Doing arithmetic too early, dropping a condition, or accepting an answer that is mathematically valid but not what the question asked.';
-        let quickCheck = 'In 10 seconds: substitute your result back, confirm units, and verify the value matches the wording (value, expression, or count).';
+        let firstStep = 'Write down the givens, the unknown, and the exact condition the answer must satisfy before doing any arithmetic.';
+        let spotPattern = 'Look for variables, constraints, and what form the final answer must be in (value, expression, or quantity).';
+        let sequence = 'Use this sequence: setup -> solve -> verify in the original condition.';
+        let trap = 'The most common trap is solving for the wrong quantity or dropping one condition from the prompt.';
+        let quickCheck = 'Substitute your result back into the condition and confirm units and magnitude make sense.';
+        let fallback = 'If you are stuck, plug in answer choices (or simple values when allowed) and eliminate choices that break conditions.';
 
         if (lowerDomain === 'algebra') {
-          concept = 'Algebra is about preserving equivalence: each operation must keep both sides balanced while isolating the target quantity.';
-          sequence = '1) Mark target variable. 2) Reverse operations in order. 3) Simplify carefully and test in original equation.';
-          trap = 'Sign mistakes, distributing errors, or solving for x when the question asks for a transformed expression or another quantity.';
+          firstStep = 'Identify what must be isolated and keep both sides equivalent at every step.';
+          sequence = 'Reverse operations in order, simplify carefully, then check in the original equation.';
+          trap = 'Sign errors and distributing errors are the top Algebra mistakes on SAT Math.';
+          fallback = 'Rewrite expressions in a cleaner form first, then isolate the target variable or quantity.';
         } else if (lowerDomain === 'advanced math') {
-          concept = 'Advanced math rewards structure recognition: factor forms, exponent rules, and function behavior are often faster than expansion.';
-          sequence = '1) Identify form (quadratic, polynomial, exponential, rational). 2) Choose transformation. 3) Interpret roots/intercepts/behavior.';
-          trap = 'Expanding everything by default, ignoring domain restrictions, or missing special forms like difference of squares.';
+          firstStep = 'Classify the expression first (quadratic, polynomial, exponential, rational) before choosing operations.';
+          sequence = 'Recognize structure, choose the best transformation, then interpret the result in context.';
+          trap = 'The biggest trap is expanding too early and losing structure that makes the problem easier.';
+          fallback = 'Try factoring or substitution before expanding; these are usually faster on SAT Advanced Math.';
         } else if (lowerDomain === 'problem-solving and data analysis') {
-          concept = 'PSDA is context math: ratios, rates, percentages, and probability must stay tied to what each number represents.';
-          sequence = '1) Define the reference set. 2) Build proportion/table/equation. 3) Convert and interpret result in context.';
-          trap = 'Using the wrong base for percent change, mixing units, or treating conditional probability like simple probability.';
+          firstStep = 'Define what each number represents and identify the reference set before computing.';
+          sequence = 'Set up ratio/rate model, compute, then interpret using the original context wording.';
+          trap = 'Using the wrong base for percent change is the most common PSDA error.';
+          fallback = 'Create a quick table of values and units to avoid context mistakes.';
         } else if (lowerDomain === 'geometry and trigonometry') {
-          concept = 'Geometry/trig is constraint-driven: diagrams plus relationships (angles, similarity, trig ratios) should guide every step.';
-          sequence = '1) Annotate known measures. 2) Pick the governing rule. 3) Solve, then sanity-check magnitude and geometric reasonableness.';
-          trap = 'Assuming a diagram is to scale, confusing radius/diameter, or applying a theorem without checking prerequisites.';
+          firstStep = 'Mark known lengths/angles and identify the governing relationship before calculation.';
+          sequence = 'Annotate diagram, choose theorem/ratio, solve, then sanity-check size and units.';
+          trap = 'Never assume diagrams are to scale unless the problem explicitly says so.';
+          fallback = 'Redraw a cleaner sketch with labels if the printed diagram is visually misleading.';
         }
 
         if (/system/.test(lowerLabel)) {
-          spotPattern = 'Systems clues: two equations, two unknowns, intersection language, or simultaneous constraints.';
-          quickCheck = 'Plug ordered pair into both equations; both must be true.';
+          spotPattern = 'Systems clues are two equations, two unknowns, or intersection language.';
+          quickCheck = 'A systems answer is correct only if it satisfies both equations.';
         } else if (/quadratic|polynomial/.test(lowerLabel)) {
-          spotPattern = 'Quadratic clues: squared term, parabolic behavior, factorable form, or roots/intercepts language.';
-          quickCheck = 'If you found roots, verify both by substitution and watch for extraneous values.';
+          spotPattern = 'Quadratic clues are squared terms, roots, intercepts, or parabolic behavior.';
+          quickCheck = 'Check every root candidate in the original expression to catch extraneous results.';
         } else if (/ratio|percent|rate|probability|statistics|scatter|line of best fit/.test(lowerLabel)) {
-          spotPattern = 'Data clues: comparisons, changes over time, sample summaries, or model-fit interpretation.';
-          quickCheck = 'Recompute using units and base quantities; ensure interpretation matches context.';
+          spotPattern = 'Data clues include comparisons, percent change, rates, or trend interpretation.';
+          quickCheck = 'Recheck base values and units; this catches most data-analysis errors.';
         } else if (/triangle|circle|area|volume|trigonometry|coordinate/.test(lowerLabel)) {
-          spotPattern = 'Geometry clues: shape constraints, right-triangle cues, coordinate distances, or area/volume requests.';
-          quickCheck = 'Check dimensions and whether answer size is reasonable for the figure.';
+          spotPattern = 'Geometry clues include named shapes, area/volume asks, trig ratios, or coordinate distance.';
+          quickCheck = 'Confirm geometric reasonableness: size and unit of answer must match the ask.';
         }
 
         return [
-          { label: 'Concept', front: topicLabel, back: concept },
-          { label: 'Spot it fast', front: 'What clues signal this skill?', back: spotPattern },
-          { label: 'Solve sequence', front: 'What is the best 3-step approach?', back: sequence },
-          { label: 'Common trap', front: 'What mistake is most likely?', back: trap },
-          { label: '10-second check', front: 'How do you verify before moving on?', back: quickCheck }
+          { label: 'Question', front: 'What is the first step for ' + topicLabel + ' questions?', back: firstStep },
+          { label: 'Question', front: 'What clues tell you this is a ' + topicLabel + ' problem?', back: spotPattern },
+          { label: 'Question', front: 'What exact solve sequence should you use?', back: sequence },
+          { label: 'Question', front: 'What is the most common trap in ' + topicLabel + '?', back: trap },
+          { label: 'Question', front: 'What is the fastest fallback if you are stuck?', back: fallback },
+          { label: 'Question', front: 'How do you verify the final answer quickly?', back: quickCheck }
         ];
       }
 
-      let concept = 'Reading/Writing is evidence-first: the credited answer must match meaning, purpose, and sentence-level logic.';
-      let spotPattern = 'Identify whether the question is asking for meaning, structure, rhetoric, or grammar before reading choices.';
-      let sequence = '1) Predict what should happen. 2) Test choices against evidence/grammar. 3) Eliminate traps that distort meaning.';
-      let trap = 'Choosing what sounds polished instead of what is text-supported, logically consistent, and grammatically correct.';
-      let quickCheck = 'Point to the exact word, line, or grammar rule that proves your answer. If you cannot, keep checking.';
+      let firstStep = 'Name the task first (meaning, structure, rhetoric, or grammar) before reading choices.';
+      let spotPattern = 'Look for evidence lines, sentence role, and grammatical structure cues in the stem and passage.';
+      let sequence = 'Predict -> test against evidence/rule -> eliminate unsupported choices.';
+      let trap = 'The most common trap is choosing what sounds good but is not text-supported.';
+      let quickCheck = 'Point to the exact line, phrase, or grammar rule that proves your answer.';
+      let fallback = 'If two choices seem close, choose the one with direct textual proof and no added assumptions.';
 
       if (lowerDomain === 'information and ideas') {
-        concept = 'Information and Ideas questions are claim-and-evidence tasks: answer only what the text/graphic supports.';
-        sequence = '1) Locate claim or data point. 2) Match choice to strongest support. 3) Reject overstatements and unsupported inferences.';
-        trap = 'Picking an answer that is plausible in general but not explicitly supported by passage evidence.';
+        firstStep = 'Find the exact claim or data point the question is targeting.';
+        sequence = 'Locate support, match choice to support, reject overclaims.';
+        trap = 'The trap is picking an answer that is plausible but not directly supported.';
       } else if (lowerDomain === 'craft and structure') {
-        concept = 'Craft and Structure focuses on author decisions: tone, purpose, word choice, and text relationships.';
-        sequence = '1) Identify function of the line/word. 2) Evaluate effect on passage meaning. 3) Select the choice that preserves intent.';
-        trap = 'Ignoring context and choosing dictionary meaning or tone labels that do not match surrounding sentences.';
+        firstStep = 'Identify the function of the word/sentence in context before interpreting tone or purpose.';
+        sequence = 'Function first, then effect on meaning, then best-fit choice.';
+        trap = 'The trap is using dictionary meaning instead of contextual meaning.';
       } else if (lowerDomain === 'expression of ideas') {
-        concept = 'Expression of Ideas is about organization and clarity: transitions, synthesis, and placement must improve flow and purpose.';
-        sequence = '1) Define sentence/paragraph job. 2) Choose transition/placement for logic. 3) Confirm cohesion and concision.';
-        trap = 'Selecting a transition by vibe instead of logical relationship (contrast, cause, example, continuation).';
+        firstStep = 'Determine the sentence/paragraph job before picking transition or placement.';
+        sequence = 'Find logical relationship, select choice, confirm flow and clarity.';
+        trap = 'The trap is choosing transitions by tone instead of logic (cause, contrast, example, continuation).';
       } else if (lowerDomain === 'standard english conventions') {
-        concept = 'SEC questions are rule checks: clauses, punctuation, modifiers, and agreement must be structurally valid.';
-        sequence = '1) Find grammatical core. 2) Apply one governing rule. 3) Re-read sentence for correctness and clarity.';
-        trap = 'Fixing one issue while introducing another (comma splice, agreement error, or unclear modifier).';
+        firstStep = 'Identify the grammatical core (subject, verb, clause boundaries) before evaluating choices.';
+        sequence = 'Find core, apply one rule, re-read for correctness and meaning.';
+        trap = 'The trap is fixing one grammar issue while creating another.';
       }
 
       if (/inference|central idea|command of evidence|quantitative/.test(lowerLabel)) {
-        spotPattern = 'Ask: what does the text directly support? For graphics, match exact quantities/trends before inferring.';
+        spotPattern = 'Ask: what does the text directly support? For graphics, match exact values before inferring.';
       } else if (/words in context|text structure|rhetorical purpose|cross-text/.test(lowerLabel)) {
-        spotPattern = 'Track function in context: why this sentence/word is here and how it shapes meaning or argument.';
+        spotPattern = 'Track function in context: why this word/sentence is here and what it does to meaning.';
       } else if (/transition|synthesis|sentence placement|concision/.test(lowerLabel)) {
-        spotPattern = 'Identify the logical relationship first, then choose the most concise choice that preserves meaning.';
+        spotPattern = 'Identify logical relationship first, then choose the clearest concise option that preserves meaning.';
       } else if (/grammar|punctuation|pronoun|modifier|parallel|verb/.test(lowerLabel)) {
-        spotPattern = 'Isolate subject-verb, clause boundaries, and referents; then test punctuation and agreement rules directly.';
+        spotPattern = 'Isolate clause structure and referents, then apply punctuation/agreement rules directly.';
       }
 
       return [
-        { label: 'Concept', front: topicLabel, back: concept },
-        { label: 'Spot it fast', front: 'What clues signal this skill?', back: spotPattern },
-        { label: 'Solve sequence', front: 'What is the best 3-step approach?', back: sequence },
-        { label: 'Common trap', front: 'What mistake is most likely?', back: trap },
-        { label: '10-second check', front: 'How do you verify before moving on?', back: quickCheck }
+        { label: 'Question', front: 'What is the first step for ' + topicLabel + ' questions?', back: firstStep },
+        { label: 'Question', front: 'What clues tell you this is a ' + topicLabel + ' question?', back: spotPattern },
+        { label: 'Question', front: 'What exact solve sequence should you use?', back: sequence },
+        { label: 'Question', front: 'What is the most common trap in ' + topicLabel + '?', back: trap },
+        { label: 'Question', front: 'What is the fastest fallback if choices feel close?', back: fallback },
+        { label: 'Question', front: 'How do you verify your final choice quickly?', back: quickCheck }
       ];
     }
 
@@ -3241,61 +3249,43 @@ button,input,select{font:inherit}
 
       deck.push(
         {
-          label: 'Core topic',
-          front: topic.label,
+          label: 'Question',
+          front: 'What is the exact goal of this topic?',
           back: topic.summary
         },
         {
-          label: 'Main move',
-          front: topic.section === 'math' ? 'What do you set up first?' : 'What do you prove first?',
-          back: topic.guidePoints[0] || 'Start with the core pattern before you touch the answer choices.'
+          label: 'Question',
+          front: 'What should you do first on this topic?',
+          back: topic.guidePoints[0] || 'Identify the skill pattern first, then solve.'
         },
         {
-          label: 'Common trap',
-          front: 'What usually goes wrong?',
+          label: 'Question',
+          front: 'What common mistake should you avoid?',
           back: topic.section === 'math'
-            ? 'Dropping a condition, rushing the algebra, or skipping the final check.'
-            : 'Choosing what sounds right instead of what the evidence or grammar actually proves.'
-        },
-        {
-          label: 'Match up',
-          front: 'Match the main idea to the move.',
-          back: topic.section === 'math'
-            ? 'Topic -> setup -> solve -> verify.'
-            : 'Topic -> evidence -> eliminate traps -> verify.'
+            ? 'Do not drop conditions or solve for the wrong quantity.'
+            : 'Do not choose a choice without direct evidence or rule support.'
         }
       );
 
-      if (topic.sampleQuestion) {
-        deck.push({
-          label: 'Sample prompt',
-          front: truncateText(topic.sampleQuestion, 100),
-          back: topic.section === 'math'
-            ? 'Set up carefully first, then solve and verify against the original condition.'
-            : 'Find the exact evidence or sentence logic before committing to the answer choice.'
-        });
-      }
-
       topic.questions.slice(0, 8).forEach((question, index) => {
+        if (!question.correctAnswer) return;
         deck.push({
-          label: 'Question cue ' + (index + 1),
-          front: truncateText(question.prompt, 100),
-          back: (question.correctAnswer ? ('Correct answer: ' + question.correctAnswer + '. ') : '') + (topic.section === 'math'
-            ? 'Rebuild the setup, solve carefully, and check the condition one more time.'
-            : 'Find the exact clue in the text or sentence that proves the answer.')
+          label: 'Question',
+          front: 'Saved Q' + (index + 1) + ': ' + truncateText(question.prompt, 92),
+          back: 'Correct answer: ' + question.correctAnswer + '.'
         });
       });
 
       if (deck.length < 6) {
         deck.push({
-          label: 'Quick check',
-          front: 'How do you know you are done?',
-          back: topic.section === 'math' ? 'The value fits the condition and the units still make sense.' : 'The answer is backed by the exact line, phrase, or grammar rule.'
+          label: 'Question',
+          front: 'How do you know your answer is correct?',
+          back: topic.section === 'math' ? 'It satisfies the original condition and units.' : 'It is supported by exact evidence or grammar rule.'
         });
         deck.push({
-          label: 'Confidence check',
-          front: 'What should feel obvious before you move on?',
-          back: topic.status + ' is the signal. If the logic still feels fuzzy, review the guide page plan first.'
+          label: 'Question',
+          front: 'What should you do if your reasoning feels unclear?',
+          back: 'Re-run the three-step method and verify with evidence/conditions before moving on.'
         });
       }
 
