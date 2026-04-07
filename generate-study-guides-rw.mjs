@@ -2357,6 +2357,18 @@ function rgb(arr) {
   return arr;
 }
 
+function sanitizePdfText(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/#ñ/g, '')
+    .replace(/→/g, ' -> ')
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/\u00A0/g, ' ')
+    .replace(/!\s*'/g, ' -> ');
+}
+
 function drawPageChrome(doc, accentColor, sectionLabel) {
   doc.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT).fill(rgb([251, 253, 255]));
 
@@ -2788,6 +2800,11 @@ async function generateStudyGuidePDF(topic) {
       Subject: `SAT Reading & Writing | ${topic.domain} | ${topic.skill}`
     }
   });
+
+  const originalText = doc.text.bind(doc);
+  doc.text = function patchedText(text, ...args) {
+    return originalText(sanitizePdfText(text), ...args);
+  };
 
   const chunks = [];
   doc.on('data', (chunk) => chunks.push(chunk));

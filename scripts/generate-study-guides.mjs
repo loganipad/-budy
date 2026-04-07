@@ -172,7 +172,7 @@ function generateDefaultContent(section, domain, skill) {
       `${ismath ? 'Forgetting to check that the answer satisfies all conditions' : 'Choosing answers with absolute language when the passage is cautious'}`,
       `Spending too much time on one question and running out of time`
     ],
-    quickRef: `${skill.toUpperCase()} = ${ismath ? 'Read → Set up → Solve → Verify. Always check the answer fits ALL conditions.' : 'Read → Find evidence → Eliminate traps → Match the BEST answer to the text.'}`
+    quickRef: `${skill.toUpperCase()} = ${ismath ? 'Read -> Set up -> Solve -> Verify. Always check the answer fits ALL conditions.' : 'Read -> Find evidence -> Eliminate traps -> Match the BEST answer to the text.'}`
   };
 }
 
@@ -199,6 +199,18 @@ function slugify(str) {
 }
 
 function rgb(arr) { return arr; }
+
+function sanitizePdfText(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/#ñ/g, '')
+    .replace(/→/g, ' -> ')
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/\u00A0/g, ' ')
+    .replace(/!\s*'/g, ' -> ');
+}
 
 function drawPage(doc, pageNum, totalPages, section, domain, skill) {
   // Footer
@@ -302,6 +314,11 @@ function generateStudyGuidePDF(topic) {
       Subject: `SAT ${sectionLabel} - ${domain} - ${skill}`
     }
   });
+
+  const originalText = doc.text.bind(doc);
+  doc.text = function patchedText(text, ...args) {
+    return originalText(sanitizePdfText(text), ...args);
+  };
 
   const chunks = [];
   doc.on('data', (chunk) => chunks.push(chunk));

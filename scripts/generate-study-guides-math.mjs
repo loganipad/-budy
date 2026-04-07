@@ -1580,6 +1580,18 @@ const TOPIC_CONTENT = {
 
 function rgb(arr) { return arr; }
 
+function sanitizePdfText(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/#ñ/g, '')
+    .replace(/→/g, ' -> ')
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/\u00A0/g, ' ')
+    .replace(/!\s*'/g, ' -> ');
+}
+
 const PAGE_WIDTH = 612;
 const PAGE_HEIGHT = 792;
 const CONTENT_X = 40;
@@ -1739,6 +1751,11 @@ function generateStudyGuidePDF(topicKey, topic) {
       Subject: `SAT Math - ${domain} - ${skill}`
     }
   });
+
+  const originalText = doc.text.bind(doc);
+  doc.text = function patchedText(text, ...args) {
+    return originalText(sanitizePdfText(text), ...args);
+  };
 
   const chunks = [];
   doc.on('data', (chunk) => chunks.push(chunk));
