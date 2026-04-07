@@ -10,8 +10,10 @@
 
 import { createRequire } from 'module';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const require = createRequire(import.meta.url);
 const PDFDocument = require('pdfkit');
@@ -2753,11 +2755,38 @@ async function capToFivePages(pdfBuffer) {
     return pdfBuffer;
   }
 
-  for (let i = totalPages - 1; i >= 5; i -= 1) {
-    pdf.removePage(i);
+  let keepPages = [0, 1, 2, 3, 4];
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'study-guide-rw-'));
+  const tmpPdfPath = path.join(tmpDir, 'guide.pdf');
+
+  try {
+    fs.writeFileSync(tmpPdfPath, pdfBuffer);
+    const contentCandidates = [];
+
+    for (let page = 1; page <= totalPages; page += 1) {
+      let text = '';
+      try {
+        text = execSync(`pdftotext -f ${page} -l ${page} -q ${JSON.stringify(tmpPdfPath)} -`, { encoding: 'utf8' });
+      } catch {
+        text = '';
+      }
+      const textLen = text.replace(/\s+/g, '').length;
+      if (textLen >= 120) {
+        contentCandidates.push(page - 1);
+      }
+    }
+
+    if (contentCandidates.length >= 5) {
+      keepPages = contentCandidates.slice(0, 5);
+    }
+  } finally {
+    try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch {}
   }
 
-  return Buffer.from(await pdf.save());
+  const trimmed = await PDFLibDocument.create();
+  const copied = await trimmed.copyPages(pdf, keepPages);
+  copied.forEach((page) => trimmed.addPage(page));
+  return Buffer.from(await trimmed.save());
 }
 
 async function generateStudyGuidePDF(topic) {
