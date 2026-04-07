@@ -1786,10 +1786,6 @@ function generateStudyGuidePDF(topicKey, topic) {
   y = drawHeader(doc, 'Step-by-Step Approach', y + 8);
   y = drawNumberedList(doc, stepByStep, y);
 
-  y = drawHeader(doc, 'Time Management Tip', y + 6);
-  drawBox(doc, 40, y, doc.page.width - 80, 58, rgb([239, 246, 255]), [191, 219, 254]);
-  y = drawBody(doc, 'Aim for about 90 seconds per question. If progress stalls after about a minute, mark it, move on, and return with fresh context in the final pass.', y + 13);
-
   drawFooter(doc, 2, skill);
 
   // ──── PAGE 3: Worked Examples ────

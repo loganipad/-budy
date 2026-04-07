@@ -149,8 +149,7 @@ function generateDefaultContent(section, domain, skill) {
       `Read the ${ismath ? 'problem' : 'passage'} carefully before looking at answer choices`,
       `${ismath ? 'Set up the equation or expression before solving' : 'Identify the key claim or structure being tested'}`,
       `Eliminate answers that ${ismath ? 'don\'t match the conditions' : 'contradict the text or overgeneralize'}`,
-      `${ismath ? 'Check your work by substituting back in' : 'Verify your answer against specific textual evidence'}`,
-      `Watch timing—aim for ${ismath ? '~90 seconds' : '~75 seconds'} per question`
+      `${ismath ? 'Check your work by substituting back in' : 'Verify your answer against specific textual evidence'}`
     ],
     workedExample: {
       passage: ismath ? '' : `A researcher examined trends in ${skill.toLowerCase()} by analyzing recent data. The findings showed mixed results, with some indicators improving while others remained stable.`,
@@ -343,12 +342,6 @@ function generateStudyGuidePDF(topic) {
     ? ['Read the problem and identify what is being asked', 'Write down given information and what you need to find', 'Choose a method: algebraic, graphical, or substitution', 'Execute the solution step by step', 'Verify your answer meets all conditions in the problem']
     : ['Read the passage or question stem completely', 'Identify the specific skill being tested', 'Make a prediction before looking at choices', 'Eliminate answers that contradict the text', 'Select the answer with the strongest evidence support'];
   y = drawNumberedList(doc, steps, y);
-
-  y = drawHeader(doc, 'Time Management Tip', y + 6);
-  drawBox(doc, 40, y, doc.page.width - 80, 50, rgb([240, 247, 255]));
-  y = drawBody(doc, section === 'math'
-    ? `⏱ Aim for ~90 seconds per question. If you\'re stuck after 60 seconds, mark it and move on. Come back to it in the remaining time.`
-    : `⏱ Aim for ~75 seconds per question. Read the passage once thoroughly rather than re-reading multiple times.`, y + 10);
 
   drawPage(doc, 2, 5, section, domain, skill);
 

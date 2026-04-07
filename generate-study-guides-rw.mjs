@@ -2582,22 +2582,6 @@ function drawCoreRulesPage(doc, topic) {
   y = sectionHeader(doc, 'Step-by-Step Approach', y);
   numberedList(doc, topic.stepByStep, 50, y, PAGE_WIDTH - 100);
 
-  y = 648;
-  drawBox(doc, 40, y, PAGE_WIDTH - 80, 68, [239, 246, 255], BRAND_BLUE);
-  doc
-    .font('Helvetica-Bold')
-    .fontSize(10)
-    .fillColor(rgb(BRAND_BLUE))
-    .text('Time Management Tip', 52, y + 10, { width: PAGE_WIDTH - 104 });
-  doc
-    .font('Helvetica')
-    .fontSize(9.5)
-    .fillColor(rgb(NAVY))
-    .text('Target about 75 seconds per question. If you are stuck at 50 seconds, eliminate two choices and move on.', 52, y + 28, {
-      width: PAGE_WIDTH - 104,
-      lineGap: 3
-    });
-
   drawFooter(doc, 2, topic.skill);
 }
 
