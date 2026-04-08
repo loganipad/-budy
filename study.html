@@ -2162,6 +2162,7 @@ button,input,select{font:inherit}
   <script src="/assets/layout/footer-loader.js" defer></script>
   <script src="/assets/review-bank.js"></script>
   <script src="/assets/ai-deep-dive.js"></script>
+  <script src="/assets/flashcard-pdf.js"></script>
   <script>
     const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
     const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
@@ -3838,84 +3839,19 @@ button,input,select{font:inherit}
       renderLibraryPanel();
     }
 
-    /* ── On-the-fly Flashcard PDF via jsPDF ── */
+    /* ── Flashcard PDF export ── */
     function generateFlashcardPDF(topic, deck) {
-      if (typeof window.jspdf === 'undefined') { alert('PDF library not loaded yet. Please try again.'); return; }
-      var jsPDF = window.jspdf.jsPDF;
-      var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
-      var pw = 215.9, ph = 279.4;
-      var margin = 12;
-      var contentW = pw - margin * 2;
-      var rowH = 42;
-      var cardsPerPage = Math.floor((ph - margin * 2 - 20) / rowH);
-
-      /* Title */
-      doc.setFontSize(14);
-      doc.setTextColor(13, 17, 23);
-      doc.text('Budy.Study Flashcards: ' + topic.label, margin, margin + 6);
-      doc.setFontSize(8);
-      doc.setTextColor(120, 120, 140);
-      doc.text('Print, fold along the dashed center line, and cut along the dotted horizontal lines.', margin, margin + 13);
-
-      var y = margin + 20;
-      var halfW = contentW / 2;
-
-      deck.forEach(function (card, i) {
-        if (i > 0 && i % cardsPerPage === 0) {
-          doc.addPage();
-          y = margin + 6;
-        }
-
-        /* Horizontal dotted cut line */
-        if (i > 0 && i % cardsPerPage !== 0) {
-          doc.setDrawColor(180, 180, 200);
-          doc.setLineDashPattern([1, 1.5], 0);
-          doc.line(margin, y, margin + contentW, y);
-        }
-
-        /* Center fold dashed line */
-        doc.setDrawColor(100, 120, 200);
-        doc.setLineDashPattern([3, 2], 0);
-        doc.line(margin + halfW, y, margin + halfW, y + rowH);
-
-        /* Fold icon at top */
-        if (i === 0 || i % cardsPerPage === 0) {
-          doc.setFontSize(6);
-          doc.setTextColor(100, 120, 200);
-          doc.text('← fold here →', margin + halfW - 7, y - 1);
-        }
-
-        /* Left side: front (question) */
-        doc.setFontSize(7);
-        doc.setTextColor(100, 100, 120);
-        doc.text('FRONT', margin + 2, y + 5);
-        doc.setFontSize(9);
-        doc.setTextColor(13, 17, 23);
-        var frontLines = doc.splitTextToSize(card.front || '', halfW - 8);
-        doc.text(frontLines, margin + 2, y + 10);
-
-        /* Right side: back (answer) */
-        doc.setFontSize(7);
-        doc.setTextColor(100, 100, 120);
-        doc.text('BACK', margin + halfW + 4, y + 5);
-        doc.setFontSize(8);
-        doc.setTextColor(60, 60, 80);
-        var backLines = doc.splitTextToSize(card.back || '', halfW - 8);
-        doc.text(backLines, margin + halfW + 4, y + 10);
-
-        y += rowH;
-      });
-
-      /* Footer on each page */
-      var pageCount = doc.internal.getNumberOfPages();
-      for (var p = 1; p <= pageCount; p++) {
-        doc.setPage(p);
-        doc.setFontSize(7);
-        doc.setTextColor(160, 160, 180);
-        doc.text('budy.study  |  ' + topic.label + '  |  Page ' + p + ' of ' + pageCount, margin, ph - 6);
+      if (!window.BudyFlashcardPdf || typeof window.BudyFlashcardPdf.exportDeckAsPdf !== 'function') {
+        alert('PDF export is still loading. Please try again in a moment.');
+        return;
       }
 
-      doc.save('budy-flashcards-' + slugifyTopic(topic.label) + '.pdf');
+      try {
+        window.BudyFlashcardPdf.exportDeckAsPdf({ topic: topic, deck: deck, appName: 'budy.study' });
+      } catch (error) {
+        console.error('[flashcards] PDF export failed', error);
+        alert('Unable to generate PDF right now. Please try again.');
+      }
     }
 
     function slugifyTopic(str) {
