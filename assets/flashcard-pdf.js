@@ -7,6 +7,12 @@
     return null;
   }
 
+  function setDash(doc, pattern, phase) {
+    if (typeof doc.setLineDashPattern === 'function') {
+      doc.setLineDashPattern(pattern, phase || 0);
+    }
+  }
+
   function slugify(value) {
     return String(value || '')
       .toLowerCase()
@@ -71,18 +77,18 @@
     var deck = Array.isArray(opts.deck) ? opts.deck.filter(Boolean) : [];
     var topicLabel = safeText(topic.label) || 'Flashcards';
 
-    if (!deck.length) {
-      throw new Error('No flashcards available for export.');
-    }
-
     var JsPdf = getJsPdfConstructor();
     if (!JsPdf) {
-      throw new Error('jsPDF is not available on this page.');
+      throw new Error('PDF engine failed to load. Refresh the page and try again.');
     }
 
     var doc = new JsPdf({ orientation: 'portrait', unit: 'mm', format: 'letter' });
-    var pageWidth = doc.internal.pageSize.getWidth();
-    var pageHeight = doc.internal.pageSize.getHeight();
+    var pageWidth = doc.internal && doc.internal.pageSize && typeof doc.internal.pageSize.getWidth === 'function'
+      ? doc.internal.pageSize.getWidth()
+      : 215.9;
+    var pageHeight = doc.internal && doc.internal.pageSize && typeof doc.internal.pageSize.getHeight === 'function'
+      ? doc.internal.pageSize.getHeight()
+      : 279.4;
     var margin = 12;
     var contentWidth = pageWidth - margin * 2;
     var halfWidth = contentWidth / 2;
@@ -103,6 +109,16 @@
     var y = drawPageHeader(doc, config);
     var contentBottom = pageHeight - margin - footerReserve;
     var isFirstRowOnPage = true;
+
+    if (!deck.length) {
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105);
+      doc.text('No flashcards are available for this topic yet.', margin, y + 8);
+      doc.text('Try another topic or generate more cards in the Study Hub.', margin, y + 14);
+      addPageFooters(doc, config);
+      doc.save(opts.filename || ('budy-flashcards-' + slugify(topicLabel) + '.pdf'));
+      return;
+    }
 
     deck.forEach(function (card, index) {
       var frontText = safeText(card.front) || 'No question provided.';
@@ -126,14 +142,14 @@
 
       if (!isFirstRowOnPage) {
         doc.setDrawColor(190, 198, 216);
-        doc.setLineDashPattern([1, 1.5], 0);
+        setDash(doc, [1, 1.5], 0);
         doc.line(margin, y - 1.2, margin + contentWidth, y - 1.2);
       }
 
       doc.setDrawColor(100, 120, 200);
-      doc.setLineDashPattern([3, 2], 0);
+      setDash(doc, [3, 2], 0);
       doc.line(margin + halfWidth, y, margin + halfWidth, y + rowHeight);
-      doc.setLineDashPattern([], 0);
+      setDash(doc, [], 0);
 
       doc.setFontSize(7);
       doc.setTextColor(100, 116, 139);
@@ -142,7 +158,9 @@
 
       doc.setFontSize(8);
       doc.setTextColor(148, 163, 184);
-      doc.text(String(index + 1), margin + contentWidth - 1.5, y + 4.5, { align: 'right' });
+      var indexText = String(index + 1);
+      var indexX = margin + contentWidth - 1.5 - doc.getTextWidth(indexText);
+      doc.text(indexText, indexX, y + 4.5);
 
       doc.setFontSize(9);
       doc.setTextColor(17, 24, 39);

@@ -3850,7 +3850,7 @@ button,input,select{font:inherit}
         window.BudyFlashcardPdf.exportDeckAsPdf({ topic: topic, deck: deck, appName: 'budy.study' });
       } catch (error) {
         console.error('[flashcards] PDF export failed', error);
-        alert('Unable to generate PDF right now. Please try again.');
+        alert(error && error.message ? error.message : 'Unable to generate PDF right now. Please try again.');
       }
     }
 
