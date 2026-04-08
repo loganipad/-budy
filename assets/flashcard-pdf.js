@@ -33,6 +33,57 @@
     return clipped;
   }
 
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function openPrintFallback(topicLabel, deck) {
+    var printWindow = window.open('', '_blank', 'noopener,noreferrer');
+    if (!printWindow) {
+      throw new Error('Popup blocked. Allow popups to export or save as PDF.');
+    }
+
+    var cardsHtml = deck.length
+      ? deck.map(function (card, index) {
+          var front = escapeHtml(safeText(card && card.front) || 'No question provided.');
+          var back = escapeHtml(safeText(card && card.back) || 'No answer provided.');
+          return '<article class="card">'
+            + '<div class="cell"><div class="label">QUESTION</div><div class="value">' + front + '</div></div>'
+            + '<div class="cell"><div class="label">ANSWER</div><div class="value">' + back + '</div></div>'
+            + '<div class="num">' + (index + 1) + '</div>'
+            + '</article>';
+        }).join('')
+      : '<p class="empty">No flashcards are available for this topic yet.</p>';
+
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Budy.Study Flashcards</title>'
+      + '<style>'
+      + 'body{font-family:Arial,sans-serif;margin:0;padding:18px;color:#111827}'
+      + 'h1{font-size:18px;margin:0 0 6px}h2{font-size:13px;color:#475569;margin:0 0 14px;font-weight:600}'
+      + '.card{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px dashed #94a3b8;padding:12px 0;position:relative;break-inside:avoid;page-break-inside:avoid}'
+      + '.card:first-of-type{border-top:none}.cell{padding-right:6px}.cell+.cell{border-left:1px dashed #94a3b8;padding-left:12px}'
+      + '.label{font-size:10px;letter-spacing:.08em;color:#64748b;font-weight:700;margin-bottom:6px}'
+      + '.value{font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}'
+      + '.num{position:absolute;right:0;top:10px;font-size:10px;color:#94a3b8}'
+      + '.empty{margin-top:14px;color:#475569}'
+      + '@media print{body{padding:12mm}.card{break-inside:avoid;page-break-inside:avoid}}'
+      + '</style></head><body>'
+      + '<h1>Budy.Study Flashcards</h1>'
+      + '<h2>' + escapeHtml(topicLabel) + ' - ' + deck.length + ' cards</h2>'
+      + cardsHtml
+      + '</body></html>';
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  }
+
   function drawPageHeader(doc, config) {
     var margin = config.margin;
     var topicLabel = config.topicLabel;
@@ -79,48 +130,50 @@
 
     var JsPdf = getJsPdfConstructor();
     if (!JsPdf) {
-      throw new Error('PDF engine failed to load. Refresh the page and try again.');
-    }
-
-    var doc = new JsPdf({ orientation: 'portrait', unit: 'mm', format: 'letter' });
-    var pageWidth = doc.internal && doc.internal.pageSize && typeof doc.internal.pageSize.getWidth === 'function'
-      ? doc.internal.pageSize.getWidth()
-      : 215.9;
-    var pageHeight = doc.internal && doc.internal.pageSize && typeof doc.internal.pageSize.getHeight === 'function'
-      ? doc.internal.pageSize.getHeight()
-      : 279.4;
-    var margin = 12;
-    var contentWidth = pageWidth - margin * 2;
-    var halfWidth = contentWidth / 2;
-    var footerReserve = 12;
-    var maxRowHeight = 96;
-    var minRowHeight = 30;
-    var lineHeight = 4.1;
-
-    var config = {
-      appName: opts.appName || 'budy.study',
-      topicLabel: topicLabel,
-      totalCards: deck.length,
-      margin: margin,
-      pageWidth: pageWidth,
-      pageHeight: pageHeight
-    };
-
-    var y = drawPageHeader(doc, config);
-    var contentBottom = pageHeight - margin - footerReserve;
-    var isFirstRowOnPage = true;
-
-    if (!deck.length) {
-      doc.setFontSize(10);
-      doc.setTextColor(71, 85, 105);
-      doc.text('No flashcards are available for this topic yet.', margin, y + 8);
-      doc.text('Try another topic or generate more cards in the Study Hub.', margin, y + 14);
-      addPageFooters(doc, config);
-      doc.save(opts.filename || ('budy-flashcards-' + slugify(topicLabel) + '.pdf'));
+      openPrintFallback(topicLabel, deck);
       return;
     }
 
-    deck.forEach(function (card, index) {
+    try {
+      var doc = new JsPdf({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+      var pageWidth = doc.internal && doc.internal.pageSize && typeof doc.internal.pageSize.getWidth === 'function'
+        ? doc.internal.pageSize.getWidth()
+        : 215.9;
+      var pageHeight = doc.internal && doc.internal.pageSize && typeof doc.internal.pageSize.getHeight === 'function'
+        ? doc.internal.pageSize.getHeight()
+        : 279.4;
+      var margin = 12;
+      var contentWidth = pageWidth - margin * 2;
+      var halfWidth = contentWidth / 2;
+      var footerReserve = 12;
+      var maxRowHeight = 96;
+      var minRowHeight = 30;
+      var lineHeight = 4.1;
+
+      var config = {
+        appName: opts.appName || 'budy.study',
+        topicLabel: topicLabel,
+        totalCards: deck.length,
+        margin: margin,
+        pageWidth: pageWidth,
+        pageHeight: pageHeight
+      };
+
+      var y = drawPageHeader(doc, config);
+      var contentBottom = pageHeight - margin - footerReserve;
+      var isFirstRowOnPage = true;
+
+      if (!deck.length) {
+        doc.setFontSize(10);
+        doc.setTextColor(71, 85, 105);
+        doc.text('No flashcards are available for this topic yet.', margin, y + 8);
+        doc.text('Try another topic or generate more cards in the Study Hub.', margin, y + 14);
+        addPageFooters(doc, config);
+        doc.save(opts.filename || ('budy-flashcards-' + slugify(topicLabel) + '.pdf'));
+        return;
+      }
+
+      deck.forEach(function (card, index) {
       var frontText = safeText(card.front) || 'No question provided.';
       var backText = safeText(card.back) || 'No answer provided.';
 
@@ -169,14 +222,18 @@
       doc.setTextColor(31, 41, 55);
       doc.text(backLines, margin + halfWidth + 2, y + 9);
 
-      y += rowHeight + 2;
-      isFirstRowOnPage = false;
-    });
+        y += rowHeight + 2;
+        isFirstRowOnPage = false;
+      });
 
-    addPageFooters(doc, config);
+      addPageFooters(doc, config);
 
-    var filename = opts.filename || ('budy-flashcards-' + slugify(topicLabel) + '.pdf');
-    doc.save(filename);
+      var filename = opts.filename || ('budy-flashcards-' + slugify(topicLabel) + '.pdf');
+      doc.save(filename);
+    } catch (error) {
+      console.error('[flashcards] jsPDF export failed, falling back to print', error);
+      openPrintFallback(topicLabel, deck);
+    }
   }
 
   window.BudyFlashcardPdf = {
