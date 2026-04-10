@@ -4070,14 +4070,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const card = document.querySelector('.recommended-card');
       if (!button || !list) return;
 
-      const hasTopics = Array.isArray(topics) && topics.length > 0;
-      button.disabled = !hasTopics;
-      if (!hasTopics) {
-        closeRecommendedStartMenu();
-        if (card) card.classList.add('is-collapsed');
-        return;
-      }
-
       list.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
       if (card) card.classList.toggle('is-collapsed', !studyUIState.recommendedStartOpen);
       button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
@@ -5645,6 +5637,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       }
 
       if (!topicsToRender.length) {
+        const empty = document.createElement('div');
+        empty.className = 'recommended-empty';
+        empty.textContent = 'Topic recommendations will appear here once Budy has flagged or wrong-answer history to work from.';
+        list.appendChild(empty);
         renderRecommendedStartMenu([]);
         return;
       }
