@@ -750,6 +750,8 @@ input,select{font-family:inherit}
 .q-nav{width:180px;flex-shrink:0;background:rgba(255,255,255,.72);border-right:1px solid rgba(148,163,184,.16);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   overflow-y:auto;overflow-x:hidden;padding:14px}
+#test-screen.one-at-time .q-nav{display:none}
+#test-screen.one-at-time .q-main{width:100%;max-width:none}
 .qn-title{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:#64748b;margin-bottom:10px}
 .qn-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));justify-items:center;gap:10px 8px;width:100%;max-width:164px;margin:0 auto}

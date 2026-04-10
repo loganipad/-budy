@@ -147,6 +147,7 @@ const S = {
 /* ── FREE TIER LIMITS ── */
 const FREE_Q = 10; // questions allowed on free tier
 const LANDING_TIMER_SECONDS = 30 * 60;
+const LANDING_STRICT_ONE_AT_TIME = true;
 const TEST_DURATION_SECONDS = {
   english: { premium: 32 * 60, free: 12 * 60 },
   math: { premium: 35 * 60, free: 12 * 60 },
@@ -2224,6 +2225,9 @@ function startTest() {
 /* ── QNAV ── */
 function buildQNav(){
   const g=document.getElementById('qn-grid');g.innerHTML='';
+  const testScreen=document.getElementById('test-screen');
+  if(testScreen)testScreen.classList.toggle('one-at-time',LANDING_STRICT_ONE_AT_TIME);
+  if(LANDING_STRICT_ONE_AT_TIME)return;
   S.questions.forEach((_,i)=>{
     const b=document.createElement('button');
     b.className='qn-btn';b.textContent=i+1;b.id='qnb-'+i;
@@ -2231,16 +2235,18 @@ function buildQNav(){
   });updQNav();
 }
 function updQNav(){
-  S.questions.forEach((_,i)=>{
-    const b=document.getElementById('qnb-'+i);if(!b)return;
-    b.className='qn-btn';
-    if(i===S.curQ)b.classList.add('cur');
-    else if(S.flags.has(i))b.classList.add('flag');
-    else if(S.answers[i]!==undefined)b.classList.add('ans');
-  });
+  if(!LANDING_STRICT_ONE_AT_TIME){
+    S.questions.forEach((_,i)=>{
+      const b=document.getElementById('qnb-'+i);if(!b)return;
+      b.className='qn-btn';
+      if(i===S.curQ)b.classList.add('cur');
+      else if(S.flags.has(i))b.classList.add('flag');
+      else if(S.answers[i]!==undefined)b.classList.add('ans');
+    });
+  }
   const pct=Object.keys(S.answers).length/S.questions.length*100;
   document.getElementById('tb-prog-fill').style.width=pct+'%';
-  document.getElementById('test-prog-txt').textContent=`${S.curQ+1}/${S.questions.length}`;
+  document.getElementById('test-prog-txt').textContent=LANDING_STRICT_ONE_AT_TIME?'Current question':`${S.curQ+1}/${S.questions.length}`;
   document.getElementById('prev-btn').disabled=S.curQ===0;
   const last=S.curQ===S.questions.length-1;
   document.getElementById('next-btn').classList.toggle('hidden',last);
@@ -2252,7 +2258,8 @@ function renderQ(idx){
   S.curQ=idx;
   const q=S.questions[idx];
   const sec=q.section==='math'?'Math':'Reading & Writing';
-  let html=`<div class="q-hd"><div class="q-badge">${sec} · Q${idx+1} of ${S.questions.length}</div><div class="q-skill">${q.skill||''}</div></div>`;
+  const qBadge=LANDING_STRICT_ONE_AT_TIME?'Current question':`${sec} · Q${idx+1} of ${S.questions.length}`;
+  let html=`<div class="q-hd"><div class="q-badge">${qBadge}</div><div class="q-skill">${q.skill||''}</div></div>`;
   if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
   html+=`<div class="q-text">${q.question}</div>`;
   if(q.type==='spr'){
