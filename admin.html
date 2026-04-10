@@ -84,7 +84,7 @@ td { font-size: .83rem; color: #e8eef8; }
         <div>
           <div class="title-kicker">Admin</div>
           <h1>Question Bank Control Panel</h1>
-          <p class="sub">Full 3200 generated questions with live filtering, subject splits, and 1-10 difficulty score ratings.</p>
+          <p class="sub">Full 3200 generated questions with live filtering, subject splits, and difficulty rankings.</p>
         </div>
         <div class="actions">
           <a class="btn ghost" href="/my-account">Back to Account</a>
@@ -109,13 +109,12 @@ td { font-size: .83rem; color: #e8eef8; }
                 <th>Rank</th>
                 <th>Difficulty</th>
                 <th>Count</th>
-                <th>Difficulty Score Rating</th>
               </tr>
             </thead>
             <tbody id="difficulty-summary-body"></tbody>
           </table>
         </div>
-        <p class="muted" style="margin-top:8px">Difficulty score rating is normalized from original generation estimated_time_seconds, where 1 is easiest and 10 is hardest.</p>
+        <p class="muted" style="margin-top:8px">Difficulty ranks are derived from original generation timing metadata.</p>
       </div>
 
       <div class="panel">
@@ -153,7 +152,6 @@ td { font-size: .83rem; color: #e8eef8; }
                 <th>Domain</th>
                 <th>Skill</th>
                 <th>Difficulty</th>
-                <th>Score</th>
                 <th>Format</th>
                 <th>Prompt</th>
               </tr>
@@ -307,7 +305,6 @@ function renderDifficultySummary(rows) {
         '<td>#' + (idx + 1) + '</td>' +
         '<td><span class="pill ' + stat.difficulty + '">' + stat.difficulty.toUpperCase() + '</span></td>' +
         '<td>' + stat.count.toLocaleString('en-US') + '</td>' +
-        '<td>' + stat.score + '/10</td>' +
       '</tr>');
     });
   });
@@ -364,7 +361,6 @@ function renderTablePage() {
       '<td>' + (row.domain || '-') + '</td>' +
       '<td>' + (row.skill || '-') + '</td>' +
       '<td><span class="pill ' + row.difficulty + '">' + row.difficulty.toUpperCase() + '</span></td>' +
-      '<td>' + row.scoreRating + '/10</td>' +
       '<td>' + (row.format || '-') + '</td>' +
       '<td>' + safePrompt + '</td>' +
     '</tr>';
