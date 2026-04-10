@@ -1890,6 +1890,7 @@ const AUTH0_DB_CONNECTION = 'Username-Password-Authentication';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
+const ADMIN_EMAILS = ['loganipad@gmail.com'];
 const TEST_USER_EMAILS = ['loganipad@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
 const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
@@ -1940,6 +1941,7 @@ const S = {
   user: { name: '', email: '', grade: '' },
   authViaLocal: false,
   isLoggedIn: false,
+  isAdmin: false,
   isPremium: false,
   authUserId: '',
   accountTab: 'progress',
@@ -2015,6 +2017,11 @@ function openAccountConfirm(options) {
 function isTestUserEmail(email) {
   if (!email) return false;
   return TEST_USER_EMAILS.includes(String(email).trim().toLowerCase());
+}
+
+function isAdminEmail(email) {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(String(email).trim().toLowerCase());
 }
 
 function setAccountTab(tab) {
@@ -2645,6 +2652,8 @@ async function initAuth() {
     if (user && user.sub) S.authUserId = String(user.sub);
     if (user && user.name) S.user.name = user.name;
     if (user && user.email) S.user.email = user.email;
+    S.isAdmin = isAdminEmail(S.user.email);
+    if (S.isAdmin) S.isPremium = true;
   } else {
     const localUser = getLocalAuthUser();
     if (localUser) {
@@ -2653,6 +2662,8 @@ async function initAuth() {
       if (localUser.sub) S.authUserId = String(localUser.sub);
       if (localUser.name) S.user.name = localUser.name;
       if (localUser.email) S.user.email = localUser.email;
+      S.isAdmin = isAdminEmail(S.user.email);
+      if (S.isAdmin) S.isPremium = true;
     }
   }
 
@@ -2699,7 +2710,8 @@ async function refreshPremiumStatus() {
 
     if (!response.ok) return;
 
-    S.isPremium = Boolean(data.isPremium);
+    S.isAdmin = Boolean(data && data.isAdmin) || isAdminEmail(S.user.email);
+    S.isPremium = Boolean(data.isPremium) || S.isAdmin;
     S.subscriptionStatus = data && data.subscriptionStatus ? String(data.subscriptionStatus).toLowerCase() : 'free';
     S.cancelAtPeriodEnd = Boolean(data && data.cancelAtPeriodEnd);
     S.currentPeriodEnd = data && data.currentPeriodEnd ? String(data.currentPeriodEnd) : null;
@@ -3723,7 +3735,12 @@ function renderDash() {
   const badge = document.getElementById('acct-status-badge');
   const badgeText = document.getElementById('acct-status-text');
   const isTest = isTestUserEmail(S.user.email);
-  if (S.isPremium) {
+  const isAdmin = Boolean(S.isAdmin);
+  if (isAdmin) {
+    badge.classList.remove('free');
+    badge.classList.add('pro');
+    badgeText.textContent = 'Admin';
+  } else if (S.isPremium) {
     badge.classList.remove('free');
     badge.classList.add('pro');
     badgeText.textContent = isTest ? 'Test Plan' : 'Pro Plan';
@@ -3742,8 +3759,14 @@ function renderDash() {
 
   const accountStatusEl = document.getElementById('profile-account-status');
   const accountTypeEl = document.getElementById('profile-account-type');
-  if (accountStatusEl) accountStatusEl.textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
-  if (accountTypeEl) accountTypeEl.textContent = isTest ? 'Test user' : 'Standard user';
+  if (accountStatusEl) {
+    if (isAdmin) accountStatusEl.textContent = S.isPremium ? 'ADMIN (PRO)' : 'ADMIN';
+    else accountStatusEl.textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
+  }
+  if (accountTypeEl) {
+    if (isAdmin) accountTypeEl.textContent = 'Admin user';
+    else accountTypeEl.textContent = isTest ? 'Test user' : 'Standard user';
+  }
   document.getElementById('profile-name').textContent = S.user.name || '-';
   document.getElementById('profile-email').textContent = S.user.email || '-';
   document.getElementById('profile-plan').textContent = S.isPremium ? 'Pro' : 'Free';
