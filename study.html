@@ -4576,18 +4576,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const layoutToggle = document.createElement('div');
       layoutToggle.className = 'fc-layout-toggle';
 
-      const stackLayoutBtn = document.createElement('button');
-      stackLayoutBtn.type = 'button';
-      stackLayoutBtn.className = 'fc-layout-btn' + (studyUIState.flashcardLayout === 'stack' ? ' active' : '');
-      stackLayoutBtn.textContent = 'Stack View';
-      stackLayoutBtn.addEventListener('click', function () {
-        if (studyUIState.flashcardLayout === 'stack') return;
-        studyUIState.flashcardLayout = 'stack';
-        studyUIState.flashcardFace = 'front';
-        renderLibraryPanel();
-      });
-      layoutToggle.appendChild(stackLayoutBtn);
-
       const tableLayoutBtn = document.createElement('button');
       tableLayoutBtn.type = 'button';
       tableLayoutBtn.className = 'fc-layout-btn' + (studyUIState.flashcardLayout === 'table' ? ' active' : '');
@@ -4599,6 +4587,18 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         renderLibraryPanel();
       });
       layoutToggle.appendChild(tableLayoutBtn);
+
+      const stackLayoutBtn = document.createElement('button');
+      stackLayoutBtn.type = 'button';
+      stackLayoutBtn.className = 'fc-layout-btn' + (studyUIState.flashcardLayout === 'stack' ? ' active' : '');
+      stackLayoutBtn.textContent = 'Stack View';
+      stackLayoutBtn.addEventListener('click', function () {
+        if (studyUIState.flashcardLayout === 'stack') return;
+        studyUIState.flashcardLayout = 'stack';
+        studyUIState.flashcardFace = 'front';
+        renderLibraryPanel();
+      });
+      layoutToggle.appendChild(stackLayoutBtn);
 
       layoutToolbar.appendChild(layoutToggle);
 
@@ -5640,7 +5640,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       header.className = 'inline-test-header';
       const label = document.createElement('div');
       label.className = 'inline-test-label';
-      label.textContent = 'Question ' + (inlineTestState.index + 1) + ' of ' + totalQ;
+      label.textContent = 'Current question';
       const timer = document.createElement('div');
       timer.className = 'inline-test-timer';
       timer.textContent = formatTimer(Date.now() - inlineTestState.startTime);
@@ -5652,21 +5652,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       inlineTestState.timerInterval = setInterval(function () {
         timer.textContent = formatTimer(Date.now() - inlineTestState.startTime);
       }, 1000);
-
-      const progress = document.createElement('div');
-      progress.className = 'inline-test-progress';
-      for (let i = 0; i < totalQ; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'inline-test-dot';
-        if (i === inlineTestState.index) dot.classList.add('current');
-        else if (inlineTestState.answers[i] !== undefined) {
-          const ans = inlineTestState.answers[i];
-          const correct = inlineTestState.questions[i].correctAnswer;
-          dot.classList.add(ans === correct ? 'done' : 'wrong');
-        }
-        progress.appendChild(dot);
-      }
-      runner.appendChild(progress);
 
       const qlabel = document.createElement('div');
       qlabel.className = 'inline-test-qlabel';
