@@ -1916,35 +1916,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 .recommended-count-pill.green{background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.35);color:#86efac}
 .recommended-count-pill.yellow{background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.35);color:#fde68a}
 .recommended-count-pill.red{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.35);color:#fecaca}
-.recommended-start-menu{
-  position:absolute;
-  top:64px;
-  left:0;
-  z-index:35;
-  width:min(360px,calc(100vw - 72px));
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(10,16,29,.98);
-  box-shadow:0 24px 56px rgba(0,0,0,.46);
-  padding:8px;
-  display:grid;
-  gap:6px;
-}
-.recommended-start-menu.hidden{display:none}
-.recommended-start-option{
-  min-height:36px;
-  width:100%;
-  text-align:left;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);
-  color:#e2e8f0;
-  padding:8px 10px;
-  font-size:.78rem;
-  font-weight:700;
-  cursor:pointer;
-}
-.recommended-start-option:hover{background:rgba(37,99,235,.24);border-color:rgba(59,130,246,.4)}
 .recommended-list{display:grid;gap:12px}
 
 .recommended-row{
@@ -1959,10 +1930,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
 .recommended-topic span{display:block;font-size:.82rem;line-height:1.6;color:var(--muted)}
 .recommended-row .recommended-action{display:none}
-
-.recommended-card[data-rec-size='low']{min-height:190px}
-.recommended-card[data-rec-size='mid']{min-height:230px}
-.recommended-card[data-rec-size='high']{min-height:280px}
+.recommended-card.is-collapsed{padding-bottom:18px}
 
 .library-empty,
 .recommended-empty{
@@ -2815,8 +2783,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           </div>
           <p class="panel-copy recommended-copy">These suggestions are driven by the topic patterns showing up in your flagged and wrong-answer history, plus a simple competency score that makes the next move clearer.</p>
           <div class="recommended-head-actions">
-            <button class="recommended-start-pill" id="recommended-start-pill" type="button" aria-expanded="false" aria-controls="recommended-start-menu">View Now <span class="recommended-start-pill-arrow" aria-hidden="true">▼</span></button>
-            <div class="recommended-start-menu hidden" id="recommended-start-menu"></div>
+            <button class="recommended-start-pill" id="recommended-start-pill" type="button" aria-expanded="false" aria-controls="recommended-topic-list">View Now <span class="recommended-start-pill-arrow" aria-hidden="true">▼</span></button>
           </div>
         </div>
         <div class="recommended-list hidden" id="recommended-topic-list"></div>
@@ -4094,41 +4061,27 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     function closeRecommendedStartMenu() {
       studyUIState.recommendedStartOpen = false;
       const button = document.getElementById('recommended-start-pill');
-      const menu = document.getElementById('recommended-start-menu');
+      const list = document.getElementById('recommended-topic-list');
       if (button) button.setAttribute('aria-expanded', 'false');
-      if (menu) menu.classList.add('hidden');
+      if (list) list.classList.add('hidden');
     }
 
     function renderRecommendedStartMenu(topics) {
       const button = document.getElementById('recommended-start-pill');
-      const menu = document.getElementById('recommended-start-menu');
-      if (!button || !menu) return;
+      const list = document.getElementById('recommended-topic-list');
+      const card = document.querySelector('.recommended-card');
+      if (!button || !list) return;
 
-      menu.replaceChildren();
-      const topicCount = Array.isArray(topics) ? topics.length : 0;
-      menu.style.maxHeight = Math.min(540, 84 + (topicCount * 46)) + 'px';
-      menu.style.overflowY = topicCount > 8 ? 'auto' : 'visible';
-
-      if (!Array.isArray(topics) || !topics.length) {
-        const empty = document.createElement('div');
-        empty.className = 'review-picker-empty';
-        empty.textContent = 'Recommended subjects will appear after test data is available.';
-        menu.appendChild(empty);
-      } else {
-        topics.forEach((topic) => {
-          const option = document.createElement('button');
-          option.type = 'button';
-          option.className = 'recommended-start-option';
-          option.textContent = sectionLabel(topic.section) + ' · ' + topic.label;
-          option.addEventListener('click', function () {
-            closeRecommendedStartMenu();
-            openTopicView('study-guides', topic.key);
-          });
-          menu.appendChild(option);
-        });
+      const hasTopics = Array.isArray(topics) && topics.length > 0;
+      button.disabled = !hasTopics;
+      if (!hasTopics) {
+        closeRecommendedStartMenu();
+        if (card) card.classList.add('is-collapsed');
+        return;
       }
 
-      menu.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
+      list.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
+      if (card) card.classList.toggle('is-collapsed', !studyUIState.recommendedStartOpen);
       button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
     }
 
@@ -5672,7 +5625,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     function renderRecommendedTopics() {
       const list = document.getElementById('recommended-topic-list');
       const countPill = document.getElementById('recommended-count-pill');
-      const card = document.querySelector('.recommended-card');
       if (!list) return;
       list.replaceChildren();
 
@@ -5694,35 +5646,49 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         else countPill.classList.add('green');
       }
 
-      if (card) {
-        const totalRecommended = topicsToRender.length;
-        card.setAttribute('data-rec-size', totalRecommended >= 10 ? 'high' : totalRecommended >= 3 ? 'mid' : 'low');
-      }
-
       if (!topicsToRender.length) {
         renderRecommendedStartMenu([]);
         return;
       }
 
       renderRecommendedStartMenu(topicsToRender);
+
+      topicsToRender.forEach((topic) => {
+        const row = document.createElement('article');
+        row.className = 'recommended-row';
+        row.addEventListener('click', function () {
+          openTopicView('study-guides', topic.key);
+        });
+
+        const topicCopy = document.createElement('div');
+        topicCopy.className = 'recommended-topic';
+        const title = document.createElement('strong');
+        title.textContent = sectionLabel(topic.section) + ': ' + topic.label;
+        const subtitle = document.createElement('span');
+        subtitle.textContent = topic.status + '. ' + topic.summary;
+        topicCopy.appendChild(title);
+        topicCopy.appendChild(subtitle);
+        row.appendChild(topicCopy);
+
+        const competency = document.createElement('div');
+        competency.className = 'competency-badge';
+        competency.textContent = topic.competency + '% competency';
+        row.appendChild(competency);
+        list.appendChild(row);
+      });
     }
 
     function bindRecommendedStartControls() {
       const button = document.getElementById('recommended-start-pill');
-      const menu = document.getElementById('recommended-start-menu');
-      if (!button || !menu) return;
+      const list = document.getElementById('recommended-topic-list');
+      if (!button || !list) return;
 
       button.addEventListener('click', function (event) {
         event.stopPropagation();
+        if (button.disabled) return;
         studyUIState.recommendedStartOpen = !studyUIState.recommendedStartOpen;
-        menu.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
+        list.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
         button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
-      });
-
-      document.addEventListener('click', function (event) {
-        if (!studyUIState.recommendedStartOpen) return;
-        if (button.contains(event.target) || menu.contains(event.target)) return;
-        closeRecommendedStartMenu();
       });
     }
 
