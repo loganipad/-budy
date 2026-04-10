@@ -615,6 +615,44 @@ button { font-family: inherit; cursor: pointer; }
   grid-template-columns: 1fr;
 }
 
+.settings-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.settings-card .panel-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.settings-card .panel-hd::after {
+  content: '';
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(59,130,246,.16);
+  border: 1px solid rgba(96,165,250,.3);
+}
+
+.settings-note {
+  margin: 12px 22px 0;
+  padding: 11px 13px;
+  border-radius: 14px;
+  font-size: .78rem;
+  line-height: 1.6;
+  color: rgba(240,244,255,.66);
+  border: 1px solid rgba(148,163,184,.2);
+  background: rgba(15,23,42,.46);
+}
+
+.settings-account-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .panel {
   background:
     radial-gradient(120% 120% at 100% -20%, rgba(59,130,246,.18) 0%, transparent 55%),
@@ -789,7 +827,10 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (min-width: 920px) {
   #acct-pane-settings .settings-wrap {
-    grid-template-columns: 1.25fr .95fr;
+    grid-template-columns: 1fr;
+  }
+  #acct-pane-settings .settings-layout {
+    grid-template-columns: 1.2fr .9fr;
   }
   #acct-pane-settings .purchase-panel { grid-column: 1 / -1; }
 }
@@ -1530,8 +1571,6 @@ button { font-family: inherit; cursor: pointer; }
           <div class="panel">
             <div class="panel-hd">Billing</div>
             <div class="row"><span class="k">Current Plan</span><span class="v" id="profile-plan">Free</span></div>
-            <div class="row"><span class="k">Account status</span><span class="v" id="profile-account-status">ACTIVE FREE</span></div>
-            <div class="row"><span class="k">Account type</span><span class="v" id="profile-account-type">Standard user</span></div>
             <div class="row"><span class="k">Subscription timing</span><span class="v" id="profile-billing-timing">No active subscription</span></div>
             <div class="row"><span class="k">Payment method</span><span class="v" id="profile-payment-method">Web checkout now, app-store billing in app builds</span></div>
             <div class="row is-stack">
@@ -1558,43 +1597,52 @@ button { font-family: inherit; cursor: pointer; }
         <div class="settings-wrap">
           <div class="account-pane-hero">
             <span class="account-pane-kicker">Account Settings</span>
-            <h3>Update profile and purchase preferences</h3>
-            <p>Review your profile details and keep your account configuration organized in one place.</p>
+            <h3>Customize your profile and account controls</h3>
+            <p>Keep your student profile current and manage account actions from one focused settings workspace.</p>
           </div>
-          <div class="panel purchase-panel">
-            <div class="panel-hd">Purchases</div>
-            <div class="purchase-copy">
-              <div class="purchase-mode web" id="purchase-mode-badge">Web checkout</div>
-              <div class="row-copy">
-                <span class="k" id="purchase-heading">Choose how to upgrade</span>
-                <p id="purchase-body-copy">On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
+          <div class="settings-layout">
+            <div class="panel purchase-panel settings-card">
+              <div class="panel-hd">Purchases</div>
+              <div class="purchase-copy">
+                <div class="purchase-mode web" id="purchase-mode-badge">Web checkout</div>
+                <div class="row-copy">
+                  <span class="k" id="purchase-heading">Choose how to upgrade</span>
+                  <p id="purchase-body-copy">On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
+                </div>
+              </div>
+              <div class="purchase-note" id="purchase-platform-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
+            </div>
+
+            <div class="panel settings-card">
+              <div class="panel-hd">Profile</div>
+              <div class="settings-note">Update your core student details so tests and recommendations stay personalized.</div>
+              <div class="row"><span class="k">Full Name</span><span class="v" id="profile-name">-</span></div>
+              <div class="row"><span class="k">Email</span><span class="v" id="profile-email">-</span></div>
+              <div class="row">
+                <span class="k">Grade</span>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <select id="profile-grade-select" class="grade-select" onchange="saveGrade()">
+                    <option value="">Select grade</option>
+                    <option value="8">8th Grade</option>
+                    <option value="9">9th Grade</option>
+                    <option value="10">10th Grade</option>
+                    <option value="11">11th Grade</option>
+                    <option value="12">12th Grade</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="purchase-note" id="purchase-platform-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
-          </div>
 
-          <div class="panel">
-            <div class="panel-hd">Profile</div>
-            <div class="row"><span class="k">Full Name</span><span class="v" id="profile-name">-</span></div>
-            <div class="row"><span class="k">Email</span><span class="v" id="profile-email">-</span></div>
-            <div class="row">
-              <span class="k">Grade</span>
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <select id="profile-grade-select" class="grade-select" onchange="saveGrade()">
-                  <option value="">Select grade</option>
-                  <option value="8">8th Grade</option>
-                  <option value="9">9th Grade</option>
-                  <option value="10">10th Grade</option>
-                  <option value="11">11th Grade</option>
-                  <option value="12">12th Grade</option>
-                </select>
+            <div class="panel settings-card">
+              <div class="panel-hd">Account</div>
+              <div class="settings-note">Need to switch users? Sign out safely and return to your dashboard anytime.</div>
+              <div class="row">
+                <span class="k">Session</span>
+                <div class="settings-account-actions">
+                  <button class="btn-outline-dark" onclick="logout()">Sign Out</button>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-hd">Account</div>
-            <div class="row"><span class="k">Sign out</span><button class="btn-outline-dark" onclick="logout()">Sign Out</button></div>
           </div>
         </div>
       </div>
@@ -3099,8 +3147,10 @@ function renderDash() {
   }).length;
   document.getElementById('d-count').textContent = String(monthCount);
 
-  document.getElementById('profile-account-status').textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
-  document.getElementById('profile-account-type').textContent = isTest ? 'Test user' : 'Standard user';
+  const accountStatusEl = document.getElementById('profile-account-status');
+  const accountTypeEl = document.getElementById('profile-account-type');
+  if (accountStatusEl) accountStatusEl.textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
+  if (accountTypeEl) accountTypeEl.textContent = isTest ? 'Test user' : 'Standard user';
   document.getElementById('profile-name').textContent = S.user.name || '-';
   document.getElementById('profile-email').textContent = S.user.email || '-';
   document.getElementById('profile-plan').textContent = S.isPremium ? 'Pro' : 'Free';
