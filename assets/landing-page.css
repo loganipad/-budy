@@ -735,9 +735,11 @@ input,select{font-family:inherit}
 .action-confirm-modal.is-compact .modal-hd-text p{margin:0}
 .leave-test-copy h2{font-size:1.25rem;font-weight:800;color:#f0f4ff;margin-bottom:8px}
 .leave-test-copy p{font-size:.9rem;line-height:1.65;color:rgba(240,244,255,.62)}
-.leave-test-copy .leave-test-alert-title{display:flex;align-items:center;justify-content:center;gap:12px;color:#fca5a5;text-align:center}
+.leave-test-copy .leave-test-alert-title{position:relative;display:flex;align-items:center;justify-content:center;color:#fca5a5;text-align:center}
+.leave-test-copy .leave-test-alert-title-text{display:block;width:100%;text-align:center}
 .leave-test-copy .leave-test-alert{width:24px;height:24px;border-radius:999px;border:1.5px solid rgba(244,63,94,.72);display:inline-flex;align-items:center;justify-content:center;
   color:#fb7185;font-size:.95rem;font-weight:900;line-height:1;flex-shrink:0}
+.leave-test-copy .leave-test-alert-title .leave-test-alert{position:absolute;right:0;top:50%;transform:translateY(-50%)}
 .action-confirm-modal{max-width:460px}
 .action-confirm-modal.is-compact{max-width:404px}
 .action-confirm-icon{width:56px;height:56px;border-radius:0;display:flex;align-items:center;justify-content:center;
