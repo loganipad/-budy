@@ -2781,7 +2781,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           </div>
           <p class="panel-copy recommended-copy">These suggestions are driven by the topic patterns showing up in your flagged and wrong-answer history, plus a simple competency score that makes the next move clearer.</p>
           <div class="recommended-head-actions">
-            <button class="recommended-start-pill" id="recommended-start-pill" type="button" aria-expanded="false" aria-controls="recommended-topic-list">View Now <span class="recommended-start-pill-arrow" aria-hidden="true">▼</span></button>
+            <button class="recommended-start-pill" id="recommended-start-pill" type="button" aria-expanded="false" aria-controls="recommended-topic-list" onclick="toggleRecommendedTopics(event)">View Now <span class="recommended-start-pill-arrow" aria-hidden="true">▼</span></button>
           </div>
         </div>
         <div class="recommended-list hidden" id="recommended-topic-list"></div>
@@ -4074,6 +4074,17 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
       if (card) card.classList.toggle('is-collapsed', !studyUIState.recommendedStartOpen);
     }
+
+    function toggleRecommendedTopics(event) {
+      if (event && typeof event.preventDefault === 'function') event.preventDefault();
+      if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
+      const list = document.getElementById('recommended-topic-list');
+      if (!list) return false;
+      const shouldOpen = list.classList.contains('hidden');
+      setRecommendedTopicsOpen(shouldOpen);
+      return false;
+    }
+    window.toggleRecommendedTopics = toggleRecommendedTopics;
 
     function renderRecommendedStartMenu(topics) {
       const button = document.getElementById('recommended-start-pill');
@@ -5684,11 +5695,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const button = document.getElementById('recommended-start-pill');
       const list = document.getElementById('recommended-topic-list');
       if (!button || !list) return;
-
-      button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        setRecommendedTopicsOpen(!studyUIState.recommendedStartOpen);
-      });
+      button.onclick = toggleRecommendedTopics;
     }
 
     function renderStudyWorkspace() {
