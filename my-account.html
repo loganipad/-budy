@@ -137,6 +137,31 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   margin-top: 8px;
 }
+.acct-status-row {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.admin-panel-btn {
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(239,68,68,.55);
+  background: rgba(127,29,29,.9);
+  color: #fecaca;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 22px rgba(127,29,29,.28);
+}
+.admin-panel-btn:hover {
+  background: #b91c1c;
+  border-color: rgba(248,113,113,.8);
+  color: #fff;
+}
 .acct-status.free {
   background: rgba(5,150,105,.15);
   border: 1px solid rgba(16,185,129,.25);
@@ -1573,9 +1598,12 @@ button { font-family: inherit; cursor: pointer; }
     <div class="wrap">
       <p class="dash-greeting">Welcome back</p>
       <h1 class="dash-name" id="dash-greet-name">Student</h1>
-      <div class="acct-status free" id="acct-status-badge">
-        <span class="acct-status-dot"></span>
-        <span id="acct-status-text">Free Plan</span>
+      <div class="acct-status-row">
+        <div class="acct-status free" id="acct-status-badge">
+          <span class="acct-status-dot"></span>
+          <span id="acct-status-text">Free Plan</span>
+        </div>
+        <a class="admin-panel-btn hidden" id="admin-panel-btn" href="/admin">Admin Panel</a>
       </div>
 
       <div class="acct-tabs" role="tablist">
@@ -1888,6 +1916,7 @@ const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_DB_CONNECTION = 'Username-Password-Authentication';
 const AUTH0_REDIRECT_URI = window.location.origin;
+const ADMIN_PANEL_URL = '/admin';
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
 const ADMIN_EMAILS = ['loganipad@gmail.com'];
@@ -3734,8 +3763,13 @@ function renderDash() {
 
   const badge = document.getElementById('acct-status-badge');
   const badgeText = document.getElementById('acct-status-text');
+  const adminPanelBtn = document.getElementById('admin-panel-btn');
   const isTest = isTestUserEmail(S.user.email);
   const isAdmin = Boolean(S.isAdmin);
+  if (adminPanelBtn) {
+    adminPanelBtn.href = ADMIN_PANEL_URL;
+    adminPanelBtn.classList.toggle('hidden', !isAdmin);
+  }
   if (isAdmin) {
     badge.classList.remove('free');
     badge.classList.add('pro');
