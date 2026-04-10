@@ -5754,6 +5754,19 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const actions = document.createElement('div');
       actions.className = 'inline-test-actions';
 
+      if (inlineTestState.index > 0) {
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'inline-test-btn';
+        prevBtn.textContent = '← Previous';
+        prevBtn.addEventListener('click', function () {
+          inlineTestState.revealed = false;
+          inlineTestState.index = Math.max(0, inlineTestState.index - 1);
+          renderInlineTest();
+        });
+        actions.appendChild(prevBtn);
+      }
+
       const exitBtn = document.createElement('button');
       exitBtn.type = 'button';
       exitBtn.className = 'inline-test-btn';
