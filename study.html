@@ -1627,17 +1627,63 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 }
 
 .recommended-head{margin-bottom:18px}
+.recommended-head-actions{position:relative;margin-top:12px}
+.recommended-start-pill{
+  min-height:38px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid rgba(245,158,11,.55);
+  background:linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color:#1f2937;
+  font-size:.8rem;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 12px 24px rgba(245,158,11,.26);
+}
+.recommended-start-pill:hover{transform:translateY(-1px)}
+.recommended-start-menu{
+  position:absolute;
+  top:46px;
+  left:0;
+  z-index:35;
+  width:min(360px,calc(100vw - 72px));
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(10,16,29,.98);
+  box-shadow:0 24px 56px rgba(0,0,0,.46);
+  padding:8px;
+  display:grid;
+  gap:6px;
+}
+.recommended-start-menu.hidden{display:none}
+.recommended-start-option{
+  min-height:36px;
+  width:100%;
+  text-align:left;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+  color:#e2e8f0;
+  padding:8px 10px;
+  font-size:.78rem;
+  font-weight:700;
+  cursor:pointer;
+}
+.recommended-start-option:hover{background:rgba(37,99,235,.24);border-color:rgba(59,130,246,.4)}
 .recommended-list{display:grid;gap:12px}
 
 .recommended-row{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto auto;
+  grid-template-columns:minmax(0,1fr) auto;
   gap:14px;
   align-items:center;
+  cursor:pointer;
 }
 
+.recommended-row:hover{border-color:rgba(59,130,246,.3);background:rgba(255,255,255,.07)}
+
 .recommended-topic span{display:block;font-size:.82rem;line-height:1.6;color:var(--muted)}
-.recommended-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.recommended-row .recommended-action{display:none}
 
 .library-empty,
 .recommended-empty{
@@ -1754,6 +1800,104 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   color:rgba(240,244,255,.5);
   font-size:.76rem;
   font-weight:700;
+}
+
+.review-question-picker{
+  margin:14px 0 18px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.03);
+  padding:14px;
+  display:grid;
+  gap:12px;
+}
+
+.review-picker-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.review-picker-all{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:.78rem;
+  font-weight:800;
+  color:#e2e8f0;
+}
+
+.review-picker-similar{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:rgba(240,244,255,.62);
+}
+
+.review-picker-similar select{
+  min-height:32px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  padding:0 10px;
+  font-size:.78rem;
+  font-weight:700;
+}
+
+.review-picker-list{
+  display:grid;
+  gap:8px;
+  max-height:250px;
+  overflow:auto;
+  padding-right:4px;
+}
+
+.review-picker-row{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:10px;
+  align-items:start;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+  padding:10px;
+}
+
+.review-picker-row input[type="checkbox"]{margin-top:3px}
+
+.review-picker-copy strong{display:block;font-size:.8rem;color:#f8fafc;line-height:1.5}
+.review-picker-copy p{font-size:.75rem;color:var(--muted);line-height:1.55;margin-top:4px}
+
+.review-picker-chip{
+  min-height:24px;
+  padding:0 8px;
+  border-radius:999px;
+  border:1px solid rgba(59,130,246,.34);
+  background:rgba(26,86,219,.16);
+  color:#bfdbfe;
+  font-size:.64rem;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  display:inline-flex;
+  align-items:center;
+}
+
+.review-picker-empty{
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,.14);
+  background:rgba(255,255,255,.03);
+  padding:12px;
+  color:var(--muted);
+  font-size:.78rem;
+  line-height:1.6;
 }
 
 /* Inline test runner */
@@ -2291,6 +2435,25 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
               <div class="review-quick-summary" id="review-focus-summary">Select a source to build your review test.</div>
             </div>
 
+            <div class="review-question-picker" id="review-question-picker">
+              <div class="review-picker-top">
+                <label class="review-picker-all" for="review-select-all">
+                  <input id="review-select-all" type="checkbox" checked>
+                  Select all questions
+                </label>
+                <label class="review-picker-similar" for="review-similar-count">
+                  + Add Similar Questions
+                  <select id="review-similar-count" aria-label="Add similar questions count">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </label>
+              </div>
+              <div class="review-picker-list" id="review-picker-list"></div>
+            </div>
+
             <div class="review-bank-shell study-review-root" id="study-review-bank" style="display:none">
               <div class="review-bank-toolbar" style="display:none">
                 <div class="review-bank-filter-group">
@@ -2358,6 +2521,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         <div class="recommended-head">
           <h2>Recommended topics</h2>
           <p class="panel-copy">These suggestions are driven by the topic patterns showing up in your flagged and wrong-answer history, plus a simple competency score that makes the next move clearer.</p>
+          <div class="recommended-head-actions">
+            <button class="recommended-start-pill" id="recommended-start-pill" type="button" aria-expanded="false" aria-controls="recommended-start-menu">Start Now</button>
+            <div class="recommended-start-menu hidden" id="recommended-start-menu"></div>
+          </div>
         </div>
         <div class="recommended-list" id="recommended-topic-list"></div>
       </section>
@@ -2453,15 +2620,18 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       reviewMode: 'both',
       reviewTopicMode: 'all',
       reviewTopicKey: '',
+      reviewSelections: {},
+      reviewAddSimilar: 5,
       flashcardCount: 8,
       flashcardIndex: 0,
       flashcardFace: 'front',
       flashcardOrder: [],
-      flashcardLayout: 'stack',
+      flashcardLayout: 'table',
       flashcardMode: 'all',
       flashcardStudyDeck: [],
       flashcardTableDealSeed: 0,
       flashcardTableFlips: {},
+      recommendedStartOpen: false,
       tutorialStep: 0
     };
 
@@ -3464,6 +3634,190 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       return savedQuestions;
     }
 
+    function getReviewEntryKey(entry) {
+      if (!entry || typeof entry !== 'object') return '';
+      return String(
+        entry.key
+        || entry.questionId
+        || entry.id
+        || ((entry.prompt || entry.question || 'question') + '::' + (entry.sourceAttemptedAt || entry.updatedAt || entry.lastSeenAt || ''))
+      );
+    }
+
+    function getReviewCandidateQuestionsRaw() {
+      const savedQuestions = getReviewBankSavedQuestions();
+      return savedQuestions.filter((entry) => {
+        const flagged = Boolean(entry && entry.isFlagged);
+        const wrong = Boolean(entry && entry.wasAnsweredWrong);
+        if (studyUIState.reviewMode === 'flagged') return flagged;
+        if (studyUIState.reviewMode === 'wrong') return wrong;
+        return flagged || wrong;
+      });
+    }
+
+    function ensureReviewSelectionDefaults(candidates) {
+      if (!studyUIState.reviewSelections || typeof studyUIState.reviewSelections !== 'object') {
+        studyUIState.reviewSelections = {};
+      }
+
+      const candidateKeys = new Set();
+      (Array.isArray(candidates) ? candidates : []).forEach((entry) => {
+        const key = getReviewEntryKey(entry);
+        if (!key) return;
+        candidateKeys.add(key);
+        if (!(key in studyUIState.reviewSelections)) {
+          studyUIState.reviewSelections[key] = true;
+        }
+      });
+
+      Object.keys(studyUIState.reviewSelections).forEach((key) => {
+        if (!candidateKeys.has(key)) {
+          delete studyUIState.reviewSelections[key];
+        }
+      });
+    }
+
+    function buildReviewLaunchQuestionSet() {
+      const candidates = getReviewCandidateQuestionsRaw();
+      ensureReviewSelectionDefaults(candidates);
+
+      const selected = candidates.filter((entry) => {
+        const key = getReviewEntryKey(entry);
+        return key && studyUIState.reviewSelections[key] !== false;
+      });
+
+      const selectedKeys = new Set(selected.map(getReviewEntryKey));
+      const addSimilarCount = clamp(Number(studyUIState.reviewAddSimilar || 0), 0, 50);
+      let similar = [];
+
+      if (addSimilarCount > 0 && selected.length) {
+        const selectedTopicKeys = new Set(
+          selected
+            .map((entry) => getTopicKeyForRawSavedQuestion(entry))
+            .filter(Boolean)
+        );
+
+        const similarPool = (Array.isArray(reviewData.savedQuestionsCache) ? reviewData.savedQuestionsCache : [])
+          .filter((entry) => {
+            const key = getReviewEntryKey(entry);
+            if (!key || selectedKeys.has(key)) return false;
+            const topicKey = getTopicKeyForRawSavedQuestion(entry);
+            if (!topicKey) return false;
+            return selectedTopicKeys.has(topicKey);
+          });
+
+        similar = shuffleArray(similarPool).slice(0, addSimilarCount);
+      }
+
+      return {
+        candidates: candidates,
+        selected: selected,
+        similar: similar,
+        combined: selected.concat(similar)
+      };
+    }
+
+    function renderReviewQuestionPicker() {
+      const list = document.getElementById('review-picker-list');
+      const selectAll = document.getElementById('review-select-all');
+      if (!list) return;
+
+      const candidates = getReviewCandidateQuestionsRaw();
+      ensureReviewSelectionDefaults(candidates);
+
+      list.replaceChildren();
+
+      if (!candidates.length) {
+        const empty = document.createElement('div');
+        empty.className = 'review-picker-empty';
+        empty.textContent = 'No matching review questions yet. Take a test, then flag or miss questions to build this list.';
+        list.appendChild(empty);
+        if (selectAll) {
+          selectAll.checked = false;
+          selectAll.disabled = true;
+        }
+        return;
+      }
+
+      if (selectAll) {
+        const selectedCount = candidates.filter((entry) => studyUIState.reviewSelections[getReviewEntryKey(entry)] !== false).length;
+        selectAll.disabled = false;
+        selectAll.checked = selectedCount === candidates.length;
+        selectAll.indeterminate = selectedCount > 0 && selectedCount < candidates.length;
+      }
+
+      candidates.forEach((entry) => {
+        const row = document.createElement('label');
+        row.className = 'review-picker-row';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = studyUIState.reviewSelections[getReviewEntryKey(entry)] !== false;
+
+        const copy = document.createElement('div');
+        copy.className = 'review-picker-copy';
+        const title = document.createElement('strong');
+        title.textContent = truncateText(String(entry.prompt || entry.question || 'Saved question'), 120);
+        const meta = document.createElement('p');
+        meta.textContent = sectionLabel(normalizeSection(entry.section) || 'english') + ' · ' + String(entry.skill || entry.domain || 'Topic');
+        copy.appendChild(title);
+        copy.appendChild(meta);
+
+        const chip = document.createElement('span');
+        chip.className = 'review-picker-chip';
+        chip.textContent = entry.wasAnsweredWrong ? 'Wrong' : 'Flagged';
+
+        checkbox.addEventListener('change', function () {
+          studyUIState.reviewSelections[getReviewEntryKey(entry)] = checkbox.checked;
+          renderReviewQuestionPicker();
+          renderReviewFocusControls();
+        });
+
+        row.appendChild(checkbox);
+        row.appendChild(copy);
+        row.appendChild(chip);
+        list.appendChild(row);
+      });
+    }
+
+    function closeRecommendedStartMenu() {
+      studyUIState.recommendedStartOpen = false;
+      const button = document.getElementById('recommended-start-pill');
+      const menu = document.getElementById('recommended-start-menu');
+      if (button) button.setAttribute('aria-expanded', 'false');
+      if (menu) menu.classList.add('hidden');
+    }
+
+    function renderRecommendedStartMenu(topics) {
+      const button = document.getElementById('recommended-start-pill');
+      const menu = document.getElementById('recommended-start-menu');
+      if (!button || !menu) return;
+
+      menu.replaceChildren();
+
+      if (!Array.isArray(topics) || !topics.length) {
+        const empty = document.createElement('div');
+        empty.className = 'review-picker-empty';
+        empty.textContent = 'Recommended subjects will appear after test data is available.';
+        menu.appendChild(empty);
+      } else {
+        topics.forEach((topic) => {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.className = 'recommended-start-option';
+          option.textContent = sectionLabel(topic.section) + ' · ' + topic.label;
+          option.addEventListener('click', function () {
+            closeRecommendedStartMenu();
+            openTopicView('study-guides', topic.key);
+          });
+          menu.appendChild(option);
+        });
+      }
+
+      menu.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
+      button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
+    }
+
     function syncReviewModeWithBuilder() {
       const flaggedInput = document.querySelector('[data-review-filter="flagged"]');
       const wrongInput = document.querySelector('[data-review-filter="wrong"]');
@@ -3525,38 +3879,43 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       }
 
       const summary = document.getElementById('review-focus-summary');
+      const launchSet = buildReviewLaunchQuestionSet();
+      const selectedCount = launchSet.selected.length;
+      const similarCount = launchSet.similar.length;
+      const totalCount = launchSet.combined.length;
       if (summary) {
-        const bankQuestions = getReviewBankSavedQuestions();
-        const count = Array.isArray(bankQuestions) ? bankQuestions.length : 0;
+        const count = totalCount;
         if (studyUIState.reviewTopicMode === 'topic' && studyUIState.reviewTopicKey) {
           const topic = getTopicByKey(studyUIState.reviewTopicKey);
           summary.textContent = topic
-            ? (count + ' questions · ' + topic.label)
+            ? (count + ' questions · ' + topic.label + ' (' + selectedCount + ' selected' + (similarCount ? (' + ' + similarCount + ' similar') : '') + ')')
             : (count + ' questions available');
         } else if (studyUIState.reviewTopicMode === 'most-wrong') {
           const mostWrong = getMostWrongTopics(3);
           summary.textContent = mostWrong.length
-            ? (count + ' questions · ' + mostWrong.map((topic) => topic.label).join(', '))
+            ? (count + ' questions · ' + mostWrong.map((topic) => topic.label).join(', ') + ' (' + selectedCount + ' selected' + (similarCount ? (' + ' + similarCount + ' similar') : '') + ')')
             : (count + ' questions available');
         } else {
-          summary.textContent = count + ' questions available';
+          summary.textContent = count + ' questions available (' + selectedCount + ' selected' + (similarCount ? (' + ' + similarCount + ' similar') : '') + ')';
         }
       }
 
       const launchBtn = document.querySelector('.review-quick-launch');
-      const bankQuestions = getReviewBankSavedQuestions();
       if (launchBtn) {
-        launchBtn.disabled = !bankQuestions || !bankQuestions.length;
+        launchBtn.disabled = !launchSet.combined.length || !launchSet.selected.length;
       }
 
       const countInput = document.querySelector('.review-quick-count');
       const timeLabel = document.querySelector('[data-review-estimated-time]');
-      if (timeLabel && bankQuestions) {
+      if (timeLabel) {
         const desired = countInput ? Math.max(1, Number(countInput.value) || 10) : 10;
+        const cappedDesired = Math.min(desired, Math.max(1, launchSet.combined.length || 1));
         const avgSec = 90;
-        const estMin = Math.max(1, Math.round((desired * avgSec) / 60));
+        const estMin = Math.max(1, Math.round((cappedDesired * avgSec) / 60));
         timeLabel.textContent = '~' + estMin + ' min';
       }
+
+      renderReviewQuestionPicker();
     }
 
     function updateMenuTabs() {
@@ -4892,12 +5251,18 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         empty.className = 'recommended-empty';
         empty.textContent = 'Topic recommendations will appear here once Budy has flagged or wrong-answer history to work from.';
         list.appendChild(empty);
+        renderRecommendedStartMenu([]);
         return;
       }
+
+      renderRecommendedStartMenu(topicsToRender);
 
       topicsToRender.forEach((topic) => {
         const row = document.createElement('article');
         row.className = 'recommended-row';
+        row.addEventListener('click', function () {
+          openTopicView('study-guides', topic.key);
+        });
 
         const topicCopy = document.createElement('div');
         topicCopy.className = 'recommended-topic';
@@ -4913,41 +5278,26 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         competency.className = 'competency-badge';
         competency.textContent = topic.competency + '% competency';
         row.appendChild(competency);
-
-        const actions = document.createElement('div');
-        actions.className = 'recommended-actions';
-
-        const guideButton = document.createElement('button');
-        guideButton.type = 'button';
-        guideButton.className = 'recommended-action';
-        guideButton.textContent = 'Study Guide';
-        guideButton.addEventListener('click', function () {
-          openTopicView('study-guides', topic.key);
-        });
-        actions.appendChild(guideButton);
-
-        const reviewButton = document.createElement('button');
-        reviewButton.type = 'button';
-        reviewButton.className = 'recommended-action';
-        reviewButton.textContent = 'Review';
-        reviewButton.addEventListener('click', function () {
-          studyUIState.activeTab = 'review-tests';
-          updateMenuTabs();
-          focusWorkspace();
-        });
-        actions.appendChild(reviewButton);
-
-        const flashcardButton = document.createElement('button');
-        flashcardButton.type = 'button';
-        flashcardButton.className = 'recommended-action';
-        flashcardButton.textContent = 'Flashcards';
-        flashcardButton.addEventListener('click', function () {
-          openTopicView('flashcards', topic.key);
-        });
-        actions.appendChild(flashcardButton);
-
-        row.appendChild(actions);
         list.appendChild(row);
+      });
+    }
+
+    function bindRecommendedStartControls() {
+      const button = document.getElementById('recommended-start-pill');
+      const menu = document.getElementById('recommended-start-menu');
+      if (!button || !menu) return;
+
+      button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        studyUIState.recommendedStartOpen = !studyUIState.recommendedStartOpen;
+        menu.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
+        button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!studyUIState.recommendedStartOpen) return;
+        if (button.contains(event.target) || menu.contains(event.target)) return;
+        closeRecommendedStartMenu();
       });
     }
 
@@ -5117,6 +5467,29 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           renderReviewFocusControls();
         });
       }
+
+      const selectAll = document.getElementById('review-select-all');
+      if (selectAll) {
+        selectAll.addEventListener('change', function () {
+          const candidates = getReviewCandidateQuestionsRaw();
+          ensureReviewSelectionDefaults(candidates);
+          candidates.forEach((entry) => {
+            const key = getReviewEntryKey(entry);
+            if (!key) return;
+            studyUIState.reviewSelections[key] = selectAll.checked;
+          });
+          renderReviewQuestionPicker();
+          renderReviewFocusControls();
+        });
+      }
+
+      const similarSelect = document.getElementById('review-similar-count');
+      if (similarSelect) {
+        similarSelect.addEventListener('change', function () {
+          studyUIState.reviewAddSimilar = clamp(Number(similarSelect.value || 0), 0, 50);
+          renderReviewFocusControls();
+        });
+      }
     }
 
     function bindTopicControls() {
@@ -5202,14 +5575,15 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     function launchInlineReviewTest() {
       const countInput = document.querySelector('.review-quick-count');
       const desired = countInput ? Math.max(1, Math.min(50, Number(countInput.value) || 10)) : 10;
-      const bankQuestions = getReviewBankSavedQuestions();
-      if (!bankQuestions || !bankQuestions.length) return;
+      const launchSet = buildReviewLaunchQuestionSet();
+      const bankQuestions = launchSet.combined;
+      if (!bankQuestions || !bankQuestions.length || !launchSet.selected.length) return;
 
       const normalized = bankQuestions.map(normalizeSavedForRunner).filter(Boolean);
       if (!normalized.length) return;
 
       const shuffled = shuffleArray(normalized);
-      inlineTestState.questions = shuffled.slice(0, desired);
+      inlineTestState.questions = shuffled.slice(0, Math.min(desired, shuffled.length));
       inlineTestState.index = 0;
       inlineTestState.answers = {};
       inlineTestState.revealed = false;
@@ -5498,6 +5872,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       refreshStudyDataModel();
       bindStudyTabs();
       bindReviewFocusControls();
+      bindRecommendedStartControls();
       bindTopicControls();
       bindStudyTutorial();
       renderStudyWorkspace();
