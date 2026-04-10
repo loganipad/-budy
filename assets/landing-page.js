@@ -2452,12 +2452,12 @@ function updQNav(){
   const leftQ=Math.max(0,S.questions.length-currentQ);
   document.getElementById('tb-prog-fill').style.width=pct+'%';
   document.getElementById('test-prog-txt').textContent=`Q${currentQ} of ${S.questions.length} · ${leftQ} left`;
-  const nextBtn=document.getElementById('next-btn');
-  if(nextBtn)nextBtn.disabled=!hasSubmittedAnswer(S.curQ);
-  document.getElementById('prev-btn').disabled=S.curQ===0;
-  const last=S.curQ===S.questions.length-1;
-  document.getElementById('next-btn').classList.toggle('hidden',last);
-  document.getElementById('submit-btn').classList.toggle('hidden',!last);
+  const stepSubmitBtn=document.getElementById('step-submit-btn');
+  if(stepSubmitBtn){
+    const last=S.curQ===S.questions.length-1;
+    stepSubmitBtn.disabled=!hasSubmittedAnswer(S.curQ);
+    stepSubmitBtn.textContent=last?'Submit Test':'Submit';
+  }
 }
 
 /* ── RENDER QUESTION ── */
@@ -2521,7 +2521,12 @@ function selAns(qi,l,el){
 }
 function saveSpr(qi,v){if(v.trim())S.answers[qi]=v.trim();else delete S.answers[qi];updQNav();scheduleDraftAutosave('answer_input');}
 
-function goQ(i){
+function goQ(i,options={}){
+  const allowBackward=Boolean(options&&options.allowBackward);
+  if(LANDING_STRICT_ONE_AT_TIME&&i<S.curQ&&!allowBackward){
+    toast('You cannot return to previous questions in this test mode.','wn');
+    return;
+  }
   const spr=document.getElementById('spr-'+S.curQ);
   if(spr)saveSpr(S.curQ,spr.value);
   renderQ(i);
@@ -2536,7 +2541,23 @@ function goNext(){
   adaptUpcomingQuestion(current);
   goQ(Math.min(current+1,S.questions.length-1));
 }
-function goPrev(){goQ(Math.max(S.curQ-1,0))}
+function goPrev(){
+  toast('You cannot return to previous questions in this test mode.','wn');
+}
+
+function handleStepSubmit(){
+  const current=S.curQ;
+  if(!hasSubmittedAnswer(current)){
+    toast('Submit an answer before continuing.','wn');
+    return;
+  }
+  if(current>=S.questions.length-1){
+    confirmSubmit();
+    return;
+  }
+  adaptUpcomingQuestion(current);
+  goQ(Math.min(current+1,S.questions.length-1));
+}
 
 /* ── FLAG ── */
 function toggleFlag(){
@@ -3350,8 +3371,7 @@ document.addEventListener('keydown',e=>{
   const q=S.questions[S.curQ];
   if(q&&q.type==='mc'){const m={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3}[e.key.toLowerCase()];
     if(m!==undefined){const opts=document.querySelectorAll('.q-opt');if(opts[m])opts[m].click()}}
-  if(e.key==='ArrowRight')goNext();
-  if(e.key==='ArrowLeft')goPrev();
+  if(e.key==='ArrowRight')handleStepSubmit();
   if(e.key==='f'||e.key==='F')toggleFlag();
 });
 

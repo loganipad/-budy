@@ -570,10 +570,8 @@
   <div class="test-ft">
     <button class="flag-btn" id="flag-btn" onclick="toggleFlag()"><span class="ui-icon ui-icon-sm" id="flag-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flag"></use></svg></span><span id="flag-lbl">Flag</span></button>
     <div class="test-nav-btns">
-      <button class="btn btn-ghost btn-sm" id="prev-btn" onclick="goPrev()">← Prev</button>
       <span class="test-prog-txt" id="test-prog-txt"></span>
-      <button class="btn btn-primary btn-sm" id="next-btn" onclick="goNext()">Next →</button>
-      <button class="btn btn-sm hidden" id="submit-btn" style="background:var(--green);color:#fff;font-weight:800;border-radius:9999px;padding:0 20px" onclick="confirmSubmit()">Submit</button>
+      <button class="btn btn-primary btn-sm" id="step-submit-btn" onclick="handleStepSubmit()">Submit</button>
     </div>
   </div>
 </div>
@@ -949,6 +947,6 @@
      JAVASCRIPT
      ============================================================ -->
 <script src="/assets/ai-deep-dive.js"></script>
-<script src="/assets/landing-page.js?v=20260410b"></script>
+<script src="/assets/landing-page.js?v=20260410c"></script>
 </body>
 </html>
