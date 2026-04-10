@@ -387,7 +387,34 @@ input,select{font-family:inherit}
 .landing-dark-section .faq-btn.open .faq-arrow{background:rgba(26,86,219,.22);color:var(--brand)}
 .landing-dark-section .solution-preview{box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 .faq-section{background:transparent}
-.how-section{background:var(--bg)}
+.how-section{
+  background:linear-gradient(180deg,#f8fbff 0%,#edf4ff 100%);
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+.how-section::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 60% at 18% 12%, rgba(37,99,235,.14) 0%, transparent 58%),
+    radial-gradient(ellipse 62% 52% at 84% 86%, rgba(245,158,11,.10) 0%, transparent 62%);
+}
+.how-section::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(37,99,235,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.06) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.how-section .wrap{position:relative;z-index:1}
 .sec-eyebrow{display:inline-flex;align-items:center;color:var(--brand);
   font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
 .sec-head{font-family:var(--font-h);font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;
