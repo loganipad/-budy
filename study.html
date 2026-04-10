@@ -254,6 +254,59 @@ button,input,select{font:inherit}
 
 .tutorial-pop.hidden{display:none}
 
+.study-toast-stack{
+  position:fixed;
+  top:18px;
+  right:18px;
+  z-index:1600;
+  display:grid;
+  gap:10px;
+  width:min(360px,calc(100% - 28px));
+  pointer-events:none;
+}
+
+.study-toast{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(180deg, rgba(15,23,42,.95) 0%, rgba(2,6,23,.96) 100%);
+  box-shadow:0 16px 44px rgba(0,0,0,.42);
+  color:#f8fafc;
+  padding:12px 14px;
+  transform:translateY(-16px);
+  opacity:0;
+  transition:opacity .26s ease,transform .26s ease;
+}
+
+.study-toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.study-toast.achievement{
+  border-color:rgba(245,158,11,.52);
+  background:linear-gradient(180deg, rgba(71,40,7,.96) 0%, rgba(21,16,4,.96) 100%);
+}
+
+.study-toast-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:4px;
+}
+
+.study-toast-badge{
+  font-size:.64rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#bfdbfe;
+}
+
+.study-toast.achievement .study-toast-badge{color:#fcd34d}
+.study-toast-title{font-size:.88rem;font-weight:800;color:#fff}
+.study-toast-copy{font-size:.76rem;line-height:1.55;color:rgba(240,244,255,.78)}
+
 .tutorial-top{
   display:flex;
   justify-content:space-between;
@@ -909,6 +962,32 @@ button,input,select{font:inherit}
   overflow-y:auto;
 }
 
+.topic-detail:fullscreen,
+.topic-detail:-webkit-full-screen{
+  width:100%;
+  height:100%;
+  max-height:none;
+  border-radius:0;
+  border-color:rgba(255,255,255,.16);
+  background:rgba(9,14,25,.97);
+  padding:26px;
+}
+
+body.viewer-faux-fullscreen-active{overflow:hidden}
+
+.topic-detail.is-faux-fullscreen{
+  position:fixed;
+  inset:0;
+  z-index:1500;
+  width:100vw;
+  height:100vh;
+  max-height:none;
+  border-radius:0;
+  border-color:rgba(255,255,255,.16);
+  background:rgba(9,14,25,.97);
+  padding:26px;
+}
+
 .topic-detail.hidden{display:none}
 .topic-detail-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
 .topic-detail-kicker{font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px}
@@ -1309,12 +1388,22 @@ button,input,select{font:inherit}
 
 /* ── Game-like Flashcard UI ───────────────────── */
 .fc-game{display:grid;gap:18px;max-width:600px;margin:0 auto}
+.fc-layout-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fc-layout-toggle{display:flex;flex-wrap:wrap;gap:8px}
+.fc-layout-btn{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(240,244,255,.78);font-size:.74rem;font-weight:800;cursor:pointer;transition:all .18s ease}
+.fc-layout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.fc-layout-btn.active{background:rgba(26,86,219,.2);border-color:rgba(59,130,246,.42);color:#dbeafe}
+.viewer-fullscreen-btn{white-space:nowrap}
 .fc-game-progress{display:flex;align-items:center;gap:12px}
 .fc-game-bar{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
 .fc-game-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),var(--gold));transition:width .4s ease}
 .fc-game-counter{font-size:.78rem;font-weight:800;color:var(--muted);white-space:nowrap}
 .fc-game-streak{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:800;color:var(--gold);min-height:24px}
 .fc-game-streak:empty{display:none}
+
+.fc-stack-stage{position:relative;padding-right:44px}
+.fc-stack-tail{position:absolute;inset:16px 0 16px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.03) 100%);transform:translateX(calc(var(--tail-index) * 11px)) translateY(calc(var(--tail-index) * 4px)) rotate(calc(var(--tail-index) * -1deg));opacity:calc(.78 - (var(--tail-index) * .16));pointer-events:none}
+.fc-card-wrapper{position:relative;z-index:2}
 
 .fc-card-wrapper{perspective:800px;min-height:280px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fc-card-inner{position:relative;width:100%;height:100%;min-height:280px;transition:transform .5s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
@@ -1354,6 +1443,28 @@ button,input,select{font:inherit}
 .fc-download-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:4px}
 .fc-download-btn{min-height:38px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(240,244,255,.78);font-size:.76rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
 .fc-download-btn:hover{background:rgba(26,86,219,.16);border-color:rgba(59,130,246,.28);color:#dbeafe}
+
+.fc-table-stage{display:grid;gap:14px}
+.fc-table-hint{font-size:.8rem;line-height:1.6;color:rgba(240,244,255,.72)}
+.fc-table-surface{border-radius:24px;padding:16px;background:radial-gradient(circle at 20% 10%, rgba(16,185,129,.18) 0%, transparent 44%),radial-gradient(circle at 82% 8%, rgba(245,158,11,.14) 0%, transparent 40%),linear-gradient(180deg, rgba(7,39,31,.94) 0%, rgba(2,20,15,.96) 100%);border:1px solid rgba(16,185,129,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.03),0 18px 42px rgba(0,0,0,.34)}
+.fc-table-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:12px}
+.fc-table-card{position:relative;min-height:164px;perspective:700px;border:none;background:transparent;cursor:pointer;padding:0}
+.fc-table-card-inner{position:relative;width:100%;height:100%;min-height:164px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,.2,.2,1)}
+.fc-table-card.flipped .fc-table-card-inner{transform:rotateY(180deg)}
+.fc-table-face{position:absolute;inset:0;border-radius:16px;padding:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:8px;text-align:left}
+.fc-table-front{background:linear-gradient(145deg, rgba(26,86,219,.26), rgba(26,86,219,.08));border:1px solid rgba(59,130,246,.42)}
+.fc-table-back{background:linear-gradient(145deg, rgba(245,158,11,.22), rgba(245,158,11,.07));border:1px solid rgba(245,158,11,.34);transform:rotateY(180deg)}
+.fc-table-label{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.56)}
+.fc-table-text{font-size:.8rem;line-height:1.52;color:#eef2ff;display:-webkit-box;line-clamp:6;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.fc-table-back .fc-table-text{color:rgba(240,244,255,.84)}
+.fc-table-card.deal-in{animation:fcDealIn .68s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--deal-delay,0ms)}
+.fc-table-controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+
+@keyframes fcDealIn{
+  0%{opacity:0;transform:translate(-220px,-130px) rotate(-18deg) scale(.72)}
+  55%{opacity:1}
+  100%{opacity:1;transform:translate(0,0) rotate(var(--deal-rot,0deg)) scale(1)}
+}
 
 /* Study guide download button */
 .guide-download-btn{min-height:44px;padding:0 22px;border-radius:999px;border:2px solid rgba(26,86,219,.32);background:rgba(26,86,219,.14);color:#93c5fd;font-size:.84rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s;text-decoration:none}
@@ -2171,6 +2282,8 @@ button,input,select{font:inherit}
     const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
     const SESSION_STORAGE_KEY = 'sm_s';
     const STUDY_TUTORIAL_KEY = 'budy_study_tutorial_seen_v1';
+    const STUDY_STREAK_KEY = 'budy_study_streak_v1';
+    const STUDY_ACHIEVEMENT_KEY = 'budy_study_achievement_v1';
     const STUDY_TOUR_STEPS = [
       {
         title: 'Review tests first',
@@ -2230,13 +2343,20 @@ button,input,select{font:inherit}
       flashcardIndex: 0,
       flashcardFace: 'front',
       flashcardOrder: [],
+      flashcardLayout: 'stack',
       flashcardMode: 'all',
       flashcardStudyDeck: [],
+      flashcardTableDealSeed: 0,
+      flashcardTableFlips: {},
       tutorialStep: 0
     };
 
     let normalizedSavedQuestions = [];
     let topicCatalog = [];
+    const studyToastState = {
+      queue: [],
+      active: false
+    };
 
     function getLocalAuthUser() {
       try {
@@ -2256,6 +2376,239 @@ button,input,select{font:inherit}
       } catch (_) {
         return [];
       }
+    }
+
+    function readStoredObject(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return fallback;
+        return parsed;
+      } catch (_) {
+        return fallback;
+      }
+    }
+
+    function writeStoredObject(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (_) {}
+    }
+
+    function ensureStudyToastHost() {
+      let host = document.getElementById('study-toast-stack');
+      if (host) return host;
+      host = document.createElement('div');
+      host.id = 'study-toast-stack';
+      host.className = 'study-toast-stack';
+      document.body.appendChild(host);
+      return host;
+    }
+
+    function flushStudyToastQueue() {
+      if (studyToastState.active) return;
+      const nextToast = studyToastState.queue.shift();
+      if (!nextToast) return;
+
+      studyToastState.active = true;
+
+      const host = ensureStudyToastHost();
+      const toast = document.createElement('article');
+      toast.className = 'study-toast ' + (nextToast.type === 'achievement' ? 'achievement' : 'streak');
+
+      const head = document.createElement('div');
+      head.className = 'study-toast-head';
+
+      const badge = document.createElement('div');
+      badge.className = 'study-toast-badge';
+      badge.textContent = nextToast.badge || (nextToast.type === 'achievement' ? 'Achievement unlocked' : 'Daily streak');
+
+      const icon = document.createElement('div');
+      icon.textContent = nextToast.icon || (nextToast.type === 'achievement' ? '🏆' : '🔥');
+
+      head.appendChild(badge);
+      head.appendChild(icon);
+
+      const title = document.createElement('div');
+      title.className = 'study-toast-title';
+      title.textContent = nextToast.title || 'Update';
+
+      const copy = document.createElement('div');
+      copy.className = 'study-toast-copy';
+      copy.textContent = nextToast.message || '';
+
+      toast.appendChild(head);
+      toast.appendChild(title);
+      toast.appendChild(copy);
+      host.appendChild(toast);
+
+      requestAnimationFrame(function () {
+        toast.classList.add('show');
+      });
+
+      setTimeout(function () {
+        toast.classList.remove('show');
+        setTimeout(function () {
+          if (toast.parentNode) toast.parentNode.removeChild(toast);
+          studyToastState.active = false;
+          flushStudyToastQueue();
+        }, 260);
+      }, 4200);
+    }
+
+    function queueStudyToast(config) {
+      if (!config || typeof config !== 'object') return;
+      studyToastState.queue.push(config);
+      flushStudyToastQueue();
+    }
+
+    function unlockStudyAchievement(id, title, message) {
+      if (!id) return false;
+      const store = readStoredObject(STUDY_ACHIEVEMENT_KEY, { unlocked: {} });
+      if (!store.unlocked || typeof store.unlocked !== 'object') {
+        store.unlocked = {};
+      }
+      if (store.unlocked[id]) return false;
+
+      store.unlocked[id] = {
+        at: new Date().toISOString(),
+        title: title || id
+      };
+      writeStoredObject(STUDY_ACHIEVEMENT_KEY, store);
+
+      queueStudyToast({
+        type: 'achievement',
+        icon: '🏆',
+        badge: 'Achievement unlocked',
+        title: title || 'Achievement',
+        message: message || 'Nice work. Keep the momentum going.'
+      });
+      return true;
+    }
+
+    function getOffsetDayKey(offsetDays) {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      date.setDate(date.getDate() + offsetDays);
+      return getDayKey(date);
+    }
+
+    function trackStudyLoginStreak() {
+      if (!reviewData.isLoggedIn) return;
+
+      const todayKey = getOffsetDayKey(0);
+      const yesterdayKey = getOffsetDayKey(-1);
+      const streakStore = readStoredObject(STUDY_STREAK_KEY, {
+        lastDay: '',
+        current: 0,
+        best: 0
+      });
+
+      let current = Number(streakStore.current || 0);
+      let best = Number(streakStore.best || 0);
+
+      if (streakStore.lastDay !== todayKey) {
+        if (streakStore.lastDay && streakStore.lastDay === yesterdayKey) {
+          current += 1;
+        } else {
+          current = 1;
+        }
+        best = Math.max(best, current);
+        streakStore.lastDay = todayKey;
+        streakStore.current = current;
+        streakStore.best = best;
+        writeStoredObject(STUDY_STREAK_KEY, streakStore);
+      }
+
+      queueStudyToast({
+        type: 'streak',
+        icon: '🔥',
+        badge: 'Daily streak',
+        title: 'Day ' + current + ' login streak',
+        message: 'Best streak: ' + best + ' day' + (best === 1 ? '' : 's') + '.'
+      });
+
+      if (current === 1) {
+        unlockStudyAchievement('first-login', 'First Session', 'Logged in and started your first streak day.');
+      }
+      if (current >= 3) {
+        unlockStudyAchievement('streak-3', 'Heat Check', 'Reached a 3-day login streak.');
+      }
+      if (current >= 7) {
+        unlockStudyAchievement('streak-7', 'Seven-Day Scholar', 'Kept your streak alive for a full week.');
+      }
+    }
+
+    function maybeToastFlashcardStreak(streakValue) {
+      if (!streakValue || streakValue < 2) return;
+      if (streakValue % 3 !== 0) return;
+
+      queueStudyToast({
+        type: 'streak',
+        icon: '🔥',
+        badge: 'Card streak',
+        title: streakValue + ' cards in a row',
+        message: 'Keep the streak alive to unlock more achievements.'
+      });
+    }
+
+    function awardFlashcardAchievements(totalCards, knownPercent) {
+      if (fcGameState.maxStreak >= 3) {
+        unlockStudyAchievement('flash-streak-3', 'Hot Hand', 'Nailed 3 flashcards in a row.');
+      }
+      if (fcGameState.maxStreak >= 5) {
+        unlockStudyAchievement('flash-streak-5', 'On Fire', 'Hit a 5-card streak in one round.');
+      }
+      if (totalCards >= 8 && knownPercent >= 80) {
+        unlockStudyAchievement('flash-ace', 'Deck Ace', 'Scored 80%+ on an 8+ card deck.');
+      }
+      if (totalCards >= 10 && knownPercent === 100) {
+        unlockStudyAchievement('flash-perfect', 'Perfect Table Run', 'Completed a 10-card deck perfectly.');
+      }
+      if (fcGameState.studyIndexes.length > 0 && knownPercent >= 60) {
+        unlockStudyAchievement('flash-comeback', 'Comeback', 'Recovered after misses and still finished strong.');
+      }
+    }
+
+    function setFullscreenButtonLabel(button, target) {
+      if (!button || !target) return;
+      const active = document.fullscreenElement === target || target.classList.contains('is-faux-fullscreen');
+      button.textContent = active ? 'Exit Full Screen' : 'Full Screen';
+    }
+
+    async function toggleViewerFullscreen(target, button) {
+      if (!target) return;
+
+      const canUseNativeFullscreen = Boolean(target.requestFullscreen && document.fullscreenEnabled);
+
+      if (canUseNativeFullscreen) {
+        if (document.fullscreenElement === target) {
+          try {
+            await document.exitFullscreen();
+          } catch (_) {}
+        } else {
+          try {
+            await target.requestFullscreen();
+          } catch (_) {
+            target.classList.toggle('is-faux-fullscreen');
+            document.body.classList.toggle('viewer-faux-fullscreen-active', target.classList.contains('is-faux-fullscreen'));
+          }
+        }
+      } else {
+        target.classList.toggle('is-faux-fullscreen');
+        document.body.classList.toggle('viewer-faux-fullscreen-active', target.classList.contains('is-faux-fullscreen'));
+      }
+
+      setFullscreenButtonLabel(button, target);
+    }
+
+    function bindViewerFullscreenEvents() {
+      document.addEventListener('fullscreenchange', function () {
+        if (!document.fullscreenElement) {
+          document.body.classList.remove('viewer-faux-fullscreen-active');
+        }
+      });
     }
 
     function getDemoStudySessions() {
@@ -2936,6 +3289,15 @@ button,input,select{font:inherit}
       studyUIState.flashcardOrder = [];
       studyUIState.flashcardMode = 'all';
       studyUIState.flashcardStudyDeck = [];
+      studyUIState.flashcardTableDealSeed = 0;
+      studyUIState.flashcardTableFlips = {};
+    }
+
+    function startFlashcardDealAnimation(resetFlips) {
+      studyUIState.flashcardTableDealSeed = Date.now();
+      if (resetFlips) {
+        studyUIState.flashcardTableFlips = {};
+      }
     }
 
     function selectTopicPreview(topicKey) {
@@ -3390,8 +3752,17 @@ button,input,select{font:inherit}
       openBtn.rel = 'noopener noreferrer';
       openBtn.textContent = 'Open PDF in New Tab';
 
+      const fullscreenBtn = document.createElement('button');
+      fullscreenBtn.type = 'button';
+      fullscreenBtn.className = 'guide-download-btn secondary viewer-fullscreen-btn';
+      setFullscreenButtonLabel(fullscreenBtn, detail);
+      fullscreenBtn.addEventListener('click', function () {
+        toggleViewerFullscreen(detail, fullscreenBtn);
+      });
+
       heroActions.appendChild(dlBtn);
       heroActions.appendChild(openBtn);
+      heroActions.appendChild(fullscreenBtn);
       hero.appendChild(heroActions);
 
       shell.appendChild(hero);
@@ -3544,6 +3915,132 @@ button,input,select{font:inherit}
       fcGameState.isComplete = false;
     }
 
+    function renderFlashcardTableMode(shell, detail, topic, flashcardState, deck) {
+      const tableStage = document.createElement('div');
+      tableStage.className = 'fc-table-stage';
+
+      const hint = document.createElement('div');
+      hint.className = 'fc-table-hint';
+      hint.textContent = 'Table view: all cards are visible on the virtual felt table. Tap any card to flip it. Use Deal Again for a casino-style redeal.';
+      tableStage.appendChild(hint);
+
+      const surface = document.createElement('div');
+      surface.className = 'fc-table-surface';
+      const grid = document.createElement('div');
+      grid.className = 'fc-table-grid';
+
+      const shouldDeal = Date.now() - Number(studyUIState.flashcardTableDealSeed || 0) < 2200;
+
+      deck.forEach(function (card, index) {
+        const tableCard = document.createElement('button');
+        tableCard.type = 'button';
+        tableCard.className = 'fc-table-card';
+        if (studyUIState.flashcardTableFlips[index]) {
+          tableCard.classList.add('flipped');
+        }
+        if (shouldDeal) {
+          tableCard.classList.add('deal-in');
+          tableCard.style.setProperty('--deal-delay', (index * 80) + 'ms');
+          tableCard.style.setProperty('--deal-rot', (((index % 3) - 1) * 1.4) + 'deg');
+        }
+
+        const inner = document.createElement('div');
+        inner.className = 'fc-table-card-inner';
+
+        const frontFace = document.createElement('div');
+        frontFace.className = 'fc-table-face fc-table-front';
+        const frontLabel = document.createElement('div');
+        frontLabel.className = 'fc-table-label';
+        frontLabel.textContent = card.label || ('Card ' + (index + 1));
+        const frontText = document.createElement('div');
+        frontText.className = 'fc-table-text';
+        frontText.textContent = card.front || '';
+        frontFace.appendChild(frontLabel);
+        frontFace.appendChild(frontText);
+
+        const backFace = document.createElement('div');
+        backFace.className = 'fc-table-face fc-table-back';
+        const backLabel = document.createElement('div');
+        backLabel.className = 'fc-table-label';
+        backLabel.textContent = 'Answer';
+        const backText = document.createElement('div');
+        backText.className = 'fc-table-text';
+        backText.textContent = card.back || '';
+        backFace.appendChild(backLabel);
+        backFace.appendChild(backText);
+
+        inner.appendChild(frontFace);
+        inner.appendChild(backFace);
+        tableCard.appendChild(inner);
+
+        tableCard.addEventListener('click', function () {
+          const nextFlippedState = !Boolean(studyUIState.flashcardTableFlips[index]);
+          studyUIState.flashcardTableFlips[index] = nextFlippedState;
+          tableCard.classList.toggle('flipped', nextFlippedState);
+        });
+
+        grid.appendChild(tableCard);
+      });
+
+      surface.appendChild(grid);
+      tableStage.appendChild(surface);
+
+      const controls = document.createElement('div');
+      controls.className = 'fc-table-controls';
+
+      const redealBtn = document.createElement('button');
+      redealBtn.type = 'button';
+      redealBtn.className = 'fc-btn fc-btn-flip';
+      redealBtn.textContent = 'Deal Again';
+      redealBtn.addEventListener('click', function () {
+        startFlashcardDealAnimation(false);
+        renderLibraryPanel();
+      });
+      controls.appendChild(redealBtn);
+
+      const shuffleBtn = document.createElement('button');
+      shuffleBtn.type = 'button';
+      shuffleBtn.className = 'fc-btn fc-btn-shuffle';
+      shuffleBtn.textContent = 'Shuffle Deck';
+      shuffleBtn.addEventListener('click', function () {
+        shuffleFlashcardOrder(flashcardState.deck.length);
+        resetFcGame();
+        startFlashcardDealAnimation(true);
+        renderLibraryPanel();
+      });
+      controls.appendChild(shuffleBtn);
+
+      const stackModeBtn = document.createElement('button');
+      stackModeBtn.type = 'button';
+      stackModeBtn.className = 'fc-btn fc-btn-know';
+      stackModeBtn.textContent = 'Play Streak Mode';
+      stackModeBtn.addEventListener('click', function () {
+        studyUIState.flashcardLayout = 'stack';
+        studyUIState.flashcardFace = 'front';
+        renderLibraryPanel();
+      });
+      controls.appendChild(stackModeBtn);
+
+      const dlBtn = document.createElement('button');
+      dlBtn.type = 'button';
+      dlBtn.className = 'fc-btn fc-btn-shuffle';
+      dlBtn.textContent = 'Download PDF';
+      dlBtn.addEventListener('click', function () {
+        generateFlashcardPDF(topic, deck);
+      });
+      controls.appendChild(dlBtn);
+
+      tableStage.appendChild(controls);
+      shell.appendChild(tableStage);
+      detail.appendChild(shell);
+
+      if (shouldDeal) {
+        setTimeout(function () {
+          studyUIState.flashcardTableDealSeed = 0;
+        }, 2200);
+      }
+    }
+
     function renderFlashcardPreview(detail, topic) {
       const shell = document.createElement('div');
       shell.className = 'preview-shell';
@@ -3599,7 +4096,58 @@ button,input,select{font:inherit}
         countRow.appendChild(button);
       });
       hero.appendChild(countRow);
+
+      const layoutToolbar = document.createElement('div');
+      layoutToolbar.className = 'fc-layout-toolbar';
+
+      const layoutToggle = document.createElement('div');
+      layoutToggle.className = 'fc-layout-toggle';
+
+      const stackLayoutBtn = document.createElement('button');
+      stackLayoutBtn.type = 'button';
+      stackLayoutBtn.className = 'fc-layout-btn' + (studyUIState.flashcardLayout === 'stack' ? ' active' : '');
+      stackLayoutBtn.textContent = 'Stack View';
+      stackLayoutBtn.addEventListener('click', function () {
+        if (studyUIState.flashcardLayout === 'stack') return;
+        studyUIState.flashcardLayout = 'stack';
+        studyUIState.flashcardFace = 'front';
+        renderLibraryPanel();
+      });
+      layoutToggle.appendChild(stackLayoutBtn);
+
+      const tableLayoutBtn = document.createElement('button');
+      tableLayoutBtn.type = 'button';
+      tableLayoutBtn.className = 'fc-layout-btn' + (studyUIState.flashcardLayout === 'table' ? ' active' : '');
+      tableLayoutBtn.textContent = 'Table View';
+      tableLayoutBtn.addEventListener('click', function () {
+        if (studyUIState.flashcardLayout === 'table') return;
+        studyUIState.flashcardLayout = 'table';
+        startFlashcardDealAnimation(true);
+        renderLibraryPanel();
+      });
+      layoutToggle.appendChild(tableLayoutBtn);
+
+      layoutToolbar.appendChild(layoutToggle);
+
+      const fullscreenBtn = document.createElement('button');
+      fullscreenBtn.type = 'button';
+      fullscreenBtn.className = 'fc-layout-btn viewer-fullscreen-btn';
+      setFullscreenButtonLabel(fullscreenBtn, detail);
+      fullscreenBtn.addEventListener('click', function () {
+        toggleViewerFullscreen(detail, fullscreenBtn);
+      });
+      layoutToolbar.appendChild(fullscreenBtn);
+
+      hero.appendChild(layoutToolbar);
       shell.appendChild(hero);
+
+      if (studyUIState.flashcardLayout === 'table') {
+        if (!studyUIState.flashcardTableDealSeed) {
+          startFlashcardDealAnimation(false);
+        }
+        renderFlashcardTableMode(shell, detail, topic, flashcardState, deck);
+        return;
+      }
 
       /* ── COMPLETED STATE ── */
       if (fcGameState.isComplete || reviewed >= totalCards) {
@@ -3609,6 +4157,7 @@ button,input,select{font:inherit}
         var emoji = document.createElement('div');
         emoji.className = 'fc-result-emoji';
         var knownPct = totalCards ? Math.round((fcGameState.knownIndexes.length / totalCards) * 100) : 0;
+        awardFlashcardAchievements(totalCards, knownPct);
         emoji.textContent = '';
         var resTitle = document.createElement('div');
         resTitle.className = 'fc-result-title';
@@ -3754,7 +4303,19 @@ button,input,select{font:inherit}
         studyUIState.flashcardFace = studyUIState.flashcardFace === 'front' ? 'back' : 'front';
         renderLibraryPanel();
       });
-      game.appendChild(wrapper);
+
+      var stackStage = document.createElement('div');
+      stackStage.className = 'fc-stack-stage';
+      var remainingCards = Math.max(0, totalCards - (idx + 1));
+      var stackTailCount = Math.min(3, remainingCards);
+      for (var tailIndex = 0; tailIndex < stackTailCount; tailIndex += 1) {
+        var tail = document.createElement('div');
+        tail.className = 'fc-stack-tail';
+        tail.style.setProperty('--tail-index', String(tailIndex + 1));
+        stackStage.appendChild(tail);
+      }
+      stackStage.appendChild(wrapper);
+      game.appendChild(stackStage);
 
       /* Action buttons */
       var actions = document.createElement('div');
@@ -3771,6 +4332,7 @@ button,input,select{font:inherit}
           fcGameState.knownIndexes.push(idx);
           fcGameState.streak += 1;
           if (fcGameState.streak > fcGameState.maxStreak) fcGameState.maxStreak = fcGameState.streak;
+          maybeToastFlashcardStreak(fcGameState.streak);
           advanceFlashcard(deck);
         });
         actions.appendChild(knowBtn);
@@ -3807,6 +4369,7 @@ button,input,select{font:inherit}
         e.stopPropagation();
         shuffleFlashcardOrder(flashcardState.deck.length);
         resetFcGame();
+        studyUIState.flashcardTableFlips = {};
         renderLibraryPanel();
       });
       actions.appendChild(shuffleBtn);
@@ -4776,12 +5339,16 @@ button,input,select{font:inherit}
       if (!reviewData.isLoggedIn) {
         applyStudyDemoState();
       }
+      bindViewerFullscreenEvents();
       refreshStudyDataModel();
       bindStudyTabs();
       bindReviewFocusControls();
       bindTopicControls();
       bindStudyTutorial();
       renderStudyWorkspace();
+      if (reviewData.isLoggedIn) {
+        trackStudyLoginStreak();
+      }
     }
 
     void bootStudyPage();
