@@ -1153,6 +1153,98 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   align-items:center;
 }
 
+.guide-topic-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+
+.guide-open-btn{
+  min-height:44px;
+  padding:0 22px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+  color:#fff;
+  font-size:.84rem;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(37,99,235,.28);
+}
+
+.guide-open-btn:hover{transform:translateY(-1px)}
+
+.guide-topic-download-btn{
+  min-height:44px;
+  min-width:44px;
+  padding:0 12px;
+  border-radius:999px;
+  border:1px solid rgba(245,158,11,.7);
+  background:linear-gradient(135deg,#facc15 0%,#f59e0b 100%);
+  color:#111827;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(245,158,11,.28);
+}
+
+.guide-topic-download-btn:hover{transform:translateY(-1px)}
+.guide-topic-download-btn svg{width:16px;height:16px;display:block}
+
+.guide-inline-viewer{
+  position:relative;
+  border-radius:22px;
+  padding:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.guide-inline-frame-wrap{
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0b1020;
+  height:min(68vh,760px);
+}
+
+.guide-inline-frame{
+  width:100%;
+  height:100%;
+  border:none;
+  background:#fff;
+}
+
+.guide-viewer-corner-btn{
+  position:absolute;
+  top:22px;
+  right:22px;
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(12,18,32,.84);
+  color:#e2e8f0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.guide-viewer-corner-btn svg{width:16px;height:16px;display:block}
+.guide-viewer-corner-btn:hover{background:rgba(26,86,219,.84);border-color:rgba(96,165,250,.6)}
+
+.topic-detail.guide-inline-expanded{
+  max-height:none;
+  min-height:calc(100vh - 210px);
+}
+
+.topic-detail.guide-inline-expanded .guide-inline-frame-wrap{
+  height:calc(100vh - 300px);
+}
+
 .guide-page-card span,
 .guide-preview-card span,
 .flashcard-preview-card span,
@@ -2359,7 +2451,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .recent-test-summary{padding:16px}
   .recent-test-reveal{padding:0 16px 16px}
   .guide-hero-actions{width:100%}
-  .guide-download-btn,a.guide-download-btn{width:100%;justify-content:center}
+  .guide-open-btn{width:100%;justify-content:center}
   .guide-block,
   .flashcard-item,
   .recent-test-question,
@@ -2425,7 +2517,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .flashcard-front-term{font-size:1.05rem}
   .fc-stack-next-list{grid-template-columns:1fr}
   /* 430px download button */
-  .guide-download-btn,a.guide-download-btn{min-height:44px;font-size:.82rem;padding:0 16px;border-radius:14px}
+  .guide-open-btn{min-height:44px;font-size:.82rem;padding:0 16px;border-radius:14px}
 }
 
 @media (max-width: 390px){
@@ -2452,7 +2544,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .topic-detail{padding:16px}
   .preview-hero{gap:12px}
   .preview-hero h3{font-size:1.05rem}
-  .guide-download-btn,a.guide-download-btn{width:100%;justify-content:center}
+  .guide-open-btn{width:100%;justify-content:center}
   /* 390px menu tab icon-only safe clamp */
   .menu-tab{font-size:.74rem;padding:0 10px}
   /* 390px review config */
@@ -3707,6 +3799,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function exitTopicPreview() {
+      const detail = document.getElementById('topic-detail');
+      if (detail) detail.classList.remove('guide-inline-expanded');
       studyUIState.selectedTopicKey = '';
       resetFlashcardSession();
       renderLibraryPanel();
@@ -4311,38 +4405,38 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       hero.appendChild(copy);
       hero.appendChild(meta);
 
-      /* PDF actions */
-      const heroActions = document.createElement('div');
-      heroActions.className = 'guide-hero-actions';
+      shell.appendChild(hero);
 
-      const dlBtn = document.createElement('a');
-      dlBtn.className = 'guide-download-btn';
       const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
-      dlBtn.href = '/data/study-guides/' + pdfFilename;
-      dlBtn.download = pdfFilename;
-      dlBtn.textContent = 'Download PDF Study Guide';
+      const pdfUrl = '/data/study-guides/' + pdfFilename;
 
-      const openBtn = document.createElement('a');
-      openBtn.className = 'guide-download-btn secondary';
-      openBtn.href = '/data/study-guides/' + pdfFilename;
-      openBtn.target = '_blank';
-      openBtn.rel = 'noopener noreferrer';
-      openBtn.textContent = 'Open PDF in New Tab';
+      const inlineViewer = document.createElement('section');
+      inlineViewer.className = 'guide-inline-viewer';
 
-      const fullscreenBtn = document.createElement('button');
-      fullscreenBtn.type = 'button';
-      fullscreenBtn.className = 'guide-download-btn secondary viewer-fullscreen-btn';
-      setFullscreenButtonLabel(fullscreenBtn, detail);
-      fullscreenBtn.addEventListener('click', function () {
-        toggleViewerFullscreen(detail, fullscreenBtn);
+      const cornerFullscreenBtn = document.createElement('button');
+      cornerFullscreenBtn.type = 'button';
+      cornerFullscreenBtn.className = 'guide-viewer-corner-btn';
+      cornerFullscreenBtn.setAttribute('aria-label', 'Expand study guide preview');
+      cornerFullscreenBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H3v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 3 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 3h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m21 3-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 21H3v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 21 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 21h5v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m21 21-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+      cornerFullscreenBtn.addEventListener('click', function () {
+        const expanded = !detail.classList.contains('guide-inline-expanded');
+        detail.classList.toggle('guide-inline-expanded', expanded);
+        cornerFullscreenBtn.setAttribute('aria-label', expanded ? 'Exit expanded study guide preview' : 'Expand study guide preview');
       });
 
-      heroActions.appendChild(dlBtn);
-      heroActions.appendChild(openBtn);
-      heroActions.appendChild(fullscreenBtn);
-      hero.appendChild(heroActions);
+      const frameWrap = document.createElement('div');
+      frameWrap.className = 'guide-inline-frame-wrap';
+      const frame = document.createElement('iframe');
+      frame.className = 'guide-inline-frame';
+      frame.src = pdfUrl + '#view=FitH&zoom=85';
+      frame.title = topic.label + ' study guide preview';
+      frame.loading = 'lazy';
 
-      shell.appendChild(hero);
+      frameWrap.appendChild(frame);
+      inlineViewer.appendChild(cornerFullscreenBtn);
+      inlineViewer.appendChild(frameWrap);
+      shell.appendChild(inlineViewer);
 
       const guideSheetCard = document.createElement('article');
       guideSheetCard.className = 'guide-preview-card guide-sheet';
@@ -5090,9 +5184,9 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       const startButton = document.createElement('button');
       startButton.type = 'button';
-      startButton.className = 'review-quick-launch';
+      startButton.className = studyUIState.activeTab === 'flashcards' ? 'review-quick-launch' : 'guide-open-btn';
       startButton.style.marginLeft = '0';
-      startButton.style.marginTop = '14px';
+      startButton.style.marginTop = '0';
       startButton.textContent = studyUIState.activeTab === 'flashcards' ? 'Start Flashcards' : 'Open Study Guide';
       startButton.addEventListener('click', function () {
         if (studyUIState.activeTab === 'flashcards') {
@@ -5101,7 +5195,26 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           renderGuideContent(detail, topic);
         }
       });
-      hero.appendChild(startButton);
+
+      if (studyUIState.activeTab === 'flashcards') {
+        startButton.style.marginTop = '14px';
+        hero.appendChild(startButton);
+      } else {
+        const actionRow = document.createElement('div');
+        actionRow.className = 'guide-topic-actions';
+
+        const downloadBtn = document.createElement('a');
+        downloadBtn.className = 'guide-topic-download-btn';
+        const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
+        downloadBtn.href = '/data/study-guides/' + pdfFilename;
+        downloadBtn.download = pdfFilename;
+        downloadBtn.setAttribute('aria-label', 'Download study guide PDF');
+        downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+        actionRow.appendChild(startButton);
+        actionRow.appendChild(downloadBtn);
+        hero.appendChild(actionRow);
+      }
 
       const tabLinks = document.createElement('div');
       tabLinks.className = 'topic-detail-tab-links';
@@ -5121,8 +5234,15 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function renderGuideContent(container, topic) {
+      container.classList.remove('guide-inline-expanded');
       container.replaceChildren();
       renderGuidePreview(container, topic);
+      requestAnimationFrame(function () {
+        const viewer = container.querySelector('.guide-inline-viewer');
+        if (viewer && typeof viewer.scrollIntoView === 'function') {
+          viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
     }
 
     function renderFlashcardContent(container, topic) {
