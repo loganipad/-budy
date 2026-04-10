@@ -2359,6 +2359,84 @@ function buildQNav(){
     b.onclick=()=>goQ(i);g.appendChild(b);
   });updQNav();
 }
+
+function hasSubmittedAnswer(qIndex){
+  const value = S.answers[qIndex];
+  if (value === undefined || value === null) return false;
+  return String(value).trim().length > 0;
+}
+
+function isAnswerCorrectForQuestion(question, answer){
+  if (!question) return false;
+  if (answer === undefined || answer === null) return false;
+  if (question.type === 'spr') {
+    const accepted = Array.isArray(question.acceptableAnswers) && question.acceptableAnswers.length
+      ? question.acceptableAnswers
+      : [question.answer];
+    return accepted.some((candidate) => String(candidate) === String(answer));
+  }
+  return String(answer) === String(question.answer);
+}
+
+function difficultyToRank(level){
+  const normalized = normalizeDifficultyLevel(level);
+  return normalized === 'easy' ? 0 : normalized === 'hard' ? 2 : 1;
+}
+
+function rankToDifficulty(rank){
+  if (rank <= 0) return 'easy';
+  if (rank >= 2) return 'hard';
+  return 'medium';
+}
+
+function pickAdaptiveNextQuestionIndex(currentIndex){
+  const current = S.questions[currentIndex];
+  if (!current) return currentIndex + 1;
+
+  const userAnswer = S.answers[currentIndex];
+  const wasCorrect = isAnswerCorrectForQuestion(current, userAnswer);
+  const currentRank = difficultyToRank(current.difficulty);
+  const targetRank = wasCorrect ? currentRank + 1 : currentRank - 1;
+  const targetDifficulty = rankToDifficulty(targetRank);
+
+  const futureIndices = [];
+  for (let i = currentIndex + 1; i < S.questions.length; i += 1) {
+    if (!hasSubmittedAnswer(i)) futureIndices.push(i);
+  }
+  if (!futureIndices.length) return currentIndex + 1;
+
+  const sectionMatched = futureIndices.filter((idx) => S.questions[idx] && S.questions[idx].section === current.section);
+  const candidateIndices = sectionMatched.length ? sectionMatched : futureIndices;
+
+  let bestIndex = candidateIndices[0];
+  let bestDistance = Number.POSITIVE_INFINITY;
+  candidateIndices.forEach((idx) => {
+    const q = S.questions[idx];
+    const distance = Math.abs(difficultyToRank(q && q.difficulty) - difficultyToRank(targetDifficulty));
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestIndex = idx;
+    }
+  });
+
+  return bestIndex;
+}
+
+function adaptUpcomingQuestion(currentIndex){
+  if (currentIndex >= S.questions.length - 1) return;
+
+  const answeredAhead = Object.keys(S.answers).some((key) => Number(key) > currentIndex);
+  if (answeredAhead) return;
+
+  const targetIndex = pickAdaptiveNextQuestionIndex(currentIndex);
+  const nextIndex = currentIndex + 1;
+  if (targetIndex <= nextIndex || targetIndex >= S.questions.length) return;
+
+  const swap = S.questions[nextIndex];
+  S.questions[nextIndex] = S.questions[targetIndex];
+  S.questions[targetIndex] = swap;
+}
+
 function updQNav(){
   if(!LANDING_STRICT_ONE_AT_TIME){
     S.questions.forEach((_,i)=>{
@@ -2374,6 +2452,8 @@ function updQNav(){
   const leftQ=Math.max(0,S.questions.length-currentQ);
   document.getElementById('tb-prog-fill').style.width=pct+'%';
   document.getElementById('test-prog-txt').textContent=`Q${currentQ} of ${S.questions.length} · ${leftQ} left`;
+  const nextBtn=document.getElementById('next-btn');
+  if(nextBtn)nextBtn.disabled=!hasSubmittedAnswer(S.curQ);
   document.getElementById('prev-btn').disabled=S.curQ===0;
   const last=S.curQ===S.questions.length-1;
   document.getElementById('next-btn').classList.toggle('hidden',last);
@@ -2447,7 +2527,15 @@ function goQ(i){
   renderQ(i);
   scheduleDraftAutosave('question_nav');
 }
-function goNext(){goQ(Math.min(S.curQ+1,S.questions.length-1))}
+function goNext(){
+  const current=S.curQ;
+  if(!hasSubmittedAnswer(current)){
+    toast('Submit an answer before moving to the next question.','wn');
+    return;
+  }
+  adaptUpcomingQuestion(current);
+  goQ(Math.min(current+1,S.questions.length-1));
+}
 function goPrev(){goQ(Math.max(S.curQ-1,0))}
 
 /* ── FLAG ── */
