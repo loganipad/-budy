@@ -3402,7 +3402,13 @@ function renderDash(){
   if (statusBadge && statusText) {
     const statusIcon = document.getElementById('acct-status-icon');
     const isTestUser = isTestUserEmail(S.user.email);
-    if (S.isPremium) {
+    const isAdminUser = Boolean(S.isAdmin);
+    if (isAdminUser) {
+      statusBadge.classList.remove('free');
+      statusBadge.classList.add('pro');
+      statusText.textContent = 'Admin';
+      if (statusIcon) statusIcon.textContent = '';
+    } else if (S.isPremium) {
       statusBadge.classList.remove('free');
       statusBadge.classList.add('pro');
       statusText.textContent = isTestUser ? 'Test Plan' : 'Pro Plan';
@@ -3432,14 +3438,20 @@ function renderDash(){
   const profileGrade = document.getElementById('profile-grade');
   const profilePlan = document.getElementById('profile-plan');
   const profileBillingTiming = document.getElementById('profile-billing-timing');
+  const isAdminUser = Boolean(S.isAdmin);
   if (accountStatus) {
-    if (isTestUserEmail(S.user.email)) {
+    if (isAdminUser) {
+      accountStatus.textContent = S.isPremium ? 'ADMIN (PRO)' : 'ADMIN';
+    } else if (isTestUserEmail(S.user.email)) {
       accountStatus.textContent = S.isPremium ? 'TEST (PRO)' : 'TEST (FREE)';
     } else {
       accountStatus.textContent = S.isPremium ? 'ACTIVE PRO' : 'ACTIVE FREE';
     }
   }
-  if (accountType) accountType.textContent = isTestUserEmail(S.user.email) ? 'Test user' : 'Standard user';
+  if (accountType) {
+    if (isAdminUser) accountType.textContent = 'Admin user';
+    else accountType.textContent = isTestUserEmail(S.user.email) ? 'Test user' : 'Standard user';
+  }
   if (profileName) profileName.textContent = S.user.name || '-';
   if (profileEmail) profileEmail.textContent = S.user.email || '-';
   if (profileGrade) profileGrade.textContent = S.user.grade ? `${S.user.grade}th grade` : '-';
