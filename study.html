@@ -3160,10 +3160,25 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       setFullscreenButtonLabel(button, target);
     }
 
+    function clearViewerFullscreenClasses() {
+      document.querySelectorAll('.topic-detail').forEach(function (node) {
+        node.classList.remove('is-faux-fullscreen');
+        node.classList.remove('guide-inline-expanded');
+      });
+      document.body.classList.remove('viewer-faux-fullscreen-active');
+    }
+
+    function resetViewerFullscreenState() {
+      clearViewerFullscreenClasses();
+      if (document.fullscreenElement && typeof document.exitFullscreen === 'function') {
+        document.exitFullscreen().catch(function () {});
+      }
+    }
+
     function bindViewerFullscreenEvents() {
       document.addEventListener('fullscreenchange', function () {
         if (!document.fullscreenElement) {
-          document.body.classList.remove('viewer-faux-fullscreen-active');
+          clearViewerFullscreenClasses();
         }
       });
     }
@@ -5430,6 +5445,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const topic = getTopicByKey(topicKey || studyUIState.selectedTopicKey);
       if (!topic) return false;
 
+      if (studyUIState.activeTab !== 'study-guides') {
+        resetViewerFullscreenState();
+      }
+
       studyUIState.activeTab = 'study-guides';
       studyUIState.topicFilter = topic.section;
       studyUIState.topicSearch = '';
@@ -5638,6 +5657,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function openTopicView(tab, topicKey) {
+      if (studyUIState.activeTab !== tab) {
+        resetViewerFullscreenState();
+      }
+
       if (tab === 'study-guides' && topicKey) {
         if (openStudyGuideForTopic(topicKey)) return;
       }
@@ -5738,7 +5761,11 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     function bindStudyTabs() {
       document.querySelectorAll('[data-study-tab]').forEach((button) => {
         button.addEventListener('click', function () {
-          studyUIState.activeTab = button.dataset.studyTab || 'review-tests';
+          const nextTab = button.dataset.studyTab || 'review-tests';
+          if (studyUIState.activeTab !== nextTab) {
+            resetViewerFullscreenState();
+          }
+          studyUIState.activeTab = nextTab;
           updateMenuTabs();
           if (studyUIState.activeTab !== 'review-tests') {
             renderLibraryPanel();
@@ -5826,6 +5853,9 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           const previewTopic = getSuggestedTourTopic();
 
           if (step && step.tab === 'review-tests') {
+            if (studyUIState.activeTab !== 'review-tests') {
+              resetViewerFullscreenState();
+            }
             studyUIState.activeTab = 'review-tests';
             updateMenuTabs();
             focusWorkspace();
