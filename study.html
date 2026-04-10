@@ -820,7 +820,7 @@ button,input,select{font:inherit}
 
 #menu-panel-library.preview-active .topic-detail{
   display:block;
-  min-height:620px;
+  min-height:0;
   max-height:none;
 }
 
@@ -1046,6 +1046,37 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 .topic-detail h3{font-size:1.25rem;margin-bottom:8px}
 .topic-detail p{color:var(--muted);font-size:.88rem;line-height:1.7}
 .topic-detail-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.topic-quick-grid{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+
+.topic-quick-card{
+  border-radius:18px;
+  padding:14px 14px 12px;
+  background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.025) 100%);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.topic-quick-card span{
+  display:block;
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(191,219,254,.88);
+  margin-bottom:8px;
+}
+
+.topic-quick-card p{
+  margin:0;
+  font-size:.82rem;
+  line-height:1.6;
+  color:rgba(240,244,255,.78);
+}
 
 .preview-back{
   min-height:40px;
@@ -2321,6 +2352,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .flashcard-stack,
   .guide-preview-layout,
   .flashcard-preview-layout,
+  .topic-quick-grid,
   .recommended-row,
   .library-body,
   .library-body.detail-open{
@@ -5211,24 +5243,67 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         downloadBtn.setAttribute('aria-label', 'Download study guide PDF');
         downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
+        const switchBtn = document.createElement('button');
+        switchBtn.type = 'button';
+        switchBtn.className = 'topic-detail-tab-link';
+        switchBtn.textContent = 'View Flashcards';
+        switchBtn.addEventListener('click', function () {
+          openTopicView('flashcards', topic.key);
+        });
+
         actionRow.appendChild(startButton);
         actionRow.appendChild(downloadBtn);
+        actionRow.appendChild(switchBtn);
         hero.appendChild(actionRow);
+
+        const quickGrid = document.createElement('div');
+        quickGrid.className = 'topic-quick-grid';
+
+        const quickCards = [
+          {
+            label: 'Focus Move',
+            text: topic.guidePoints[0] || 'Start by naming the exact pattern this topic is testing before solving.'
+          },
+          {
+            label: 'Practice Plan',
+            text: topic.guidePoints[1] || 'Work one clean untimed example, then repeat the same steps under timer pressure.'
+          },
+          {
+            label: 'Win Check',
+            text: topic.section === 'math'
+              ? 'Confirm the final value satisfies the prompt condition and units before locking an answer.'
+              : 'Confirm your choice is supported by direct evidence or grammar logic, not just wording style.'
+          }
+        ];
+
+        quickCards.forEach(function (entry) {
+          const card = document.createElement('article');
+          card.className = 'topic-quick-card';
+          const label = document.createElement('span');
+          label.textContent = entry.label;
+          const body = document.createElement('p');
+          body.textContent = entry.text;
+          card.appendChild(label);
+          card.appendChild(body);
+          quickGrid.appendChild(card);
+        });
+
+        hero.appendChild(quickGrid);
       }
 
-      const tabLinks = document.createElement('div');
-      tabLinks.className = 'topic-detail-tab-links';
-      const altTab = studyUIState.activeTab === 'flashcards' ? 'study-guides' : 'flashcards';
-      const altLabel = studyUIState.activeTab === 'flashcards' ? 'View Study Guide' : 'View Flashcards';
-      const altButton = document.createElement('button');
-      altButton.type = 'button';
-      altButton.className = 'topic-detail-tab-link';
-      altButton.textContent = altLabel;
-      altButton.addEventListener('click', function () {
-        openTopicView(altTab, topic.key);
-      });
-      tabLinks.appendChild(altButton);
-      hero.appendChild(tabLinks);
+      if (studyUIState.activeTab === 'flashcards') {
+        const tabLinks = document.createElement('div');
+        tabLinks.className = 'topic-detail-tab-links';
+        const altButton = document.createElement('button');
+        altButton.type = 'button';
+        altButton.className = 'topic-detail-tab-link';
+        altButton.textContent = 'View Study Guide';
+        altButton.addEventListener('click', function () {
+          openTopicView('study-guides', topic.key);
+        });
+        tabLinks.appendChild(altButton);
+        hero.appendChild(tabLinks);
+      }
 
       detail.appendChild(hero);
     }
