@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<style>
+:root {
+  --bg: #0a1222;
+  --card: #101b31;
+  --card-soft: #142440;
+  --line: rgba(148, 163, 184, 0.22);
+  --text: #e6edf8;
+  --muted: #9bb0cc;
+  --brand: #3b82f6;
+  --danger: #ef4444;
+  --good: #22c55e;
+  --warn: #f59e0b;
+  --font: 'Sora', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(ellipse 68% 52% at 50% -16%, rgba(59,130,246,.28), transparent 64%),
+    radial-gradient(ellipse 36% 28% at 86% 112%, rgba(245,158,11,.1), transparent 64%),
+    var(--bg);
+  min-height: 100vh;
+}
+.wrap { max-width: 1220px; margin: 0 auto; padding: 34px 22px 56px; }
+.topbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.title-kicker { font-size: .73rem; text-transform: uppercase; letter-spacing: .1em; color: #8bb8ff; font-weight: 800; }
+h1 { font-size: clamp(1.6rem, 4vw, 2.35rem); letter-spacing: -.02em; margin-top: 4px; }
+.sub { margin-top: 7px; color: var(--muted); font-size: .9rem; }
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 14px; border-radius: 999px; text-decoration: none; font-size: .8rem; font-weight: 700; border: 1px solid transparent; }
+.btn.ghost { border-color: var(--line); color: var(--text); background: rgba(255,255,255,.04); }
+.btn.red { border-color: rgba(248,113,113,.46); background: linear-gradient(180deg,#dc2626,#991b1b); color: #fee2e2; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 18px 0; }
+.stat { background: linear-gradient(180deg, rgba(16,27,49,.96), rgba(14,24,44,.92)); border: 1px solid var(--line); border-radius: 20px; padding: 16px; }
+.stat-k { font-size: .66rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); font-weight: 800; }
+.stat-v { margin-top: 9px; font-size: 1.5rem; font-weight: 800; line-height: 1; }
+.stat-v.good { color: var(--good); }
+.stat-v.warn { color: var(--warn); }
+.panel { background: linear-gradient(180deg, rgba(16,27,49,.96), rgba(14,24,44,.92)); border: 1px solid var(--line); border-radius: 22px; padding: 18px; }
+.panel + .panel { margin-top: 12px; }
+.panel h2 { font-size: .95rem; margin-bottom: 12px; }
+.filters { display: grid; gap: 10px; grid-template-columns: 1.2fr .8fr .8fr; margin-bottom: 12px; }
+.fld { display: grid; gap: 6px; }
+.fld label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.fld input, .fld select {
+  height: 40px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text);
+  padding: 0 12px; font-family: inherit; font-size: .9rem;
+}
+.fld select option { color: #0f172a; }
+.tbl-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 16px; }
+table { width: 100%; border-collapse: collapse; min-width: 980px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(148,163,184,.12); }
+th { font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+td { font-size: .83rem; color: #e8eef8; }
+.pill { display: inline-flex; min-height: 24px; align-items: center; border-radius: 999px; padding: 0 10px; font-size: .7rem; font-weight: 800; letter-spacing: .04em; }
+.pill.easy { background: rgba(34,197,94,.15); color: #86efac; }
+.pill.medium { background: rgba(245,158,11,.16); color: #fcd34d; }
+.pill.hard { background: rgba(239,68,68,.16); color: #fca5a5; }
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 8px; flex-wrap: wrap; }
+.pager .btn { min-height: 34px; font-size: .75rem; }
+.muted { color: var(--muted); font-size: .82rem; }
+.lock { margin-top: 24px; max-width: 700px; border: 1px solid rgba(239,68,68,.32); background: rgba(127,29,29,.18); border-radius: 16px; padding: 16px; }
+.hidden { display: none !important; }
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+  .filters { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="admin-app" class="hidden">
+      <div class="topbar">
+        <div>
+          <div class="title-kicker">Admin</div>
+          <h1>Question Bank Control Panel</h1>
+          <p class="sub">Full 3200 generated questions with live filtering, subject splits, and difficulty score ratings.</p>
+        </div>
+        <div class="actions">
+          <a class="btn ghost" href="/my-account">Back to Account</a>
+          <a class="btn red" href="/">Exit Admin</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="stat"><div class="stat-k">Total Questions</div><div class="stat-v" id="stat-total">-</div></div>
+        <div class="stat"><div class="stat-k">Reading & Writing</div><div class="stat-v good" id="stat-rw">-</div></div>
+        <div class="stat"><div class="stat-k">Math</div><div class="stat-v warn" id="stat-math">-</div></div>
+        <div class="stat"><div class="stat-k">Visible Rows</div><div class="stat-v" id="stat-visible">-</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Difficulty Ranking by Subject</h2>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Rank</th>
+                <th>Difficulty</th>
+                <th>Count</th>
+                <th>Difficulty Score Rating</th>
+              </tr>
+            </thead>
+            <tbody id="difficulty-summary-body"></tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:8px">Difficulty score rating is sourced from original generation metadata as average estimated_time_seconds for each difficulty bucket.</p>
+      </div>
+
+      <div class="panel">
+        <h2>3200 Question Bank</h2>
+        <div class="filters">
+          <div class="fld">
+            <label for="filter-search">Search by id/domain/skill/prompt</label>
+            <input id="filter-search" type="text" placeholder="Search question bank">
+          </div>
+          <div class="fld">
+            <label for="filter-subject">Subject</label>
+            <select id="filter-subject">
+              <option value="all">All subjects</option>
+              <option value="english">Reading & Writing</option>
+              <option value="math">Math</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label for="filter-difficulty">Difficulty</label>
+            <select id="filter-difficulty">
+              <option value="all">All levels</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Subject</th>
+                <th>Domain</th>
+                <th>Skill</th>
+                <th>Difficulty</th>
+                <th>Score</th>
+                <th>Format</th>
+                <th>Prompt</th>
+              </tr>
+            </thead>
+            <tbody id="question-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="pager">
+          <div class="muted" id="pager-label">Rows 0-0 of 0</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn ghost" id="prev-page" type="button">Previous</button>
+            <button class="btn ghost" id="next-page" type="button">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-lock" class="lock hidden">
+      <h2 style="font-size:1rem;margin-bottom:7px">Admin Access Required</h2>
+      <p class="muted" style="color:#fecaca">This page is only available to admin accounts.</p>
+      <div style="margin-top:10px"><a class="btn ghost" href="/my-account">Return to My Account</a></div>
+    </div>
+  </div>
+
+<script>
+'use strict';
+
+const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
+const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
+const AUTH0_REDIRECT_URI = window.location.origin;
+const ADMIN_EMAILS = ['loganipad@gmail.com'];
+const PAGE_SIZE = 50;
+
+const state = {
+  authClient: null,
+  rows: [],
+  filtered: [],
+  page: 0
+};
+
+function normalizeSubject(section) {
+  if (section === 'reading_writing') return 'english';
+  if (section === 'math') return 'math';
+  return 'english';
+}
+
+function subjectLabel(value) {
+  return value === 'math' ? 'Math' : 'Reading & Writing';
+}
+
+function normalizeDifficulty(value) {
+  const v = String(value || '').trim().toLowerCase();
+  return v === 'easy' || v === 'hard' ? v : 'medium';
+}
+
+function isAdminEmail(email) {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(String(email).trim().toLowerCase());
+}
+
+async function createAuthClient() {
+  if (!window.auth0 || !window.auth0.createAuth0Client) return null;
+  return window.auth0.createAuth0Client({
+    domain: AUTH0_DOMAIN,
+    clientId: AUTH0_CLIENT_ID,
+    authorizationParams: { redirect_uri: AUTH0_REDIRECT_URI },
+    cacheLocation: 'localstorage',
+    useRefreshTokens: true,
+    useRefreshTokensFallback: true
+  });
+}
+
+async function getToken(authClient) {
+  if (!authClient) return '';
+  try {
+    return await authClient.getTokenSilently({ authorizationParams: { scope: 'openid profile email' } });
+  } catch {
+    return '';
+  }
+}
+
+async function resolveAdminAccess() {
+  const authClient = await createAuthClient();
+  state.authClient = authClient;
+  if (!authClient) return false;
+
+  let isAuthenticated = false;
+  try {
+    isAuthenticated = await authClient.isAuthenticated();
+  } catch {
+    isAuthenticated = false;
+  }
+  if (!isAuthenticated) return false;
+
+  let email = '';
+  try {
+    const user = await authClient.getUser();
+    email = user && user.email ? String(user.email) : '';
+  } catch {
+    email = '';
+  }
+
+  if (isAdminEmail(email)) return true;
+
+  const token = await getToken(authClient);
+  if (!token) return false;
+
+  try {
+    const response = await fetch('/api/me', { method: 'GET', headers: { Authorization: 'Bearer ' + token } });
+    const data = await response.json();
+    if (!response.ok) return false;
+    return Boolean(data && data.isAdmin) || isAdminEmail(data && data.email ? data.email : email);
+  } catch {
+    return false;
+  }
+}
+
+function renderDifficultySummary(rows) {
+  const body = document.getElementById('difficulty-summary-body');
+  if (!body) return;
+  const subjects = ['english', 'math'];
+  const html = [];
+
+  subjects.forEach((subject) => {
+    const subjectRows = rows.filter((row) => row.subject === subject);
+    const stats = ['easy', 'medium', 'hard'].map((difficulty) => {
+      const list = subjectRows.filter((row) => row.difficulty === difficulty);
+      const totalScore = list.reduce((sum, row) => sum + (Number(row.scoreRating) || 0), 0);
+      const avgScore = list.length ? Math.round(totalScore / list.length) : 0;
+      return { difficulty, count: list.length, score: avgScore };
+    }).sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const rank = { easy: 0, medium: 1, hard: 2 };
+      return rank[b.difficulty] - rank[a.difficulty];
+    });
+
+    stats.forEach((stat, idx) => {
+      html.push('<tr>' +
+        '<td>' + subjectLabel(subject) + '</td>' +
+        '<td>#' + (idx + 1) + '</td>' +
+        '<td><span class="pill ' + stat.difficulty + '">' + stat.difficulty.toUpperCase() + '</span></td>' +
+        '<td>' + stat.count.toLocaleString('en-US') + '</td>' +
+        '<td>' + stat.score + 's</td>' +
+      '</tr>');
+    });
+  });
+
+  body.innerHTML = html.join('');
+}
+
+function applyFilters() {
+  const search = String(document.getElementById('filter-search').value || '').trim().toLowerCase();
+  const subject = document.getElementById('filter-subject').value;
+  const difficulty = document.getElementById('filter-difficulty').value;
+
+  state.filtered = state.rows.filter((row) => {
+    if (subject !== 'all' && row.subject !== subject) return false;
+    if (difficulty !== 'all' && row.difficulty !== difficulty) return false;
+    if (!search) return true;
+    const blob = [row.id, row.domain, row.skill, row.prompt].join(' ').toLowerCase();
+    return blob.includes(search);
+  });
+
+  state.page = 0;
+  renderTablePage();
+  renderStats();
+}
+
+function renderStats() {
+  const total = state.rows.length;
+  const rw = state.rows.filter((row) => row.subject === 'english').length;
+  const math = state.rows.filter((row) => row.subject === 'math').length;
+  const visible = state.filtered.length;
+
+  document.getElementById('stat-total').textContent = total.toLocaleString('en-US');
+  document.getElementById('stat-rw').textContent = rw.toLocaleString('en-US');
+  document.getElementById('stat-math').textContent = math.toLocaleString('en-US');
+  document.getElementById('stat-visible').textContent = visible.toLocaleString('en-US');
+}
+
+function renderTablePage() {
+  const tbody = document.getElementById('question-table-body');
+  const label = document.getElementById('pager-label');
+  const prev = document.getElementById('prev-page');
+  const next = document.getElementById('next-page');
+
+  const total = state.filtered.length;
+  const start = state.page * PAGE_SIZE;
+  const end = Math.min(total, start + PAGE_SIZE);
+  const pageRows = state.filtered.slice(start, end);
+
+  tbody.innerHTML = pageRows.map((row) => {
+    const safePrompt = String(row.prompt || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').slice(0, 220);
+    return '<tr>' +
+      '<td>' + row.id + '</td>' +
+      '<td>' + subjectLabel(row.subject) + '</td>' +
+      '<td>' + (row.domain || '-') + '</td>' +
+      '<td>' + (row.skill || '-') + '</td>' +
+      '<td><span class="pill ' + row.difficulty + '">' + row.difficulty.toUpperCase() + '</span></td>' +
+      '<td>' + row.scoreRating + 's</td>' +
+      '<td>' + (row.format || '-') + '</td>' +
+      '<td>' + safePrompt + '</td>' +
+    '</tr>';
+  }).join('');
+
+  label.textContent = total ? ('Rows ' + (start + 1) + '-' + end + ' of ' + total.toLocaleString('en-US')) : 'Rows 0-0 of 0';
+  prev.disabled = state.page <= 0;
+  next.disabled = end >= total;
+}
+
+async function loadQuestionBank() {
+  const response = await fetch('/data/question-bank/question-bank.jsonl', { cache: 'force-cache' });
+  if (!response.ok) throw new Error('Question bank failed to load');
+  const text = await response.text();
+  const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
+
+  state.rows = rows.map((line) => {
+    const item = JSON.parse(line);
+    return {
+      id: String(item.id || ''),
+      subject: normalizeSubject(item.section),
+      domain: item.domain || '',
+      skill: item.skill || '',
+      difficulty: normalizeDifficulty(item.difficulty),
+      scoreRating: Math.max(0, Number(item.estimated_time_seconds) || 0),
+      format: item.format || 'mcq',
+      prompt: item.prompt || ''
+    };
+  });
+
+  state.filtered = state.rows.slice();
+}
+
+function bindEvents() {
+  document.getElementById('filter-search').addEventListener('input', applyFilters);
+  document.getElementById('filter-subject').addEventListener('change', applyFilters);
+  document.getElementById('filter-difficulty').addEventListener('change', applyFilters);
+
+  document.getElementById('prev-page').addEventListener('click', () => {
+    state.page = Math.max(0, state.page - 1);
+    renderTablePage();
+  });
+
+  document.getElementById('next-page').addEventListener('click', () => {
+    const maxPage = Math.max(0, Math.ceil(state.filtered.length / PAGE_SIZE) - 1);
+    state.page = Math.min(maxPage, state.page + 1);
+    renderTablePage();
+  });
+}
+
+async function init() {
+  const allowed = await resolveAdminAccess();
+  const app = document.getElementById('admin-app');
+  const lock = document.getElementById('admin-lock');
+
+  if (!allowed) {
+    lock.classList.remove('hidden');
+    return;
+  }
+
+  app.classList.remove('hidden');
+  bindEvents();
+
+  try {
+    await loadQuestionBank();
+    renderDifficultySummary(state.rows);
+    renderStats();
+    renderTablePage();
+  } catch (err) {
+    lock.classList.remove('hidden');
+    lock.innerHTML = '<h2 style="font-size:1rem;margin-bottom:7px">Could not load question bank</h2><p class="muted" style="color:#fecaca">' + (err && err.message ? err.message : 'Unknown error') + '</p>';
+    app.classList.add('hidden');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

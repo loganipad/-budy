@@ -145,22 +145,38 @@ button { font-family: inherit; cursor: pointer; }
   flex-wrap: wrap;
 }
 .admin-panel-btn {
-  min-height: 30px;
-  padding: 0 12px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
   border-radius: 999px;
-  border: 1px solid rgba(239,68,68,.55);
-  background: rgba(127,29,29,.9);
-  color: #fecaca;
+  border: 1px solid rgba(248,113,113,.58);
+  background: linear-gradient(180deg, rgba(185,28,28,.92), rgba(127,29,29,.96));
+  color: #fee2e2;
   font-size: .72rem;
   font-weight: 800;
-  letter-spacing: .06em;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  box-shadow: 0 10px 22px rgba(127,29,29,.28);
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(127,29,29,.32);
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
 }
 .admin-panel-btn:hover {
-  background: #b91c1c;
-  border-color: rgba(248,113,113,.8);
+  background: linear-gradient(180deg, rgba(220,38,38,.96), rgba(153,27,27,.96));
+  border-color: rgba(252,165,165,.85);
   color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(153,27,27,.38);
+}
+.admin-panel-btn::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #fecaca;
+  box-shadow: 0 0 0 4px rgba(254,202,202,.12);
 }
 .acct-status.free {
   background: rgba(5,150,105,.15);
