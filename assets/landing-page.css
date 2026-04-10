@@ -807,6 +807,9 @@ input,select{font-family:inherit}
 .flag-btn:hover,.flag-btn.on{color:var(--amber);border-color:var(--amber);background:var(--gold-pale)}
 .test-nav-btns{display:flex;align-items:center;gap:8px}
 .test-prog-txt{font-size:.8125rem;color:#64748b}
+.admin-test-tools{display:flex;align-items:center;gap:10px;flex:1 1 280px;min-width:0}
+.admin-test-tools .btn{height:36px;min-height:36px;padding:0 12px;flex-shrink:0}
+.admin-adaptive-note{font-size:.74rem;font-weight:700;color:#1e3a8a;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:999px;padding:7px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 @media(max-width:600px){
   .tb{height:auto;padding:12px 14px 10px;flex-wrap:wrap;align-items:flex-start}
@@ -819,6 +822,8 @@ input,select{font-family:inherit}
   .q-hd{padding:12px 14px;border-radius:18px}
   .q-opt{padding:12px 14px}
   .test-ft{padding:10px 16px}
+  .admin-test-tools{order:3;flex:1 1 100%;justify-content:space-between}
+  .admin-adaptive-note{max-width:100%;white-space:normal;border-radius:14px;line-height:1.35}
   #test-screen::after{right:14px;bottom:88px;width:56px;height:56px}
 }
 
@@ -958,6 +963,15 @@ input,select{font-family:inherit}
 #dash-screen .d-card-tag{font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
 #dash-screen .tag-brand{background:rgba(26,86,219,.18);color:var(--brand)}
 #dash-screen .tag-gold{background:rgba(245,158,11,.15);color:#fbbf24}
+#dash-screen .admin-qbank-panel{margin-top:14px}
+#dash-screen .admin-qbank-grid{display:grid;grid-template-columns:1fr;gap:14px}
+#dash-screen .admin-qbank-block{background:rgba(15,23,42,.28);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:14px 14px 10px}
+#dash-screen .admin-qbank-kicker{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,244,255,.55);margin-bottom:10px}
+#dash-screen .admin-qbank-table{width:100%;border-collapse:collapse}
+#dash-screen .admin-qbank-table th{padding:0 8px 8px;font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.4);text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+#dash-screen .admin-qbank-table td{padding:8px;font-size:.8rem;color:rgba(240,244,255,.78);border-bottom:1px solid rgba(255,255,255,.04)}
+#dash-screen .admin-qbank-table tr:last-child td{border-bottom:none}
+#dash-screen .admin-qbank-loading{font-size:.85rem;color:rgba(240,244,255,.58)}
 
 #dash-screen .sessions-tbl{width:100%;border-collapse:collapse}
 #dash-screen .sessions-tbl th{text-align:left;font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,244,255,.38);padding:0 10px 10px;border-bottom:1px solid rgba(255,255,255,.08)}

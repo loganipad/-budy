@@ -102,6 +102,7 @@ const S = {
   user: { name: '', grade: '', email: '' },
   authUserId: '',
   isLoggedIn: false,
+  isAdmin: false,
   authViaLocal: false,
   scoreStoreDisabled: false,
   savedQuestionStoreDisabled: false,
@@ -811,6 +812,21 @@ function updateAuthUI() {
   syncStartCtaLabels();
   publishNavbarState();
   applyHomeStudyNavOverride();
+  syncAdminVisibility();
+}
+
+function syncAdminVisibility() {
+  const showAdminTestTools = Boolean(S.isAdmin && S.view === 'test' && S.testActive);
+  const testTools = document.getElementById('admin-test-tools');
+  if (testTools) testTools.classList.toggle('hidden', !showAdminTestTools);
+
+  const panel = document.getElementById('admin-question-bank-panel');
+  if (panel && !S.isAdmin) panel.classList.add('hidden');
+
+  if (!showAdminTestTools) {
+    const adaptiveNote = document.getElementById('admin-adaptive-note');
+    if (adaptiveNote) adaptiveNote.textContent = '';
+  }
 }
 
 function applyHomeStudyNavOverride() {
@@ -943,6 +959,7 @@ async function initAuth() {
 
   S.isLoggedIn = false;
   S.isPremium = false;
+  S.isAdmin = false;
   S.authUserId = '';
   S.user.email = '';
   const isAuthenticated = await authClient.isAuthenticated();
@@ -954,7 +971,8 @@ async function initAuth() {
     if (user && user.sub) S.authUserId = String(user.sub);
     if (user && user.name && !S.user.name) S.user.name = user.name;
     if (user && user.email) S.user.email = user.email;
-    S.isPremium = isAdminPremiumEmail(S.user.email);
+    S.isAdmin = isAdminPremiumEmail(S.user.email);
+    S.isPremium = S.isAdmin;
   } else {
     const localUser = getLocalAuthUser();
     if (localUser) {
@@ -963,7 +981,8 @@ async function initAuth() {
       if (localUser.sub) S.authUserId = String(localUser.sub);
       if (localUser.name && !S.user.name) S.user.name = localUser.name;
       if (localUser.email) S.user.email = localUser.email;
-      S.isPremium = isAdminPremiumEmail(S.user.email);
+      S.isAdmin = isAdminPremiumEmail(S.user.email);
+      S.isPremium = S.isAdmin;
     }
   }
 
@@ -991,6 +1010,7 @@ function logout() {
     S.authViaLocal = false;
     S.isLoggedIn = false;
     S.isPremium = false;
+    S.isAdmin = false;
     S.authUserId = '';
     S.user.email = '';
     updateAuthUI();
@@ -1041,7 +1061,10 @@ async function getAccessToken() {
 }
 
 async function refreshPremiumStatus() {
-  if (!S.isLoggedIn) return Boolean(S.isPremium);
+  if (!S.isLoggedIn) {
+    S.isAdmin = false;
+    return Boolean(S.isPremium);
+  }
 
   const token = await getAccessToken();
   if (!token) return Boolean(S.isPremium);
@@ -1056,7 +1079,8 @@ async function refreshPremiumStatus() {
     const data = await response.json();
 
     if (response.ok) {
-      S.isPremium = Boolean(data.isPremium) || isAdminPremiumEmail(S.user.email);
+      S.isAdmin = Boolean(data.isAdmin) || isAdminPremiumEmail(S.user.email);
+      S.isPremium = Boolean(data.isPremium) || S.isAdmin;
       if (data.userId) S.authUserId = String(data.userId);
       S.subscriptionStatus = data && data.subscriptionStatus ? String(data.subscriptionStatus).toLowerCase() : 'free';
       S.cancelAtPeriodEnd = Boolean(data && data.cancelAtPeriodEnd);
@@ -1309,6 +1333,7 @@ function setView(v, options = {}) {
     window.scrollTo(0, 0);
   }
 
+  syncAdminVisibility();
   syncLandingDeepDive();
 }
 
@@ -2032,6 +2057,8 @@ const QUESTION_BANK_CACHE_NAME = 'budy-question-bank-v2';
 let questionBankLoadPromise = null;
 let questionBankCache = null;
 let questionBankPreloadStarted = false;
+let adminQuestionBankSummaryPromise = null;
+let adminQuestionBankSummaryCache = null;
 
 function shuffleQuestions(list) {
   const copy = Array.isArray(list) ? list.slice() : [];
@@ -2151,6 +2178,116 @@ async function loadGeneratedQuestionBank() {
     });
 
   return questionBankLoadPromise;
+}
+
+function buildQuestionBankAdminSummary(pools) {
+  const subjects = [
+    { key: 'english', label: 'Reading & Writing', questions: Array.isArray(pools && pools.english) ? pools.english : [] },
+    { key: 'math', label: 'Math', questions: Array.isArray(pools && pools.math) ? pools.math : [] }
+  ];
+
+  const difficultyRows = [];
+  const subjectRows = subjects.map((subject) => {
+    const total = subject.questions.length;
+    const difficultyStats = ADAPTIVE_DIFFICULTY_LEVELS.map((level) => {
+      const questions = subject.questions.filter((question) => normalizeDifficultyLevel(question && question.difficulty) === level);
+      const scoreTotal = questions.reduce((sum, question) => sum + Math.max(0, Number(question && question.estimated_time_seconds) || 0), 0);
+      const scoreRating = questions.length ? Math.round(scoreTotal / questions.length) : 0;
+      return { level, count: questions.length, scoreRating };
+    }).sort((a, b) => {
+      if (b.scoreRating !== a.scoreRating) return b.scoreRating - a.scoreRating;
+      return difficultyToRank(b.level) - difficultyToRank(a.level);
+    });
+
+    difficultyStats.forEach((stat, index) => {
+      difficultyRows.push({
+        subject: subject.label,
+        rank: index + 1,
+        difficulty: stat.level,
+        count: stat.count,
+        scoreRating: stat.scoreRating
+      });
+    });
+
+    return {
+      subject: subject.label,
+      total,
+      difficultyStats
+    };
+  });
+
+  const totalQuestions = subjectRows.reduce((sum, row) => sum + row.total, 0);
+  return {
+    totalQuestions,
+    subjectRows,
+    difficultyRows
+  };
+}
+
+async function getAdminQuestionBankSummary() {
+  if (adminQuestionBankSummaryCache) return adminQuestionBankSummaryCache;
+  if (adminQuestionBankSummaryPromise) return adminQuestionBankSummaryPromise;
+
+  adminQuestionBankSummaryPromise = loadGeneratedQuestionBank()
+    .then((pools) => {
+      adminQuestionBankSummaryCache = buildQuestionBankAdminSummary(pools);
+      return adminQuestionBankSummaryCache;
+    })
+    .catch((error) => {
+      adminQuestionBankSummaryPromise = null;
+      throw error;
+    });
+
+  return adminQuestionBankSummaryPromise;
+}
+
+async function renderAdminQuestionBankPanel() {
+  const panel = document.getElementById('admin-question-bank-panel');
+  const content = document.getElementById('admin-qbank-content');
+  if (!panel || !content) return;
+
+  if (!S.isAdmin) {
+    panel.classList.add('hidden');
+    content.innerHTML = '';
+    return;
+  }
+
+  panel.classList.remove('hidden');
+  content.innerHTML = '<p class="admin-qbank-loading">Loading question bank summary...</p>';
+
+  try {
+    const summary = await getAdminQuestionBankSummary();
+    if (!S.isAdmin) return;
+
+    const subjectRowsHtml = summary.subjectRows.map((row) => {
+      const pct = summary.totalQuestions ? Math.round((row.total / summary.totalQuestions) * 100) : 0;
+      return `<tr><td>${row.subject}</td><td>${row.total.toLocaleString('en-US')}</td><td>${pct}%</td></tr>`;
+    }).join('');
+
+    const difficultyRowsHtml = summary.difficultyRows.map((row) => {
+      const difficultyLabel = row.difficulty.charAt(0).toUpperCase() + row.difficulty.slice(1);
+      return `<tr><td>${row.subject}</td><td>#${row.rank}</td><td>${difficultyLabel}</td><td>${row.count.toLocaleString('en-US')}</td><td>${row.scoreRating}s</td></tr>`;
+    }).join('');
+
+    content.innerHTML = `
+      <div class="admin-qbank-block">
+        <div class="admin-qbank-kicker">Subject split of ${summary.totalQuestions.toLocaleString('en-US')} generated questions</div>
+        <table class="admin-qbank-table" aria-label="Question totals by subject">
+          <thead><tr><th>Subject</th><th>Questions</th><th>Share</th></tr></thead>
+          <tbody>${subjectRowsHtml}</tbody>
+        </table>
+      </div>
+      <div class="admin-qbank-block">
+        <div class="admin-qbank-kicker">Difficulty ranking by original generation score model (avg estimated_time_seconds)</div>
+        <table class="admin-qbank-table" aria-label="Difficulty ranking by subject">
+          <thead><tr><th>Subject</th><th>Rank</th><th>Difficulty</th><th>Count</th><th>Score Rating</th></tr></thead>
+          <tbody>${difficultyRowsHtml}</tbody>
+        </table>
+      </div>
+    `;
+  } catch {
+    content.innerHTML = '<p class="admin-qbank-loading">Could not load the question bank summary.</p>';
+  }
 }
 
 const ADAPTIVE_DIFFICULTY_LEVELS = ['easy', 'medium', 'hard'];
@@ -2437,6 +2574,39 @@ function adaptUpcomingQuestion(currentIndex){
   S.questions[targetIndex] = swap;
 }
 
+function renderAdminTestControls() {
+  const tools = document.getElementById('admin-test-tools');
+  const note = document.getElementById('admin-adaptive-note');
+  if (!tools || !note) return;
+
+  const show = Boolean(S.isAdmin && S.view === 'test' && S.testActive);
+  tools.classList.toggle('hidden', !show);
+  if (!show) {
+    note.textContent = '';
+    return;
+  }
+
+  const current = S.questions[S.curQ];
+  if (!current) {
+    note.textContent = 'Adaptive monitor unavailable.';
+    return;
+  }
+
+  const currentDifficulty = normalizeDifficultyLevel(current.difficulty);
+  const scoreRating = Math.max(0, Number(current.estimated_time_seconds) || 0);
+
+  if (hasSubmittedAnswer(S.curQ)) {
+    const wasCorrect = isAnswerCorrectForQuestion(current, S.answers[S.curQ]);
+    const targetIndex = pickAdaptiveNextQuestionIndex(S.curQ);
+    const targetQuestion = S.questions[targetIndex];
+    const targetDifficulty = targetQuestion ? normalizeDifficultyLevel(targetQuestion.difficulty) : 'n/a';
+    note.textContent = `Monitor: Q${S.curQ + 1} ${currentDifficulty} (${scoreRating}s) -> ${wasCorrect ? 'correct' : 'wrong'} path targets ${targetDifficulty} at Q${Math.min(targetIndex + 1, S.questions.length)}.`;
+    return;
+  }
+
+  note.textContent = `Monitor: Q${S.curQ + 1} ${currentDifficulty} (${scoreRating}s). Submit an answer to preview the adaptive jump.`;
+}
+
 function updQNav(){
   if(!LANDING_STRICT_ONE_AT_TIME){
     S.questions.forEach((_,i)=>{
@@ -2492,6 +2662,7 @@ function renderQ(idx){
   });
   document.getElementById('q-main').scrollTo(0,0);
   updQNav();updFlag();
+  renderAdminTestControls();
   announce(`Question ${idx+1}: ${q.question}`);
   syncLandingDeepDive();
 }
@@ -2540,6 +2711,26 @@ function goNext(){
   adaptUpcomingQuestion(current);
   goQ(Math.min(current+1,S.questions.length-1));
 }
+
+function handleAdminSkipAhead(){
+  if (!S.isAdmin) return;
+  if (!S.testActive || !Array.isArray(S.questions) || !S.questions.length) return;
+
+  const current = S.curQ;
+  if (current >= S.questions.length - 1) {
+    toast('Already at the final question.', 'wn');
+    return;
+  }
+
+  if (hasSubmittedAnswer(current)) {
+    adaptUpcomingQuestion(current);
+  }
+
+  const nextIndex = Math.min(current + 1, S.questions.length - 1);
+  goQ(nextIndex, { allowBackward: true });
+  toast(`Admin skip moved to Q${nextIndex + 1}.`, 'ok', 1700);
+}
+
 function goPrev(){
   toast('You cannot return to previous questions in this test mode.','wn');
 }
@@ -3275,6 +3466,7 @@ function renderDash(){
     document.getElementById('ch-empty').classList.remove('hidden');
     document.getElementById('score-chart').style.display='none';
     if(S.chart){S.chart.destroy();S.chart=null}
+    void renderAdminQuestionBankPanel();
     return;
   }
   document.getElementById('sess-empty').classList.add('hidden');
@@ -3324,6 +3516,7 @@ function renderDash(){
       scales:{y:{min:minScore,max:maxScore,grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#718096',font:{size:11}}},x:{grid:{display:false},ticks:{color:'#718096',font:{size:11}}}}}
   });
   S.chart.$sessionRows = ss;
+  void renderAdminQuestionBankPanel();
 }
 
 /* ── CONFETTI ── */

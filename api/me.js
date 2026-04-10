@@ -10,6 +10,13 @@ function toIso(input) {
   return new Date(unixSeconds * 1000).toISOString();
 }
 
+function parseAdminEmails(rawValue) {
+  return String(rawValue || '')
+    .split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 async function getStripeSubscriptionDetails(secretKey, subscriptionId) {
   const id = String(subscriptionId || '').trim();
   if (!secretKey || !id) return null;
@@ -65,11 +72,14 @@ async function handler(req, res) {
   const status = stripeDetails && stripeDetails.status
     ? stripeDetails.status
     : (dbIsPremium && (!dbStatus || dbStatus === 'free') ? 'active' : dbStatus);
+  const adminEmails = parseAdminEmails(process.env.ADMIN_PREMIUM_EMAILS);
+  const isAdmin = adminEmails.includes(String(auth.user.email || '').trim().toLowerCase());
   const isPremium = dbIsPremium || status === 'active' || status === 'trialing';
 
   return json(res, 200, {
     userId: auth.user.id,
     email: auth.user.email || '',
+    isAdmin,
     isPremium,
     subscriptionStatus: status,
     cancelAtPeriodEnd: Boolean(stripeDetails && stripeDetails.cancelAtPeriodEnd),
