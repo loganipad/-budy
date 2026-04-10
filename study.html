@@ -1401,9 +1401,104 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 .fc-game-streak{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:800;color:var(--gold);min-height:24px}
 .fc-game-streak:empty{display:none}
 
-.fc-stack-stage{position:relative;padding-right:44px}
-.fc-stack-tail{position:absolute;inset:16px 0 16px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.03) 100%);transform:translateX(calc(var(--tail-index) * 11px)) translateY(calc(var(--tail-index) * 4px)) rotate(calc(var(--tail-index) * -1deg));opacity:calc(.78 - (var(--tail-index) * .16));pointer-events:none}
+.fc-stack-stage{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(150px,182px);
+  gap:12px;
+  align-items:stretch;
+  border-radius:24px;
+  padding:14px;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(16,185,129,.16) 0%, transparent 42%),
+    radial-gradient(circle at 88% 16%, rgba(245,158,11,.12) 0%, transparent 38%),
+    linear-gradient(180deg, rgba(8,34,29,.94) 0%, rgba(2,17,15,.96) 100%);
+  border:1px solid rgba(16,185,129,.22);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03),0 18px 42px rgba(0,0,0,.34);
+}
+
+.fc-stack-main{position:relative;padding-right:42px;min-height:308px}
+
+.fc-stack-tail{
+  position:absolute;
+  inset:16px 0 16px 10px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.02) 100%);
+  transform:translateX(calc(var(--tail-index) * 11px)) translateY(calc(var(--tail-index) * 5px)) rotate(calc(var(--tail-index) * -1deg));
+  opacity:calc(.8 - (var(--tail-index) * .14));
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.fc-stack-tail::before,
+.fc-stack-tail::after{
+  content:'';
+  position:absolute;
+  left:12px;
+  right:14px;
+  border-radius:999px;
+  background:rgba(226,232,240,.18);
+}
+
+.fc-stack-tail::before{top:16px;height:6px}
+.fc-stack-tail::after{top:30px;height:4px;background:rgba(226,232,240,.12)}
+
 .fc-card-wrapper{position:relative;z-index:2}
+.fc-card-wrapper.enter .fc-card-inner{animation:fcStackDraw .36s cubic-bezier(.16,1,.3,1)}
+
+.fc-stack-next{
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(2,6,23,.48);
+  padding:10px;
+  display:grid;
+  gap:8px;
+  align-content:start;
+}
+
+.fc-stack-next-label{
+  font-size:.64rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(191,219,254,.78);
+}
+
+.fc-stack-next-list{display:grid;gap:8px}
+
+.fc-stack-next-card{
+  border-radius:12px;
+  border:1px solid rgba(148,163,184,.26);
+  background:linear-gradient(180deg, rgba(30,41,59,.72) 0%, rgba(15,23,42,.62) 100%);
+  padding:8px;
+  display:grid;
+  gap:4px;
+}
+
+.fc-stack-next-num{
+  font-size:.62rem;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:rgba(240,244,255,.56);
+}
+
+.fc-stack-next-text{
+  font-size:.74rem;
+  line-height:1.5;
+  color:#e2e8f0;
+  display:-webkit-box;
+  line-clamp:3;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.fc-stack-next-empty{
+  font-size:.72rem;
+  color:rgba(240,244,255,.56);
+  line-height:1.5;
+}
 
 .fc-card-wrapper{perspective:800px;min-height:280px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fc-card-inner{position:relative;width:100%;height:100%;min-height:280px;transition:transform .5s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
@@ -1464,6 +1559,11 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   0%{opacity:0;transform:translate(-220px,-130px) rotate(-18deg) scale(.72)}
   55%{opacity:1}
   100%{opacity:1;transform:translate(0,0) rotate(var(--deal-rot,0deg)) scale(1)}
+}
+
+@keyframes fcStackDraw{
+  0%{transform:translateY(16px) scale(.98);opacity:.72}
+  100%{transform:translateY(0) scale(1);opacity:1}
 }
 
 /* Study guide download button */
@@ -1938,6 +2038,22 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .topic-detail{max-height:none}
 
   .recent-card{position:static}
+
+  .fc-stack-stage{
+    grid-template-columns:1fr;
+  }
+
+  .fc-stack-main{
+    padding-right:34px;
+  }
+
+  .fc-stack-next{
+    padding:10px 12px;
+  }
+
+  .fc-stack-next-list{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
 }
 
 @media (max-width: 720px){
@@ -1999,6 +2115,9 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
   .flashcard-sheet-row{grid-template-columns:1fr}
 
+  .fc-stack-main{min-height:286px}
+  .fc-stack-next-list{grid-template-columns:1fr 1fr}
+
   .guide-page-strip{grid-auto-columns:minmax(240px,82vw)}
 
   .flashcard-sheet-front{border-right:none;border-bottom:1px dashed rgba(255,255,255,.18)}
@@ -2025,6 +2144,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .flashcard-item,
   .recent-test-question,
   .recommended-row{padding:14px;border-radius:18px}
+
+  .fc-stack-stage{padding:12px;border-radius:20px}
+  .fc-stack-main{padding-right:26px}
+  .fc-stack-tail{transform:translateX(calc(var(--tail-index) * 8px)) translateY(calc(var(--tail-index) * 4px)) rotate(calc(var(--tail-index) * -1deg))}
 
   .study-shell{padding-top:96px;padding-bottom:48px}
   .tutorial-pop{right:16px;bottom:16px;width:min(100%,calc(100% - 24px))}
@@ -2078,6 +2201,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   /* 430px flashcard polish */
   .flashcard-sheet-front,.flashcard-sheet-back{padding:16px}
   .flashcard-front-term{font-size:1.05rem}
+  .fc-stack-next-list{grid-template-columns:1fr}
   /* 430px download button */
   .guide-download-btn,a.guide-download-btn{min-height:44px;font-size:.82rem;padding:0 16px;border-radius:14px}
 }
@@ -4266,7 +4390,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       /* 3D flip card */
       var isFlipped = studyUIState.flashcardFace === 'back';
       var wrapper = document.createElement('div');
-      wrapper.className = 'fc-card-wrapper' + (isFlipped ? ' flipped' : '');
+      wrapper.className = 'fc-card-wrapper enter' + (isFlipped ? ' flipped' : '');
       var inner = document.createElement('div');
       inner.className = 'fc-card-inner';
 
@@ -4306,15 +4430,56 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       var stackStage = document.createElement('div');
       stackStage.className = 'fc-stack-stage';
+      var stackMain = document.createElement('div');
+      stackMain.className = 'fc-stack-main';
       var remainingCards = Math.max(0, totalCards - (idx + 1));
       var stackTailCount = Math.min(3, remainingCards);
       for (var tailIndex = 0; tailIndex < stackTailCount; tailIndex += 1) {
         var tail = document.createElement('div');
         tail.className = 'fc-stack-tail';
         tail.style.setProperty('--tail-index', String(tailIndex + 1));
-        stackStage.appendChild(tail);
+        stackMain.appendChild(tail);
       }
-      stackStage.appendChild(wrapper);
+      stackMain.appendChild(wrapper);
+      stackStage.appendChild(stackMain);
+
+      var nextRail = document.createElement('aside');
+      nextRail.className = 'fc-stack-next';
+
+      var nextLabel = document.createElement('div');
+      nextLabel.className = 'fc-stack-next-label';
+      nextLabel.textContent = 'Up next · ' + remainingCards + ' left';
+      nextRail.appendChild(nextLabel);
+
+      var nextList = document.createElement('div');
+      nextList.className = 'fc-stack-next-list';
+      var upcomingCards = deck.slice(idx + 1, idx + 4);
+      if (upcomingCards.length) {
+        upcomingCards.forEach(function (card, upIndex) {
+          var nextCard = document.createElement('article');
+          nextCard.className = 'fc-stack-next-card';
+
+          var nextNum = document.createElement('div');
+          nextNum.className = 'fc-stack-next-num';
+          nextNum.textContent = 'Card ' + (idx + upIndex + 2);
+
+          var nextText = document.createElement('div');
+          nextText.className = 'fc-stack-next-text';
+          nextText.textContent = card && card.front ? card.front : 'Next flashcard';
+
+          nextCard.appendChild(nextNum);
+          nextCard.appendChild(nextText);
+          nextList.appendChild(nextCard);
+        });
+      } else {
+        var nextEmpty = document.createElement('div');
+        nextEmpty.className = 'fc-stack-next-empty';
+        nextEmpty.textContent = 'Final card in deck. Flip it and choose Know it or Study more to finish.';
+        nextList.appendChild(nextEmpty);
+      }
+
+      nextRail.appendChild(nextList);
+      stackStage.appendChild(nextRail);
       game.appendChild(stackStage);
 
       /* Action buttons */
