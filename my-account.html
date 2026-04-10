@@ -620,6 +620,34 @@ button { font-family: inherit; cursor: pointer; }
   gap: 16px;
 }
 
+.settings-flow-card {
+  display: grid;
+  gap: 0;
+}
+
+.settings-section-block {
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(148,163,184,.14);
+  display: grid;
+  gap: 10px;
+}
+
+.settings-section-block:last-child { border-bottom: none; }
+
+.settings-section-title {
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #93c5fd;
+}
+
+.settings-section-copy {
+  font-size: .79rem;
+  line-height: 1.6;
+  color: rgba(240,244,255,.6);
+}
+
 .settings-card .panel-hd {
   display: flex;
   align-items: center;
@@ -829,10 +857,6 @@ button { font-family: inherit; cursor: pointer; }
   #acct-pane-settings .settings-wrap {
     grid-template-columns: 1fr;
   }
-  #acct-pane-settings .settings-layout {
-    grid-template-columns: 1.2fr .9fr;
-  }
-  #acct-pane-settings .purchase-panel { grid-column: 1 / -1; }
 }
 
 .dashboard-tour {
@@ -1600,22 +1624,11 @@ button { font-family: inherit; cursor: pointer; }
             <h3>Customize your profile and account controls</h3>
             <p>Keep your student profile current and manage account actions from one focused settings workspace.</p>
           </div>
-          <div class="settings-layout">
-            <div class="panel purchase-panel settings-card">
-              <div class="panel-hd">Purchases</div>
-              <div class="purchase-copy">
-                <div class="purchase-mode web" id="purchase-mode-badge">Web checkout</div>
-                <div class="row-copy">
-                  <span class="k" id="purchase-heading">Choose how to upgrade</span>
-                  <p id="purchase-body-copy">On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.</p>
-                </div>
-              </div>
-              <div class="purchase-note" id="purchase-platform-note">If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store's billing rules instead of Stripe's web portal.</div>
-            </div>
-
-            <div class="panel settings-card">
-              <div class="panel-hd">Profile</div>
-              <div class="settings-note">Update your core student details so tests and recommendations stay personalized.</div>
+          <div class="panel settings-flow-card">
+            <div class="panel-hd">Settings</div>
+            <div class="settings-section-block">
+              <div class="settings-section-title">Profile</div>
+              <div class="settings-section-copy">Update your core student details so tests and recommendations stay personalized.</div>
               <div class="row"><span class="k">Full Name</span><span class="v" id="profile-name">-</span></div>
               <div class="row"><span class="k">Email</span><span class="v" id="profile-email">-</span></div>
               <div class="row">
@@ -1633,9 +1646,9 @@ button { font-family: inherit; cursor: pointer; }
               </div>
             </div>
 
-            <div class="panel settings-card">
-              <div class="panel-hd">Account</div>
-              <div class="settings-note">Need to switch users? Sign out safely and return to your dashboard anytime.</div>
+            <div class="settings-section-block">
+              <div class="settings-section-title">Account</div>
+              <div class="settings-section-copy">Need to switch users? Sign out safely and return to your dashboard anytime.</div>
               <div class="row">
                 <span class="k">Session</span>
                 <div class="settings-account-actions">
@@ -2713,31 +2726,37 @@ function applyPurchaseEnvironmentUI() {
   const billingUpgradeNote = document.getElementById('billing-upgrade-note');
   const paymentMethod = document.getElementById('profile-payment-method');
   const billingUpgradeBtn = document.getElementById('billing-upgrade-btn');
-  if (!badge || !heading || !body || !note || !billingUpgradeNote || !paymentMethod || !billingUpgradeBtn) return;
+  if (!billingUpgradeNote || !paymentMethod || !billingUpgradeBtn) return;
 
   if (env.usesNativeStore) {
     const isIOS = env.platform === 'ios';
     const storeLabel = env.storeLabel;
-    badge.textContent = isIOS ? 'App Store mode' : 'Google Play mode';
-    badge.classList.remove('web');
-    badge.classList.add('native');
-    heading.textContent = `${storeLabel} purchases in this build`;
-    body.textContent = env.hasNativeBridge
-      ? `This build hands upgrades off to ${storeLabel}. Web checkout links stay out of the purchase flow here.`
-      : `This environment is flagged for ${storeLabel} purchases. Connect the native purchase bridge to finish the handoff without showing Stripe inside the app.`;
-    note.textContent = isIOS
-      ? 'Apple expects digital subscriptions sold inside iPhone or iPad apps to use in-app purchase. This screen now swaps to App Store messaging automatically when native app mode is detected.'
-      : 'Android app builds can switch to Google Play billing while keeping Stripe on the site. This screen now swaps to store messaging automatically when native app mode is detected.';
+    if (badge && heading && body) {
+      badge.textContent = isIOS ? 'App Store mode' : 'Google Play mode';
+      badge.classList.remove('web');
+      badge.classList.add('native');
+      heading.textContent = `${storeLabel} purchases in this build`;
+      body.textContent = env.hasNativeBridge
+        ? `This build hands upgrades off to ${storeLabel}. Web checkout links stay out of the purchase flow here.`
+        : `This environment is flagged for ${storeLabel} purchases. Connect the native purchase bridge to finish the handoff without showing Stripe inside the app.`;
+    }
+    if (note) {
+      note.textContent = isIOS
+        ? 'Apple expects digital subscriptions sold inside iPhone or iPad apps to use in-app purchase. This screen now swaps to App Store messaging automatically when native app mode is detected.'
+        : 'Android app builds can switch to Google Play billing while keeping Stripe on the site. This screen now swaps to store messaging automatically when native app mode is detected.';
+    }
     billingUpgradeNote.textContent = `This device is using ${storeLabel} purchase messaging, so external checkout links stay hidden from the primary upgrade flow.`;
     paymentMethod.textContent = `${storeLabel} in-app purchase in native app mode`;
     billingUpgradeBtn.textContent = env.hasNativeBridge ? `Use ${storeLabel}` : `${storeLabel} purchase coming soon`;
   } else {
-    badge.textContent = env.platform === 'web' ? 'Web checkout' : 'Mobile web checkout';
-    badge.classList.remove('native');
-    badge.classList.add('web');
-    heading.textContent = 'Choose how to upgrade';
-    body.textContent = 'On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.';
-    note.textContent = 'If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store\'s billing rules instead of Stripe\'s web portal.';
+    if (badge && heading && body) {
+      badge.textContent = env.platform === 'web' ? 'Web checkout' : 'Mobile web checkout';
+      badge.classList.remove('native');
+      badge.classList.add('web');
+      heading.textContent = 'Choose how to upgrade';
+      body.textContent = 'On the web, Budy opens secure Stripe checkout. In future iPhone or Android app builds, this section can hand off to the store purchase flow that Apple and Google expect.';
+    }
+    if (note) note.textContent = 'If someone subscribes inside a future mobile app, plan changes and refunds may follow the app store\'s billing rules instead of Stripe\'s web portal.';
     billingUpgradeNote.textContent = 'Use secure web checkout today. This same account area can surface App Store or Google Play purchases later without changing the user flow.';
     paymentMethod.textContent = env.platform === 'web' ? 'Secure Stripe checkout on the web' : 'Secure Stripe checkout in the mobile browser';
     billingUpgradeBtn.textContent = 'Upgrade Plan';
