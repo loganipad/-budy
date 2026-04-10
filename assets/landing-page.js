@@ -2153,17 +2153,142 @@ async function loadGeneratedQuestionBank() {
   return questionBankLoadPromise;
 }
 
+const ADAPTIVE_DIFFICULTY_LEVELS = ['easy', 'medium', 'hard'];
+
+function normalizeDifficultyLevel(level) {
+  const normalized = String(level || '').trim().toLowerCase();
+  return ADAPTIVE_DIFFICULTY_LEVELS.includes(normalized) ? normalized : 'medium';
+}
+
+function getRecentSectionAbilityScore(section) {
+  const sessions = Array.isArray(getSessions()) ? getSessions().slice() : [];
+  if (!sessions.length) return null;
+
+  sessions.sort((a, b) => new Date(b && b.date || 0).getTime() - new Date(a && a.date || 0).getTime());
+
+  const values = [];
+  for (const session of sessions) {
+    if (values.length >= 6) break;
+    const breakdown = getSessionScoreBreakdown(session);
+    const score = section === 'english' ? Number(breakdown.english) : Number(breakdown.math);
+    if (Number.isFinite(score) && score > 0) values.push(score);
+  }
+
+  if (!values.length) return null;
+
+  let weightedTotal = 0;
+  let weightSum = 0;
+  for (let i = 0; i < values.length; i += 1) {
+    const weight = values.length - i;
+    weightedTotal += values[i] * weight;
+    weightSum += weight;
+  }
+
+  return weightSum ? Math.round(weightedTotal / weightSum) : null;
+}
+
+function getAdaptiveDifficultyWeights(sectionScore) {
+  if (!Number.isFinite(sectionScore)) return { easy: 0.30, medium: 0.50, hard: 0.20 };
+  if (sectionScore >= 680) return { easy: 0.10, medium: 0.40, hard: 0.50 };
+  if (sectionScore >= 600) return { easy: 0.20, medium: 0.45, hard: 0.35 };
+  if (sectionScore >= 500) return { easy: 0.35, medium: 0.45, hard: 0.20 };
+  return { easy: 0.55, medium: 0.35, hard: 0.10 };
+}
+
+function buildAdaptiveDifficultyQuota(limit, weights) {
+  const safeLimit = Math.max(1, Number(limit) || 1);
+  const quota = { easy: 0, medium: 0, hard: 0 };
+  const fractions = [];
+  let used = 0;
+
+  ADAPTIVE_DIFFICULTY_LEVELS.forEach((level) => {
+    const raw = safeLimit * (Number(weights[level]) || 0);
+    const base = Math.floor(raw);
+    quota[level] = base;
+    used += base;
+    fractions.push({ level, fraction: raw - base });
+  });
+
+  let remaining = safeLimit - used;
+  fractions.sort((a, b) => b.fraction - a.fraction);
+  for (let index = 0; index < fractions.length && remaining > 0; index += 1) {
+    quota[fractions[index].level] += 1;
+    remaining -= 1;
+  }
+
+  return quota;
+}
+
+function getAdaptiveDifficultyPattern(sectionScore) {
+  if (!Number.isFinite(sectionScore)) return ['easy', 'medium', 'medium', 'hard'];
+  if (sectionScore >= 680) return ['medium', 'hard', 'hard', 'medium', 'easy'];
+  if (sectionScore >= 560) return ['easy', 'medium', 'hard', 'medium'];
+  return ['easy', 'easy', 'medium', 'easy', 'hard', 'medium'];
+}
+
+function orderAdaptiveQuestions(questions, sectionScore) {
+  const bins = { easy: [], medium: [], hard: [] };
+  shuffleQuestions(questions).forEach((question) => {
+    bins[normalizeDifficultyLevel(question && question.difficulty)].push(question);
+  });
+
+  const ordered = [];
+  const pattern = getAdaptiveDifficultyPattern(sectionScore);
+  while (ordered.length < questions.length) {
+    const preferred = pattern[ordered.length % pattern.length];
+    let picked = null;
+    if (bins[preferred] && bins[preferred].length) {
+      picked = bins[preferred].pop();
+    } else {
+      const fallbackLevel = ADAPTIVE_DIFFICULTY_LEVELS.find((level) => bins[level].length);
+      if (fallbackLevel) picked = bins[fallbackLevel].pop();
+    }
+    if (!picked) break;
+    ordered.push(picked);
+  }
+  return ordered;
+}
+
+function buildAdaptiveSectionQuestions(pool, limit, sectionScore) {
+  const safeLimit = Math.max(1, Number(limit) || 1);
+  const grouped = { easy: [], medium: [], hard: [] };
+
+  shuffleQuestions(pool).forEach((question) => {
+    grouped[normalizeDifficultyLevel(question && question.difficulty)].push(question);
+  });
+
+  const weights = getAdaptiveDifficultyWeights(sectionScore);
+  const quota = buildAdaptiveDifficultyQuota(safeLimit, weights);
+  const selected = [];
+
+  ADAPTIVE_DIFFICULTY_LEVELS.forEach((level) => {
+    for (let count = 0; count < quota[level] && grouped[level].length; count += 1) {
+      selected.push(grouped[level].pop());
+    }
+  });
+
+  const leftovers = shuffleQuestions([].concat(grouped.easy, grouped.medium, grouped.hard));
+  while (selected.length < safeLimit && leftovers.length) {
+    selected.push(leftovers.pop());
+  }
+
+  return orderAdaptiveQuestions(selected, sectionScore).slice(0, safeLimit);
+}
+
 async function buildQuestionSet(section, limit) {
   const pools = await loadGeneratedQuestionBank();
-  const englishPool = shuffleQuestions(pools.english);
-  const mathPool = shuffleQuestions(pools.math);
+  const safeLimit = Math.max(1, Number(limit) || 1);
+  const englishScore = getRecentSectionAbilityScore('english');
+  const mathScore = getRecentSectionAbilityScore('math');
 
-  if (section === 'english') return englishPool.slice(0, limit);
-  if (section === 'math') return mathPool.slice(0, limit);
+  if (section === 'english') return buildAdaptiveSectionQuestions(pools.english, safeLimit, englishScore);
+  if (section === 'math') return buildAdaptiveSectionQuestions(pools.math, safeLimit, mathScore);
 
-  const englishCount = Math.ceil(limit * 0.55);
-  const mathCount = Math.max(0, limit - englishCount);
-  return [...englishPool.slice(0, englishCount), ...mathPool.slice(0, mathCount)];
+  const englishCount = Math.ceil(safeLimit * 0.55);
+  const mathCount = Math.max(0, safeLimit - englishCount);
+  const englishQuestions = buildAdaptiveSectionQuestions(pools.english, englishCount, englishScore);
+  const mathQuestions = buildAdaptiveSectionQuestions(pools.math, mathCount, mathScore);
+  return [...englishQuestions, ...mathQuestions];
 }
 
 /* ── SCORE TABLES ── */
@@ -2245,8 +2370,10 @@ function updQNav(){
     });
   }
   const pct=Object.keys(S.answers).length/S.questions.length*100;
+  const currentQ=Math.min(S.curQ+1,S.questions.length);
+  const leftQ=Math.max(0,S.questions.length-currentQ);
   document.getElementById('tb-prog-fill').style.width=pct+'%';
-  document.getElementById('test-prog-txt').textContent=LANDING_STRICT_ONE_AT_TIME?'Current question':`${S.curQ+1}/${S.questions.length}`;
+  document.getElementById('test-prog-txt').textContent=`Q${currentQ} of ${S.questions.length} · ${leftQ} left`;
   document.getElementById('prev-btn').disabled=S.curQ===0;
   const last=S.curQ===S.questions.length-1;
   document.getElementById('next-btn').classList.toggle('hidden',last);
@@ -2258,7 +2385,8 @@ function renderQ(idx){
   S.curQ=idx;
   const q=S.questions[idx];
   const sec=q.section==='math'?'Math':'Reading & Writing';
-  const qBadge=LANDING_STRICT_ONE_AT_TIME?'Current question':`${sec} · Q${idx+1} of ${S.questions.length}`;
+  const remaining=Math.max(0,S.questions.length-(idx+1));
+  const qBadge=`${sec} · Q${idx+1} of ${S.questions.length} · ${remaining} left`;
   let html=`<div class="q-hd"><div class="q-badge">${qBadge}</div><div class="q-skill">${q.skill||''}</div></div>`;
   if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
   html+=`<div class="q-text">${q.question}</div>`;
