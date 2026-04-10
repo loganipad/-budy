@@ -1406,19 +1406,29 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   gap:12px;
   border-radius:24px;
   padding:14px;
+  --fc-card-width:min(100%,340px);
+  --fc-card-height:calc(var(--fc-card-width) * 7 / 5);
   background:#0f3a2e;
   border:1px solid #1f5a4a;
   box-shadow:0 18px 42px rgba(0,0,0,.34);
 }
 
-.fc-stack-main{position:relative;padding-right:42px;min-height:308px}
+.fc-stack-main{
+  position:relative;
+  width:calc(var(--fc-card-width) + 24px);
+  min-height:calc(var(--fc-card-height) + 30px);
+  margin:0 auto;
+}
 
 .fc-stack-tail{
   position:absolute;
-  inset:16px 0 16px 10px;
+  top:10px;
+  left:0;
+  width:var(--fc-card-width);
+  height:var(--fc-card-height);
   border-radius:20px;
   border:1.5px solid #d1d5db;
-  background:#ffffff;
+  background:#ffffff url('/assets/budy-logo.png') top 12px right 12px / 28px 28px no-repeat;
   transform:translateX(calc(var(--tail-index) * 7px)) translateY(calc(var(--tail-index) * 8px)) rotate(calc(var(--tail-index) * -0.4deg));
   pointer-events:none;
   overflow:hidden;
@@ -1462,12 +1472,24 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 .fc-stack-next-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 
 .fc-stack-next-card{
+  position:relative;
   border-radius:12px;
   border:1px solid #d1d5db;
   background:#ffffff;
-  padding:8px;
+  padding:10px 10px 8px;
   display:grid;
   gap:4px;
+}
+
+.fc-stack-next-card::after{
+  content:'';
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:18px;
+  height:18px;
+  background:url('/assets/budy-logo.png') center/contain no-repeat;
+  opacity:.92;
 }
 
 .fc-stack-next-num{
@@ -1483,6 +1505,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   line-height:1.5;
   color:#111827;
   display:-webkit-box;
+  padding-right:18px;
   line-clamp:2;
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
@@ -1495,14 +1518,27 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   line-height:1.5;
 }
 
-.fc-card-wrapper{perspective:800px;min-height:280px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.fc-card-inner{position:relative;width:100%;height:100%;min-height:280px;transition:transform .5s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+.fc-card-wrapper{perspective:800px;width:var(--fc-card-width);aspect-ratio:5 / 7;min-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fc-card-inner{position:relative;width:100%;height:100%;min-height:0;transition:transform .5s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
 .fc-card-wrapper.flipped .fc-card-inner{transform:rotateY(180deg)}
-.fc-card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px}
+.fc-card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:56px 24px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px}
+.fc-card-face::after{
+  content:'';
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:rgba(255,255,255,.96) url('/assets/budy-logo.png') center/22px 22px no-repeat;
+  border:1px solid rgba(15,23,42,.08);
+  box-shadow:0 6px 14px rgba(15,23,42,.12);
+}
 .fc-card-front{background:#ffffff;border:2px solid #d1d5db;box-shadow:0 12px 26px rgba(0,0,0,.22)}
 .fc-card-back{background:#fffbeb;border:2px solid #d6b26b;transform:rotateY(180deg);box-shadow:0 12px 26px rgba(0,0,0,.22)}
+.fc-card-back::after{background:#fff7e0 url('/assets/budy-logo.png') center/22px 22px no-repeat;border-color:rgba(161,98,7,.16)}
 .fc-card-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#6b7280}
-.fc-card-text{font-size:1.08rem;font-weight:700;line-height:1.5;color:#111827;max-width:440px}
+.fc-card-text{font-size:1.08rem;font-weight:700;line-height:1.5;color:#111827;max-width:100%}
 .fc-card-back .fc-card-text{font-size:.95rem;font-weight:500;color:#374151}
 .fc-card-hint{font-size:.72rem;color:#6b7280;margin-top:auto}
 
@@ -2246,7 +2282,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
   .flashcard-sheet-row{grid-template-columns:1fr}
 
-  .fc-stack-main{min-height:286px}
+  .fc-stack-stage{--fc-card-width:min(100%,300px)}
+  .fc-stack-main{width:calc(var(--fc-card-width) + 18px);min-height:calc(var(--fc-card-height) + 22px)}
   .fc-stack-next-list{grid-template-columns:1fr 1fr}
 
   .guide-page-strip{grid-auto-columns:minmax(240px,82vw)}
@@ -2277,7 +2314,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   .recommended-row{padding:14px;border-radius:18px}
 
   .fc-stack-stage{padding:12px;border-radius:20px}
-  .fc-stack-main{padding-right:26px}
   .fc-stack-tail{transform:translateX(calc(var(--tail-index) * 6px)) translateY(calc(var(--tail-index) * 7px)) rotate(calc(var(--tail-index) * -0.3deg))}
 
   .study-shell{padding-top:96px;padding-bottom:48px}
@@ -2286,6 +2322,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
 @media (max-width: 560px){
   .study-shell{padding-top:90px;padding-bottom:40px}
+
+  .fc-stack-stage{--fc-card-width:min(100%,270px)}
 
   .study-intro,
   .workspace-card,

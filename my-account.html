@@ -681,6 +681,43 @@ button { font-family: inherit; cursor: pointer; }
   flex-wrap: wrap;
 }
 
+.settings-edit-form {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: min(100%, 360px);
+}
+
+.settings-input {
+  height: 42px;
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: #f8fbff;
+  font-size: .84rem;
+  font-weight: 600;
+}
+
+.settings-input::placeholder {
+  color: rgba(240,244,255,.4);
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: rgba(96,165,250,.5);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
+.settings-inline-value {
+  color: #f8fbff;
+  font-weight: 700;
+}
+
 .panel {
   background:
     radial-gradient(120% 120% at 100% -20%, rgba(59,130,246,.18) 0%, transparent 55%),
@@ -740,6 +777,11 @@ button { font-family: inherit; cursor: pointer; }
   transition: all .2s var(--ease);
 }
 .btn-danger:hover { background: rgba(244,63,94,.2); border-color: rgba(251,113,133,.58); color: #fff; }
+.btn-outline-dark:disabled,
+.btn-danger:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
 
 .grade-select {
   height: 36px;
@@ -1317,6 +1359,8 @@ button { font-family: inherit; cursor: pointer; }
   .dash-section-head { flex-direction: column; align-items: flex-start; }
   .achievement-grid { grid-template-columns: 1fr; }
   .row { flex-direction: column; align-items: flex-start; }
+  .settings-edit-form,
+  .settings-input { width: 100%; }
   .billing-actions, .purchase-actions { width: 100%; }
   .billing-actions button, .purchase-actions button { width: 100%; }
 }
@@ -1629,7 +1673,16 @@ button { font-family: inherit; cursor: pointer; }
             <div class="settings-section-block">
               <div class="settings-section-title">Profile</div>
               <div class="settings-section-copy">Update your core student details so tests and recommendations stay personalized.</div>
-              <div class="row"><span class="k">Full Name</span><span class="v" id="profile-name">-</span></div>
+              <div class="row is-stack">
+                <div class="row-copy">
+                  <span class="k">Full Name</span>
+                  <small id="profile-name-helper">Current saved name: <span class="settings-inline-value" id="profile-name">-</span></small>
+                </div>
+                <form class="settings-edit-form" id="profile-name-form" onsubmit="saveProfileName(event)">
+                  <input id="profile-name-input" class="settings-input" type="text" name="name" maxlength="80" autocomplete="name" placeholder="Enter full name">
+                  <button class="btn-outline-dark" id="profile-name-save-btn" type="submit">Save Name</button>
+                </form>
+              </div>
               <div class="row"><span class="k">Email</span><span class="v" id="profile-email">-</span></div>
               <div class="row">
                 <span class="k">Grade</span>
@@ -1642,6 +1695,20 @@ button { font-family: inherit; cursor: pointer; }
                     <option value="11">11th Grade</option>
                     <option value="12">12th Grade</option>
                   </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-section-block">
+              <div class="settings-section-title">Security</div>
+              <div class="settings-section-copy">Keep account access secure without leaving the settings workspace.</div>
+              <div class="row is-stack">
+                <div class="row-copy">
+                  <span class="k">Password</span>
+                  <small id="settings-password-note">Use a secure reset link whenever you want to change your password.</small>
+                </div>
+                <div class="settings-account-actions">
+                  <button class="btn-outline-dark" id="settings-password-reset-btn" onclick="sendPasswordResetEmail()">Email Reset Link</button>
                 </div>
               </div>
             </div>
@@ -1693,6 +1760,7 @@ button { font-family: inherit; cursor: pointer; }
 
 const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
+const AUTH0_DB_CONNECTION = 'Username-Password-Authentication';
 const AUTH0_REDIRECT_URI = window.location.origin;
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
@@ -1963,6 +2031,17 @@ function getLocalAuthUser() {
 
 function clearLocalAuthUser() {
   localStorage.removeItem(LOCAL_AUTH_KEY);
+}
+
+function setLocalAuthUserFields(fields) {
+  if (!S.authViaLocal || !fields || typeof fields !== 'object') return;
+  const localUser = getLocalAuthUser();
+  if (!localUser) return;
+  try {
+    localStorage.setItem(LOCAL_AUTH_KEY, JSON.stringify({ ...localUser, ...fields }));
+  } catch {
+    // No-op.
+  }
 }
 
 function padDayValue(value) {
@@ -2765,6 +2844,70 @@ function applyPurchaseEnvironmentUI() {
   setBillingButtonsForMode();
 }
 
+function normalizeProfileName(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+}
+
+function parseAuthResponseMessage(text, fallback) {
+  const raw = String(text || '').trim();
+  if (!raw) return fallback;
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed.description || parsed.error_description || parsed.message || parsed.error || fallback;
+  } catch {
+    return raw.replace(/^"|"$/g, '') || fallback;
+  }
+}
+
+function isDatabasePasswordAccount() {
+  return Boolean(S.authUserId && String(S.authUserId).startsWith('auth0|'));
+}
+
+function updateSettingsControls() {
+  const nameInput = document.getElementById('profile-name-input');
+  const nameSaveBtn = document.getElementById('profile-name-save-btn');
+  const passwordBtn = document.getElementById('settings-password-reset-btn');
+  const passwordNote = document.getElementById('settings-password-note');
+
+  if (nameInput) {
+    nameInput.value = S.user.name || '';
+    nameInput.disabled = !S.isLoggedIn;
+    nameInput.placeholder = S.isLoggedIn ? 'Enter full name' : 'Log in to update your name';
+  }
+
+  if (nameSaveBtn) {
+    nameSaveBtn.disabled = !S.isLoggedIn;
+    nameSaveBtn.textContent = 'Save Name';
+  }
+
+  if (!passwordBtn || !passwordNote) return;
+
+  if (!S.isLoggedIn) {
+    passwordBtn.disabled = true;
+    passwordBtn.textContent = 'Log in to manage password';
+    passwordNote.textContent = 'Log in first to send yourself a password reset link.';
+    return;
+  }
+
+  if (!S.user.email) {
+    passwordBtn.disabled = true;
+    passwordBtn.textContent = 'No email on file';
+    passwordNote.textContent = 'This account does not have an email address attached yet.';
+    return;
+  }
+
+  if (!isDatabasePasswordAccount()) {
+    passwordBtn.disabled = true;
+    passwordBtn.textContent = 'Managed by sign-in provider';
+    passwordNote.textContent = 'This account signs in with Google or another provider. Change the password with that provider instead.';
+    return;
+  }
+
+  passwordBtn.disabled = false;
+  passwordBtn.textContent = 'Email Reset Link';
+  passwordNote.textContent = 'We will send a secure password reset link to ' + S.user.email + '.';
+}
+
 function saveGrade() {
   const sel = document.getElementById('profile-grade-select');
   if (!sel) return;
@@ -2775,6 +2918,112 @@ function saveGrade() {
   const gradeView = document.getElementById('profile-grade');
   if (gradeView) gradeView.textContent = grade ? grade + 'th grade' : '-';
   toast('Grade saved.', 'ok');
+}
+
+async function saveProfileName(event) {
+  if (event) event.preventDefault();
+
+  if (!S.isLoggedIn) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  const input = document.getElementById('profile-name-input');
+  const button = document.getElementById('profile-name-save-btn');
+  if (!input || !button) return;
+
+  const nextName = normalizeProfileName(input.value);
+  const currentName = normalizeProfileName(S.user.name);
+
+  if (nextName.length < 2) {
+    toast('Enter at least 2 characters for your name.', 'wn');
+    input.focus();
+    return;
+  }
+
+  if (nextName === currentName) {
+    toast('Your name is already up to date.', 'ok');
+    return;
+  }
+
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Saving...';
+
+  try {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Session expired. Please log in again.');
+
+    const response = await fetch('/api/update-profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      },
+      body: JSON.stringify({ name: nextName })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error((data && data.error) ? data.error : 'Could not update your name.');
+    }
+
+    S.user.name = data && data.name ? String(data.name) : nextName;
+    setLocalAuthUserFields({ name: S.user.name });
+    renderDash();
+    toast('Name updated.', 'ok');
+  } catch (err) {
+    toast(err && err.message ? err.message : 'Could not update your name.', 'er');
+  } finally {
+    button.disabled = false;
+    button.textContent = originalLabel;
+  }
+}
+
+async function sendPasswordResetEmail() {
+  if (!S.isLoggedIn) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  if (!S.user.email) {
+    toast('This account does not have an email address on file.', 'wn');
+    return;
+  }
+
+  if (!isDatabasePasswordAccount()) {
+    toast('This account uses Google or another provider. Change the password there instead.', 'wn', 4200);
+    return;
+  }
+
+  const button = document.getElementById('settings-password-reset-btn');
+  if (!button) return;
+
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Sending...';
+
+  try {
+    const response = await fetch('https://' + AUTH0_DOMAIN + '/dbconnections/change_password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: AUTH0_CLIENT_ID,
+        email: S.user.email,
+        connection: AUTH0_DB_CONNECTION
+      })
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(parseAuthResponseMessage(text, 'Could not send password reset email.'));
+    }
+
+    toast('Password reset email sent. Check your inbox.', 'ok', 4200);
+  } catch (err) {
+    toast(err && err.message ? err.message : 'Could not send password reset email.', 'er');
+  } finally {
+    button.disabled = false;
+    button.textContent = originalLabel;
+  }
 }
 
 async function openPurchaseOptions() {
@@ -3177,6 +3426,7 @@ function renderDash() {
   applyPurchaseEnvironmentUI();
 
   loadGrade();
+  updateSettingsControls();
 
   const weekCutoff = Date.now() - (7 * 24 * 60 * 60 * 1000);
   const weekSessions = ss
