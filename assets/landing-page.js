@@ -2181,6 +2181,16 @@ async function loadGeneratedQuestionBank() {
 }
 
 function buildQuestionBankAdminSummary(pools) {
+  const toTenScale = (value, min, max) => {
+    const safeValue = Number(value) || 0;
+    const safeMin = Number(min) || 0;
+    const safeMax = Number(max) || 0;
+    if (safeMax <= safeMin) return 1;
+    const normalized = (safeValue - safeMin) / (safeMax - safeMin);
+    const scaled = Math.round(1 + (Math.max(0, Math.min(1, normalized)) * 9));
+    return Math.max(1, Math.min(10, scaled));
+  };
+
   const subjects = [
     { key: 'english', label: 'Reading & Writing', questions: Array.isArray(pools && pools.english) ? pools.english : [] },
     { key: 'math', label: 'Math', questions: Array.isArray(pools && pools.math) ? pools.math : [] }
@@ -2189,11 +2199,18 @@ function buildQuestionBankAdminSummary(pools) {
   const difficultyRows = [];
   const subjectRows = subjects.map((subject) => {
     const total = subject.questions.length;
-    const difficultyStats = ADAPTIVE_DIFFICULTY_LEVELS.map((level) => {
+    const difficultyStatsRaw = ADAPTIVE_DIFFICULTY_LEVELS.map((level) => {
       const questions = subject.questions.filter((question) => normalizeDifficultyLevel(question && question.difficulty) === level);
       const scoreTotal = questions.reduce((sum, question) => sum + Math.max(0, Number(question && question.estimated_time_seconds) || 0), 0);
-      const scoreRating = questions.length ? Math.round(scoreTotal / questions.length) : 0;
-      return { level, count: questions.length, scoreRating };
+      const averageSeconds = questions.length ? Math.round(scoreTotal / questions.length) : 0;
+      return { level, count: questions.length, averageSeconds };
+    });
+
+    const minAverage = Math.min(...difficultyStatsRaw.map((stat) => stat.averageSeconds));
+    const maxAverage = Math.max(...difficultyStatsRaw.map((stat) => stat.averageSeconds));
+    const difficultyStats = difficultyStatsRaw.map((stat) => {
+      const scoreRating = toTenScale(stat.averageSeconds, minAverage, maxAverage);
+      return { level: stat.level, count: stat.count, scoreRating };
     }).sort((a, b) => {
       if (b.scoreRating !== a.scoreRating) return b.scoreRating - a.scoreRating;
       return difficultyToRank(b.level) - difficultyToRank(a.level);
@@ -2266,7 +2283,7 @@ async function renderAdminQuestionBankPanel() {
 
     const difficultyRowsHtml = summary.difficultyRows.map((row) => {
       const difficultyLabel = row.difficulty.charAt(0).toUpperCase() + row.difficulty.slice(1);
-      return `<tr><td>${row.subject}</td><td>#${row.rank}</td><td>${difficultyLabel}</td><td>${row.count.toLocaleString('en-US')}</td><td>${row.scoreRating}s</td></tr>`;
+      return `<tr><td>${row.subject}</td><td>#${row.rank}</td><td>${difficultyLabel}</td><td>${row.count.toLocaleString('en-US')}</td><td>${row.scoreRating}/10</td></tr>`;
     }).join('');
 
     content.innerHTML = `
@@ -2278,7 +2295,7 @@ async function renderAdminQuestionBankPanel() {
         </table>
       </div>
       <div class="admin-qbank-block">
-        <div class="admin-qbank-kicker">Difficulty ranking by original generation score model (avg estimated_time_seconds)</div>
+        <div class="admin-qbank-kicker">Difficulty ranking normalized to a 1-10 score from original generation timing metadata</div>
         <table class="admin-qbank-table" aria-label="Difficulty ranking by subject">
           <thead><tr><th>Subject</th><th>Rank</th><th>Difficulty</th><th>Count</th><th>Score Rating</th></tr></thead>
           <tbody>${difficultyRowsHtml}</tbody>

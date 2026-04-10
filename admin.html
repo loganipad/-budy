@@ -84,7 +84,7 @@ td { font-size: .83rem; color: #e8eef8; }
         <div>
           <div class="title-kicker">Admin</div>
           <h1>Question Bank Control Panel</h1>
-          <p class="sub">Full 3200 generated questions with live filtering, subject splits, and difficulty score ratings.</p>
+          <p class="sub">Full 3200 generated questions with live filtering, subject splits, and 1-10 difficulty score ratings.</p>
         </div>
         <div class="actions">
           <a class="btn ghost" href="/my-account">Back to Account</a>
@@ -115,7 +115,7 @@ td { font-size: .83rem; color: #e8eef8; }
             <tbody id="difficulty-summary-body"></tbody>
           </table>
         </div>
-        <p class="muted" style="margin-top:8px">Difficulty score rating is sourced from original generation metadata as average estimated_time_seconds for each difficulty bucket.</p>
+        <p class="muted" style="margin-top:8px">Difficulty score rating is normalized from original generation estimated_time_seconds, where 1 is easiest and 10 is hardest.</p>
       </div>
 
       <div class="panel">
@@ -215,6 +215,16 @@ function isAdminEmail(email) {
   return ADMIN_EMAILS.includes(String(email).trim().toLowerCase());
 }
 
+function toTenScale(value, min, max) {
+  const safeValue = Number(value) || 0;
+  const safeMin = Number(min) || 0;
+  const safeMax = Number(max) || 0;
+  if (safeMax <= safeMin) return 1;
+  const normalized = (safeValue - safeMin) / (safeMax - safeMin);
+  const scaled = Math.round(1 + (Math.max(0, Math.min(1, normalized)) * 9));
+  return Math.max(1, Math.min(10, scaled));
+}
+
 async function createAuthClient() {
   if (!window.auth0 || !window.auth0.createAuth0Client) return null;
   return window.auth0.createAuth0Client({
@@ -297,7 +307,7 @@ function renderDifficultySummary(rows) {
         '<td>#' + (idx + 1) + '</td>' +
         '<td><span class="pill ' + stat.difficulty + '">' + stat.difficulty.toUpperCase() + '</span></td>' +
         '<td>' + stat.count.toLocaleString('en-US') + '</td>' +
-        '<td>' + stat.score + 's</td>' +
+        '<td>' + stat.score + '/10</td>' +
       '</tr>');
     });
   });
@@ -354,7 +364,7 @@ function renderTablePage() {
       '<td>' + (row.domain || '-') + '</td>' +
       '<td>' + (row.skill || '-') + '</td>' +
       '<td><span class="pill ' + row.difficulty + '">' + row.difficulty.toUpperCase() + '</span></td>' +
-      '<td>' + row.scoreRating + 's</td>' +
+      '<td>' + row.scoreRating + '/10</td>' +
       '<td>' + (row.format || '-') + '</td>' +
       '<td>' + safePrompt + '</td>' +
     '</tr>';
@@ -371,7 +381,7 @@ async function loadQuestionBank() {
   const text = await response.text();
   const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
 
-  state.rows = rows.map((line) => {
+  const parsedRows = rows.map((line) => {
     const item = JSON.parse(line);
     return {
       id: String(item.id || ''),
@@ -379,9 +389,26 @@ async function loadQuestionBank() {
       domain: item.domain || '',
       skill: item.skill || '',
       difficulty: normalizeDifficulty(item.difficulty),
-      scoreRating: Math.max(0, Number(item.estimated_time_seconds) || 0),
+      estimatedSeconds: Math.max(0, Number(item.estimated_time_seconds) || 0),
       format: item.format || 'mcq',
       prompt: item.prompt || ''
+    };
+  });
+
+  const subjectBounds = parsedRows.reduce((acc, row) => {
+    const key = row.subject;
+    const value = row.estimatedSeconds;
+    if (!acc[key]) acc[key] = { min: value, max: value };
+    acc[key].min = Math.min(acc[key].min, value);
+    acc[key].max = Math.max(acc[key].max, value);
+    return acc;
+  }, {});
+
+  state.rows = parsedRows.map((row) => {
+    const bounds = subjectBounds[row.subject] || { min: 0, max: 0 };
+    return {
+      ...row,
+      scoreRating: toTenScale(row.estimatedSeconds, bounds.min, bounds.max)
     };
   });
 
