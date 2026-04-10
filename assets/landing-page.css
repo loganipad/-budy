@@ -325,14 +325,42 @@ input,select{font-family:inherit}
 /* ============================================================
    MARQUEE (University logos)
    ============================================================ */
-.cred-section{padding:56px 0;background:var(--bg);overflow:hidden}
+.cred-section{
+  padding:56px 0;
+  background:linear-gradient(180deg,#f8fbff 0%,#edf4ff 100%);
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+.cred-section::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 68% 54% at 14% 18%, rgba(37,99,235,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 58% 46% at 86% 82%, rgba(245,158,11,.09) 0%, transparent 62%);
+}
+.cred-section::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(37,99,235,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.055) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.cred-section .wrap{position:relative;z-index:1}
 .cred-label{text-align:center;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:12px}
 .cred-label::before,.cred-label::after{content:'';flex:1;max-width:80px;height:1px;background:var(--line)}
 .marquee-outer{overflow:hidden;position:relative}
 .marquee-outer::before,.marquee-outer::after{
   content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
-.marquee-outer::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
-.marquee-outer::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.cred-section .marquee-outer::before{left:0;background:linear-gradient(90deg,#f7fbff,transparent)}
+.cred-section .marquee-outer::after{right:0;background:linear-gradient(-90deg,#f0f6ff,transparent)}
 .marquee-track{display:flex;gap:0;width:max-content;animation:marquee 52s linear infinite}
 .marquee-track:hover{animation-play-state:paused}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
