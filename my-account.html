@@ -572,21 +572,67 @@ button { font-family: inherit; cursor: pointer; }
 }
 .score-hover-row.total strong { color: #fbbf24; }
 
+.account-pane-hero {
+  display: grid;
+  gap: 8px;
+  margin: 4px 2px 12px;
+}
+.account-pane-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #bfdbfe;
+  background: rgba(26,86,219,.16);
+  border: 1px solid rgba(59,130,246,.3);
+}
+.account-pane-hero h3 {
+  font-size: 1.18rem;
+  line-height: 1.25;
+  color: #f8fbff;
+}
+.account-pane-hero p {
+  font-size: .83rem;
+  color: rgba(240,244,255,.56);
+  max-width: 74ch;
+}
+
 .billing-wrap, .settings-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+#acct-pane-billing .billing-wrap,
+#acct-pane-settings .settings-wrap {
+  gap: 16px;
+}
+
+#acct-pane-settings .settings-wrap {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
 .panel {
-  background: #1a2235;
-  border: 1px solid rgba(255,255,255,.08);
+  background:
+    radial-gradient(120% 120% at 100% -20%, rgba(59,130,246,.18) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(26,34,53,.98), rgba(19,26,41,.98));
+  border: 1px solid rgba(148,163,184,.2);
   border-radius: 28px;
   overflow: hidden;
+  box-shadow: 0 22px 44px rgba(3,10,24,.22);
 }
 .panel-hd {
   padding: 16px 22px;
-  border-bottom: 1px solid rgba(255,255,255,.05);
+  border-bottom: 1px solid rgba(148,163,184,.18);
   font-size: .72rem;
   font-weight: 800;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: rgba(240,244,255,.38);
+  color: #93c5fd;
+  background: rgba(15,23,42,.36);
 }
 .row {
   display: flex;
@@ -594,34 +640,40 @@ button { font-family: inherit; cursor: pointer; }
   justify-content: space-between;
   gap: 16px;
   padding: 16px 22px;
-  border-bottom: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(148,163,184,.12);
   font-size: .875rem;
+  transition: background .18s var(--ease);
 }
+.row:hover { background: rgba(148,163,184,.06); }
 .row:last-child { border-bottom: none; }
-.k { font-weight: 700; color: rgba(240,244,255,.38); font-size: .8rem; }
-.v { color: #f0f4ff; font-weight: 600; }
+.k { font-weight: 700; color: rgba(191,219,254,.84); font-size: .77rem; letter-spacing: .06em; text-transform: uppercase; }
+.v { color: #f8fbff; font-weight: 700; }
 
 .billing-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-outline-dark {
-  background: transparent;
-  border: 1.5px solid rgba(255,255,255,.14);
-  color: rgba(240,244,255,.65);
+  background: rgba(37,99,235,.14);
+  border: 1.5px solid rgba(96,165,250,.34);
+  color: #dbeafe;
   height: 36px;
   padding: 0 16px;
   font-size: .8125rem;
   font-weight: 700;
   border-radius: 999px;
+  transition: all .2s var(--ease);
 }
+.btn-outline-dark:hover { background: rgba(37,99,235,.24); border-color: rgba(147,197,253,.5); color: #fff; }
 .btn-danger {
-  background: transparent;
-  border: 1.5px solid rgba(225,29,72,.3);
-  color: rgba(244,63,94,.9);
+  background: rgba(244,63,94,.1);
+  border: 1.5px solid rgba(251,113,133,.4);
+  color: #fecdd3;
   height: 36px;
   padding: 0 16px;
   font-size: .8125rem;
   font-weight: 700;
   border-radius: 999px;
+  transition: all .2s var(--ease);
 }
+.btn-danger:hover { background: rgba(244,63,94,.2); border-color: rgba(251,113,133,.58); color: #fff; }
 
 .grade-select {
   height: 36px;
@@ -726,11 +778,20 @@ button { font-family: inherit; cursor: pointer; }
   margin: 0 22px 18px;
   padding: 12px 14px;
   border-radius: 16px;
-  background: rgba(26,86,219,.12);
-  border: 1px solid rgba(59,130,246,.24);
+  background: rgba(15,23,42,.64);
+  border: 1px solid rgba(96,165,250,.3);
   color: #bfdbfe;
   font-size: .8rem;
   line-height: 1.6;
+}
+
+#acct-pane-settings .purchase-panel { grid-column: 1 / -1; }
+
+@media (min-width: 920px) {
+  #acct-pane-settings .settings-wrap {
+    grid-template-columns: 1.25fr .95fr;
+  }
+  #acct-pane-settings .purchase-panel { grid-column: 1 / -1; }
 }
 
 .dashboard-tour {
@@ -1143,7 +1204,6 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid rgba(59,130,246,.22);
   flex-shrink: 0;
 }
-.phq-next-body {}
 .phq-next-label {
   font-size: .65rem;
   font-weight: 800;
@@ -1218,6 +1278,8 @@ button { font-family: inherit; cursor: pointer; }
   .acct-tab { height: 40px; flex: 0 0 auto; padding: 0 12px; font-size: .78rem; scroll-snap-align: start; }
   .d-stat { padding: 16px; border-radius: 22px; }
   .billing-wrap, .settings-wrap { gap: 12px; }
+  .account-pane-hero h3 { font-size: 1.02rem; }
+  .account-pane-hero p { font-size: .78rem; }
   .purchase-copy, .purchase-note { font-size: .78rem; }
   .dashboard-tour { border-radius: 22px; padding: 16px; }
   /* PHQ at 430px */
@@ -1460,6 +1522,11 @@ button { font-family: inherit; cursor: pointer; }
 
       <div class="acct-pane" id="acct-pane-billing" role="tabpanel">
         <div class="billing-wrap">
+          <div class="account-pane-hero">
+            <span class="account-pane-kicker">Billing Center</span>
+            <h3>Manage your plan and payment tools</h3>
+            <p>Everything subscription-related lives here, including upgrade options, billing portal access, and cancellation controls.</p>
+          </div>
           <div class="panel">
             <div class="panel-hd">Billing</div>
             <div class="row"><span class="k">Current Plan</span><span class="v" id="profile-plan">Free</span></div>
@@ -1489,6 +1556,11 @@ button { font-family: inherit; cursor: pointer; }
 
       <div class="acct-pane" id="acct-pane-settings" role="tabpanel">
         <div class="settings-wrap">
+          <div class="account-pane-hero">
+            <span class="account-pane-kicker">Account Settings</span>
+            <h3>Update profile and purchase preferences</h3>
+            <p>Review your profile details and keep your account configuration organized in one place.</p>
+          </div>
           <div class="panel purchase-panel">
             <div class="panel-hd">Purchases</div>
             <div class="purchase-copy">
