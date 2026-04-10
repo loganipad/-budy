@@ -26,8 +26,8 @@ const REVIEW_TEST_STORAGE_KEY = 'budy_review_test_v1';
 const TEST_DRAFT_LOCAL_PREFIX = 'budy_test_draft_v1:';
 const TEST_DRAFT_AUTOSAVE_DEBOUNCE_MS = 1200;
 const TEST_DRAFT_AUTOSAVE_INTERVAL_MS = 15000;
-const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com'];
-const TEST_USER_EMAILS = ['loganipad@gmail.com'];
+const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
+const TEST_USER_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
 const CHECKOUT_SYNC_DELAY_MS = 2500;
 
