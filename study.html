@@ -5314,7 +5314,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         if (studyUIState.activeTab === 'flashcards') {
           renderFlashcardContent(detail, topic);
         } else {
-          renderGuideContent(detail, topic);
+          openStudyGuideForTopic(topic.key, { skipFocus: true });
         }
       });
 
@@ -5424,6 +5424,29 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       container.classList.remove('hidden');
       container.replaceChildren();
       renderFlashcardPreview(container, topic);
+    }
+
+    function openStudyGuideForTopic(topicKey, options) {
+      const topic = getTopicByKey(topicKey || studyUIState.selectedTopicKey);
+      if (!topic) return false;
+
+      studyUIState.activeTab = 'study-guides';
+      studyUIState.topicFilter = topic.section;
+      studyUIState.topicSearch = '';
+      studyUIState.selectedTopicKey = topic.key;
+      resetFlashcardSession();
+
+      updateMenuTabs();
+      renderLibraryPanel();
+
+      const detail = document.getElementById('topic-detail');
+      if (detail) {
+        renderGuideContent(detail, topic);
+      }
+
+      const shouldFocus = !(options && options.skipFocus);
+      if (shouldFocus) focusWorkspace();
+      return true;
     }
 
     function renderLibraryPanel() {
@@ -5615,6 +5638,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function openTopicView(tab, topicKey) {
+      if (tab === 'study-guides' && topicKey) {
+        if (openStudyGuideForTopic(topicKey)) return;
+      }
+
       studyUIState.activeTab = tab;
       if (topicKey) {
         const topic = getTopicByKey(topicKey);
@@ -5669,7 +5696,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         const row = document.createElement('article');
         row.className = 'recommended-row';
         row.addEventListener('click', function () {
-          openTopicView('study-guides', topic.key);
+          openStudyGuideForTopic(topic.key);
         });
 
         const topicCopy = document.createElement('div');
