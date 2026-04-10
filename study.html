@@ -4064,15 +4064,21 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       if (list) list.classList.add('hidden');
     }
 
-    function renderRecommendedStartMenu(topics) {
+    function setRecommendedTopicsOpen(isOpen) {
+      studyUIState.recommendedStartOpen = Boolean(isOpen);
       const button = document.getElementById('recommended-start-pill');
       const list = document.getElementById('recommended-topic-list');
       const card = document.querySelector('.recommended-card');
       if (!button || !list) return;
-
       list.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
-      if (card) card.classList.toggle('is-collapsed', !studyUIState.recommendedStartOpen);
       button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
+      if (card) card.classList.toggle('is-collapsed', !studyUIState.recommendedStartOpen);
+    }
+
+    function renderRecommendedStartMenu(topics) {
+      const button = document.getElementById('recommended-start-pill');
+      if (!button) return;
+      setRecommendedTopicsOpen(studyUIState.recommendedStartOpen);
     }
 
     function syncReviewModeWithBuilder() {
@@ -5670,6 +5676,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         row.appendChild(competency);
         list.appendChild(row);
       });
+
+      setRecommendedTopicsOpen(studyUIState.recommendedStartOpen);
     }
 
     function bindRecommendedStartControls() {
@@ -5679,10 +5687,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       button.addEventListener('click', function (event) {
         event.stopPropagation();
-        if (button.disabled) return;
-        studyUIState.recommendedStartOpen = !studyUIState.recommendedStartOpen;
-        list.classList.toggle('hidden', !studyUIState.recommendedStartOpen);
-        button.setAttribute('aria-expanded', studyUIState.recommendedStartOpen ? 'true' : 'false');
+        setRecommendedTopicsOpen(!studyUIState.recommendedStartOpen);
       });
     }
 
