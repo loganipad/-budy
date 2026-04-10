@@ -287,6 +287,57 @@ button,input,select{font:inherit}
   background:linear-gradient(180deg, rgba(71,40,7,.96) 0%, rgba(21,16,4,.96) 100%);
 }
 
+.study-toast.achievement.is-special{
+  position:relative;
+  overflow:hidden;
+  border-width:1.5px;
+}
+
+.study-toast.achievement.is-special::before{
+  content:'';
+  position:absolute;
+  inset:-45% -30%;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.26);
+  animation:studyToastOrbit 8s linear infinite;
+  opacity:.52;
+}
+
+.study-toast.achievement.is-special::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 16% 24%, rgba(255,255,255,.4) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 72% 20%, rgba(255,255,255,.3) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 44% 78%, rgba(255,255,255,.26) 0 1.5px, transparent 3px);
+  animation:studyToastSparkle 2.4s ease-in-out infinite;
+  opacity:.4;
+}
+
+.study-toast.toast-style-nova{background:linear-gradient(165deg, rgba(91,33,182,.95), rgba(30,64,175,.95));border-color:rgba(167,139,250,.65)}
+.study-toast.toast-style-aurora{background:linear-gradient(165deg, rgba(5,150,105,.95), rgba(14,116,144,.95));border-color:rgba(45,212,191,.62)}
+.study-toast.toast-style-eclipse{background:linear-gradient(165deg, rgba(15,23,42,.97), rgba(88,28,135,.9));border-color:rgba(196,181,253,.56)}
+.study-toast.toast-style-solar{background:linear-gradient(165deg, rgba(180,83,9,.96), rgba(225,29,72,.92));border-color:rgba(253,224,71,.68)}
+.study-toast.toast-style-celestial{background:linear-gradient(165deg, rgba(30,58,138,.96), rgba(14,116,144,.94));border-color:rgba(147,197,253,.7)}
+
+.study-toast.toast-style-nova .study-toast-badge,
+.study-toast.toast-style-aurora .study-toast-badge,
+.study-toast.toast-style-eclipse .study-toast-badge,
+.study-toast.toast-style-solar .study-toast-badge,
+.study-toast.toast-style-celestial .study-toast-badge{color:#f8fafc}
+
+@keyframes studyToastOrbit{
+  0%{transform:rotate(0deg) scale(1);opacity:.6}
+  50%{opacity:.24}
+  100%{transform:rotate(360deg) scale(1.04);opacity:.6}
+}
+
+@keyframes studyToastSparkle{
+  0%,100%{opacity:.28;transform:translateY(0)}
+  50%{opacity:.64;transform:translateY(-1px)}
+}
+
 .study-toast-head{
   display:flex;
   align-items:center;
@@ -1406,7 +1457,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   gap:12px;
   border-radius:24px;
   padding:14px;
-  --fc-card-width:min(100%,340px);
+  --fc-card-width:min(100%,230px);
   --fc-card-height:calc(var(--fc-card-width) * 7 / 5);
   background:#0f3a2e;
   border:1px solid #1f5a4a;
@@ -1415,8 +1466,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
 .fc-stack-main{
   position:relative;
-  width:calc(var(--fc-card-width) + 24px);
-  min-height:calc(var(--fc-card-height) + 30px);
+  width:calc(var(--fc-card-width) + 16px);
+  min-height:calc(var(--fc-card-height) + 20px);
   margin:0 auto;
 }
 
@@ -1428,7 +1479,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   height:var(--fc-card-height);
   border-radius:20px;
   border:1.5px solid #d1d5db;
-  background:#ffffff url('/assets/budy-logo.png') top 12px right 12px / 28px 28px no-repeat;
+  background:#ffffff url('/assets/budy-logo.png') top 10px right 10px / 20px 20px no-repeat;
   transform:translateX(calc(var(--tail-index) * 7px)) translateY(calc(var(--tail-index) * 8px)) rotate(calc(var(--tail-index) * -0.4deg));
   pointer-events:none;
   overflow:hidden;
@@ -1484,10 +1535,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 .fc-stack-next-card::after{
   content:'';
   position:absolute;
-  top:8px;
-  right:8px;
-  width:18px;
-  height:18px;
+  top:7px;
+  right:7px;
+  width:14px;
+  height:14px;
   background:url('/assets/budy-logo.png') center/contain no-repeat;
   opacity:.92;
 }
@@ -1521,22 +1572,22 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 .fc-card-wrapper{perspective:800px;width:var(--fc-card-width);aspect-ratio:5 / 7;min-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fc-card-inner{position:relative;width:100%;height:100%;min-height:0;transition:transform .5s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
 .fc-card-wrapper.flipped .fc-card-inner{transform:rotateY(180deg)}
-.fc-card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:56px 24px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px}
+.fc-card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:42px 16px 16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px}
 .fc-card-face::after{
   content:'';
   position:absolute;
-  top:16px;
-  right:16px;
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  background:rgba(255,255,255,.96) url('/assets/budy-logo.png') center/22px 22px no-repeat;
+  top:10px;
+  right:10px;
+  width:24px;
+  height:24px;
+  border-radius:8px;
+  background:rgba(255,255,255,.96) url('/assets/budy-logo.png') center/16px 16px no-repeat;
   border:1px solid rgba(15,23,42,.08);
   box-shadow:0 6px 14px rgba(15,23,42,.12);
 }
 .fc-card-front{background:#ffffff;border:2px solid #d1d5db;box-shadow:0 12px 26px rgba(0,0,0,.22)}
 .fc-card-back{background:#fffbeb;border:2px solid #d6b26b;transform:rotateY(180deg);box-shadow:0 12px 26px rgba(0,0,0,.22)}
-.fc-card-back::after{background:#fff7e0 url('/assets/budy-logo.png') center/22px 22px no-repeat;border-color:rgba(161,98,7,.16)}
+.fc-card-back::after{background:#fff7e0 url('/assets/budy-logo.png') center/16px 16px no-repeat;border-color:rgba(161,98,7,.16)}
 .fc-card-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#6b7280}
 .fc-card-text{font-size:1.08rem;font-weight:700;line-height:1.5;color:#111827;max-width:100%}
 .fc-card-back .fc-card-text{font-size:.95rem;font-weight:500;color:#374151}
@@ -2282,7 +2333,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
   .flashcard-sheet-row{grid-template-columns:1fr}
 
-  .fc-stack-stage{--fc-card-width:min(100%,300px)}
+  .fc-stack-stage{--fc-card-width:min(100%,198px)}
   .fc-stack-main{width:calc(var(--fc-card-width) + 18px);min-height:calc(var(--fc-card-height) + 22px)}
   .fc-stack-next-list{grid-template-columns:1fr 1fr}
 
@@ -2323,7 +2374,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 @media (max-width: 560px){
   .study-shell{padding-top:90px;padding-bottom:40px}
 
-  .fc-stack-stage{--fc-card-width:min(100%,270px)}
+  .fc-stack-stage{--fc-card-width:min(100%,170px)}
 
   .study-intro,
   .workspace-card,
@@ -2346,6 +2397,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 @media (max-width: 430px){
   .wrap{width:min(100%,calc(100% - 24px))}
   .study-shell{padding-top:86px;padding-bottom:34px}
+  .fc-stack-stage{--fc-card-width:min(100%,156px)}
   .menu-tabs{padding:4px 4px 2px;scroll-snap-type:x proximity}
   .menu-tab{min-height:38px;padding:0 12px;font-size:.78rem;scroll-snap-align:start}
   .intro-grid{gap:14px}
@@ -2676,6 +2728,13 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       queue: [],
       active: false
     };
+    const STUDY_ACHIEVEMENT_STYLE_MAP = {
+      'streak-7': { styleClass: 'toast-style-nova', isSpecial: true, icon: '✨', badge: 'Epic achievement' },
+      'flash-streak-5': { styleClass: 'toast-style-aurora', isSpecial: true, icon: '⚡', badge: 'Legendary streak' },
+      'flash-ace': { styleClass: 'toast-style-eclipse', isSpecial: true, icon: '🌠', badge: 'Mythic mastery' },
+      'flash-perfect': { styleClass: 'toast-style-solar', isSpecial: true, icon: '☀️', badge: 'Perfect run' },
+      'flash-comeback': { styleClass: 'toast-style-celestial', isSpecial: true, icon: '🪐', badge: 'Clutch comeback' }
+    };
 
     function getLocalAuthUser() {
       try {
@@ -2734,7 +2793,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       const host = ensureStudyToastHost();
       const toast = document.createElement('article');
-      toast.className = 'study-toast ' + (nextToast.type === 'achievement' ? 'achievement' : 'streak');
+      let toastClassName = 'study-toast ' + (nextToast.type === 'achievement' ? 'achievement' : 'streak');
+      if (nextToast.styleClass) toastClassName += ' ' + nextToast.styleClass;
+      if (nextToast.isSpecial) toastClassName += ' is-special';
+      toast.className = toastClassName;
 
       const head = document.createElement('div');
       head.className = 'study-toast-head';
@@ -2796,10 +2858,14 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       };
       writeStoredObject(STUDY_ACHIEVEMENT_KEY, store);
 
+      const styleMeta = STUDY_ACHIEVEMENT_STYLE_MAP[id] || {};
+
       queueStudyToast({
         type: 'achievement',
-        icon: '🏆',
-        badge: 'Achievement unlocked',
+        icon: styleMeta.icon || '🏆',
+        badge: styleMeta.badge || 'Achievement unlocked',
+        styleClass: styleMeta.styleClass || '',
+        isSpecial: Boolean(styleMeta.isSpecial),
         title: title || 'Achievement',
         message: message || 'Nice work. Keep the momentum going.'
       });

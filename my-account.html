@@ -413,69 +413,185 @@ button { font-family: inherit; cursor: pointer; }
   font-size: .82rem;
   color: rgba(240,244,255,.52);
 }
+.achievement-shell {
+  display: grid;
+  gap: 12px;
+}
+.achievement-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.achievement-page-indicator {
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(240,244,255,.52);
+}
+.achievement-nav {
+  display: flex;
+  gap: 8px;
+}
+.achievement-nav-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  color: #f8fbff;
+  font-size: 1rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.achievement-nav-btn:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
 .achievement-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 .achievement-item {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  min-height: 124px;
+  min-height: 142px;
   padding: 16px;
   border-radius: 22px;
   background: rgba(255,255,255,.04);
   border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 16px 34px rgba(3,10,24,.2);
 }
+.achievement-item > * { position: relative; z-index: 1; }
 .achievement-item.unlocked {
-  border-color: rgba(245,158,11,.28);
-  box-shadow: 0 18px 38px rgba(11,15,24,.2);
+  border-color: rgba(245,158,11,.34);
 }
 .achievement-item.locked {
   opacity: .72;
+  filter: saturate(.7);
 }
 .achievement-icon {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
   color: rgba(240,244,255,.52);
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
 }
 .achievement-item.unlocked .achievement-icon {
   color: #fbbf24;
-  background: rgba(245,158,11,.14);
-  border-color: rgba(245,158,11,.18);
+  background: rgba(245,158,11,.16);
+  border-color: rgba(245,158,11,.24);
 }
 .achievement-body {
   min-width: 0;
 }
+.achievement-rarity {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: rgba(148,163,184,.2);
+  color: #cbd5e1;
+}
 .achievement-title {
-  font-size: .9rem;
+  font-size: .92rem;
   font-weight: 800;
   color: #f0f4ff;
+  line-height: 1.3;
 }
 .achievement-copy {
-  margin-top: 4px;
+  margin-top: 5px;
   font-size: .78rem;
-  color: rgba(240,244,255,.54);
+  color: rgba(240,244,255,.62);
   line-height: 1.55;
 }
 .achievement-progress {
   margin-top: 10px;
-  font-size: .72rem;
+  font-size: .7rem;
   font-weight: 800;
-  letter-spacing: .06em;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: rgba(240,244,255,.38);
+  color: rgba(240,244,255,.42);
 }
 .achievement-item.unlocked .achievement-progress {
-  color: #10b981;
+  color: #6ee7b7;
+}
+
+.achievement-item.tier-bronze { background: linear-gradient(140deg, rgba(120,53,15,.28), rgba(68,34,14,.18)); }
+.achievement-item.tier-silver { background: linear-gradient(140deg, rgba(71,85,105,.28), rgba(30,41,59,.18)); }
+.achievement-item.tier-gold { background: linear-gradient(140deg, rgba(146,64,14,.3), rgba(101,42,13,.2)); }
+.achievement-item.tier-platinum { background: linear-gradient(140deg, rgba(29,78,216,.28), rgba(30,64,175,.16)); }
+.achievement-item.tier-obsidian { background: linear-gradient(140deg, rgba(17,24,39,.78), rgba(3,7,18,.88)); }
+
+.achievement-item.special {
+  border-width: 1.5px;
+  box-shadow: 0 20px 44px rgba(0,0,0,.34);
+}
+.achievement-item.special::before {
+  content: '';
+  position: absolute;
+  inset: -45% -35%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.16);
+  animation: achievementOrbit 8.5s linear infinite;
+  z-index: 0;
+}
+.achievement-item.special::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.32) 0 2px, transparent 3px),
+    radial-gradient(circle at 74% 18%, rgba(255,255,255,.24) 0 2px, transparent 3px),
+    radial-gradient(circle at 42% 80%, rgba(255,255,255,.2) 0 2px, transparent 3px);
+  animation: achievementSparkle 2.6s ease-in-out infinite;
+  opacity: .45;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.achievement-item.special-nova { background: linear-gradient(140deg, rgba(124,58,237,.35), rgba(59,130,246,.24)); border-color: rgba(167,139,250,.56); }
+.achievement-item.special-aurora { background: linear-gradient(140deg, rgba(5,150,105,.34), rgba(14,165,233,.24)); border-color: rgba(45,212,191,.5); }
+.achievement-item.special-eclipse { background: linear-gradient(140deg, rgba(15,23,42,.94), rgba(88,28,135,.44)); border-color: rgba(196,181,253,.46); }
+.achievement-item.special-solar { background: linear-gradient(140deg, rgba(217,119,6,.38), rgba(244,63,94,.28)); border-color: rgba(252,211,77,.6); }
+.achievement-item.special-celestial { background: linear-gradient(140deg, rgba(30,58,138,.5), rgba(14,116,144,.36)); border-color: rgba(147,197,253,.62); }
+
+.achievement-item.special .achievement-rarity {
+  background: rgba(255,255,255,.18);
+  color: #f8fafc;
+}
+.achievement-item.special .achievement-icon {
+  box-shadow: 0 0 0 3px rgba(255,255,255,.08), 0 0 26px rgba(255,255,255,.24);
+}
+
+@keyframes achievementOrbit {
+  0% { transform: rotate(0deg) scale(1); opacity: .58; }
+  50% { opacity: .24; }
+  100% { transform: rotate(360deg) scale(1.04); opacity: .58; }
+}
+
+@keyframes achievementSparkle {
+  0%, 100% { opacity: .28; transform: translateY(0); }
+  50% { opacity: .7; transform: translateY(-2px); }
 }
 .d-card-hd {
   display: flex;
@@ -1357,7 +1473,7 @@ button { font-family: inherit; cursor: pointer; }
   .dash-grid { grid-template-columns: 1fr; }
   .dash-stats { grid-template-columns: 1fr 1fr; }
   .dash-section-head { flex-direction: column; align-items: flex-start; }
-  .achievement-grid { grid-template-columns: 1fr; }
+  .achievement-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .row { flex-direction: column; align-items: flex-start; }
   .settings-edit-form,
   .settings-input { width: 100%; }
@@ -1622,9 +1738,18 @@ button { font-family: inherit; cursor: pointer; }
           <div class="d-card">
             <div class="d-card-hd">
               <h3>Achievements</h3>
-              <span class="d-card-tag tag-brand" id="achievement-count">0 / 4 unlocked</span>
+              <span class="d-card-tag tag-brand" id="achievement-count">0 / 16 unlocked</span>
             </div>
-            <div class="achievement-grid" id="achievement-grid"></div>
+            <div class="achievement-shell">
+              <div class="achievement-controls">
+                <div class="achievement-page-indicator" id="achievement-page-indicator">Page 1 of 4</div>
+                <div class="achievement-nav">
+                  <button class="achievement-nav-btn" id="achievement-prev-btn" onclick="stepAchievementPage(-1)" aria-label="Previous achievements">←</button>
+                  <button class="achievement-nav-btn" id="achievement-next-btn" onclick="stepAchievementPage(1)" aria-label="Next achievements">→</button>
+                </div>
+              </div>
+              <div class="achievement-grid" id="achievement-grid"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1769,6 +1894,7 @@ const GRADE_KEY = 'budy_grade_pref';
 const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
 const DASHBOARD_TOUR_KEY = 'budy_dashboard_tour_seen_v1';
 const ACCOUNT_TABS = ['progress', 'achievements', 'billing', 'settings'];
+const ACHIEVEMENTS_PER_PAGE = 4;
 const DASHBOARD_TOUR_STEPS = [
   {
     tab: 'progress',
@@ -1824,6 +1950,8 @@ const S = {
   loginDays: [],
   sessionCache: [],
   savedQuestionsCache: [],
+  achievementCardsCache: [],
+  achievementPage: 0,
   chart: null,
   dashboardTourStep: 0,
   purchaseEnvironment: null
@@ -2165,49 +2293,228 @@ function getLoginStreakStats(dayKeys) {
 }
 
 function getAchievementCards(metrics) {
+  const safe = {
+    totalTests: Number(metrics.totalTests || 0),
+    bestScore: Number(metrics.bestScore || 0),
+    monthCount: Number(metrics.monthCount || 0),
+    savedQuestionsCount: Number(metrics.savedQuestionsCount || 0),
+    score1300Count: Number(metrics.score1300Count || 0),
+    score1450Count: Number(metrics.score1450Count || 0),
+    score1550Count: Number(metrics.score1550Count || 0),
+    streakCurrent: Number(metrics.streak && metrics.streak.current || 0),
+    streakLongest: Number(metrics.streak && metrics.streak.longest || 0),
+    streakActiveWeek: Number(metrics.streak && metrics.streak.activeWeek || 0)
+  };
+
+  const legendChecks = [
+    safe.totalTests >= 30,
+    safe.streakLongest >= 45,
+    safe.score1550Count >= 3,
+    safe.savedQuestionsCount >= 50
+  ];
+  const legendProgress = legendChecks.filter(Boolean).length;
+
   return [
     {
+      id: 'first-test',
       icon: 'rocket',
+      rarity: 'Common',
+      tier: 'bronze',
       title: 'First Test',
       copy: 'Complete your first scored practice test.',
-      unlocked: metrics.totalTests >= 1,
-      progress: metrics.totalTests >= 1 ? 'Unlocked' : '0 / 1 complete'
+      unlocked: safe.totalTests >= 1,
+      progress: (safe.totalTests >= 1 ? 'Unlocked' : Math.min(safe.totalTests, 1) + ' / 1 test')
     },
     {
+      id: 'streak-3',
       icon: 'bolt',
-      title: '3-Day Streak',
-      copy: 'Log in 3 days in a row to build study consistency.',
-      unlocked: metrics.streak.longest >= 3,
-      progress: metrics.streak.longest >= 3 ? 'Unlocked' : Math.min(metrics.streak.current, 3) + ' / 3 days'
+      rarity: 'Common',
+      tier: 'bronze',
+      title: '3-Day Spark',
+      copy: 'Log in for 3 straight days.',
+      unlocked: safe.streakLongest >= 3,
+      progress: (safe.streakLongest >= 3 ? 'Unlocked' : Math.min(safe.streakCurrent, 3) + ' / 3 days')
     },
     {
-      icon: 'trophy',
-      title: '1400 Club',
-      copy: 'Reach a 1400 or higher on any scored test.',
-      unlocked: metrics.bestScore >= 1400,
-      progress: metrics.bestScore >= 1400 ? 'Unlocked' : (metrics.bestScore > 0 ? metrics.bestScore + ' / 1400 best' : 'No score yet')
+      id: 'saved-10',
+      icon: 'flag',
+      rarity: 'Common',
+      tier: 'bronze',
+      title: 'Review Collector',
+      copy: 'Save 10 flagged or missed questions.',
+      unlocked: safe.savedQuestionsCount >= 10,
+      progress: (safe.savedQuestionsCount >= 10 ? 'Unlocked' : Math.min(safe.savedQuestionsCount, 10) + ' / 10 saved')
     },
     {
+      id: 'score-1200',
       icon: 'chart',
-      title: 'Five-Test Run',
-      copy: 'Complete five practice tests to build a solid trendline.',
-      unlocked: metrics.totalTests >= 5,
-      progress: metrics.totalTests >= 5 ? 'Unlocked' : Math.min(metrics.totalTests, 5) + ' / 5 tests'
+      rarity: 'Rare',
+      tier: 'silver',
+      title: '1200 Breakthrough',
+      copy: 'Hit a 1200+ score once.',
+      unlocked: safe.bestScore >= 1200,
+      progress: (safe.bestScore >= 1200 ? 'Unlocked' : Math.max(0, safe.bestScore) + ' / 1200')
+    },
+    {
+      id: 'month-4',
+      icon: 'note',
+      rarity: 'Rare',
+      tier: 'silver',
+      title: 'Monthly Grinder',
+      copy: 'Take 4 tests in the current month.',
+      unlocked: safe.monthCount >= 4,
+      progress: (safe.monthCount >= 4 ? 'Unlocked' : Math.min(safe.monthCount, 4) + ' / 4 this month')
+    },
+    {
+      id: 'tests-10',
+      icon: 'note',
+      rarity: 'Rare',
+      tier: 'silver',
+      title: 'Ten-Test Log',
+      copy: 'Complete 10 total tests.',
+      unlocked: safe.totalTests >= 10,
+      progress: (safe.totalTests >= 10 ? 'Unlocked' : Math.min(safe.totalTests, 10) + ' / 10 tests')
+    },
+    {
+      id: 'streak-7',
+      icon: 'bolt',
+      rarity: 'Epic',
+      tier: 'gold',
+      specialStyle: 'nova',
+      title: 'Week Warp',
+      copy: 'Keep a 7-day streak alive.',
+      unlocked: safe.streakLongest >= 7,
+      progress: (safe.streakLongest >= 7 ? 'Unlocked' : Math.min(safe.streakCurrent, 7) + ' / 7 days')
+    },
+    {
+      id: 'score-1350',
+      icon: 'trophy',
+      rarity: 'Epic',
+      tier: 'gold',
+      title: '1350 Club',
+      copy: 'Score 1350 or higher.',
+      unlocked: safe.bestScore >= 1350,
+      progress: (safe.bestScore >= 1350 ? 'Unlocked' : Math.max(0, safe.bestScore) + ' / 1350')
+    },
+    {
+      id: 'scores-1300-3',
+      icon: 'chart',
+      rarity: 'Epic',
+      tier: 'gold',
+      title: 'Consistency Engine',
+      copy: 'Record 3 scores of 1300+.',
+      unlocked: safe.score1300Count >= 3,
+      progress: (safe.score1300Count >= 3 ? 'Unlocked' : Math.min(safe.score1300Count, 3) + ' / 3 high scores')
+    },
+    {
+      id: 'streak-14',
+      icon: 'rocket',
+      rarity: 'Legendary',
+      tier: 'platinum',
+      specialStyle: 'aurora',
+      title: 'Fortnight Focus',
+      copy: 'Reach a 14-day login streak.',
+      unlocked: safe.streakLongest >= 14,
+      progress: (safe.streakLongest >= 14 ? 'Unlocked' : Math.min(safe.streakCurrent, 14) + ' / 14 days')
+    },
+    {
+      id: 'score-1450',
+      icon: 'trophy',
+      rarity: 'Legendary',
+      tier: 'platinum',
+      title: '1450 Precision',
+      copy: 'Land at least one 1450+ score.',
+      unlocked: safe.bestScore >= 1450,
+      progress: (safe.bestScore >= 1450 ? 'Unlocked' : Math.max(0, safe.bestScore) + ' / 1450')
+    },
+    {
+      id: 'tests-20',
+      icon: 'chart',
+      rarity: 'Legendary',
+      tier: 'platinum',
+      title: 'Twenty-Test Engine',
+      copy: 'Complete 20 total tests.',
+      unlocked: safe.totalTests >= 20,
+      progress: (safe.totalTests >= 20 ? 'Unlocked' : Math.min(safe.totalTests, 20) + ' / 20 tests')
+    },
+    {
+      id: 'saved-35',
+      icon: 'flag',
+      rarity: 'Mythic',
+      tier: 'obsidian',
+      title: 'Forum Archivist',
+      copy: 'Build a 35-question review bank.',
+      unlocked: safe.savedQuestionsCount >= 35,
+      progress: (safe.savedQuestionsCount >= 35 ? 'Unlocked' : Math.min(safe.savedQuestionsCount, 35) + ' / 35 saved')
+    },
+    {
+      id: 'streak-30',
+      icon: 'bolt',
+      rarity: 'Mythic',
+      tier: 'obsidian',
+      specialStyle: 'eclipse',
+      title: '30-Day Current',
+      copy: 'Hold a 30-day streak.',
+      unlocked: safe.streakLongest >= 30,
+      progress: (safe.streakLongest >= 30 ? 'Unlocked' : Math.min(safe.streakCurrent, 30) + ' / 30 days')
+    },
+    {
+      id: 'score-1550',
+      icon: 'trophy',
+      rarity: 'Mythic',
+      tier: 'obsidian',
+      specialStyle: 'solar',
+      title: '1550 Zenith',
+      copy: 'Hit a 1550+ score once.',
+      unlocked: safe.bestScore >= 1550,
+      progress: (safe.bestScore >= 1550 ? 'Unlocked' : Math.max(0, safe.bestScore) + ' / 1550')
+    },
+    {
+      id: 'legend-keeper',
+      icon: 'rocket',
+      rarity: 'Ultra',
+      tier: 'obsidian',
+      specialStyle: 'celestial',
+      title: 'Legend Keeper',
+      copy: '30 tests, 45-day streak, 3 scores of 1550+, and 50 saved questions.',
+      unlocked: legendProgress === legendChecks.length,
+      progress: (legendProgress === legendChecks.length ? 'Unlocked' : legendProgress + ' / ' + legendChecks.length + ' legend checks')
     }
   ];
 }
 
 function renderAchievements(cards) {
+  if (Array.isArray(cards)) {
+    S.achievementCardsCache = cards.slice();
+  }
+
+  const deck = Array.isArray(S.achievementCardsCache) ? S.achievementCardsCache : [];
   const achievementGrid = document.getElementById('achievement-grid');
   const achievementCount = document.getElementById('achievement-count');
+  const pageIndicator = document.getElementById('achievement-page-indicator');
+  const prevBtn = document.getElementById('achievement-prev-btn');
+  const nextBtn = document.getElementById('achievement-next-btn');
   if (!achievementGrid || !achievementCount) return;
 
-  const unlockedCount = cards.filter((card) => card.unlocked).length;
-  achievementCount.textContent = unlockedCount + ' / ' + cards.length + ' unlocked';
+  const unlockedCount = deck.filter((card) => card.unlocked).length;
+  achievementCount.textContent = unlockedCount + ' / ' + deck.length + ' unlocked';
+
+  const totalPages = Math.max(1, Math.ceil(deck.length / ACHIEVEMENTS_PER_PAGE));
+  S.achievementPage = Math.min(Math.max(0, Number(S.achievementPage || 0)), totalPages - 1);
+  const pageStart = S.achievementPage * ACHIEVEMENTS_PER_PAGE;
+  const pageCards = deck.slice(pageStart, pageStart + ACHIEVEMENTS_PER_PAGE);
+
+  if (pageIndicator) pageIndicator.textContent = 'Page ' + (S.achievementPage + 1) + ' of ' + totalPages;
+  if (prevBtn) prevBtn.disabled = S.achievementPage <= 0;
+  if (nextBtn) nextBtn.disabled = S.achievementPage >= totalPages - 1;
+
   achievementGrid.replaceChildren();
-  cards.forEach((card) => {
+  pageCards.forEach((card) => {
     const item = document.createElement('div');
-    item.className = 'achievement-item ' + (card.unlocked ? 'unlocked' : 'locked');
+    item.className = 'achievement-item ' + (card.unlocked ? 'unlocked' : 'locked') + ' tier-' + (card.tier || 'bronze');
+    if (card.specialStyle) {
+      item.className += ' special special-' + card.specialStyle;
+    }
 
     const icon = document.createElement('div');
     icon.className = 'achievement-icon';
@@ -2215,6 +2522,10 @@ function renderAchievements(cards) {
 
     const body = document.createElement('div');
     body.className = 'achievement-body';
+
+    const rarity = document.createElement('div');
+    rarity.className = 'achievement-rarity';
+    rarity.textContent = card.rarity || 'Milestone';
 
     const title = document.createElement('div');
     title.className = 'achievement-title';
@@ -2228,6 +2539,7 @@ function renderAchievements(cards) {
     progress.className = 'achievement-progress';
     progress.textContent = card.progress;
 
+    body.appendChild(rarity);
     body.appendChild(title);
     body.appendChild(copy);
     body.appendChild(progress);
@@ -2235,6 +2547,14 @@ function renderAchievements(cards) {
     item.appendChild(body);
     achievementGrid.appendChild(item);
   });
+}
+
+function stepAchievementPage(delta) {
+  const deck = Array.isArray(S.achievementCardsCache) ? S.achievementCardsCache : [];
+  const totalPages = Math.max(1, Math.ceil(deck.length / ACHIEVEMENTS_PER_PAGE));
+  const nextPage = Number(S.achievementPage || 0) + Number(delta || 0);
+  S.achievementPage = Math.min(Math.max(0, nextPage), totalPages - 1);
+  renderAchievements();
 }
 
 function renderLoginStreak(metrics) {
@@ -3439,12 +3759,17 @@ function renderDash() {
   weekEl.classList.add(weekImp > 0 ? 'pos' : weekImp < 0 ? 'neg' : 'neu');
 
   const scores = ss.map((s) => Number(s.total || 0)).filter((n) => Number.isFinite(n) && n > 0);
+  const savedQuestionCount = getSavedQuestionsForDashboard().length;
   const metrics = {
     totalTests: ss.length,
     bestScore: scores.length ? Math.max(...scores) : 0,
     latestScore: scores.length ? scores[scores.length - 1] : 0,
     weekImp,
     monthCount,
+    savedQuestionsCount: savedQuestionCount,
+    score1300Count: scores.filter((score) => score >= 1300).length,
+    score1450Count: scores.filter((score) => score >= 1450).length,
+    score1550Count: scores.filter((score) => score >= 1550).length,
     streak: getLoginStreakStats(S.loginDays)
   };
   const achievementCards = getAchievementCards(metrics);
