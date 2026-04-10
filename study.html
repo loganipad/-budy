@@ -3173,11 +3173,16 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       document.body.classList.remove('viewer-faux-fullscreen-active');
     }
 
+    function exitNativeFullscreenIfActive() {
+      if (!document.fullscreenElement || typeof document.exitFullscreen !== 'function') {
+        return Promise.resolve();
+      }
+      return document.exitFullscreen().catch(function () {});
+    }
+
     function resetViewerFullscreenState() {
       clearViewerFullscreenClasses();
-      if (document.fullscreenElement && typeof document.exitFullscreen === 'function') {
-        document.exitFullscreen().catch(function () {});
-      }
+      exitNativeFullscreenIfActive();
     }
 
     function bindViewerFullscreenEvents() {
@@ -3898,11 +3903,14 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function exitTopicPreview() {
-      const detail = document.getElementById('topic-detail');
-      if (detail) detail.classList.remove('guide-inline-expanded');
-      studyUIState.selectedTopicKey = '';
-      resetFlashcardSession();
-      renderLibraryPanel();
+      clearViewerFullscreenClasses();
+      exitNativeFullscreenIfActive().finally(function () {
+        const detail = document.getElementById('topic-detail');
+        if (detail) detail.classList.remove('guide-inline-expanded');
+        studyUIState.selectedTopicKey = '';
+        resetFlashcardSession();
+        renderLibraryPanel();
+      });
     }
 
     function getMostWrongTopics(limit) {
