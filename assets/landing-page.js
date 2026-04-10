@@ -2455,7 +2455,6 @@ function updQNav(){
   const stepSubmitBtn=document.getElementById('step-submit-btn');
   if(stepSubmitBtn){
     const last=S.curQ===S.questions.length-1;
-    stepSubmitBtn.disabled=!hasSubmittedAnswer(S.curQ);
     stepSubmitBtn.textContent=last?'Submit Test':'Submit';
   }
 }
@@ -2548,7 +2547,7 @@ function goPrev(){
 function handleStepSubmit(){
   const current=S.curQ;
   if(!hasSubmittedAnswer(current)){
-    toast('Submit an answer before continuing.','wn');
+    window.alert('Please answer your current question.');
     return;
   }
   if(current>=S.questions.length-1){
