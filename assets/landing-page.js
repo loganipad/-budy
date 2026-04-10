@@ -2535,9 +2535,9 @@ function canAccessQuestionIndex(index, options={}){
 }
 
 function isAnswerLockedForQuestion(index){
-  if (S.isAdmin) return false;
+  if (hasSubmittedAnswer(index)) return true;
   const firstUnanswered = getFirstUnansweredIndex();
-  return index < firstUnanswered && hasSubmittedAnswer(index);
+  return index !== firstUnanswered;
 }
 
 function applyQNavCollapsedState(){
