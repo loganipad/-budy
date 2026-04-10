@@ -183,6 +183,14 @@
     transition: transform 0.18s, opacity 0.18s;
   }
 
+  .site-footer .footer-store-badge-ios {
+    grid-column: 2;
+  }
+
+  .site-footer .footer-store-badge-android {
+    grid-column: 3;
+  }
+
   .site-footer .footer-store-badge:hover {
     transform: translateY(-1px);
     opacity: 0.92;
@@ -207,6 +215,11 @@
 
     .site-footer .footer-grid-socials {
       grid-column: 1 / -1;
+    }
+
+    .site-footer .footer-store-badge-ios,
+    .site-footer .footer-store-badge-android {
+      grid-column: auto;
     }
   }
 
@@ -256,10 +269,10 @@
           </ul>
         </div>
 
-        <a class="footer-store-badge" href="/checkout.html" aria-label="Open iPhone purchase options">
+        <a class="footer-store-badge footer-store-badge-ios" href="/checkout.html" aria-label="Open iPhone purchase options">
           <img src="/assets/app-store-badge.png" alt="Download on the App Store">
         </a>
-        <a class="footer-store-badge" href="/checkout.html" aria-label="Open Android purchase options">
+        <a class="footer-store-badge footer-store-badge-android" href="/checkout.html" aria-label="Open Android purchase options">
           <img src="/assets/Google_Play_Store_badge_EN.png?v=2" alt="Get it on Google Play">
         </a>
       </div>
