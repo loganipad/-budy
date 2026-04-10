@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <script src="/assets/vendor/jspdf.umd.min.js"></script>
+<script src="/assets/shared/runtime-env.js" defer></script>
 <script src="/assets/shared/observability.js" defer></script>
 <link rel="stylesheet" href="/assets/review-bank.css">
 <style>
@@ -3299,7 +3300,9 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         enableKeywordHighlights: false,
         getAccessToken: getReviewAccessToken,
         getRuntimeContext: getStudyDeepDiveContext,
-        upgradeUrl: '/checkout.html',
+        upgradeUrl: window.BudyRuntime && typeof window.BudyRuntime.getUpgradeUrl === 'function'
+          ? window.BudyRuntime.getUpgradeUrl()
+          : '/checkout.html',
         loginUrl: '/login.html'
       };
 

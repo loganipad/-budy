@@ -1,0 +1,8 @@
+node_modules/
+mobile-web/
+.DS_Store
+*.log
+
+# Python virtual environments
+.venv/
+.venv-1/

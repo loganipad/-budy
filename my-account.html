@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<script src="/assets/shared/runtime-env.js" defer></script>
 <script src="/assets/shared/observability.js" defer></script>
 <link rel="stylesheet" href="/assets/review-bank.css">
 <style>
@@ -3061,6 +3062,10 @@ function setBillingButtonsForMode() {
 }
 
 function detectPurchaseEnvironment() {
+  if (window.BudyRuntime && typeof window.BudyRuntime.detectPurchaseEnvironment === 'function') {
+    return window.BudyRuntime.detectPurchaseEnvironment();
+  }
+
   const params = new URLSearchParams(window.location.search);
   const forcedPlatform = String(params.get('purchasePlatform') || '').trim().toLowerCase();
   const ua = navigator.userAgent || '';
