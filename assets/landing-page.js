@@ -2543,10 +2543,16 @@ function isAnswerLockedForQuestion(index){
 function applyQNavCollapsedState(){
   const nav = document.getElementById('q-nav');
   const btn = document.getElementById('qn-toggle-btn');
+  const testScreen = document.getElementById('test-screen');
   if(!nav || !btn) return;
   nav.classList.toggle('collapsed', Boolean(S.qNavCollapsed));
+  if(testScreen){
+    testScreen.classList.toggle('q-nav-open', !S.qNavCollapsed);
+  }
   btn.setAttribute('aria-expanded', S.qNavCollapsed ? 'false' : 'true');
-  btn.textContent = S.qNavCollapsed ? 'Open' : 'Close';
+  const label = S.qNavCollapsed ? 'Open question menu' : 'Close question menu';
+  btn.setAttribute('aria-label', label);
+  btn.setAttribute('title', label);
 }
 
 function toggleQNav(){
