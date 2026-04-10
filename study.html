@@ -2751,8 +2751,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
                 <button class="topic-filter" type="button" data-topic-filter="english">English</button>
               </div>
               <div class="view-toggle-row">
-                <button class="view-toggle-btn active" type="button" id="view-list-btn" aria-label="List view" title="List view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="7" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="12" width="14" height="2" rx="1" fill="currentColor"/></svg></button>
-                <button class="view-toggle-btn" type="button" id="view-grid-btn" aria-label="Grid view" title="Grid view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg></button>
+                <button class="view-toggle-btn active" type="button" id="view-grid-btn" aria-label="Grid view" title="Grid view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg></button>
+                <button class="view-toggle-btn" type="button" id="view-list-btn" aria-label="List view" title="List view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="7" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="12" width="14" height="2" rx="1" fill="currentColor"/></svg></button>
               </div>
             </div>
 
@@ -5968,11 +5968,11 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         });
       });
 
-      /* View toggle: list (default) vs grid */
+      /* View toggle: grid (default) vs list */
       var listBtn = document.getElementById('view-list-btn');
       var gridBtn = document.getElementById('view-grid-btn');
       var topicListEl = document.getElementById('topic-list');
-      if (topicListEl) topicListEl.classList.add('list-mode');
+      if (topicListEl) topicListEl.classList.remove('list-mode');
       if (listBtn) listBtn.addEventListener('click', function () {
         if (topicListEl) topicListEl.classList.add('list-mode');
         listBtn.classList.add('active');
