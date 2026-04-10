@@ -555,14 +555,17 @@
     </div>
   </div>
   <div class="test-body">
-    <aside class="q-nav">
-      <div class="qn-title">Questions</div>
+    <aside class="q-nav" id="q-nav">
+      <div class="qn-head">
+        <div class="qn-title">Questions</div>
+        <button class="qn-toggle" id="qn-toggle-btn" type="button" onclick="toggleQNav()" aria-expanded="false" aria-controls="qn-grid">Open</button>
+      </div>
       <div class="qn-grid" id="qn-grid"></div>
-      <div class="qn-legend">
-        <div class="leg-row"><div class="leg-dot" style="background:var(--line)"></div>Not answered</div>
-        <div class="leg-row"><div class="leg-dot" style="background:rgba(26,86,219,.2)"></div>Answered</div>
-        <div class="leg-row"><div class="leg-dot" style="background:var(--brand)"></div>Current</div>
-        <div class="leg-row"><div class="leg-dot" style="background:#fef3c7;border:1.5px solid var(--amber)"></div>Flagged</div>
+      <div class="qn-legend" id="qn-legend">
+        <div class="leg-row"><div class="leg-dot complete"></div>Green = Completed</div>
+        <div class="leg-row"><div class="leg-dot current"></div>Yellow = Current</div>
+        <div class="leg-row"><div class="leg-dot locked"></div>Gray = Locked</div>
+        <div class="leg-row"><div class="leg-dot admin"></div>Rose = Admin preview</div>
       </div>
     </aside>
     <main class="q-main" id="q-main"></main>

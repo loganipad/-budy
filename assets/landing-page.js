@@ -123,6 +123,7 @@ const S = {
   timerPaused: false,
   timeLeft: 0,
   testActive: false,
+  qNavCollapsed: true,
 
   results: null,
   chart: null,
@@ -627,6 +628,7 @@ function applyDraftState(draft, sid, questions) {
   S.timerPaused = Boolean(draft && draft.timerPaused);
   S.timeLeft = timeLimitSeconds;
   S.testActive = true;
+  S.qNavCollapsed = true;
   S.section = section;
   S.customTestLabel = draft && draft.customTestLabel ? String(draft.customTestLabel) : '';
   S.testSessionId = sid;
@@ -731,6 +733,7 @@ function beginPreparedTestSession({ questions, section, timeLimitSeconds, label,
   S.timerPaused = false;
   S.timeLeft = Math.max(60, Number(timeLimitSeconds) || 0);
   S.testActive = true;
+  S.qNavCollapsed = true;
   S.section = section;
   S.customTestLabel = label || '';
   S.testSessionId = nextSid;
@@ -2503,15 +2506,52 @@ function startTest() {
 
 /* ── QNAV ── */
 function buildQNav(){
-  const g=document.getElementById('qn-grid');g.innerHTML='';
-  const testScreen=document.getElementById('test-screen');
-  if(testScreen)testScreen.classList.toggle('one-at-time',LANDING_STRICT_ONE_AT_TIME);
-  if(LANDING_STRICT_ONE_AT_TIME)return;
+  const g=document.getElementById('qn-grid');if(!g)return;
+  g.innerHTML='';
   S.questions.forEach((_,i)=>{
     const b=document.createElement('button');
     b.className='qn-btn';b.textContent=i+1;b.id='qnb-'+i;
     b.onclick=()=>goQ(i);g.appendChild(b);
-  });updQNav();
+  });
+  applyQNavCollapsedState();
+  updQNav();
+}
+
+function getFirstUnansweredIndex(){
+  for(let i=0;i<S.questions.length;i+=1){
+    if(!hasSubmittedAnswer(i)) return i;
+  }
+  return S.questions.length;
+}
+
+function canAccessQuestionIndex(index, options={}){
+  if (S.isAdmin) return true;
+  const allowBackward = Boolean(options && options.allowBackward);
+  const firstUnanswered = getFirstUnansweredIndex();
+  if (index === firstUnanswered) return true;
+  if (index < firstUnanswered && hasSubmittedAnswer(index)) return true;
+  if (allowBackward && index < firstUnanswered) return true;
+  return false;
+}
+
+function isAnswerLockedForQuestion(index){
+  if (S.isAdmin) return false;
+  const firstUnanswered = getFirstUnansweredIndex();
+  return index < firstUnanswered && hasSubmittedAnswer(index);
+}
+
+function applyQNavCollapsedState(){
+  const nav = document.getElementById('q-nav');
+  const btn = document.getElementById('qn-toggle-btn');
+  if(!nav || !btn) return;
+  nav.classList.toggle('collapsed', Boolean(S.qNavCollapsed));
+  btn.setAttribute('aria-expanded', S.qNavCollapsed ? 'false' : 'true');
+  btn.textContent = S.qNavCollapsed ? 'Open' : 'Close';
+}
+
+function toggleQNav(){
+  S.qNavCollapsed = !S.qNavCollapsed;
+  applyQNavCollapsedState();
 }
 
 function hasSubmittedAnswer(qIndex){
@@ -2625,15 +2665,20 @@ function renderAdminTestControls() {
 }
 
 function updQNav(){
-  if(!LANDING_STRICT_ONE_AT_TIME){
-    S.questions.forEach((_,i)=>{
-      const b=document.getElementById('qnb-'+i);if(!b)return;
-      b.className='qn-btn';
-      if(i===S.curQ)b.classList.add('cur');
-      else if(S.flags.has(i))b.classList.add('flag');
-      else if(S.answers[i]!==undefined)b.classList.add('ans');
-    });
-  }
+  const firstUnanswered = getFirstUnansweredIndex();
+  S.questions.forEach((_,i)=>{
+    const b=document.getElementById('qnb-'+i);if(!b)return;
+    const answered = hasSubmittedAnswer(i);
+    const locked = !S.isAdmin && i > firstUnanswered;
+    b.className='qn-btn';
+    b.disabled = locked;
+    if(answered)b.classList.add('complete');
+    if(i===S.curQ && !answered)b.classList.add('cur');
+    if(S.isAdmin && !answered && i!==S.curQ)b.classList.add('admin-future');
+    if(locked)b.classList.add('locked');
+    if(S.flags.has(i) && !locked)b.classList.add('flag');
+  });
+
   const pct=Object.keys(S.answers).length/S.questions.length*100;
   const currentQ=Math.min(S.curQ+1,S.questions.length);
   const leftQ=Math.max(0,S.questions.length-currentQ);
@@ -2650,6 +2695,7 @@ function updQNav(){
 function renderQ(idx){
   S.curQ=idx;
   const q=S.questions[idx];
+  const answerLocked = isAnswerLockedForQuestion(idx);
   const sec=q.section==='math'?'Math':'Reading & Writing';
   const remaining=Math.max(0,S.questions.length-(idx+1));
   const qBadge=`${sec} · Q${idx+1} of ${S.questions.length} · ${remaining} left`;
@@ -2658,18 +2704,29 @@ function renderQ(idx){
   html+=`<div class="q-text">${q.question}</div>`;
   if(q.type==='spr'){
     const v=S.answers[idx]||'';
+    const lockAttrs = answerLocked ? ' readonly disabled aria-disabled="true"' : '';
     html+=`<p class="q-spr-lbl">Type your answer below. Fractions and decimals are OK.</p>
     <input class="q-spr-inp" type="text" id="spr-${idx}" placeholder="Your answer" value="${v}"
-      oninput="saveSpr(${idx},this.value)">`;
+      oninput="saveSpr(${idx},this.value)"${lockAttrs}>`;
+    if (answerLocked) {
+      html+=`<p class="q-spr-lbl" style="margin-top:8px;color:#64748b">Answer locked because adaptive path has already been determined.</p>`;
+    }
   } else {
     html+=`<div class="q-opts">`;
     (q.options||[]).forEach((opt,oi)=>{
       const l=['A','B','C','D'][oi];
       const sel=S.answers[idx]===l;
-      html+=`<div class="q-opt${sel?' sel':''}" onclick="selAns(${idx},'${l}',this)" role="radio" aria-checked="${sel}" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+      const disabledClass = answerLocked ? ' disabled' : '';
+      const onClick = answerLocked ? '' : ` onclick="selAns(${idx},'${l}',this)"`;
+      const keydown = answerLocked ? '' : ' onkeydown="if(event.key===\'Enter\'||event.key===\' \' )this.click()"';
+      const tabIndex = answerLocked ? '-1' : '0';
+      html+=`<div class="q-opt${sel?' sel':''}${disabledClass}"${onClick} role="radio" aria-checked="${sel}" aria-disabled="${answerLocked ? 'true' : 'false'}" tabindex="${tabIndex}"${keydown}>
         <div class="q-opt-k">${l}</div><div>${opt.replace(/^[A-D]\)\s*/,'')}</div></div>`;
     });
     html+=`</div>`;
+    if (answerLocked) {
+      html+=`<p class="q-spr-lbl" style="margin-top:8px;color:#64748b">Answer locked because adaptive path has already been determined.</p>`;
+    }
   }
   document.getElementById('q-main').innerHTML=html;
   // Animate in
@@ -2702,16 +2759,24 @@ function attachRipple() {
 }
 
 function selAns(qi,l,el){
+  if (isAnswerLockedForQuestion(qi)) {
+    toast('This answer is locked for adaptive integrity.','wn');
+    return;
+  }
   document.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');S.answers[qi]=l;updQNav();
   scheduleDraftAutosave('answer_select');
 }
-function saveSpr(qi,v){if(v.trim())S.answers[qi]=v.trim();else delete S.answers[qi];updQNav();scheduleDraftAutosave('answer_input');}
+function saveSpr(qi,v){
+  if (isAnswerLockedForQuestion(qi)) return;
+  if(v.trim())S.answers[qi]=v.trim();else delete S.answers[qi];
+  updQNav();
+  scheduleDraftAutosave('answer_input');
+}
 
 function goQ(i,options={}){
-  const allowBackward=Boolean(options&&options.allowBackward);
-  if(LANDING_STRICT_ONE_AT_TIME&&i<S.curQ&&!allowBackward){
-    toast('You cannot return to previous questions in this test mode.','wn');
+  if(!canAccessQuestionIndex(i,options)){
+    toast('That question is locked until you submit previous answers.','wn');
     return;
   }
   const spr=document.getElementById('spr-'+S.curQ);
@@ -2749,7 +2814,9 @@ function handleAdminSkipAhead(){
 }
 
 function goPrev(){
-  toast('You cannot return to previous questions in this test mode.','wn');
+  const previousIndex = S.curQ - 1;
+  if (previousIndex < 0) return;
+  goQ(previousIndex, { allowBackward: true });
 }
 
 function handleStepSubmit(){
