@@ -1,5 +1,103 @@
 Budy.Study Launch Playbook
 
+Production Hardening Runbook (April 2026)
+
+Use this section as the operational go-live checklist before broad traffic.
+
+1. Origin allowlist is now wildcard-aware and production-safe.
+2. The app now supports ALLOWED_ORIGINS patterns like `https://*.budy.study`.
+3. Default fallback origins include both production hosts:
+   - https://www.budy.study
+   - https://budy.study
+4. Required action before launch:
+   - Set ALLOWED_ORIGINS explicitly in Vercel Production.
+   - Include every production domain/subdomain that should be trusted.
+   - Keep localhost values only in non-production environments.
+5. Recommended production ALLOWED_ORIGINS example:
+   - https://www.budy.study,https://budy.study,https://app.budy.study,https://admin.budy.study
+6. If wildcard is preferred for subdomains, use:
+   - https://www.budy.study,https://budy.study,https://*.budy.study
+
+CI And Pre-Deploy Validation
+
+7. CI now enforces full validate-site checks plus question bank integrity checks on main.
+8. RUN_QUESTION_BANK_VALIDATION is enabled in GitHub Actions for launch safety.
+9. Required action before launch:
+   - Ensure CI is a required status check for merging to main.
+   - Block force-merges that bypass workflow validation.
+10. Validation now covers:
+   - required pages and observability script presence
+   - local link integrity
+   - JavaScript syntax checks
+   - Node test suite
+   - question bank integrity and batch/audit consistency
+
+API Abuse And Rate-Limit Guardrails
+
+11. Basic rate limiting is now implemented for high-risk routes.
+12. AI Deep Dive endpoint limits:
+   - IP scope: 40 requests per 60 seconds
+   - User scope: 15 requests per 60 seconds
+13. Telemetry endpoint limits:
+   - IP scope: 240 events per 60 seconds
+14. Payment endpoint limits:
+   - create-checkout-session: IP 30 per 60 seconds, user 10 per 60 seconds
+   - create-billing-portal-session: IP 30 per 60 seconds, user 12 per 60 seconds
+   - cancel-subscription-now: IP 20 per 60 seconds, user 5 per 10 minutes
+15. Required action before launch:
+   - Monitor 429 volume during first traffic week.
+   - Raise limits only if legitimate user flows are throttled.
+
+Monitoring, Shipping, And Alerts
+
+16. Structured server events are now ready to ship to an external provider.
+17. New monitoring capabilities now include:
+   - telemetry event shipping
+   - API error shipping
+   - operational event shipping
+   - auth failure tracking and spike alerts
+   - webhook failure alerts for Stripe processing paths
+18. Required production environment variables:
+   - OBSERVABILITY_INGEST_URL
+   - OBSERVABILITY_INGEST_TOKEN (optional if ingest endpoint is public)
+   - OBSERVABILITY_ALERT_WEBHOOK_URL
+   - OBSERVABILITY_ALERT_SPIKE_THRESHOLD (default 8)
+   - OBSERVABILITY_ALERT_SPIKE_WINDOW_MS (default 300000)
+   - OBSERVABILITY_ALERT_COOLDOWN_MS (default 600000)
+19. Required action before launch:
+   - Point OBSERVABILITY_INGEST_URL to your log provider endpoint.
+   - Point OBSERVABILITY_ALERT_WEBHOOK_URL to Slack/PagerDuty/incident webhook.
+   - Verify alert delivery with manual test failures on non-production first.
+20. Minimum alerts to configure in provider:
+   - error spikes by route
+   - stripe webhook failures
+   - auth failure spikes
+
+Launch Day Operational Checks
+
+21. Confirm Stripe keys and price IDs are production values, not test mode.
+22. Confirm Stripe webhook secret matches the active production endpoint.
+23. Confirm Auth0 production tenant variables are correct and active.
+24. Confirm ALLOWED_ORIGINS resolves checkout return and billing return correctly.
+25. Confirm CI passed the latest commit with question bank validation enabled.
+26. Confirm monitoring ingest and alert webhook both received live test events.
+27. Confirm rate limiting returns expected headers and 429 behavior under load tests.
+28. Confirm premium gating and downgrade/cancel flows still work after limits and monitoring changes.
+
+Post-Launch Stabilization (First 7 Days)
+
+29. Review 429s per route daily and classify as abuse vs real users.
+30. Review webhook rejection or failure counts daily.
+31. Review auth failure spikes for bot traffic or token expiry issues.
+32. Review deep-dive usage against subscription credit assumptions.
+33. Tune thresholds only after observing real traffic patterns.
+
+Production Go/No-Go Rule
+
+34. Do not launch paid acquisition until all required env vars above are configured and verified.
+35. Do not launch paid acquisition if webhook alerts or auth alerts are not reaching operators in real time.
+36. Do not launch paid acquisition if CI protection on main can be bypassed.
+
 Positioning
 
 1. Budy.Study is the SAT and PSAT prep system that turns mistakes into the next study action faster than generic AI tools or bloated prep subscriptions.

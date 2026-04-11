@@ -3,6 +3,7 @@ import { withApiErrorBoundary } from '../lib/observability.js';
 import { getSubscriptionByUserId, isPremiumFromStatus } from '../lib/subscription-store.js';
 import { consumeDeepDiveCredit, getCurrentPeriodKey, getDeepDiveUsage, getMonthlyCreditLimit } from '../lib/ai-deep-dive-store.js';
 import { json } from '../lib/http.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 function cleanText(value, maxLength) {
   const text = String(value || '').replace(/\s+/g, ' ').trim();
@@ -228,9 +229,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = checkRateLimit({
+    req,
+    namespace: 'api/deep-dive:ip',
+    limit: 40,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please slow down and try again.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = checkRateLimit({
+    req,
+    namespace: 'api/deep-dive:user',
+    identifier: auth.user.id,
+    limit: 15,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many AI Deep Dive requests. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {};

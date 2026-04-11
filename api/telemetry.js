@@ -1,4 +1,5 @@
 import { logTelemetryEvent, withApiErrorBoundary } from '../lib/observability.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 const ALLOWED_TYPES = new Set([
   'pageview',
@@ -30,6 +31,20 @@ async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST, OPTIONS');
     return end(res, 405, { error: 'Method Not Allowed' });
+  }
+
+  const rateLimit = checkRateLimit({
+    req,
+    namespace: 'api/telemetry:ip',
+    limit: 240,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, rateLimit);
+  if (!rateLimit.ok) {
+    return end(res, 429, {
+      error: 'Too many telemetry events. Please retry later.',
+      retryAfterSeconds: rateLimit.retryAfterSeconds
+    });
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {};

@@ -19,4 +19,6 @@ jobs:
           node-version: '20'
 
       - name: Validate static site
+        env:
+          RUN_QUESTION_BANK_VALIDATION: '1'
         run: node scripts/validate-site.mjs

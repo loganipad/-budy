@@ -5,7 +5,7 @@ import {
   markEventProcessed,
   upsertSubscription
 } from '../lib/subscription-store.js';
-import { withApiErrorBoundary } from '../lib/observability.js';
+import { logOperationalEvent, withApiErrorBoundary } from '../lib/observability.js';
 import { json } from '../lib/http.js';
 
 export const config = {
@@ -141,17 +141,29 @@ async function handler(req, res) {
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
   if (!webhookSecret) {
+    logOperationalEvent('stripe_webhook_misconfigured_secret', req, {}, {
+      severity: 'error',
+      alert: true,
+      alertType: 'webhook_failure',
+      alertSummary: 'Stripe webhook secret is missing in production configuration.'
+    });
     return json(res, 500, { error: 'Missing STRIPE_WEBHOOK_SECRET environment variable.' });
   }
 
   const signature = req.headers['stripe-signature'];
   if (!signature) {
+    logOperationalEvent('stripe_webhook_missing_signature', req, {}, {
+      severity: 'warn'
+    });
     return json(res, 400, { error: 'Missing Stripe signature header.' });
   }
 
   const rawBody = await readRawBody(req);
   const isValidSignature = verifyStripeSignature(rawBody, signature, webhookSecret);
   if (!isValidSignature) {
+    logOperationalEvent('stripe_webhook_invalid_signature', req, {}, {
+      severity: 'warn'
+    });
     return json(res, 400, { error: 'Invalid Stripe signature.' });
   }
 
@@ -159,6 +171,9 @@ async function handler(req, res) {
   try {
     event = JSON.parse(rawBody);
   } catch {
+    logOperationalEvent('stripe_webhook_invalid_json', req, {}, {
+      severity: 'warn'
+    });
     return json(res, 400, { error: 'Invalid webhook payload JSON.' });
   }
 
@@ -171,16 +186,32 @@ async function handler(req, res) {
   try {
     if (eventType === 'checkout.session.completed') {
       const result = await handleCheckoutCompleted(event);
-      if (!result.ok) return json(res, result.status || 400, { error: result.error });
+      if (!result.ok) {
+        logOperationalEvent('stripe_webhook_event_rejected', req, { eventType, eventId: event.id, reason: result.error }, {
+          severity: 'warn'
+        });
+        return json(res, result.status || 400, { error: result.error });
+      }
     } else if (eventType === 'customer.subscription.updated' || eventType === 'customer.subscription.deleted') {
       const result = await handleSubscriptionChanged(event);
-      if (!result.ok) return json(res, result.status || 400, { error: result.error });
+      if (!result.ok) {
+        logOperationalEvent('stripe_webhook_event_rejected', req, { eventType, eventId: event.id, reason: result.error }, {
+          severity: 'warn'
+        });
+        return json(res, result.status || 400, { error: result.error });
+      }
     }
 
     console.log('stripe_webhook_processed', { eventType, eventId: event.id });
     return json(res, 200, { received: true });
   } catch (err) {
     const message = err && err.message ? err.message : 'Webhook processing failed.';
+    logOperationalEvent('stripe_webhook_processing_failure', req, { eventType, eventId: event && event.id ? event.id : '', error: message }, {
+      severity: 'error',
+      alert: true,
+      alertType: 'webhook_failure',
+      alertSummary: `Stripe webhook processing failed for ${eventType}`
+    });
     return json(res, 500, { error: message });
   }
 }

@@ -4,6 +4,7 @@ import { getSubscriptionByUserId } from '../lib/subscription-store.js';
 import { json } from '../lib/http.js';
 import { resolveSafeOrigin } from '../lib/origin.js';
 import { looksMaskedKey, normalizeSecretKey } from '../lib/stripe-key.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 async function stripeRequest(path, secretKey, body) {
   const response = await fetch(`https://api.stripe.com${path}`, {
@@ -60,9 +61,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = checkRateLimit({
+    req,
+    namespace: 'api/create-billing-portal-session:ip',
+    limit: 30,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please try again shortly.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = checkRateLimit({
+    req,
+    namespace: 'api/create-billing-portal-session:user',
+    identifier: auth.user.id,
+    limit: 12,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many billing portal requests. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   const secretKey = normalizeSecretKey(process.env.STRIPE_SECRET_KEY);

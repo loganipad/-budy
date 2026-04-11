@@ -3,6 +3,7 @@ import { withApiErrorBoundary } from '../lib/observability.js';
 import { getSubscriptionByUserId, upsertSubscription } from '../lib/subscription-store.js';
 import { json } from '../lib/http.js';
 import { looksMaskedKey, normalizeSecretKey } from '../lib/stripe-key.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 function canCancelNow(subscriptionRow) {
   if (!subscriptionRow) return false;
@@ -59,9 +60,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = checkRateLimit({
+    req,
+    namespace: 'api/cancel-subscription-now:ip',
+    limit: 20,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please try again shortly.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = checkRateLimit({
+    req,
+    namespace: 'api/cancel-subscription-now:user',
+    identifier: auth.user.id,
+    limit: 5,
+    windowMs: 10 * 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many cancellation attempts. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   const secretKey = normalizeSecretKey(process.env.STRIPE_SECRET_KEY);
