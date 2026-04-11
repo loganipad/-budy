@@ -968,6 +968,32 @@ button,input,select{font:inherit}
 .topic-card p{
   display:none;
 }
+
+.topic-card-completion{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:22px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  font-size:.62rem;
+  font-weight:800;
+  letter-spacing:.02em;
+  color:#f8fafc;
+  background:rgba(248,113,113,.2);
+  margin-top:2px;
+  white-space:nowrap;
+}
+
+.topic-card-completion.is-red{background:rgba(239,68,68,.24);border-color:rgba(239,68,68,.46);color:#fecaca}
+.topic-card-completion.is-yellow{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.44);color:#fde68a}
+.topic-card-completion.is-green{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.44);color:#bbf7d0}
+
+.topic-list.list-mode .topic-card-completion{
+  margin-top:0;
+  margin-left:auto;
+}
 .topic-stats{display:none}
 
 .topic-stat,
@@ -1249,6 +1275,25 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 }
 
 .guide-topic-actions .topic-detail-tab-link{min-height:44px;padding:0 16px}
+
+.guide-completion-pill{
+  display:inline-flex;
+  align-items:center;
+  min-height:40px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(239,68,68,.5);
+  background:rgba(239,68,68,.22);
+  color:#fecaca;
+  font-size:.78rem;
+  font-weight:800;
+  letter-spacing:.01em;
+  white-space:nowrap;
+}
+
+.guide-completion-pill.is-red{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.52);color:#fecaca}
+.guide-completion-pill.is-yellow{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.5);color:#fde68a}
+.guide-completion-pill.is-green{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.48);color:#bbf7d0}
 
 .guide-open-btn{
   min-height:44px;
@@ -2818,6 +2863,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   <script src="/assets/review-bank.js"></script>
   <script src="/assets/ai-deep-dive.js"></script>
   <script src="/assets/flashcard-pdf.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script>
     const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
     const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
@@ -2828,6 +2874,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     const STUDY_TUTORIAL_KEY = 'budy_study_tutorial_seen_v1';
     const STUDY_STREAK_KEY = 'budy_study_streak_v1';
     const STUDY_ACHIEVEMENT_KEY = 'budy_study_achievement_v1';
+    const STUDY_GUIDE_PROGRESS_KEY = 'budy_study_guide_progress_v1';
     const STUDY_TOUR_STEPS = [
       {
         title: 'Review tests first',
@@ -2895,7 +2942,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       flashcardTableDealSeed: 0,
       flashcardTableFlips: {},
       recommendedStartOpen: false,
-      tutorialStep: 0
+      tutorialStep: 0,
+      guideTrackerCleanup: null
     };
 
     let normalizedSavedQuestions = [];
@@ -2948,6 +2996,172 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       try {
         localStorage.setItem(key, JSON.stringify(value));
       } catch (_) {}
+    }
+
+    function ensurePdfJsWorker() {
+      if (!window.pdfjsLib || !window.pdfjsLib.GlobalWorkerOptions) return;
+      if (window.pdfjsLib.GlobalWorkerOptions.workerSrc) return;
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    }
+
+    function parsePdfPageFromHash(rawHash) {
+      const hash = String(rawHash || '').replace(/^#/, '');
+      if (!hash) return 0;
+      const params = new URLSearchParams(hash);
+      const candidate = Number(params.get('page') || 0);
+      return Number.isFinite(candidate) && candidate > 0 ? Math.floor(candidate) : 0;
+    }
+
+    function getCompletionColorClass(percent) {
+      const value = clamp(Number(percent || 0), 0, 100);
+      if (value >= 67) return 'is-green';
+      if (value >= 34) return 'is-yellow';
+      return 'is-red';
+    }
+
+    function readGuideProgressStore() {
+      const stored = readStoredObject(STUDY_GUIDE_PROGRESS_KEY, { guides: {} });
+      if (!stored || typeof stored !== 'object') return { guides: {} };
+      if (!stored.guides || typeof stored.guides !== 'object') stored.guides = {};
+      return stored;
+    }
+
+    function writeGuideProgressStore(store) {
+      writeStoredObject(STUDY_GUIDE_PROGRESS_KEY, store);
+    }
+
+    function getStudyGuideProgress(pdfPath) {
+      const key = String(pdfPath || '').trim();
+      if (!key) return null;
+      const store = readGuideProgressStore();
+      const item = store.guides[key];
+      if (!item || typeof item !== 'object') return null;
+      const lastPage = Math.max(0, Math.floor(Number(item.lastPage || 0)));
+      const totalPages = Math.max(0, Math.floor(Number(item.totalPages || 0)));
+      const computedPercent = totalPages > 0
+        ? Math.round((Math.min(lastPage, totalPages) / totalPages) * 100)
+        : Math.round(Number(item.percent || 0));
+      return {
+        lastPage: lastPage,
+        totalPages: totalPages,
+        percent: clamp(computedPercent, 0, 100),
+        updatedAt: item.updatedAt || ''
+      };
+    }
+
+    function setStudyGuideProgress(pdfPath, update) {
+      const key = String(pdfPath || '').trim();
+      if (!key) return null;
+      const current = getStudyGuideProgress(key) || { lastPage: 0, totalPages: 0, percent: 0 };
+      const nextLastPage = Math.max(0, Math.floor(Number(update && update.lastPage != null ? update.lastPage : current.lastPage)));
+      const nextTotalPages = Math.max(0, Math.floor(Number(update && update.totalPages != null ? update.totalPages : current.totalPages)));
+      const rawPercent = update && update.percent != null
+        ? Number(update.percent)
+        : (nextTotalPages > 0 ? Math.round((Math.min(nextLastPage, nextTotalPages) / nextTotalPages) * 100) : current.percent);
+      const next = {
+        lastPage: nextLastPage,
+        totalPages: nextTotalPages,
+        percent: clamp(Math.round(rawPercent || 0), 0, 100),
+        updatedAt: new Date().toISOString()
+      };
+      const store = readGuideProgressStore();
+      store.guides[key] = next;
+      writeGuideProgressStore(store);
+      return next;
+    }
+
+    function markStudyGuideDownloaded(pdfPath) {
+      const current = getStudyGuideProgress(pdfPath) || { totalPages: 0 };
+      const totalPages = Math.max(1, Number(current.totalPages || 1));
+      return setStudyGuideProgress(pdfPath, { lastPage: totalPages, totalPages: totalPages, percent: 100 });
+    }
+
+    function fetchStudyGuideTotalPages(pdfPath) {
+      if (!pdfPath || !window.pdfjsLib || typeof window.pdfjsLib.getDocument !== 'function') {
+        return Promise.resolve(0);
+      }
+      ensurePdfJsWorker();
+      return window.pdfjsLib.getDocument({ url: pdfPath }).promise
+        .then(function (doc) {
+          const count = Math.max(0, Math.floor(Number(doc && doc.numPages ? doc.numPages : 0)));
+          if (doc && typeof doc.destroy === 'function') {
+            doc.destroy();
+          }
+          return count;
+        })
+        .catch(function () {
+          return 0;
+        });
+    }
+
+    function applyCompletionPill(node, progress) {
+      if (!node) return;
+      const pct = clamp(Math.round(Number(progress && progress.percent != null ? progress.percent : 0)), 0, 100);
+      node.textContent = pct + '% Completed';
+      node.classList.remove('is-red', 'is-yellow', 'is-green');
+      node.classList.add(getCompletionColorClass(pct));
+    }
+
+    function beginInlineGuideProgressTracking(frame, pdfPath, pillNode) {
+      if (!frame || !pdfPath) return function () {};
+      let disposed = false;
+      let totalPages = 0;
+      let lastTrackedPage = 0;
+
+      const existing = getStudyGuideProgress(pdfPath);
+      if (existing) {
+        totalPages = Math.max(0, Number(existing.totalPages || 0));
+        lastTrackedPage = Math.max(0, Number(existing.lastPage || 0));
+        applyCompletionPill(pillNode, existing);
+      } else {
+        applyCompletionPill(pillNode, { percent: 0 });
+      }
+
+      function commitPage(page) {
+        if (!page || disposed) return;
+        lastTrackedPage = page;
+        const next = setStudyGuideProgress(pdfPath, {
+          lastPage: page,
+          totalPages: totalPages || undefined
+        });
+        applyCompletionPill(pillNode, next);
+      }
+
+      function readCurrentPage() {
+        if (disposed) return;
+        let page = 0;
+        try {
+          page = parsePdfPageFromHash(frame.contentWindow && frame.contentWindow.location ? frame.contentWindow.location.hash : '');
+        } catch (_) {
+          page = 0;
+        }
+        if (!page) {
+          page = parsePdfPageFromHash(frame.src && frame.src.indexOf('#') !== -1 ? frame.src.slice(frame.src.indexOf('#')) : '');
+        }
+        if (page && page !== lastTrackedPage) {
+          commitPage(page);
+        }
+      }
+
+      const pollId = window.setInterval(readCurrentPage, 900);
+      frame.addEventListener('load', readCurrentPage);
+
+      fetchStudyGuideTotalPages(pdfPath).then(function (count) {
+        if (disposed || !count) return;
+        totalPages = count;
+        const snapshot = setStudyGuideProgress(pdfPath, {
+          lastPage: Math.max(lastTrackedPage, 1),
+          totalPages: totalPages
+        });
+        applyCompletionPill(pillNode, snapshot);
+      });
+
+      return function () {
+        if (disposed) return;
+        disposed = true;
+        window.clearInterval(pollId);
+        readCurrentPage();
+      };
     }
 
     function ensureStudyToastHost() {
@@ -4301,6 +4515,12 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         section.textContent = sectionLabel(topic.section);
         card.appendChild(section);
 
+        const guidePdf = '/data/study-guides/' + slugifyTopicForPdf(topic.section, topic.label);
+        const completion = document.createElement('div');
+        completion.className = 'topic-card-completion';
+        applyCompletionPill(completion, getStudyGuideProgress(guidePdf) || { percent: 0 });
+        card.appendChild(completion);
+
         list.appendChild(card);
       });
     }
@@ -4513,10 +4733,17 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
       const pdfUrl = '/data/study-guides/' + pdfFilename;
+      const existingProgress = getStudyGuideProgress(pdfUrl);
+      const startPage = Math.max(1, Number(existingProgress && existingProgress.lastPage ? existingProgress.lastPage : 1));
       const fullscreenViewerUrl = buildStudyGuideViewerUrl(topic, pdfFilename);
 
       const heroActions = document.createElement('div');
       heroActions.className = 'guide-hero-actions';
+
+      const completionPill = document.createElement('div');
+      completionPill.className = 'guide-completion-pill';
+      applyCompletionPill(completionPill, existingProgress || { percent: 0 });
+      heroActions.appendChild(completionPill);
 
       const heroFullscreenBtn = document.createElement('button');
       heroFullscreenBtn.type = 'button';
@@ -4536,13 +4763,18 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       frameWrap.className = 'guide-inline-frame-wrap';
       const frame = document.createElement('iframe');
       frame.className = 'guide-inline-frame';
-      frame.src = pdfUrl + '#toolbar=0&navpanes=0&view=FitH&zoom=85';
+      frame.src = pdfUrl + '#toolbar=0&navpanes=0&view=FitH&zoom=85&page=' + String(startPage);
       frame.title = topic.label + ' study guide preview';
       frame.loading = 'lazy';
 
       frameWrap.appendChild(frame);
       inlineViewer.appendChild(frameWrap);
       shell.appendChild(inlineViewer);
+
+      if (typeof studyUIState.guideTrackerCleanup === 'function') {
+        studyUIState.guideTrackerCleanup();
+      }
+      studyUIState.guideTrackerCleanup = beginInlineGuideProgressTracking(frame, pdfUrl, completionPill);
 
       const guideSheetCard = document.createElement('article');
       guideSheetCard.className = 'guide-preview-card guide-sheet';
@@ -5283,6 +5515,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       if (!detail) return;
 
       if (!topic) {
+        if (typeof studyUIState.guideTrackerCleanup === 'function') {
+          studyUIState.guideTrackerCleanup();
+          studyUIState.guideTrackerCleanup = null;
+        }
         detail.classList.add('hidden');
         detail.replaceChildren();
         return;
@@ -5393,12 +5629,22 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         const actionRow = document.createElement('div');
         actionRow.className = 'guide-topic-actions';
 
+        const topicPdfPath = '/data/study-guides/' + topicPdfFilename;
+        const actionCompletionPill = document.createElement('div');
+        actionCompletionPill.className = 'guide-completion-pill';
+        applyCompletionPill(actionCompletionPill, getStudyGuideProgress(topicPdfPath) || { percent: 0 });
+
         const downloadBtn = document.createElement('a');
         downloadBtn.className = 'guide-topic-download-btn';
-        downloadBtn.href = '/data/study-guides/' + topicPdfFilename;
+        downloadBtn.href = topicPdfPath;
         downloadBtn.download = topicPdfFilename;
         downloadBtn.setAttribute('aria-label', 'Download study guide PDF');
         downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+        downloadBtn.addEventListener('click', function () {
+          const next = markStudyGuideDownloaded(topicPdfPath);
+          applyCompletionPill(actionCompletionPill, next || { percent: 100 });
+          renderTopicList(getFilteredTopics());
+        });
 
         const fullscreenBtn = document.createElement('button');
         const fullscreenUrl = topicViewerUrl;
@@ -5418,6 +5664,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           openTopicView('flashcards', topic.key);
         });
 
+        actionRow.appendChild(actionCompletionPill);
         actionRow.appendChild(startButton);
         actionRow.appendChild(downloadBtn);
         actionRow.appendChild(fullscreenBtn);
@@ -5487,6 +5734,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function renderGuideContent(container, topic) {
+      if (typeof studyUIState.guideTrackerCleanup === 'function') {
+        studyUIState.guideTrackerCleanup();
+        studyUIState.guideTrackerCleanup = null;
+      }
       container.classList.remove('guide-inline-expanded');
       container.replaceChildren();
       renderGuidePreview(container, topic);
@@ -5499,6 +5750,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     }
 
     function renderFlashcardContent(container, topic) {
+      if (typeof studyUIState.guideTrackerCleanup === 'function') {
+        studyUIState.guideTrackerCleanup();
+        studyUIState.guideTrackerCleanup = null;
+      }
       container.classList.remove('hidden');
       container.replaceChildren();
       renderFlashcardPreview(container, topic);
@@ -5827,6 +6082,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           const nextTab = button.dataset.studyTab || 'review-tests';
           if (studyUIState.activeTab !== nextTab) {
             resetViewerFullscreenState();
+          }
+          if (nextTab !== 'study-guides' && typeof studyUIState.guideTrackerCleanup === 'function') {
+            studyUIState.guideTrackerCleanup();
+            studyUIState.guideTrackerCleanup = null;
           }
           studyUIState.activeTab = nextTab;
           updateMenuTabs();
