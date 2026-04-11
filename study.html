@@ -1274,6 +1274,34 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   border:1px solid rgba(255,255,255,.1);
 }
 
+.guide-inline-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.guide-inline-open-btn{
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(59,130,246,.32);
+  background:rgba(26,86,219,.2);
+  color:#dbeafe;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.78rem;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.guide-inline-open-btn:hover{
+  background:rgba(26,86,219,.28);
+  border-color:rgba(96,165,250,.52);
+}
+
 .guide-inline-frame-wrap{
   border-radius:16px;
   overflow:hidden;
@@ -4520,6 +4548,17 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const inlineViewer = document.createElement('section');
       inlineViewer.className = 'guide-inline-viewer';
 
+      const inlineActions = document.createElement('div');
+      inlineActions.className = 'guide-inline-actions';
+
+      const openFullscreenLink = document.createElement('a');
+      openFullscreenLink.className = 'guide-inline-open-btn';
+      openFullscreenLink.href = fullscreenViewerUrl;
+      openFullscreenLink.target = '_self';
+      openFullscreenLink.rel = 'noopener';
+      openFullscreenLink.textContent = 'Open Full Screen Page';
+      inlineActions.appendChild(openFullscreenLink);
+
       const cornerFullscreenBtn = document.createElement('a');
       cornerFullscreenBtn.className = 'guide-viewer-corner-btn';
       cornerFullscreenBtn.href = fullscreenViewerUrl;
@@ -4536,11 +4575,12 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       frameWrap.className = 'guide-inline-frame-wrap';
       const frame = document.createElement('iframe');
       frame.className = 'guide-inline-frame';
-      frame.src = pdfUrl + '#navpanes=0&view=FitH&zoom=85';
+      frame.src = pdfUrl + '#toolbar=0&navpanes=0&view=FitH&zoom=85';
       frame.title = topic.label + ' study guide preview';
       frame.loading = 'lazy';
 
       frameWrap.appendChild(frame);
+      inlineViewer.appendChild(inlineActions);
       inlineViewer.appendChild(cornerFullscreenBtn);
       inlineViewer.appendChild(frameWrap);
       shell.appendChild(inlineViewer);
