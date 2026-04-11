@@ -80,7 +80,7 @@ body::before{
   background:#0b1020;
   width:100%;
   min-height:0;
-  height:100%;
+  height:clamp(760px, calc(100vh - 120px), 1800px);
 }
 
 .viewer-frame{
@@ -144,7 +144,7 @@ body::before{
   .wrap{width:min(100%,calc(100% - 24px))}
   .viewer-main{padding:calc(var(--shared-nav-h, 64px) + env(safe-area-inset-top, 0px) + 8px) 0 10px}
   .viewer-shell{padding:8px;border-radius:14px}
-  .viewer-frame-wrap{border-radius:10px}
+  .viewer-frame-wrap{border-radius:10px;height:calc(100vh - 128px);min-height:560px}
   .viewer-back{left:14px;top:14px}
   .viewer-download{top:18px;right:18px}
 }
