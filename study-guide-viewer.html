@@ -23,6 +23,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--ink);color:var(--text);font-family:var(--font)}
 body{
+  display:flex;
+  flex-direction:column;
   min-height:100vh;
   overflow-x:hidden;
 }
@@ -38,75 +40,47 @@ body::before{
     radial-gradient(ellipse 42% 30% at 86% 80%, rgba(37,99,235,.12) 0%, transparent 58%);
 }
 
-.viewer-main{
-  padding:110px 24px 60px;
-}
-
-.viewer-wrap{
-  width:min(1640px,100%);
+.wrap{
+  width:min(1260px,calc(100% - 56px));
   margin:0 auto;
 }
 
-.viewer-head{
+.viewer-main{
+  flex:1 1 auto;
   display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:16px;
+  min-height:0;
+  padding:calc(var(--shared-nav-h, 64px) + env(safe-area-inset-top, 0px) + 10px) 0 12px;
 }
 
-.viewer-kicker{
-  font-size:.74rem;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  color:#93c5fd;
-  font-weight:800;
-  margin-bottom:8px;
-}
-
-.viewer-title{
-  font-size:clamp(1.1rem,2.4vw,1.8rem);
-  line-height:1.15;
-  letter-spacing:-.02em;
-}
-
-.viewer-subcopy{
-  color:var(--muted);
-  font-size:.88rem;
-  margin-top:6px;
-}
-
-.viewer-back{
-  min-height:38px;
-  padding:0 14px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.06);
-  color:#e2e8f0;
-  font-size:.8rem;
-  font-weight:700;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  white-space:nowrap;
+.viewer-wrap{
+  width:min(1740px,100%);
+  margin:0 auto;
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
 }
 
 .viewer-shell{
   position:relative;
-  border-radius:24px;
+  width:100%;
+  min-height:0;
+  display:flex;
+  border-radius:20px;
   border:1px solid var(--line);
   background:var(--panel);
   backdrop-filter:blur(16px);
   box-shadow:var(--shadow);
-  padding:14px;
+  padding:10px;
 }
 
 .viewer-frame-wrap{
-  border-radius:16px;
+  border-radius:14px;
   overflow:hidden;
   border:1px solid rgba(255,255,255,.14);
   background:#0b1020;
-  height:clamp(480px, calc(100vh - 260px), 1320px);
+  width:100%;
+  min-height:0;
+  height:100%;
 }
 
 .viewer-frame{
@@ -118,8 +92,8 @@ body::before{
 
 .viewer-download{
   position:absolute;
-  top:24px;
-  right:24px;
+  top:20px;
+  right:20px;
   width:42px;
   height:42px;
   border-radius:12px;
@@ -131,6 +105,25 @@ body::before{
   justify-content:center;
   box-shadow:0 12px 28px rgba(245,158,11,.34);
   text-decoration:none;
+}
+
+.viewer-back{
+  position:absolute;
+  top:20px;
+  left:20px;
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(8,12,22,.64);
+  color:#e2e8f0;
+  font-size:.8rem;
+  font-weight:700;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  white-space:nowrap;
+  backdrop-filter:blur(8px);
 }
 
 .viewer-download:hover{transform:translateY(-1px)}
@@ -148,10 +141,11 @@ body::before{
 }
 
 @media (max-width: 860px){
-  .viewer-main{padding:96px 14px 34px}
-  .viewer-head{flex-direction:column}
-  .viewer-shell{padding:10px;border-radius:18px}
-  .viewer-frame-wrap{height:calc(100vh - 300px);min-height:420px}
+  .wrap{width:min(100%,calc(100% - 24px))}
+  .viewer-main{padding:calc(var(--shared-nav-h, 64px) + env(safe-area-inset-top, 0px) + 8px) 0 10px}
+  .viewer-shell{padding:8px;border-radius:14px}
+  .viewer-frame-wrap{border-radius:10px}
+  .viewer-back{left:14px;top:14px}
   .viewer-download{top:18px;right:18px}
 }
 </style>
@@ -161,17 +155,9 @@ body::before{
   <script src="/assets/layout/navbar-loader.js" defer></script>
 
   <main class="viewer-main">
-    <section class="viewer-wrap">
-      <div class="viewer-head">
-        <div>
-          <div class="viewer-kicker">Study Guide Viewer</div>
-          <h1 class="viewer-title" id="viewer-title">Study Guide</h1>
-          <p class="viewer-subcopy">Maximum-size PDF preview with the sidebar closed by default.</p>
-        </div>
-        <a class="viewer-back" href="/study.html">Back to Study Hub</a>
-      </div>
-
+    <section class="viewer-wrap wrap">
       <div class="viewer-shell">
+        <a class="viewer-back" href="/study.html" id="viewer-back">Back to Study Hub</a>
         <a class="viewer-download" id="viewer-download" href="#" aria-label="Download study guide PDF" download>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </a>
@@ -210,10 +196,10 @@ body::before{
       var frame = document.getElementById('viewer-frame');
       var downloadBtn = document.getElementById('viewer-download');
       var error = document.getElementById('viewer-error');
-      var titleNode = document.getElementById('viewer-title');
+      var backBtn = document.getElementById('viewer-back');
 
-      if (title) {
-        titleNode.textContent = title;
+      if (title && backBtn) {
+        backBtn.setAttribute('aria-label', 'Back to Study Hub from ' + title);
       }
 
       if (!pdfPath) {
