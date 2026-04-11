@@ -2615,7 +2615,7 @@ function pickAdaptiveNextQuestionIndex(currentIndex){
     const distance = Math.abs(difficultyToRank(q && q.difficulty) - difficultyToRank(targetDifficulty));
     if (distance < bestDistance) {
       bestDistance = distance;
-    const qBadge=`${sec} · ${remaining} left`;
+      bestIndex = idx;
     }
   });
 

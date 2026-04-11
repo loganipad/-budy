@@ -750,7 +750,7 @@ input,select{font-family:inherit}
   border:1px solid rgba(59,130,246,.24);font-size:.8125rem;font-weight:700;color:#93c5fd}
 .action-confirm-note.hidden{display:none}
 .action-confirm-icon.hidden,.action-confirm-close.hidden{display:none}
-.action-confirm-confirm-btn.is-gold{background:var(--gold);color:var(--ink)}
+.action-confirm-confirm-btn.is-gold{background:var(--gold);color:#fff}
 .action-confirm-confirm-btn.is-gold:hover{background:#fbbf24}
 .action-confirm-confirm-btn.is-danger{background:#7f1d1d;border-color:#be123c;color:#fff}
 .action-confirm-confirm-btn.is-danger:hover{background:#9f1239}
