@@ -5365,6 +5365,9 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         hero.appendChild(meta);
       }
 
+      const topicPdfFilename = slugifyTopicForPdf(topic.section, topic.label);
+      const topicViewerUrl = buildStudyGuideViewerUrl(topic, topicPdfFilename);
+
       const startButton = document.createElement('button');
       startButton.type = 'button';
       startButton.className = studyUIState.activeTab === 'flashcards' ? 'review-quick-launch' : 'guide-open-btn';
@@ -5375,7 +5378,11 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         if (studyUIState.activeTab === 'flashcards') {
           renderFlashcardContent(detail, topic);
         } else {
-          openStudyGuideForTopic(topic.key, { skipFocus: true });
+          try {
+            window.location.assign(topicViewerUrl);
+          } catch (_) {
+            window.location.href = topicViewerUrl;
+          }
         }
       });
 
@@ -5388,14 +5395,13 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
         const downloadBtn = document.createElement('a');
         downloadBtn.className = 'guide-topic-download-btn';
-        const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
-        downloadBtn.href = '/data/study-guides/' + pdfFilename;
-        downloadBtn.download = pdfFilename;
+        downloadBtn.href = '/data/study-guides/' + topicPdfFilename;
+        downloadBtn.download = topicPdfFilename;
         downloadBtn.setAttribute('aria-label', 'Download study guide PDF');
         downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
         const fullscreenBtn = document.createElement('button');
-        const fullscreenUrl = buildStudyGuideViewerUrl(topic, pdfFilename);
+        const fullscreenUrl = topicViewerUrl;
         fullscreenBtn.type = 'button';
         fullscreenBtn.className = 'topic-detail-tab-link';
         fullscreenBtn.textContent = 'Full Screen Page';
