@@ -775,6 +775,14 @@ input,select{font-family:inherit}
 #test-screen::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:-2;
   background-image:linear-gradient(rgba(37,99,235,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.045) 1px,transparent 1px);
   background-size:32px 32px}
+#test-screen.q-nav-open::before{
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.72) 0 180px, transparent 180px),
+    linear-gradient(to right, transparent 0 179px, rgba(148,163,184,.16) 179px 180px, transparent 180px),
+    linear-gradient(rgba(37,99,235,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(37,99,235,.045) 1px,transparent 1px);
+  background-size:auto,auto,32px 32px,32px 32px;
+}
 #test-screen::after{content:'';position:absolute;right:24px;bottom:94px;width:72px;height:72px;pointer-events:none;z-index:-1;
   background:url('/assets/budy-logo.png') center/contain no-repeat;opacity:.12;animation:budyFloat 6s ease-in-out infinite}
 .tb{height:70px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:12px;flex-shrink:0;position:relative;
