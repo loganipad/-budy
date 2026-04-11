@@ -4522,12 +4522,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       heroFullscreenBtn.className = 'guide-hero-fullscreen-btn';
       heroFullscreenBtn.textContent = 'Open Full Screen Page';
       heroFullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
-      heroFullscreenBtn.addEventListener('click', function () {
-        try {
-          window.location.assign(fullscreenViewerUrl);
-        } catch (_) {
-          window.location.href = fullscreenViewerUrl;
-        }
+      heroFullscreenBtn.addEventListener('click', function (event) {
+        openStudyGuideViewer(fullscreenViewerUrl, event);
       });
       heroActions.appendChild(heroFullscreenBtn);
       hero.appendChild(heroActions);
@@ -5257,6 +5253,30 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       return '/study-guide-viewer.html?' + params.toString();
     }
 
+    function openStudyGuideViewer(url, event) {
+      if (!url) return;
+      if (event) {
+        if (typeof event.preventDefault === 'function') event.preventDefault();
+        if (typeof event.stopPropagation === 'function') event.stopPropagation();
+      }
+
+      var popup = null;
+      try {
+        popup = window.open(url, '_blank', 'noopener,noreferrer');
+      } catch (_) {}
+
+      if (popup && typeof popup.focus === 'function') {
+        popup.focus();
+        return;
+      }
+
+      try {
+        window.location.assign(url);
+      } catch (_) {
+        window.location.href = url;
+      }
+    }
+
     function renderTopicDetail(topic) {
       const detail = document.getElementById('topic-detail');
       if (!detail) return;
@@ -5379,15 +5399,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         fullscreenBtn.className = 'topic-detail-tab-link';
         fullscreenBtn.textContent = 'Full Screen Page';
         fullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
-        fullscreenBtn.addEventListener('click', function () {
-          try {
-            window.location.assign(fullscreenUrl);
-          } catch (_) {
-            var popup = window.open(fullscreenUrl, '_blank', 'noopener,noreferrer');
-            if (!popup) {
-              window.location.href = fullscreenUrl;
-            }
-          }
+        fullscreenBtn.addEventListener('click', function (event) {
+          openStudyGuideViewer(fullscreenUrl, event);
         });
 
         const switchBtn = document.createElement('button');
