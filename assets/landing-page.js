@@ -115,6 +115,7 @@ const S = {
 
   questions: [],
   answers: {},
+  submittedAnswers: {},
   flags: new Set(),
   curQ: 0,
   landingTimer: null,
@@ -362,6 +363,21 @@ function normalizeDraftAnswers(answers, maxQuestions) {
   }, {});
 }
 
+function normalizeDraftSubmittedAnswers(submittedAnswers, answers, maxQuestions) {
+  const safeMax = Math.max(1, Number(maxQuestions) || 1);
+  if (submittedAnswers && typeof submittedAnswers === 'object' && !Array.isArray(submittedAnswers)) {
+    return Object.entries(submittedAnswers).reduce((acc, [key, value]) => {
+      const index = Number(key);
+      if (!Number.isInteger(index) || index < 0 || index >= safeMax) return acc;
+      if (value) acc[String(index)] = true;
+      return acc;
+    }, {});
+  }
+
+  // Backward compatibility for older drafts that only tracked answers.
+  return normalizeDraftAnswers(answers, safeMax);
+}
+
 function normalizeDraftFlags(flags, maxQuestions) {
   const safeMax = Math.max(1, Number(maxQuestions) || 1);
   if (!Array.isArray(flags)) return new Set();
@@ -386,6 +402,7 @@ function buildDraftSnapshot(reason = '') {
     questionIds: buildDraftQuestionIds(S.questions),
     questionsSnapshot: S.questions,
     answers: normalizeDraftAnswers(S.answers, S.questions.length),
+    submittedAnswers: normalizeDraftSubmittedAnswers(S.submittedAnswers, S.answers, S.questions.length),
     flags: Array.from(S.flags || []),
     currentQuestionIndex: Number.isInteger(S.curQ) ? S.curQ : 0,
     remainingTimeSeconds: Math.max(0, Number(S.timeLeft) || 0),
@@ -623,6 +640,11 @@ function applyDraftState(draft, sid, questions) {
 
   S.questions = safeQuestions;
   S.answers = normalizeDraftAnswers(draft && draft.answers, safeQuestions.length);
+  S.submittedAnswers = normalizeDraftSubmittedAnswers(
+    draft && draft.submittedAnswers,
+    S.answers,
+    safeQuestions.length
+  );
   S.flags = normalizeDraftFlags(draft && draft.flags, safeQuestions.length);
   S.curQ = clampedIndex;
   S.timerPaused = Boolean(draft && draft.timerPaused);
@@ -728,6 +750,7 @@ function beginPreparedTestSession({ questions, section, timeLimitSeconds, label,
 
   S.questions = Array.isArray(questions) ? questions : [];
   S.answers = {};
+  S.submittedAnswers = {};
   S.flags = new Set();
   S.curQ = 0;
   S.timerPaused = false;
@@ -2561,9 +2584,25 @@ function toggleQNav(){
 }
 
 function hasSubmittedAnswer(qIndex){
+  const submitted = S.submittedAnswers && S.submittedAnswers[qIndex];
+  if (!submitted) return false;
   const value = S.answers[qIndex];
   if (value === undefined || value === null) return false;
   return String(value).trim().length > 0;
+}
+
+function hasDraftAnswer(qIndex) {
+  const value = S.answers[qIndex];
+  if (value === undefined || value === null) return false;
+  return String(value).trim().length > 0;
+}
+
+function countSubmittedAnswers() {
+  let count = 0;
+  for (let i = 0; i < S.questions.length; i += 1) {
+    if (hasSubmittedAnswer(i)) count += 1;
+  }
+  return count;
 }
 
 function isAnswerCorrectForQuestion(question, answer){
@@ -2625,7 +2664,7 @@ function pickAdaptiveNextQuestionIndex(currentIndex){
 function adaptUpcomingQuestion(currentIndex){
   if (currentIndex >= S.questions.length - 1) return;
 
-  const answeredAhead = Object.keys(S.answers).some((key) => Number(key) > currentIndex);
+  const answeredAhead = Object.keys(S.submittedAnswers || {}).some((key) => Number(key) > currentIndex);
   if (answeredAhead) return;
 
   const targetIndex = pickAdaptiveNextQuestionIndex(currentIndex);
@@ -2679,13 +2718,13 @@ function updQNav(){
     b.className='qn-btn';
     b.disabled = locked;
     if(answered)b.classList.add('complete');
-    if(i===S.curQ && !answered)b.classList.add('cur');
+    if(i===S.curQ)b.classList.add('cur');
     if(S.isAdmin && !answered && i!==S.curQ)b.classList.add('admin-future');
     if(locked)b.classList.add('locked');
     if(S.flags.has(i) && !locked)b.classList.add('flag');
   });
 
-  const pct=Object.keys(S.answers).length/S.questions.length*100;
+  const pct=countSubmittedAnswers()/S.questions.length*100;
   const currentQ=Math.min(S.curQ+1,S.questions.length);
   document.getElementById('tb-prog-fill').style.width=pct+'%';
   document.getElementById('test-prog-txt').textContent=`Questions ${currentQ} of ${S.questions.length}`;
@@ -2774,7 +2813,10 @@ function selAns(qi,l,el){
 }
 function saveSpr(qi,v){
   if (isAnswerLockedForQuestion(qi)) return;
-  if(v.trim())S.answers[qi]=v.trim();else delete S.answers[qi];
+  if(v.trim())S.answers[qi]=v.trim();else{
+    delete S.answers[qi];
+    delete S.submittedAnswers[qi];
+  }
   updQNav();
   scheduleDraftAutosave('answer_input');
 }
@@ -2826,10 +2868,12 @@ function goPrev(){
 
 function handleStepSubmit(){
   const current=S.curQ;
-  if(!hasSubmittedAnswer(current)){
+  if(!hasDraftAnswer(current)){
     window.alert('Please answer your current question.');
     return;
   }
+  S.submittedAnswers[current] = true;
+  scheduleDraftAutosave('answer_submit');
   if(current>=S.questions.length-1){
     confirmSubmit();
     return;
@@ -2909,7 +2953,7 @@ function updTimerDisplay(){
 
 /* ── SUBMIT ── */
 async function confirmSubmit(){
-  const un=S.questions.length-Object.keys(S.answers).length;
+  const un=S.questions.length-countSubmittedAnswers();
   if(un>0){
     const confirmed=await openActionConfirm({
       eyebrow:'Submit Test Incomplete',
@@ -2934,7 +2978,8 @@ function submitTest(){
   let correct=0,wrong=0,skipped=0;
   const skillMap={};
   qs.forEach((q,i)=>{
-    const ua=S.answers[i];const ca=q.answer;const sk=q.skill||'General';
+    const ua=hasSubmittedAnswer(i) ? S.answers[i] : '';
+    const ca=q.answer;const sk=q.skill||'General';
     if(!skillMap[sk])skillMap[sk]={correct:0,total:0,section:q.section};
     skillMap[sk].total++;
     let ok=false;
@@ -2950,7 +2995,7 @@ function submitTest(){
   let engSc=0,mathSc=0,total=0;
   if(sec==='full'){
     let ec=0,mc=0;
-    qs.forEach((q,i)=>{const ua=S.answers[i];if(!ua)return;const ok=q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===ua.toString()):ua===q.answer;if(ok){if(q.section==='english')ec++;else mc++}});
+    qs.forEach((q,i)=>{const ua=hasSubmittedAnswer(i) ? S.answers[i] : '';if(!ua)return;const ok=q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===ua.toString()):ua===q.answer;if(ok){if(q.section==='english')ec++;else mc++}});
     engSc=rawToScaled(ec,eng.length,'english');mathSc=rawToScaled(mc,mat.length,'math');total=engSc+mathSc;
   } else {
     const sc=rawToScaled(correct,qs.length,sec);
@@ -2958,7 +3003,7 @@ function submitTest(){
   }
   S.results={section:sec,total,engSc,mathSc,correct,wrong,skipped,total_q:qs.length,skillMap,
     customLabel:S.customTestLabel || '',
-    questions:qs.map((q,i)=>({...q,userAnswer:S.answers[i],isCorrect:S.answers[i]?(q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===S.answers[i].toString()):S.answers[i]===q.answer):false})),
+    questions:qs.map((q,i)=>{const ua=hasSubmittedAnswer(i)?S.answers[i]:'';return({...q,userAnswer:ua,isCorrect:ua?(q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===ua.toString()):ua===q.answer):false})}),
     date:new Date().toISOString(),isFree:!S.isPremium};
   saveSession(S.results);
   void saveSavedQuestionsForResult(S.results);
