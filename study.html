@@ -1274,34 +1274,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   border:1px solid rgba(255,255,255,.1);
 }
 
-.guide-inline-actions{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-.guide-inline-open-btn{
-  min-height:38px;
-  padding:0 14px;
-  border-radius:999px;
-  border:1px solid rgba(59,130,246,.32);
-  background:rgba(26,86,219,.2);
-  color:#dbeafe;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:.78rem;
-  font-weight:800;
-  text-decoration:none;
-}
-
-.guide-inline-open-btn:hover{
-  background:rgba(26,86,219,.28);
-  border-color:rgba(96,165,250,.52);
-}
-
 .guide-inline-frame-wrap{
   border-radius:16px;
   overflow:hidden;
@@ -1316,26 +1288,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   border:none;
   background:#fff;
 }
-
-.guide-viewer-corner-btn{
-  position:absolute;
-  top:22px;
-  right:22px;
-  z-index:8;
-  width:38px;
-  height:38px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.22);
-  background:rgba(12,18,32,.84);
-  color:#e2e8f0;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-
-.guide-viewer-corner-btn svg{width:16px;height:16px;display:block}
-.guide-viewer-corner-btn:hover{background:rgba(26,86,219,.84);border-color:rgba(96,165,250,.6)}
 
 .topic-detail.guide-inline-expanded{
   max-height:none;
@@ -4543,33 +4495,9 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
       const pdfUrl = '/data/study-guides/' + pdfFilename;
-      const fullscreenViewerUrl = buildStudyGuideViewerUrl(topic, pdfFilename);
 
       const inlineViewer = document.createElement('section');
       inlineViewer.className = 'guide-inline-viewer';
-
-      const inlineActions = document.createElement('div');
-      inlineActions.className = 'guide-inline-actions';
-
-      const openFullscreenLink = document.createElement('a');
-      openFullscreenLink.className = 'guide-inline-open-btn';
-      openFullscreenLink.href = fullscreenViewerUrl;
-      openFullscreenLink.target = '_self';
-      openFullscreenLink.rel = 'noopener';
-      openFullscreenLink.textContent = 'Open Full Screen Page';
-      inlineActions.appendChild(openFullscreenLink);
-
-      const cornerFullscreenBtn = document.createElement('a');
-      cornerFullscreenBtn.className = 'guide-viewer-corner-btn';
-      cornerFullscreenBtn.href = fullscreenViewerUrl;
-      cornerFullscreenBtn.target = '_self';
-      cornerFullscreenBtn.rel = 'noopener';
-      cornerFullscreenBtn.setAttribute('aria-label', 'Open full screen study guide');
-      cornerFullscreenBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H3v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 3 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 3h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m21 3-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 21H3v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 21 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 21h5v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m21 21-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-
-      cornerFullscreenBtn.addEventListener('click', function () {
-        window.location.href = fullscreenViewerUrl;
-      });
 
       const frameWrap = document.createElement('div');
       frameWrap.className = 'guide-inline-frame-wrap';
@@ -4580,8 +4508,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       frame.loading = 'lazy';
 
       frameWrap.appendChild(frame);
-      inlineViewer.appendChild(inlineActions);
-      inlineViewer.appendChild(cornerFullscreenBtn);
       inlineViewer.appendChild(frameWrap);
       shell.appendChild(inlineViewer);
 
@@ -5411,6 +5337,14 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         downloadBtn.setAttribute('aria-label', 'Download study guide PDF');
         downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
+        const fullscreenBtn = document.createElement('a');
+        fullscreenBtn.className = 'topic-detail-tab-link';
+        fullscreenBtn.href = buildStudyGuideViewerUrl(topic, pdfFilename);
+        fullscreenBtn.target = '_self';
+        fullscreenBtn.rel = 'noopener';
+        fullscreenBtn.textContent = 'Full Screen Page';
+        fullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
+
         const switchBtn = document.createElement('button');
         switchBtn.type = 'button';
         switchBtn.className = 'topic-detail-tab-link';
@@ -5421,6 +5355,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
         actionRow.appendChild(startButton);
         actionRow.appendChild(downloadBtn);
+        actionRow.appendChild(fullscreenBtn);
         actionRow.appendChild(switchBtn);
         hero.appendChild(actionRow);
 
