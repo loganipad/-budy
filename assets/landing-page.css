@@ -1186,7 +1186,6 @@ input,select{font-family:inherit}
 
 /* Test topbar */
 .tb { padding-top: var(--sat); height: calc(58px + var(--sat)); padding-left: calc(16px + var(--sal)); padding-right: calc(16px + var(--sar)); }
-.test-body { padding-bottom: var(--sab); }
 .test-ft { padding-bottom: calc(12px + var(--sab)); padding-left: calc(24px + var(--sal)); padding-right: calc(24px + var(--sar)); }
 
 /* Modals clear the home bar */
