@@ -1223,6 +1223,23 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   align-items:center;
 }
 
+.guide-hero-fullscreen-btn{
+  min-height:42px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid rgba(59,130,246,.38);
+  background:rgba(26,86,219,.22);
+  color:#dbeafe;
+  font-size:.8rem;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.guide-hero-fullscreen-btn:hover{
+  background:rgba(26,86,219,.3);
+  border-color:rgba(96,165,250,.58);
+}
+
 .guide-topic-actions{
   display:flex;
   align-items:center;
@@ -4495,6 +4512,25 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       const pdfFilename = slugifyTopicForPdf(topic.section, topic.label);
       const pdfUrl = '/data/study-guides/' + pdfFilename;
+      const fullscreenViewerUrl = buildStudyGuideViewerUrl(topic, pdfFilename);
+
+      const heroActions = document.createElement('div');
+      heroActions.className = 'guide-hero-actions';
+
+      const heroFullscreenBtn = document.createElement('button');
+      heroFullscreenBtn.type = 'button';
+      heroFullscreenBtn.className = 'guide-hero-fullscreen-btn';
+      heroFullscreenBtn.textContent = 'Open Full Screen Page';
+      heroFullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
+      heroFullscreenBtn.addEventListener('click', function () {
+        try {
+          window.location.assign(fullscreenViewerUrl);
+        } catch (_) {
+          window.location.href = fullscreenViewerUrl;
+        }
+      });
+      heroActions.appendChild(heroFullscreenBtn);
+      hero.appendChild(heroActions);
 
       const inlineViewer = document.createElement('section');
       inlineViewer.className = 'guide-inline-viewer';
