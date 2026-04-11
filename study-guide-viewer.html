@@ -59,12 +59,7 @@ body::before{
   width:100%;
   min-height:0;
   display:flex;
-  border-radius:20px;
-  border:1px solid var(--line);
-  background:var(--panel);
-  backdrop-filter:blur(16px);
-  box-shadow:var(--shadow);
-  padding:10px;
+  padding:0;
 }
 
 .viewer-frame-wrap{
@@ -188,7 +183,7 @@ body::before{
 @media (max-width: 860px){
   .wrap{width:min(100%,calc(100% - 24px))}
   .viewer-main{padding:calc(var(--shared-nav-h, 64px) + env(safe-area-inset-top, 0px) + 8px) 0 10px}
-  .viewer-shell{padding:8px;border-radius:14px}
+  .viewer-shell{padding:0}
   .viewer-frame-wrap{border-radius:10px;height:calc(100vh - 128px);min-height:560px}
   .viewer-back{left:14px;top:14px}
   .viewer-download{top:18px;right:18px}
