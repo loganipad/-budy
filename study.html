@@ -1293,6 +1293,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   position:absolute;
   top:22px;
   right:22px;
+  z-index:8;
   width:38px;
   height:38px;
   border-radius:10px;
@@ -4519,9 +4520,11 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const inlineViewer = document.createElement('section');
       inlineViewer.className = 'guide-inline-viewer';
 
-      const cornerFullscreenBtn = document.createElement('button');
-      cornerFullscreenBtn.type = 'button';
+      const cornerFullscreenBtn = document.createElement('a');
       cornerFullscreenBtn.className = 'guide-viewer-corner-btn';
+      cornerFullscreenBtn.href = fullscreenViewerUrl;
+      cornerFullscreenBtn.target = '_self';
+      cornerFullscreenBtn.rel = 'noopener';
       cornerFullscreenBtn.setAttribute('aria-label', 'Open full screen study guide');
       cornerFullscreenBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H3v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 3 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 3h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m21 3-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 21H3v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 21 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 21h5v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m21 21-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
