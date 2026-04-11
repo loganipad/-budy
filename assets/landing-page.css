@@ -915,13 +915,22 @@ input,select{font-family:inherit}
 /* ============================================================
    RESULTS
    ============================================================ */
-#results-screen{display:none;min-height:100vh;background:var(--bg);padding-top:var(--nav-h)}
+#results-screen{display:none;min-height:100vh;background:var(--bg);padding-top:var(--nav-h);position:relative;overflow:hidden}
 #results-screen.show{display:block}
 .res-header{background:var(--ink);padding:44px 0 72px;position:relative;overflow:hidden}
 .res-header::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(26,86,219,.35) 0%,transparent 65%)}
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(26,86,219,.35) 0%,transparent 65%);z-index:0}
+.res-header::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;z-index:0;pointer-events:none}
+.res-header .wrap{position:relative;z-index:1}
 .res-header h1{color:#fff;font-size:clamp(1.4rem,4vw,2rem);font-weight:800;text-align:center;position:relative}
 .res-header p{color:rgba(255,255,255,.55);text-align:center;margin-top:6px;position:relative}
+
+#results-screen::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(26,86,219,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(26,86,219,.055) 1px,transparent 1px);
+  background-size:40px 40px}
+#results-screen > *{position:relative;z-index:1}
 
 .res-score-card{max-width:420px;margin:-52px auto 0;position:relative;z-index:10;
   background:#fff;border-radius:var(--r-xl);box-shadow:var(--sh-xl);padding:36px;text-align:center}
