@@ -2615,7 +2615,7 @@ function pickAdaptiveNextQuestionIndex(currentIndex){
     const distance = Math.abs(difficultyToRank(q && q.difficulty) - difficultyToRank(targetDifficulty));
     if (distance < bestDistance) {
       bestDistance = distance;
-      bestIndex = idx;
+    const qBadge=`${sec} · ${remaining} left`;
     }
   });
 
@@ -2687,9 +2687,8 @@ function updQNav(){
 
   const pct=Object.keys(S.answers).length/S.questions.length*100;
   const currentQ=Math.min(S.curQ+1,S.questions.length);
-  const leftQ=Math.max(0,S.questions.length-currentQ);
   document.getElementById('tb-prog-fill').style.width=pct+'%';
-  document.getElementById('test-prog-txt').textContent=`Q${currentQ} of ${S.questions.length} · ${leftQ} left`;
+  document.getElementById('test-prog-txt').textContent=`Questions ${currentQ} of ${S.questions.length}`;
   const stepSubmitBtn=document.getElementById('step-submit-btn');
   if(stepSubmitBtn){
     const last=S.curQ===S.questions.length-1;
@@ -2704,7 +2703,7 @@ function renderQ(idx){
   const answerLocked = isAnswerLockedForQuestion(idx);
   const sec=q.section==='math'?'Math':'Reading & Writing';
   const remaining=Math.max(0,S.questions.length-(idx+1));
-  const qBadge=`${sec} · Q${idx+1} of ${S.questions.length} · ${remaining} left`;
+  const qBadge=`${sec} · ${remaining} left`;
   let html=`<div class="q-hd"><div class="q-badge">${qBadge}</div><div class="q-skill">${q.skill||''}</div></div>`;
   html+=`<div class="q-text">${q.question}</div>`;
   if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
