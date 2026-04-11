@@ -33,6 +33,30 @@
   ],
   "rewrites": [
     {
+      "source": "/api/create-checkout-session",
+      "destination": "/api/subscription?action=checkout"
+    },
+    {
+      "source": "/api/create-billing-portal-session",
+      "destination": "/api/subscription?action=billing-portal"
+    },
+    {
+      "source": "/api/cancel-subscription-now",
+      "destination": "/api/subscription?action=cancel"
+    },
+    {
+      "source": "/api/issue-test-session",
+      "destination": "/api/test-engine?action=issue"
+    },
+    {
+      "source": "/api/evaluate-answer",
+      "destination": "/api/test-engine?action=evaluate"
+    },
+    {
+      "source": "/api/grade-test",
+      "destination": "/api/test-engine?action=grade"
+    },
+    {
       "source": "/data/question-bank/(.*)",
       "destination": "/404.html"
     },

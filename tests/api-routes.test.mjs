@@ -109,13 +109,17 @@ test('api/me returns 401 when auth fails', { concurrency: false }, async () => {
   assert.equal(parseJsonBody(res).error, 'Missing Bearer token.');
 });
 
-test('api/create-checkout-session validates method and plan', { concurrency: false }, async () => {
-  const mod = loadRouteModule('api/create-checkout-session.js', makeCommonImports({
+test('api/subscription validates method and plan for checkout action', { concurrency: false }, async () => {
+  const mod = loadRouteModule('api/subscription.js', makeCommonImports({
     '../lib/auth.js': { resolveAuthUser: async () => ({ ok: true, user: { id: 'u_1', email: 'a@b.com' } }) },
     '../lib/origin.js': { resolveSafeOrigin: () => 'https://budy.study' },
     '../lib/stripe-key.js': {
       normalizeSecretKey: () => 'sk_live_123',
       looksMaskedKey: () => false
+    },
+    '../lib/subscription-store.js': {
+      getSubscriptionByUserId: async () => ({ ok: true, data: null }),
+      upsertSubscription: async () => ({ ok: true })
     },
     '../lib/rate-limit.js': {
       checkRateLimit: () => ({ ok: true, limit: 10, remaining: 9, windowMs: 60000, retryAfterSeconds: 0 }),
@@ -123,7 +127,7 @@ test('api/create-checkout-session validates method and plan', { concurrency: fal
     }
   }));
 
-  const badMethodReq = createReq({ method: 'GET' });
+  const badMethodReq = createReq({ method: 'GET', query: { action: 'checkout' } });
   const badMethodRes = createRes();
   await mod.default(badMethodReq, badMethodRes);
   assert.equal(badMethodRes.statusCode, 405);
@@ -131,7 +135,7 @@ test('api/create-checkout-session validates method and plan', { concurrency: fal
   process.env.STRIPE_SECRET_KEY = 'sk_live_abc';
   process.env.STRIPE_PRICE_ID_MONTHLY = 'price_123';
 
-  const invalidPlanReq = createReq({ method: 'POST', body: { plan: 'invalid' } });
+  const invalidPlanReq = createReq({ method: 'POST', query: { action: 'checkout' }, body: { plan: 'invalid' } });
   const invalidPlanRes = createRes();
   await mod.default(invalidPlanReq, invalidPlanRes);
   assert.equal(invalidPlanRes.statusCode, 400);
@@ -141,14 +145,14 @@ test('api/create-checkout-session validates method and plan', { concurrency: fal
   delete process.env.STRIPE_PRICE_ID_MONTHLY;
 });
 
-test('api/create-checkout-session returns checkout url on success', { concurrency: false }, async () => {
+test('api/subscription returns checkout url on success', { concurrency: false }, async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => ({
     ok: true,
     json: async () => ({ id: 'cs_test_123', url: 'https://checkout.stripe.test/session' })
   });
 
-  const mod = loadRouteModule('api/create-checkout-session.js', makeCommonImports({
+  const mod = loadRouteModule('api/subscription.js', makeCommonImports({
     '../lib/auth.js': { resolveAuthUser: async () => ({ ok: true, user: { id: 'u_1', email: 'user@example.com' } }) },
     '../lib/origin.js': { resolveSafeOrigin: () => 'https://budy.study' },
     '../lib/stripe-key.js': {
@@ -158,13 +162,17 @@ test('api/create-checkout-session returns checkout url on success', { concurrenc
     '../lib/rate-limit.js': {
       checkRateLimit: () => ({ ok: true, limit: 30, remaining: 29, windowMs: 60000, retryAfterSeconds: 0 }),
       applyRateLimitHeaders: () => {}
+    },
+    '../lib/subscription-store.js': {
+      getSubscriptionByUserId: async () => ({ ok: true, data: null }),
+      upsertSubscription: async () => ({ ok: true })
     }
   }));
 
   process.env.STRIPE_SECRET_KEY = 'sk_live_abc';
   process.env.STRIPE_PRICE_ID_MONTHLY = 'price_monthly';
 
-  const req = createReq({ method: 'POST', body: { plan: 'monthly' } });
+  const req = createReq({ method: 'POST', query: { action: 'checkout' }, body: { plan: 'monthly' } });
   const res = createRes();
   await mod.default(req, res);
 
