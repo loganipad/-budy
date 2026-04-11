@@ -2706,8 +2706,8 @@ function renderQ(idx){
   const remaining=Math.max(0,S.questions.length-(idx+1));
   const qBadge=`${sec} · Q${idx+1} of ${S.questions.length} · ${remaining} left`;
   let html=`<div class="q-hd"><div class="q-badge">${qBadge}</div><div class="q-skill">${q.skill||''}</div></div>`;
-  if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
   html+=`<div class="q-text">${q.question}</div>`;
+  if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
   if(q.type==='spr'){
     const v=S.answers[idx]||'';
     const lockAttrs = answerLocked ? ' readonly disabled aria-disabled="true"' : '';
