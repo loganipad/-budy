@@ -562,6 +562,7 @@ input,select{font-family:inherit}
   font-weight:700;border-radius:var(--r-full);border:2px solid rgba(255,255,255,.2);
   font-size:.9rem;cursor:pointer;transition:all .2s;font-family:var(--font-h)}
 .btn-price-ghost:hover{border-color:rgba(255,255,255,.5);color:#fff}
+.price-card.featured.annual-tier .btn-price-ghost{color:#fff}
 .btn-price-trial{width:100%;height:48px;background:linear-gradient(180deg,#fbbf24,#f59e0b);color:#fff;
   font-weight:800;border-radius:var(--r-full);border:none;font-size:.9rem;cursor:pointer;transition:all .2s;font-family:var(--font-h);
   box-shadow:0 8px 22px rgba(245,158,11,.26), inset 0 1px 0 rgba(255,255,255,.22)}
