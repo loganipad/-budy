@@ -134,6 +134,57 @@ body::before{
   line-height:1.55;
 }
 
+/* Compact footer footprint on the dedicated viewer page only. */
+#footer-slot footer.site-footer{
+  padding:24px 0 12px;
+}
+
+#footer-slot .site-footer .footer-shell{
+  padding-top:12px;
+}
+
+#footer-slot .site-footer .footer-grid{
+  column-gap:24px;
+  row-gap:12px;
+  margin-bottom:8px;
+}
+
+#footer-slot .site-footer .footer-brand{
+  gap:6px;
+}
+
+#footer-slot .site-footer .footer-brand-desc{
+  font-size:.82rem;
+  line-height:1.45;
+}
+
+#footer-slot .site-footer .footer-col h4{
+  margin-bottom:10px;
+}
+
+#footer-slot .site-footer .footer-col ul{
+  gap:6px;
+}
+
+#footer-slot .site-footer .footer-socials{
+  gap:10px;
+}
+
+#footer-slot .site-footer .footer-social{
+  width:42px;
+  height:42px;
+  border-radius:11px;
+}
+
+#footer-slot .site-footer .footer-social svg{
+  width:18px;
+  height:18px;
+}
+
+#footer-slot .site-footer .footer-copy{
+  font-size:.72rem;
+}
+
 @media (max-width: 860px){
   .wrap{width:min(100%,calc(100% - 24px))}
   .viewer-main{padding:calc(var(--shared-nav-h, 64px) + env(safe-area-inset-top, 0px) + 8px) 0 10px}
@@ -141,6 +192,14 @@ body::before{
   .viewer-frame-wrap{border-radius:10px;height:calc(100vh - 128px);min-height:560px}
   .viewer-back{left:14px;top:14px}
   .viewer-download{top:18px;right:18px}
+
+  #footer-slot footer.site-footer{
+    padding:18px 0 10px;
+  }
+
+  #footer-slot .site-footer .footer-grid{
+    gap:10px;
+  }
 }
 </style>
 </head>
