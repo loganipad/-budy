@@ -15,6 +15,7 @@ Set these in Vercel Production before deployment.
 ### Billing (Stripe)
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_WEBHOOK_TOLERANCE_SECONDS` (optional, defaults to `300`)
 - `STRIPE_PRICE_ID_WEEKLY`
 - `STRIPE_PRICE_ID_MONTHLY`
 - `STRIPE_PRICE_ID_YEARLY`
@@ -29,8 +30,15 @@ Set these in Vercel Production before deployment.
 - `AI_DEEP_DIVE_PRO_CREDITS` (optional override for monthly credits)
 - `AI_DEEP_DIVE_BYPASS_EMAILS` (optional comma-separated bypass users)
 
+### Secure Test Sessions
+- `TEST_SESSION_TOKEN_SECRET` (required in production; signs test-session tokens for server-side grading)
+
 ### Security / App Behavior
 - `ALLOWED_ORIGINS` (comma-separated allowlist; supports patterns like `https://*.budy.study`)
+
+### Distributed Rate Limiting (optional, recommended)
+- `RATE_LIMIT_REDIS_REST_URL` (or `UPSTASH_REDIS_REST_URL`)
+- `RATE_LIMIT_REDIS_REST_TOKEN` (or `UPSTASH_REDIS_REST_TOKEN`)
 
 ### Monitoring / Alerting
 - `OBSERVABILITY_INGEST_URL`
@@ -63,7 +71,10 @@ Set these in Vercel Production before deployment.
    - verify Production env vars are present
    - verify latest deploy target is Production, not Preview
 4. Deploy from `main`.
-5. Post-deploy smoke checks:
+5. Confirm required SQL migrations are applied in Supabase:
+   - `supabase/2026-03-31_ai_deep_dive_usage.sql`
+   - `supabase/2026-04-11_ai_deep_dive_atomic.sql`
+6. Post-deploy smoke checks:
    - login/auth (`/api/me`)
    - checkout session creation
    - billing portal session creation

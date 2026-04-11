@@ -3,6 +3,7 @@ import { withApiErrorBoundary } from '../lib/observability.js';
 import { getSubscriptionByUserId } from '../lib/subscription-store.js';
 import { json } from '../lib/http.js';
 import { normalizeSecretKey } from '../lib/stripe-key.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 function toIso(input) {
   const unixSeconds = Number(input);
@@ -49,9 +50,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/me:ip',
+    limit: 80,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please retry shortly.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/me:user',
+    identifier: auth.user.id,
+    limit: 60,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many account status checks. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   const record = await getSubscriptionByUserId(auth.user.id);

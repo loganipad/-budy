@@ -52,6 +52,15 @@ function verifyStripeSignature(rawBody, signatureHeader, webhookSecret) {
   const parsed = parseStripeSignature(signatureHeader);
   if (!parsed.t || !parsed.v1.length) return false;
 
+  const timestamp = Number(parsed.t);
+  if (!Number.isFinite(timestamp)) return false;
+
+  const toleranceSeconds = Math.max(60, Number(process.env.STRIPE_WEBHOOK_TOLERANCE_SECONDS) || 300);
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  if (Math.abs(nowSeconds - timestamp) > toleranceSeconds) {
+    return false;
+  }
+
   const signedPayload = `${parsed.t}.${rawBody}`;
   const expected = crypto
     .createHmac('sha256', webhookSecret)
@@ -59,6 +68,24 @@ function verifyStripeSignature(rawBody, signatureHeader, webhookSecret) {
     .digest('hex');
 
   return parsed.v1.some((sig) => timingSafeEquals(sig, expected));
+}
+
+async function getLatestStripeSubscription(subscriptionId, secretKey) {
+  const id = String(subscriptionId || '').trim();
+  if (!id || !secretKey) return null;
+
+  try {
+    const response = await fetch(`https://api.stripe.com/v1/subscriptions/${encodeURIComponent(id)}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${secretKey}`
+      }
+    });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  }
 }
 
 function getUserIdFromEvent(event) {
@@ -103,8 +130,10 @@ async function handleCheckoutCompleted(event) {
   return { ok: true, userId };
 }
 
-async function handleSubscriptionChanged(event) {
-  const subscription = event.data.object;
+async function handleSubscriptionChanged(event, secretKey) {
+  const eventSubscription = event.data.object;
+  const latestSubscription = await getLatestStripeSubscription(eventSubscription && eventSubscription.id, secretKey);
+  const subscription = latestSubscription || eventSubscription;
   const customerId = subscription && subscription.customer ? String(subscription.customer) : '';
   let userId = getUserIdFromEvent(event);
 
@@ -140,6 +169,7 @@ async function handler(req, res) {
   }
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
   if (!webhookSecret) {
     logOperationalEvent('stripe_webhook_misconfigured_secret', req, {}, {
       severity: 'error',
@@ -193,7 +223,7 @@ async function handler(req, res) {
         return json(res, result.status || 400, { error: result.error });
       }
     } else if (eventType === 'customer.subscription.updated' || eventType === 'customer.subscription.deleted') {
-      const result = await handleSubscriptionChanged(event);
+      const result = await handleSubscriptionChanged(event, stripeSecretKey);
       if (!result.ok) {
         logOperationalEvent('stripe_webhook_event_rejected', req, { eventType, eventId: event.id, reason: result.error }, {
           severity: 'warn'

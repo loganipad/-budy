@@ -229,7 +229,7 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
-  const ipRateLimit = checkRateLimit({
+  const ipRateLimit = await checkRateLimit({
     req,
     namespace: 'api/deep-dive:ip',
     limit: 40,
@@ -248,7 +248,7 @@ async function handler(req, res) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
   }
 
-  const userRateLimit = checkRateLimit({
+  const userRateLimit = await checkRateLimit({
     req,
     namespace: 'api/deep-dive:user',
     identifier: auth.user.id,
@@ -329,11 +329,6 @@ async function handler(req, res) {
     });
   }
 
-  const aiResult = await requestDeepDiveFromOpenAI({ text, surroundingText, context }, aiConfig);
-  if (!aiResult.ok) {
-    return json(res, aiResult.status || 502, { error: aiResult.error || 'Could not generate the deep dive.' });
-  }
-
   const charge = await consumeDeepDiveCredit({
     userId: auth.user.id,
     email,
@@ -341,8 +336,19 @@ async function handler(req, res) {
     creditLimit
   });
   if (!charge.ok) {
-    const status = charge.disabled ? 503 : 500;
-    return json(res, status, { error: charge.error || 'Could not record AI Deep Dive usage.' });
+    const status = charge.status || (charge.disabled ? 503 : 500);
+    return json(res, status, {
+      error: charge.error || 'Could not record AI Deep Dive usage.',
+      usedCredits: charge.data && Number.isFinite(Number(charge.data.usedCount)) ? Number(charge.data.usedCount) : usedCredits,
+      remainingCredits: charge.data && Number.isFinite(Number(charge.data.remainingCredits)) ? Number(charge.data.remainingCredits) : remainingCredits,
+      creditLimit: charge.data && Number.isFinite(Number(charge.data.creditLimit)) ? Number(charge.data.creditLimit) : creditLimit,
+      periodKey
+    });
+  }
+
+  const aiResult = await requestDeepDiveFromOpenAI({ text, surroundingText, context }, aiConfig);
+  if (!aiResult.ok) {
+    return json(res, aiResult.status || 502, { error: aiResult.error || 'Could not generate the deep dive.' });
   }
 
   return json(res, 200, {

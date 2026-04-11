@@ -7,6 +7,7 @@ import {
   upsertDraftSession
 } from '../lib/test-session-store.js';
 import { normalizeDraftSessionRow } from '../lib/test-session-utils.mjs';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 function readSid(req, body) {
   const querySid = req && req.query && typeof req.query.sid === 'string' ? req.query.sid : '';
@@ -21,9 +22,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/test-session:ip',
+    limit: 120,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please try again shortly.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/test-session:user',
+    identifier: auth.user.id,
+    limit: 90,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many draft session actions. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {};

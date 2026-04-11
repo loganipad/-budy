@@ -2,7 +2,7 @@
   'use strict';
 
   const REVIEW_TEST_STORAGE_KEY = 'budy_review_test_v1';
-  const QUESTION_BANK_URL = '/data/question-bank/question-bank.jsonl';
+  const QUESTION_BANK_URL = '/api/question-bank';
   const SAT_SECONDS_PER_QUESTION = {
     english: (32 * 60) / 27,
     math: (35 * 60) / 22
@@ -31,7 +31,7 @@
     if (!item || typeof item !== 'object') return null;
     const section = normalizeSection(item.section);
     if (!section) return null;
-    const isSpr = item.format === 'spr';
+    const isSpr = item.type === 'spr' || item.format === 'spr';
     return {
       id: String(item.id || ''),
       section,
@@ -40,13 +40,13 @@
       difficulty: item.difficulty || 'medium',
       type: isSpr ? 'spr' : 'mc',
       questionType: isSpr ? 'spr' : 'mc',
-      prompt: item.prompt || '',
-      question: item.prompt || '',
+      prompt: item.question || item.prompt || '',
+      question: item.question || item.prompt || '',
       passage: item.passage || '',
-      options: isSpr ? [] : (Array.isArray(item.choices) ? item.choices.filter(Boolean) : []),
+      options: isSpr ? [] : (Array.isArray(item.options) ? item.options.filter(Boolean) : []),
       answer: item.answer != null ? String(item.answer) : '',
       correctAnswer: item.answer != null ? String(item.answer) : '',
-      acceptableAnswers: isSpr ? [String(item.answer)] : undefined,
+      acceptableAnswers: isSpr && item.answer != null ? [String(item.answer)] : undefined,
       rationale: item.rationale || '',
       explanation: item.rationale || '',
       distractor_rationales: item.distractor_rationales && typeof item.distractor_rationales === 'object' ? item.distractor_rationales : {},
@@ -66,12 +66,12 @@
         if (!response.ok) {
           throw new Error('Question bank request failed with status ' + response.status);
         }
-        const text = await response.text();
-        const items = text
-          .split('\n')
-          .map((line) => line.trim())
-          .filter(Boolean)
-          .map((line) => normalizeBankQuestion(JSON.parse(line)))
+        const payload = await response.json();
+        const items = [
+          ...(Array.isArray(payload && payload.english) ? payload.english : []),
+          ...(Array.isArray(payload && payload.math) ? payload.math : [])
+        ]
+          .map((entry) => normalizeBankQuestion(entry))
           .filter(Boolean);
         questionBankItems = items;
         return items;

@@ -116,6 +116,7 @@ const S = {
   questions: [],
   answers: {},
   submittedAnswers: {},
+  answerVerdicts: {},
   flags: new Set(),
   curQ: 0,
   landingTimer: null,
@@ -143,6 +144,7 @@ const S = {
   demoCompleted: false,
   demoGrading: false,
   customTestLabel: '',
+  testSessionToken: '',
   testSessionId: '',
   testSessionStartedAt: null
 };
@@ -378,6 +380,21 @@ function normalizeDraftSubmittedAnswers(submittedAnswers, answers, maxQuestions)
   return normalizeDraftAnswers(answers, safeMax);
 }
 
+function normalizeDraftAnswerVerdicts(answerVerdicts, maxQuestions) {
+  const safeMax = Math.max(1, Number(maxQuestions) || 1);
+  if (!answerVerdicts || typeof answerVerdicts !== 'object' || Array.isArray(answerVerdicts)) {
+    return {};
+  }
+
+  return Object.entries(answerVerdicts).reduce((acc, [key, value]) => {
+    const index = Number(key);
+    if (!Number.isInteger(index) || index < 0 || index >= safeMax) return acc;
+    if (typeof value !== 'boolean') return acc;
+    acc[String(index)] = value;
+    return acc;
+  }, {});
+}
+
 function normalizeDraftFlags(flags, maxQuestions) {
   const safeMax = Math.max(1, Number(maxQuestions) || 1);
   if (!Array.isArray(flags)) return new Set();
@@ -403,6 +420,7 @@ function buildDraftSnapshot(reason = '') {
     questionsSnapshot: S.questions,
     answers: normalizeDraftAnswers(S.answers, S.questions.length),
     submittedAnswers: normalizeDraftSubmittedAnswers(S.submittedAnswers, S.answers, S.questions.length),
+    answerVerdicts: normalizeDraftAnswerVerdicts(S.answerVerdicts, S.questions.length),
     flags: Array.from(S.flags || []),
     currentQuestionIndex: Number.isInteger(S.curQ) ? S.curQ : 0,
     remainingTimeSeconds: Math.max(0, Number(S.timeLeft) || 0),
@@ -414,7 +432,8 @@ function buildDraftSnapshot(reason = '') {
     source: 'web',
     metadata: {
       reason: String(reason || ''),
-      isPremium: Boolean(S.isPremium)
+      isPremium: Boolean(S.isPremium),
+      testSessionToken: S.testSessionToken || ''
     }
   };
 }
@@ -645,6 +664,7 @@ function applyDraftState(draft, sid, questions) {
     S.answers,
     safeQuestions.length
   );
+  S.answerVerdicts = normalizeDraftAnswerVerdicts(draft && draft.answerVerdicts, safeQuestions.length);
   S.flags = normalizeDraftFlags(draft && draft.flags, safeQuestions.length);
   S.curQ = clampedIndex;
   S.timerPaused = Boolean(draft && draft.timerPaused);
@@ -653,6 +673,9 @@ function applyDraftState(draft, sid, questions) {
   S.qNavCollapsed = true;
   S.section = section;
   S.customTestLabel = draft && draft.customTestLabel ? String(draft.customTestLabel) : '';
+  S.testSessionToken = draft && draft.metadata && draft.metadata.testSessionToken
+    ? String(draft.metadata.testSessionToken)
+    : '';
   S.testSessionId = sid;
   S.testSessionStartedAt = draft && draft.startedAt ? String(draft.startedAt) : new Date().toISOString();
 
@@ -708,6 +731,7 @@ async function restoreDraftSessionBySid(sid) {
   upsertSidInUrl(normalizedSid);
   startDraftAutosaveLoop();
   scheduleDraftAutosave('restore');
+  void hydrateSubmittedVerdictsFromServer();
   return true;
 }
 
@@ -720,6 +744,8 @@ function clearActiveDraftSession(options = {}) {
   stopDraftAutosaveLoop();
 
   if (!sid) {
+    S.testSessionToken = '';
+    S.answerVerdicts = {};
     S.testSessionId = '';
     S.testSessionStartedAt = null;
     if (clearUrl) clearSidFromUrl();
@@ -731,12 +757,14 @@ function clearActiveDraftSession(options = {}) {
     void deleteDraftSessionRemote(sid);
   }
 
+  S.testSessionToken = '';
+  S.answerVerdicts = {};
   S.testSessionId = '';
   S.testSessionStartedAt = null;
   if (clearUrl) clearSidFromUrl();
 }
 
-function beginPreparedTestSession({ questions, section, timeLimitSeconds, label, sid }) {
+function beginPreparedTestSession({ questions, section, timeLimitSeconds, label, sid, testSessionToken }) {
   const previousSid = normalizeSessionId(S.testSessionId || getSidFromUrl());
   const nextSid = normalizeSessionId(sid) || createTestSessionId();
   stopDraftAutosaveLoop();
@@ -751,6 +779,7 @@ function beginPreparedTestSession({ questions, section, timeLimitSeconds, label,
   S.questions = Array.isArray(questions) ? questions : [];
   S.answers = {};
   S.submittedAnswers = {};
+  S.answerVerdicts = {};
   S.flags = new Set();
   S.curQ = 0;
   S.timerPaused = false;
@@ -759,6 +788,7 @@ function beginPreparedTestSession({ questions, section, timeLimitSeconds, label,
   S.qNavCollapsed = true;
   S.section = section;
   S.customTestLabel = label || '';
+  S.testSessionToken = typeof testSessionToken === 'string' ? testSessionToken : '';
   S.testSessionId = nextSid;
   S.testSessionStartedAt = new Date().toISOString();
   draftBackendUnavailable = false;
@@ -791,6 +821,14 @@ async function launchQueuedReviewTestIfPresent() {
   const normalizedSection = config.section === 'english' || config.section === 'math' || config.section === 'full'
     ? config.section
     : 'full';
+  let testSessionToken = '';
+
+  try {
+    testSessionToken = await issueTestSessionToken(config.questions, normalizedSection);
+  } catch {
+    toast('Could not start a secure review session. Please rebuild the review test.', 'er', 4200);
+    return false;
+  }
 
   setView('loading');
   await new Promise((resolve) => setTimeout(resolve, 300));
@@ -798,7 +836,8 @@ async function launchQueuedReviewTestIfPresent() {
     questions: config.questions,
     section: normalizedSection,
     timeLimitSeconds: config.timeLimitSeconds,
-    label: config.label || 'Review Test'
+    label: config.label || 'Review Test',
+    testSessionToken
   });
   return true;
 }
@@ -2077,8 +2116,10 @@ async function cancelSubscriptionNow() {
 }
 
 /* ── QUESTIONS ── */
-const QUESTION_BANK_URL = '/data/question-bank/question-bank.jsonl';
-const QUESTION_BANK_CACHE_NAME = 'budy-question-bank-v2';
+const QUESTION_BANK_URL = '/api/question-bank';
+const ISSUE_TEST_SESSION_URL = '/api/issue-test-session';
+const EVALUATE_ANSWER_URL = '/api/evaluate-answer';
+const GRADE_TEST_URL = '/api/grade-test';
 
 let questionBankLoadPromise = null;
 let questionBankCache = null;
@@ -2097,11 +2138,11 @@ function shuffleQuestions(list) {
 
 function normalizeBankQuestion(item) {
   if (!item || typeof item !== 'object') return null;
-  const section = item.section === 'reading_writing' ? 'english' : item.section === 'math' ? 'math' : null;
+  const section = item.section === 'english' ? 'english' : item.section === 'math' ? 'math' : null;
   if (!section) return null;
 
-  const isSpr = item.format === 'spr';
-  const options = Array.isArray(item.choices) ? item.choices.filter(Boolean) : [];
+  const isSpr = item.type === 'spr' || item.format === 'spr';
+  const options = Array.isArray(item.options) ? item.options.filter(Boolean) : [];
   return {
     id: String(item.id || ''),
     type: isSpr ? 'spr' : 'mc',
@@ -2114,13 +2155,8 @@ function normalizeBankQuestion(item) {
     calculator_allowed: Object.prototype.hasOwnProperty.call(item, 'calculator_allowed') ? item.calculator_allowed : null,
     estimated_time_seconds: Number(item.estimated_time_seconds || 0),
     passage: item.passage || null,
-    question: item.prompt || '',
-    options: isSpr ? null : options,
-    answer: item.answer != null ? String(item.answer) : '',
-    acceptableAnswers: isSpr ? [String(item.answer)] : undefined,
-    explanation: item.rationale || '',
-    rationale: item.rationale || '',
-    distractor_rationales: item.distractor_rationales && typeof item.distractor_rationales === 'object' ? item.distractor_rationales : {}
+    question: item.question || item.prompt || '',
+    options: isSpr ? null : options
   };
 }
 
@@ -2135,42 +2171,30 @@ function createQuestionBankPreloadHint() {
   document.head.appendChild(link);
 }
 
-function parseGeneratedQuestionBank(text) {
-  const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
-  const normalized = rows.map((line) => normalizeBankQuestion(JSON.parse(line))).filter(Boolean);
-  const english = normalized.filter((item) => item.section === 'english');
-  const math = normalized.filter((item) => item.section === 'math');
+function normalizeQuestionBankPayload(payload) {
+  const english = Array.isArray(payload && payload.english)
+    ? payload.english.map(normalizeBankQuestion).filter(Boolean)
+    : [];
+  const math = Array.isArray(payload && payload.math)
+    ? payload.math.map(normalizeBankQuestion).filter(Boolean)
+    : [];
   if (!english.length || !math.length) {
     throw new Error('Question bank loaded without both sections.');
   }
   return { english, math };
 }
 
-async function fetchQuestionBankNetworkResponse() {
-  const response = await fetch(QUESTION_BANK_URL, { cache: 'force-cache' });
+async function fetchQuestionBankPayload() {
+  const response = await fetch(QUESTION_BANK_URL, {
+    method: 'GET',
+    cache: 'force-cache'
+  });
+
   if (!response.ok) {
     throw new Error(`Question bank request failed with status ${response.status}`);
   }
-  return response;
-}
 
-async function fetchQuestionBankText() {
-  if (!('caches' in window)) {
-    return (await fetchQuestionBankNetworkResponse()).text();
-  }
-
-  const cache = await caches.open(QUESTION_BANK_CACHE_NAME);
-  const cached = await cache.match(QUESTION_BANK_URL);
-  if (cached) {
-    void fetchQuestionBankNetworkResponse()
-      .then((response) => cache.put(QUESTION_BANK_URL, response.clone()))
-      .catch(() => {});
-    return cached.text();
-  }
-
-  const response = await fetchQuestionBankNetworkResponse();
-  await cache.put(QUESTION_BANK_URL, response.clone());
-  return response.text();
+  return response.json();
 }
 
 function preloadQuestionBank() {
@@ -2193,9 +2217,9 @@ async function loadGeneratedQuestionBank() {
   if (questionBankCache) return questionBankCache;
   if (questionBankLoadPromise) return questionBankLoadPromise;
 
-  questionBankLoadPromise = fetchQuestionBankText()
-    .then((text) => {
-      questionBankCache = parseGeneratedQuestionBank(text);
+  questionBankLoadPromise = fetchQuestionBankPayload()
+    .then((payload) => {
+      questionBankCache = normalizeQuestionBankPayload(payload);
       return questionBankCache;
     })
     .catch((error) => {
@@ -2204,6 +2228,126 @@ async function loadGeneratedQuestionBank() {
     });
 
   return questionBankLoadPromise;
+}
+
+function buildAnswersByQuestionId() {
+  return S.questions.reduce((acc, question, index) => {
+    if (!question || !question.id) return acc;
+    if (!hasSubmittedAnswer(index)) return acc;
+    const value = S.answers[index];
+    const answer = String(value == null ? '' : value).trim();
+    if (!answer) return acc;
+    acc[String(question.id)] = answer;
+    return acc;
+  }, {});
+}
+
+async function issueTestSessionToken(questions, section) {
+  const questionIds = Array.isArray(questions)
+    ? questions.map((question) => String(question && question.id ? question.id : '').trim()).filter(Boolean)
+    : [];
+
+  if (!questionIds.length) {
+    throw new Error('Could not issue a secure test session token without question ids.');
+  }
+
+  const response = await fetch(ISSUE_TEST_SESSION_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      section,
+      questionIds
+    })
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || !payload || !payload.token) {
+    throw new Error(payload && payload.error ? String(payload.error) : 'Could not start secure test session.');
+  }
+
+  return String(payload.token);
+}
+
+async function ensureTestSessionToken() {
+  if (S.testSessionToken) return S.testSessionToken;
+  const token = await issueTestSessionToken(S.questions, S.section);
+  S.testSessionToken = token;
+  scheduleDraftAutosave('token_refresh');
+  return token;
+}
+
+async function evaluateAnswerForQuestion(question, answer) {
+  const token = await ensureTestSessionToken();
+  const response = await fetch(EVALUATE_ANSWER_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      token,
+      questionId: question && question.id ? String(question.id) : '',
+      answer
+    })
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload && payload.error ? String(payload.error) : 'Could not check answer right now.');
+  }
+
+  return Boolean(payload && payload.isCorrect);
+}
+
+async function gradeTestServerSide() {
+  const token = await ensureTestSessionToken();
+  const response = await fetch(GRADE_TEST_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      token,
+      answersByQuestionId: buildAnswersByQuestionId()
+    })
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload && payload.error ? String(payload.error) : 'Could not grade test right now.');
+  }
+
+  return Array.isArray(payload && payload.graded) ? payload.graded : [];
+}
+
+async function hydrateSubmittedVerdictsFromServer() {
+  const submittedCount = countSubmittedAnswers();
+  if (!submittedCount) return;
+
+  const knownVerdicts = Object.keys(S.answerVerdicts || {}).length;
+  if (knownVerdicts >= submittedCount) return;
+
+  try {
+    const graded = await gradeTestServerSide();
+    const byId = new Map();
+    graded.forEach((entry) => {
+      if (!entry || !entry.id) return;
+      byId.set(String(entry.id), Boolean(entry.isCorrect));
+    });
+
+    S.questions.forEach((question, index) => {
+      if (!hasSubmittedAnswer(index)) return;
+      if (!question || !question.id) return;
+      const verdict = byId.get(String(question.id));
+      if (typeof verdict !== 'boolean') return;
+      S.answerVerdicts[index] = verdict;
+    });
+
+    scheduleDraftAutosave('verdict_hydrate');
+  } catch {
+    // Keep existing verdicts if temporary network issues occur.
+  }
 }
 
 function buildQuestionBankAdminSummary(pools) {
@@ -2512,11 +2656,13 @@ function startTest() {
   setTimeout(async ()=>{
     try {
       const questions = await buildQuestionSet(S.section, limit);
+      const testSessionToken = await issueTestSessionToken(questions, S.section);
       beginPreparedTestSession({
         questions,
         section: S.section,
         timeLimitSeconds: getTestDurationSeconds(S.section, isPrem),
-        label: ''
+        label: '',
+        testSessionToken
       });
 
     } catch(err) {
@@ -2605,16 +2751,12 @@ function countSubmittedAnswers() {
   return count;
 }
 
-function isAnswerCorrectForQuestion(question, answer){
+function isAnswerCorrectForQuestion(question, _answer, questionIndex){
   if (!question) return false;
-  if (answer === undefined || answer === null) return false;
-  if (question.type === 'spr') {
-    const accepted = Array.isArray(question.acceptableAnswers) && question.acceptableAnswers.length
-      ? question.acceptableAnswers
-      : [question.answer];
-    return accepted.some((candidate) => String(candidate) === String(answer));
-  }
-  return String(answer) === String(question.answer);
+  const index = Number(questionIndex);
+  if (!Number.isInteger(index)) return false;
+  const verdict = S.answerVerdicts && S.answerVerdicts[index];
+  return verdict === true;
 }
 
 function difficultyToRank(level){
@@ -2633,7 +2775,7 @@ function pickAdaptiveNextQuestionIndex(currentIndex){
   if (!current) return currentIndex + 1;
 
   const userAnswer = S.answers[currentIndex];
-  const wasCorrect = isAnswerCorrectForQuestion(current, userAnswer);
+  const wasCorrect = isAnswerCorrectForQuestion(current, userAnswer, currentIndex);
   const currentRank = difficultyToRank(current.difficulty);
   const targetRank = wasCorrect ? currentRank + 1 : currentRank - 1;
   const targetDifficulty = rankToDifficulty(targetRank);
@@ -2698,7 +2840,7 @@ function renderAdminTestControls() {
   const scoreRating = Math.max(0, Number(current.estimated_time_seconds) || 0);
 
   if (hasSubmittedAnswer(S.curQ)) {
-    const wasCorrect = isAnswerCorrectForQuestion(current, S.answers[S.curQ]);
+    const wasCorrect = isAnswerCorrectForQuestion(current, S.answers[S.curQ], S.curQ);
     const targetIndex = pickAdaptiveNextQuestionIndex(S.curQ);
     const targetQuestion = S.questions[targetIndex];
     const targetDifficulty = targetQuestion ? normalizeDifficultyLevel(targetQuestion.difficulty) : 'n/a';
@@ -2816,6 +2958,7 @@ function saveSpr(qi,v){
   if(v.trim())S.answers[qi]=v.trim();else{
     delete S.answers[qi];
     delete S.submittedAnswers[qi];
+    delete S.answerVerdicts[qi];
   }
   updQNav();
   scheduleDraftAutosave('answer_input');
@@ -2866,19 +3009,52 @@ function goPrev(){
   goQ(previousIndex, { allowBackward: true });
 }
 
-function handleStepSubmit(){
+async function handleStepSubmit(){
   const current=S.curQ;
   if(!hasDraftAnswer(current)){
     window.alert('Please answer your current question.');
     return;
   }
+  const currentQuestion = S.questions[current];
+  if (!currentQuestion || !currentQuestion.id) {
+    toast('Current question is missing a secure id. Restart the test.', 'er');
+    return;
+  }
+
+  const stepSubmitBtn=document.getElementById('step-submit-btn');
+  const originalLabel=stepSubmitBtn ? stepSubmitBtn.textContent : 'Submit';
+  if (stepSubmitBtn) {
+    stepSubmitBtn.disabled = true;
+    stepSubmitBtn.textContent = 'Submitting...';
+  }
+
+  try {
+    const isCorrect = await evaluateAnswerForQuestion(currentQuestion, S.answers[current]);
+    S.answerVerdicts[current] = isCorrect;
+  } catch (error) {
+    toast(error && error.message ? error.message : 'Could not submit that answer right now.', 'er');
+    if (stepSubmitBtn) {
+      stepSubmitBtn.disabled = false;
+      stepSubmitBtn.textContent = originalLabel;
+    }
+    return;
+  }
+
   S.submittedAnswers[current] = true;
   scheduleDraftAutosave('answer_submit');
   if(current>=S.questions.length-1){
+    if (stepSubmitBtn) {
+      stepSubmitBtn.disabled = false;
+      stepSubmitBtn.textContent = originalLabel;
+    }
     confirmSubmit();
     return;
   }
   adaptUpcomingQuestion(current);
+  if (stepSubmitBtn) {
+    stepSubmitBtn.disabled = false;
+    stepSubmitBtn.textContent = originalLabel;
+  }
   goQ(Math.min(current+1,S.questions.length-1));
 }
 
@@ -2921,7 +3097,7 @@ function runTimerLoop(){
       S.timerPaused=false;
       updTimerPauseButton();
       toast('Time\'s up! Submitting your test.','wn',3000);
-      setTimeout(submitTest,2000)
+      setTimeout(() => { void submitTest(); }, 2000)
     }
   },1000)
 }
@@ -2969,45 +3145,122 @@ async function confirmSubmit(){
     });
     if(!confirmed)return;
   }
-  submitTest();
+  void submitTest();
 }
-function submitTest(){
-  clearTimer();S.timerPaused=false;updTimerPauseButton();S.testActive=false;
+async function submitTest(){
+  clearTimer();
+  S.timerPaused=false;
+  updTimerPauseButton();
+
+  const submitBtn = document.getElementById('step-submit-btn');
+  const originalLabel = submitBtn ? submitBtn.textContent : 'Submit';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Scoring...';
+  }
+
+  let graded = [];
+  try {
+    graded = await gradeTestServerSide();
+  } catch (error) {
+    toast(error && error.message ? error.message : 'Could not score your test right now.', 'er');
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
+    S.testActive = true;
+    return;
+  }
+
+  S.testActive=false;
   clearActiveDraftSession({ clearUrl: true });
+
+  const gradeById = new Map();
+  graded.forEach((entry) => {
+    const id = entry && entry.id ? String(entry.id) : '';
+    if (!id) return;
+    gradeById.set(id, entry);
+  });
+
   const qs=S.questions;
   let correct=0,wrong=0,skipped=0;
   const skillMap={};
-  qs.forEach((q,i)=>{
-    const ua=hasSubmittedAnswer(i) ? S.answers[i] : '';
-    const ca=q.answer;const sk=q.skill||'General';
-    if(!skillMap[sk])skillMap[sk]={correct:0,total:0,section:q.section};
-    skillMap[sk].total++;
-    let ok=false;
-    if(!ua)skipped++;
-    else{
-      ok=q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===ua.toString()):ua===ca;
-      if(ok){correct++;skillMap[sk].correct++}else wrong++;
+
+  const mergedQuestions = qs.map((q, i) => {
+    const id = q && q.id ? String(q.id) : '';
+    const gradedRow = gradeById.get(id) || null;
+    const userAnswer = hasSubmittedAnswer(i) ? String(S.answers[i] || '').trim() : '';
+    const isAnswered = Boolean(userAnswer);
+    const isCorrect = isAnswered ? Boolean(gradedRow && gradedRow.isCorrect) : false;
+
+    if (isAnswered) {
+      S.answerVerdicts[i] = isCorrect;
     }
+
+    const skill = q.skill || 'General';
+    if (!skillMap[skill]) skillMap[skill] = { correct: 0, total: 0, section: q.section };
+    skillMap[skill].total += 1;
+
+    if (!isAnswered) skipped += 1;
+    else if (isCorrect) {
+      correct += 1;
+      skillMap[skill].correct += 1;
+    } else {
+      wrong += 1;
+    }
+
+    return {
+      ...q,
+      userAnswer,
+      isCorrect,
+      answer: gradedRow && gradedRow.correctAnswer ? String(gradedRow.correctAnswer) : '',
+      rationale: gradedRow && gradedRow.rationale ? String(gradedRow.rationale) : '',
+      distractor_rationales: gradedRow && gradedRow.distractor_rationales && typeof gradedRow.distractor_rationales === 'object'
+        ? gradedRow.distractor_rationales
+        : {}
+    };
   });
+
   const sec=S.section;
-  const eng=qs.filter(q=>q.section==='english');
-  const mat=qs.filter(q=>q.section==='math');
+  const eng=mergedQuestions.filter(q=>q.section==='english');
+  const mat=mergedQuestions.filter(q=>q.section==='math');
   let engSc=0,mathSc=0,total=0;
   if(sec==='full'){
-    let ec=0,mc=0;
-    qs.forEach((q,i)=>{const ua=hasSubmittedAnswer(i) ? S.answers[i] : '';if(!ua)return;const ok=q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===ua.toString()):ua===q.answer;if(ok){if(q.section==='english')ec++;else mc++}});
-    engSc=rawToScaled(ec,eng.length,'english');mathSc=rawToScaled(mc,mat.length,'math');total=engSc+mathSc;
+    const ec = eng.reduce((sum, q) => sum + (q.isCorrect ? 1 : 0), 0);
+    const mc = mat.reduce((sum, q) => sum + (q.isCorrect ? 1 : 0), 0);
+    engSc=rawToScaled(ec,eng.length,'english');
+    mathSc=rawToScaled(mc,mat.length,'math');
+    total=engSc+mathSc;
   } else {
-    const sc=rawToScaled(correct,qs.length,sec);
+    const sc=rawToScaled(correct,mergedQuestions.length,sec);
     if(sec==='english'){engSc=sc;total=sc}else{mathSc=sc;total=sc}
   }
-  S.results={section:sec,total,engSc,mathSc,correct,wrong,skipped,total_q:qs.length,skillMap,
+
+  S.results={
+    section:sec,
+    total,
+    engSc,
+    mathSc,
+    correct,
+    wrong,
+    skipped,
+    total_q:mergedQuestions.length,
+    skillMap,
     customLabel:S.customTestLabel || '',
-    questions:qs.map((q,i)=>{const ua=hasSubmittedAnswer(i)?S.answers[i]:'';return({...q,userAnswer:ua,isCorrect:ua?(q.type==='spr'?(q.acceptableAnswers||[q.answer]).some(a=>a.toString()===ua.toString()):ua===q.answer):false})}),
-    date:new Date().toISOString(),isFree:!S.isPremium};
+    questions:mergedQuestions,
+    date:new Date().toISOString(),
+    isFree:!S.isPremium
+  };
+
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+  }
+
   saveSession(S.results);
   void saveSavedQuestionsForResult(S.results);
-  setView('results');renderResults(S.results);
+  setView('results');
+  renderResults(S.results);
 }
 
 /* ── RESULTS ── */

@@ -60,7 +60,7 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
-  const ipRateLimit = checkRateLimit({
+  const ipRateLimit = await checkRateLimit({
     req,
     namespace: 'api/cancel-subscription-now:ip',
     limit: 20,
@@ -79,7 +79,7 @@ async function handler(req, res) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
   }
 
-  const userRateLimit = checkRateLimit({
+  const userRateLimit = await checkRateLimit({
     req,
     namespace: 'api/cancel-subscription-now:user',
     identifier: auth.user.id,

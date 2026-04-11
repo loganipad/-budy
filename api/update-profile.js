@@ -1,6 +1,7 @@
 import { resolveAuthUser } from '../lib/auth.js';
 import { withApiErrorBoundary } from '../lib/observability.js';
 import { json } from '../lib/http.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 function normalizeName(value) {
   return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 80);
@@ -71,9 +72,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/update-profile:ip',
+    limit: 20,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please try again shortly.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/update-profile:user',
+    identifier: auth.user.id,
+    limit: 12,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many profile updates. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   const domain = String(process.env.AUTH0_DOMAIN || '').trim();

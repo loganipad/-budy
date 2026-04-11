@@ -3,6 +3,7 @@ import { withApiErrorBoundary } from '../lib/observability.js';
 import { createAttempt, listAttemptsByUserId } from '../lib/score-store.js';
 import { normalizeAttemptRow } from '../lib/test-attempts-utils.mjs';
 import { json } from '../lib/http.js';
+import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 
 async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -10,9 +11,38 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
+  const ipRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/test-attempts:ip',
+    limit: 80,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, ipRateLimit);
+  if (!ipRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many requests. Please try again shortly.',
+      retryAfterSeconds: ipRateLimit.retryAfterSeconds
+    });
+  }
+
   const auth = await resolveAuthUser(req);
   if (!auth.ok) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
+  }
+
+  const userRateLimit = await checkRateLimit({
+    req,
+    namespace: 'api/test-attempts:user',
+    identifier: auth.user.id,
+    limit: 60,
+    windowMs: 60_000
+  });
+  applyRateLimitHeaders(res, userRateLimit);
+  if (!userRateLimit.ok) {
+    return json(res, 429, {
+      error: 'Too many test attempt actions. Please wait and try again.',
+      retryAfterSeconds: userRateLimit.retryAfterSeconds
+    });
   }
 
   if (req.method === 'GET') {

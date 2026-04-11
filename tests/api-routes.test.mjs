@@ -80,6 +80,10 @@ function makeCommonImports(overrides = {}) {
         res.end(JSON.stringify(payload));
       }
     },
+    '../lib/rate-limit.js': {
+      checkRateLimit: async () => ({ ok: true, limit: 100, remaining: 99, windowMs: 60000, retryAfterSeconds: 0 }),
+      applyRateLimitHeaders: () => {}
+    },
     ...overrides
   };
 }
@@ -212,6 +216,89 @@ test('api/stripe-webhook handles missing config/signature and invalid payload', 
   assert.match(parseJsonBody(resInvalidJson).error, /Invalid webhook payload JSON/i);
 
   delete process.env.STRIPE_WEBHOOK_SECRET;
+});
+
+test('api/stripe-webhook rejects stale signatures and handles duplicate event dedupe', { concurrency: false }, async () => {
+  const mod = loadRouteModule('api/stripe-webhook.js', makeCommonImports({
+    'node:crypto': { default: crypto },
+    '../lib/subscription-store.js': {
+      getSubscriptionByStripeCustomerId: async () => ({ ok: true, data: null }),
+      isPremiumFromStatus: (status) => status === 'active' || status === 'trialing',
+      markEventProcessed: async () => ({ ok: false, status: 409, duplicate: true }),
+      upsertSubscription: async () => ({ ok: true })
+    }
+  }));
+
+  process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+  process.env.STRIPE_WEBHOOK_TOLERANCE_SECONDS = '300';
+
+  const staleBody = JSON.stringify({ id: 'evt_old', type: 'checkout.session.completed', data: { object: {} } });
+  const staleTs = String(Math.floor(Date.now() / 1000) - 1800);
+  const staleSig = crypto.createHmac('sha256', process.env.STRIPE_WEBHOOK_SECRET).update(`${staleTs}.${staleBody}`, 'utf8').digest('hex');
+  const staleReq = createReq({
+    method: 'POST',
+    headers: { 'stripe-signature': `t=${staleTs},v1=${staleSig}` },
+    body: staleBody
+  });
+  const staleRes = createRes();
+  await mod.default(staleReq, staleRes);
+  assert.equal(staleRes.statusCode, 400);
+  assert.match(parseJsonBody(staleRes).error, /Invalid Stripe signature/i);
+
+  const dupBody = JSON.stringify({ id: 'evt_dup', type: 'checkout.session.completed', data: { object: {} } });
+  const dupTs = String(Math.floor(Date.now() / 1000));
+  const dupSig = crypto.createHmac('sha256', process.env.STRIPE_WEBHOOK_SECRET).update(`${dupTs}.${dupBody}`, 'utf8').digest('hex');
+  const dupReq = createReq({
+    method: 'POST',
+    headers: { 'stripe-signature': `t=${dupTs},v1=${dupSig}` },
+    body: dupBody
+  });
+  const dupRes = createRes();
+  await mod.default(dupReq, dupRes);
+  assert.equal(dupRes.statusCode, 200);
+  assert.equal(parseJsonBody(dupRes).duplicate, true);
+
+  delete process.env.STRIPE_WEBHOOK_SECRET;
+  delete process.env.STRIPE_WEBHOOK_TOLERANCE_SECONDS;
+});
+
+test('api/question-bank returns sanitized question payloads', { concurrency: false }, async () => {
+  const mod = loadRouteModule('api/question-bank.js', makeCommonImports({
+    '../lib/question-bank.js': {
+      loadQuestionBank: async () => ({
+        english: [{ id: 'e1', type: 'mc', section: 'english', domain: 'd', skill: 's', difficulty: 'easy', tags: [], source_context: '', calculator_allowed: null, estimated_time_seconds: 60, passage: '', question: 'Q1', options: ['A', 'B', 'C', 'D'], answer: 'A', rationale: 'r1' }],
+        math: [{ id: 'm1', type: 'spr', section: 'math', domain: 'd', skill: 's', difficulty: 'medium', tags: [], source_context: '', calculator_allowed: true, estimated_time_seconds: 75, passage: '', question: 'Q2', options: null, answer: '12', rationale: 'r2' }]
+      }),
+      toPublicQuestion: (question) => ({
+        id: question.id,
+        type: question.type,
+        section: question.section,
+        domain: question.domain,
+        skill: question.skill,
+        difficulty: question.difficulty,
+        tags: question.tags,
+        source_context: question.source_context,
+        calculator_allowed: question.calculator_allowed,
+        estimated_time_seconds: question.estimated_time_seconds,
+        passage: question.passage,
+        question: question.question,
+        options: question.options,
+        format: question.type === 'spr' ? 'spr' : 'mc'
+      })
+    }
+  }));
+
+  const req = createReq({ method: 'GET', query: { section: 'all' } });
+  const res = createRes();
+  await mod.default(req, res);
+
+  assert.equal(res.statusCode, 200);
+  const payload = parseJsonBody(res);
+  assert.equal(payload.total, 2);
+  assert.ok(Array.isArray(payload.english));
+  assert.ok(Array.isArray(payload.math));
+  assert.equal(Object.prototype.hasOwnProperty.call(payload.english[0], 'answer'), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(payload.english[0], 'rationale'), false);
 });
 
 test('api/deep-dive enforces auth and supports preview mode', { concurrency: false }, async () => {

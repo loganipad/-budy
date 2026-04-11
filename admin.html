@@ -183,7 +183,6 @@ td { font-size: .83rem; color: #e8eef8; }
 const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
 const AUTH0_REDIRECT_URI = window.location.origin;
-const ADMIN_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
 const PAGE_SIZE = 50;
 
 const state = {
@@ -206,11 +205,6 @@ function subjectLabel(value) {
 function normalizeDifficulty(value) {
   const v = String(value || '').trim().toLowerCase();
   return v === 'easy' || v === 'hard' ? v : 'medium';
-}
-
-function isAdminEmail(email) {
-  if (!email) return false;
-  return ADMIN_EMAILS.includes(String(email).trim().toLowerCase());
 }
 
 function toTenScale(value, min, max) {
@@ -257,16 +251,6 @@ async function resolveAdminAccess() {
   }
   if (!isAuthenticated) return false;
 
-  let email = '';
-  try {
-    const user = await authClient.getUser();
-    email = user && user.email ? String(user.email) : '';
-  } catch {
-    email = '';
-  }
-
-  if (isAdminEmail(email)) return true;
-
   const token = await getToken(authClient);
   if (!token) return false;
 
@@ -274,7 +258,7 @@ async function resolveAdminAccess() {
     const response = await fetch('/api/me', { method: 'GET', headers: { Authorization: 'Bearer ' + token } });
     const data = await response.json();
     if (!response.ok) return false;
-    return Boolean(data && data.isAdmin) || isAdminEmail(data && data.email ? data.email : email);
+    return Boolean(data && data.isAdmin);
   } catch {
     return false;
   }
@@ -372,20 +356,29 @@ function renderTablePage() {
 }
 
 async function loadQuestionBank() {
-  const response = await fetch('/data/question-bank/question-bank.jsonl', { cache: 'force-cache' });
-  if (!response.ok) throw new Error('Question bank failed to load');
-  const text = await response.text();
-  const rows = text.split('\n').map((line) => line.trim()).filter(Boolean);
+  const token = await getToken(state.authClient);
+  if (!token) throw new Error('Missing access token for admin question bank request.');
 
-  const parsedRows = rows.map((line) => {
-    const item = JSON.parse(line);
+  const response = await fetch('/api/admin-question-bank', {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + token
+    },
+    cache: 'no-store'
+  });
+
+  if (!response.ok) throw new Error('Question bank failed to load');
+  const payload = await response.json();
+  const rows = Array.isArray(payload && payload.rows) ? payload.rows : [];
+
+  const parsedRows = rows.map((item) => {
     return {
       id: String(item.id || ''),
-      subject: normalizeSubject(item.section),
+      subject: item.subject === 'math' ? 'math' : 'english',
       domain: item.domain || '',
       skill: item.skill || '',
       difficulty: normalizeDifficulty(item.difficulty),
-      estimatedSeconds: Math.max(0, Number(item.estimated_time_seconds) || 0),
+      estimatedSeconds: Math.max(0, Number(item.estimatedSeconds) || 0),
       format: item.format || 'mcq',
       prompt: item.prompt || ''
     };

@@ -33,7 +33,7 @@ async function handler(req, res) {
     return end(res, 405, { error: 'Method Not Allowed' });
   }
 
-  const rateLimit = checkRateLimit({
+  const rateLimit = await checkRateLimit({
     req,
     namespace: 'api/telemetry:ip',
     limit: 240,

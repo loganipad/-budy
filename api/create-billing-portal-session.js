@@ -61,7 +61,7 @@ async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' });
   }
 
-  const ipRateLimit = checkRateLimit({
+  const ipRateLimit = await checkRateLimit({
     req,
     namespace: 'api/create-billing-portal-session:ip',
     limit: 30,
@@ -80,7 +80,7 @@ async function handler(req, res) {
     return json(res, auth.status || 401, { error: auth.error || 'Unauthorized' });
   }
 
-  const userRateLimit = checkRateLimit({
+  const userRateLimit = await checkRateLimit({
     req,
     namespace: 'api/create-billing-portal-session:user',
     identifier: auth.user.id,
