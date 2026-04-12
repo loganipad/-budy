@@ -871,45 +871,45 @@
 <div class="overlay" id="paywall-overlay" role="dialog" aria-modal="true">
   <div class="modal paywall-modal-shell">
     <button class="paywall-close" onclick="closePaywall()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
-    <div class="modal-bd" style="padding:22px 22px 12px">
+    <div class="modal-bd paywall-modal-body">
       <div class="paywall-modal">
-        <div class="paywall-icon" style="width:58px;height:58px;margin-bottom:14px;background:transparent;border-radius:0;box-shadow:none"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-rocket"></use></svg></span></div>
-        <h2 style="font-size:1.2rem;margin-bottom:6px">Unlock Budy.Study Premium</h2>
-        <p id="paywall-msg" style="font-size:.84rem;line-height:1.55;margin-bottom:14px">Full tests, instant AI explanations, and smarter score growth.</p>
+        <div class="paywall-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-rocket"></use></svg></span></div>
+        <h2 class="paywall-title">Unlock Budy.Study Premium</h2>
+        <p class="paywall-msg" id="paywall-msg">Full tests, instant AI explanations, and smarter score growth.</p>
         <div class="paywall-perks">
           <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-clipboard"></use></svg></span></span> Full 27-49 question practice tests</div>
           <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span></span> AI deep-dive explanations</div>
           <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></span> Score analytics and progress tracking</div>
         </div>
         <!-- Inline pricing in paywall -->
-        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
-          <button onclick="selectPlan('weekly')" class="pw-plan-btn" id="pwp-weekly" style="border:2px solid var(--line);border-radius:var(--r-md);padding:11px 12px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:800;color:var(--ink);font-size:.9375rem">Weekly</div>
-              <div style="font-size:1.25rem;font-weight:800;color:var(--ink)">$8<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/wk</span></div>
+        <div class="paywall-plan-stack">
+          <button onclick="selectPlan('weekly')" class="pw-plan-btn" id="pwp-weekly" type="button">
+            <div class="pw-plan-row">
+              <div class="pw-plan-name">Weekly</div>
+              <div class="pw-plan-price">$8<span class="pw-plan-unit">/wk</span></div>
             </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">$32/mo equivalent · billed at $8 weekly</div>
+            <div class="pw-plan-meta">$32/mo equivalent · billed at $8 weekly</div>
           </button>
-          <button onclick="selectPlan('monthly')" class="pw-plan-btn" id="pwp-monthly" style="border:2px solid var(--brand);border-radius:var(--r-md);padding:11px 12px;text-align:left;cursor:pointer;background:var(--brand-pale);transition:all .15s;font-family:var(--font-h)">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:800;color:var(--brand);font-size:.9375rem">Monthly <span style="background:var(--brand);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:10px;margin-left:4px">POPULAR</span></div>
-              <div style="font-size:1.25rem;font-weight:800;color:var(--brand)">$20<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/mo</span></div>
+          <button onclick="selectPlan('monthly')" class="pw-plan-btn" id="pwp-monthly" type="button">
+            <div class="pw-plan-row">
+              <div class="pw-plan-name">Monthly <span class="pw-plan-badge">POPULAR</span></div>
+              <div class="pw-plan-price">$20<span class="pw-plan-unit">/mo</span></div>
             </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">$5/week equivalent · billed at $20 monthly</div>
+            <div class="pw-plan-meta">$5/week equivalent · billed at $20 monthly</div>
           </button>
-          <button onclick="selectPlan('annual')" class="pw-plan-btn" id="pwp-annual" style="border:2px solid var(--line);border-radius:var(--r-md);padding:11px 12px;text-align:left;cursor:pointer;background:#fff;transition:all .15s;font-family:var(--font-h)">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:800;color:var(--ink);font-size:.9375rem">Annually</div>
-              <div style="font-size:1.25rem;font-weight:800;color:var(--green)">$96<span style="font-size:.8rem;font-weight:500;color:var(--muted)">/yr</span></div>
+          <button onclick="selectPlan('annual')" class="pw-plan-btn" id="pwp-annual" type="button">
+            <div class="pw-plan-row">
+              <div class="pw-plan-name">Annually</div>
+              <div class="pw-plan-price">$96<span class="pw-plan-unit">/yr</span></div>
             </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:3px">$2/week · $8/mo billed at $96 annually</div>
+            <div class="pw-plan-meta">$2/week · $8/mo billed at $96 annually</div>
           </button>
         </div>
         <button class="btn btn-primary btn-full" id="pw-cta-btn" onclick="handlePurchase()">Start Premium</button>
-        <p style="font-size:.72rem;color:var(--muted);margin-top:10px">7-day money-back guarantee · Cancel any time</p>
+        <p class="paywall-note">7-day money-back guarantee · Cancel any time</p>
       </div>
     </div>
-    <div style="padding:0 18px 14px;text-align:center">
+    <div class="paywall-modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="closePaywall()">No thanks, stay free</button>
     </div>
   </div>

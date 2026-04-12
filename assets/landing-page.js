@@ -1867,7 +1867,10 @@ function requestNativeStorePurchase(plan) {
 
 function openPaywall(ctx='') {
   paywallCtx=ctx;
-  selectPlan(ctx === 'annual' ? 'annual' : 'monthly');
+  const defaultPlan = ctx === 'annual'
+    ? 'annual'
+    : (S.selectedPlan && PLANS[S.selectedPlan] ? S.selectedPlan : 'weekly');
+  selectPlan(defaultPlan);
   // Adapt CTA for native store environments
   const nativeEnv = detectNativeStoreEnv();
   const ctaBtn = document.getElementById('pw-cta-btn');
@@ -1883,11 +1886,7 @@ function selectPlan(plan) {
   ['weekly','monthly','annual'].forEach(p=>{
     const btn=document.getElementById('pwp-'+p);
     if(!btn)return;
-    if(p===plan){
-      btn.style.borderColor='var(--brand)';btn.style.background='var(--brand-pale)';
-    } else {
-      btn.style.borderColor='var(--line)';btn.style.background='#fff';
-    }
+    btn.classList.toggle('is-selected', p===plan);
   });
   const p=PLANS[plan];
   document.getElementById('pw-cta-btn').textContent=`Start ${p.label} Plan (${p.perWeek}/wk) →`;
