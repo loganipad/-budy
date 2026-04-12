@@ -435,7 +435,7 @@ body::before{
       }
 
       var existing = getProgress(pdfPath);
-      var startPage = Math.max(1, Number(existing && existing.lastPage ? existing.lastPage : 1));
+      var startPage = 1;
       if (existing && existing.totalPages) {
         knownTotalPages = Number(existing.totalPages || 0);
       }
@@ -554,6 +554,10 @@ body::before{
               readNearestVisiblePage();
             });
           });
+      }
+
+      if (frameWrap) {
+        frameWrap.scrollTop = 0;
       }
 
       renderPdfPages(pdfPath, startPage).catch(function () {
