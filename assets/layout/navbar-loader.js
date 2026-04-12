@@ -14,6 +14,71 @@
     return String(window.location.pathname || '/').toLowerCase();
   }
 
+  function getPageLabel(path) {
+    switch (path) {
+      case '/':
+      case '/index':
+      case '/index.html':
+        return 'Home';
+      case '/study.html':
+      case '/study':
+        return 'Study Hub';
+      case '/study-guide-viewer.html':
+      case '/study-guide-viewer':
+        return 'Study Guide Viewer';
+      case '/my-account.html':
+      case '/my-account':
+        return 'My Account';
+      case '/checkout.html':
+      case '/checkout':
+        return 'Checkout';
+      case '/login.html':
+      case '/login':
+        return 'Log In';
+      case '/about.html':
+      case '/about':
+        return 'About';
+      case '/contact.html':
+      case '/contact':
+        return 'Contact';
+      case '/privacy.html':
+      case '/privacy':
+        return 'Privacy Policy';
+      case '/terms.html':
+      case '/terms':
+        return 'Terms of Use';
+      case '/score-guarantee.html':
+      case '/score-guarantee':
+        return 'Score Guarantee';
+      case '/404.html':
+        return 'Page Not Found';
+      default:
+        return '';
+    }
+  }
+
+  function ensureBrowserMetadata() {
+    var head = document.head;
+    if (!head) return;
+
+    var faviconHref = '/assets/budy-book-favicon.svg';
+    var icon = head.querySelector('link[rel="icon"]') || document.createElement('link');
+    icon.setAttribute('rel', 'icon');
+    icon.setAttribute('type', 'image/svg+xml');
+    icon.setAttribute('href', faviconHref);
+    if (!icon.parentNode) head.appendChild(icon);
+
+    var apple = head.querySelector('link[rel="apple-touch-icon"]') || document.createElement('link');
+    apple.setAttribute('rel', 'apple-touch-icon');
+    apple.setAttribute('href', faviconHref);
+    if (!apple.parentNode) head.appendChild(apple);
+
+    var path = getPath();
+    var label = getPageLabel(path);
+    if (!label) return;
+    document.title = 'Budy.Study | ' + label;
+  }
+
   function isAccountPage(path) {
     return path === '/my-account.html' || path === '/my-account';
   }
@@ -435,6 +500,7 @@
     window.refreshNavbarState();
   };
 
+  ensureBrowserMetadata();
   mountNavbar();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mountNavbar);

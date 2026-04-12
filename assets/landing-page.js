@@ -1881,6 +1881,13 @@ function openPaywall(ctx='') {
 }
 function closePaywall(){ document.getElementById('paywall-overlay').classList.remove('open') }
 
+function purchasePlan(plan) {
+  const safePlan = ['weekly', 'monthly', 'annual'].includes(plan) ? plan : 'monthly';
+  paywallCtx = safePlan === 'annual' ? 'annual' : 'pricing';
+  selectPlan(safePlan);
+  handlePurchase();
+}
+
 function selectPlan(plan) {
   S.selectedPlan=plan;
   ['weekly','monthly','annual'].forEach(p=>{
