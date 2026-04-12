@@ -70,13 +70,32 @@ body::before{
   width:100%;
   min-height:0;
   height:clamp(760px, calc(100vh - 120px), 1800px);
+  overflow:auto;
+  padding:16px;
 }
 
-.viewer-frame{
+.viewer-pages{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.viewer-page{
+  display:flex;
+  justify-content:center;
+  border-radius:12px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.03);
+}
+
+.viewer-page canvas{
+  display:block;
   width:100%;
-  height:100%;
-  border:none;
+  max-width:100%;
+  height:auto;
   background:#fff;
+  border-radius:8px;
 }
 
 .viewer-back{
@@ -189,7 +208,7 @@ body::before{
   .wrap{width:min(100%,calc(100% - 24px))}
   .viewer-main{padding:calc(var(--shared-nav-h, 64px) + env(safe-area-inset-top, 0px) + 8px) 0 10px}
   .viewer-shell{padding:0}
-  .viewer-frame-wrap{border-radius:10px;height:calc(100vh - 128px);min-height:560px}
+  .viewer-frame-wrap{border-radius:10px;height:calc(100vh - 128px);min-height:560px;padding:10px}
   .viewer-back{left:14px;top:14px}
   .viewer-completion-pill{top:14px;min-height:34px;font-size:.72rem;padding:0 12px}
 
@@ -213,7 +232,7 @@ body::before{
         <a class="viewer-back" href="/study.html" id="viewer-back">Back to Study Hub</a>
         <div class="viewer-completion-pill" id="viewer-completion">Not started</div>
         <div class="viewer-frame-wrap">
-          <iframe class="viewer-frame" id="viewer-frame" title="Study guide PDF viewer" loading="lazy"></iframe>
+          <div class="viewer-pages" id="viewer-pages" aria-label="Study guide pages"></div>
         </div>
       </div>
       <div class="viewer-error" id="viewer-error" hidden>Unable to load this study guide. Return to the Study Hub and open it again.</div>
@@ -237,35 +256,8 @@ body::before{
         return value;
       }
 
-      function basename(path) {
-        var parts = String(path || '').split('/');
-        return parts[parts.length - 1] || 'study-guide.pdf';
-      }
-
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
-      }
-
-      function parsePdfPageFromHash(rawHash) {
-        var hash = String(rawHash || '').replace(/^#/, '');
-        if (!hash) return 0;
-        var params = new URLSearchParams(hash);
-        var page = Number(params.get('page') || 0);
-        return Number.isFinite(page) && page > 0 ? Math.floor(page) : 0;
-      }
-
-      function parsePdfPageFromUrl(rawUrl) {
-        if (!rawUrl) return 0;
-        try {
-          var url = new URL(String(rawUrl), window.location.origin);
-          var fromQuery = Number(url.searchParams.get('page') || 0);
-          if (Number.isFinite(fromQuery) && fromQuery > 0) {
-            return Math.floor(fromQuery);
-          }
-          return parsePdfPageFromHash(url.hash || '');
-        } catch (_) {
-          return 0;
-        }
       }
 
       function ensurePdfJsWorker() {
@@ -375,20 +367,21 @@ body::before{
       var pdfPath = sanitizePdfPath(params.get('pdf'));
       var title = String(params.get('title') || '').trim();
 
-      var frame = document.getElementById('viewer-frame');
+      var frameWrap = document.querySelector('.viewer-frame-wrap');
+      var pagesHost = document.getElementById('viewer-pages');
       var error = document.getElementById('viewer-error');
       var backBtn = document.getElementById('viewer-back');
       var completionNode = document.getElementById('viewer-completion');
-      var trackerInterval = 0;
       var knownTotalPages = 0;
       var trackedPage = 0;
+      var io = null;
 
       if (title && backBtn) {
         backBtn.setAttribute('aria-label', 'Back to Study Hub from ' + title);
       }
 
       if (!pdfPath) {
-        if (frame) frame.removeAttribute('src');
+        if (pagesHost) pagesHost.innerHTML = '';
         if (error) error.hidden = false;
         return;
       }
@@ -398,9 +391,7 @@ body::before{
       if (existing && existing.totalPages) {
         knownTotalPages = Number(existing.totalPages || 0);
       }
-      paintCompletion(completionNode, existing || { percent: 0 });
-
-      frame.src = pdfPath + '#navpanes=0&view=FitH&zoom=page-width&page=' + String(startPage);
+      paintCompletion(completionNode, existing || null);
 
       function commitPage(page) {
         if (!page) return;
@@ -412,57 +403,113 @@ body::before{
         paintCompletion(completionNode, next);
       }
 
-      function samplePage() {
-        var page = 0;
-        try {
-          if (frame.contentWindow && frame.contentWindow.location) {
-            page = parsePdfPageFromUrl(frame.contentWindow.location.href || '');
-            if (!page) {
-              page = parsePdfPageFromHash(frame.contentWindow.location.hash || '');
+      function readNearestVisiblePage() {
+        if (!frameWrap) return;
+        var pages = pagesHost ? pagesHost.querySelectorAll('.viewer-page') : [];
+        if (!pages.length) return;
+        var wrapRect = frameWrap.getBoundingClientRect();
+        var wrapMid = wrapRect.top + (wrapRect.height / 2);
+        var nearest = 0;
+        var nearestDist = Number.POSITIVE_INFINITY;
+        pages.forEach(function (node) {
+          var rect = node.getBoundingClientRect();
+          var mid = rect.top + (rect.height / 2);
+          var dist = Math.abs(mid - wrapMid);
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearest = Number(node.getAttribute('data-page') || 0);
+          }
+        });
+        if (nearest && nearest !== trackedPage) {
+          commitPage(nearest);
+        }
+      }
+
+      function setupLivePageTracking() {
+        if (!pagesHost || !frameWrap) return;
+        if (io && typeof io.disconnect === 'function') {
+          io.disconnect();
+        }
+        if (typeof IntersectionObserver === 'function') {
+          io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting || entry.intersectionRatio < 0.58) return;
+              var page = Number(entry.target.getAttribute('data-page') || 0);
+              if (page && page !== trackedPage) {
+                commitPage(page);
+              }
+            });
+          }, {
+            root: frameWrap,
+            threshold: [0.58, 0.76]
+          });
+          pagesHost.querySelectorAll('.viewer-page').forEach(function (node) {
+            io.observe(node);
+          });
+        }
+        frameWrap.addEventListener('scroll', readNearestVisiblePage, { passive: true });
+        window.addEventListener('resize', readNearestVisiblePage);
+      }
+
+      function renderPdfPages(pdfPathToRender, initialPage) {
+        if (!pagesHost || !frameWrap) return Promise.resolve();
+        ensurePdfJsWorker();
+        pagesHost.innerHTML = '';
+        return window.pdfjsLib.getDocument({ url: pdfPathToRender }).promise
+          .then(function (doc) {
+            knownTotalPages = Math.max(0, Math.floor(Number(doc.numPages || 0)));
+            if (!knownTotalPages) {
+              throw new Error('No pages in document');
             }
-          }
-        } catch (_) {
-          page = 0;
-        }
-        if (!page) {
-          page = parsePdfPageFromUrl(frame.src || '');
-        }
-        if (!page) {
-          page = startPage;
-        }
-        if (page && page !== trackedPage) {
-          commitPage(page);
-        }
+            var seed = setProgress(pdfPath, {
+              lastPage: Math.max(initialPage, 1),
+              totalPages: knownTotalPages
+            });
+            paintCompletion(completionNode, seed);
+            var renderAll = [];
+            for (var pageNumber = 1; pageNumber <= knownTotalPages; pageNumber += 1) {
+              (function (n) {
+                renderAll.push(
+                  doc.getPage(n).then(function (page) {
+                    var outer = document.createElement('article');
+                    outer.className = 'viewer-page';
+                    outer.setAttribute('data-page', String(n));
+
+                    var canvas = document.createElement('canvas');
+                    var context = canvas.getContext('2d', { alpha: false });
+                    var baseViewport = page.getViewport({ scale: 1 });
+                    var available = Math.max(380, frameWrap.clientWidth - 44);
+                    var scale = available / baseViewport.width;
+                    var viewport = page.getViewport({ scale: scale });
+
+                    canvas.width = Math.floor(viewport.width);
+                    canvas.height = Math.floor(viewport.height);
+
+                    outer.appendChild(canvas);
+                    pagesHost.appendChild(outer);
+
+                    return page.render({
+                      canvasContext: context,
+                      viewport: viewport
+                    }).promise;
+                  })
+                );
+              })(pageNumber);
+            }
+            return Promise.all(renderAll).then(function () {
+              setupLivePageTracking();
+              var target = pagesHost.querySelector('.viewer-page[data-page="' + String(initialPage) + '"]');
+              if (target && typeof target.scrollIntoView === 'function') {
+                target.scrollIntoView({ block: 'start', behavior: 'auto' });
+              }
+              trackedPage = 0;
+              readNearestVisiblePage();
+            });
+          });
       }
 
-      function attachFrameListeners() {
-        try {
-          if (frame.contentWindow && typeof frame.contentWindow.addEventListener === 'function') {
-            frame.contentWindow.addEventListener('hashchange', samplePage);
-            frame.contentWindow.addEventListener('popstate', samplePage);
-          }
-        } catch (_) {}
-      }
-
-      frame.addEventListener('load', function () {
-        attachFrameListeners();
-        samplePage();
-      });
-      trackerInterval = window.setInterval(samplePage, 350);
-      window.addEventListener('beforeunload', samplePage);
-      window.addEventListener('focus', samplePage);
-      window.addEventListener('pointerup', samplePage, { passive: true });
-      window.addEventListener('keyup', samplePage);
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) samplePage();
-      });
-
-      fetchTotalPages(pdfPath).then(function (count) {
-        if (!count) return;
-        knownTotalPages = count;
-        var basePage = Math.max(trackedPage, startPage);
-        var next = setProgress(pdfPath, { lastPage: basePage, totalPages: count });
-        paintCompletion(completionNode, next);
+      renderPdfPages(pdfPath, startPage).catch(function () {
+        if (error) error.hidden = false;
       });
 
       document.title = 'Budy.Study | ' + (title || 'Study Guide');
