@@ -280,11 +280,23 @@ body::before{
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+        var main = document.querySelector('.viewer-main');
+        if (main) main.scrollTop = 0;
+        var wrap = document.querySelector('.viewer-frame-wrap');
+        if (wrap) wrap.scrollTop = 0;
       }
 
-      resetPageScrollToTop();
-      requestAnimationFrame(resetPageScrollToTop);
-      window.addEventListener('pageshow', resetPageScrollToTop);
+      function scheduleTopResets() {
+        resetPageScrollToTop();
+        requestAnimationFrame(resetPageScrollToTop);
+        window.setTimeout(resetPageScrollToTop, 0);
+        window.setTimeout(resetPageScrollToTop, 120);
+        window.setTimeout(resetPageScrollToTop, 420);
+      }
+
+      scheduleTopResets();
+      window.addEventListener('pageshow', scheduleTopResets);
+      window.addEventListener('load', scheduleTopResets);
 
       var STUDY_GUIDE_PROGRESS_KEY = 'budy_study_guide_progress_v1';
 
@@ -566,6 +578,7 @@ body::before{
               }
               trackedPage = 0;
               readNearestVisiblePage();
+              scheduleTopResets();
             });
           });
       }
