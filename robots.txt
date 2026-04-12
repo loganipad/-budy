@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /login
+Disallow: /login.html
+Disallow: /checkout
+Disallow: /checkout.html
+Disallow: /my-account
+Disallow: /my-account.html
+Disallow: /study
+Disallow: /study.html
+Disallow: /study-guide-viewer
+Disallow: /study-guide-viewer.html
+Disallow: /mobile-web/
+Disallow: /api/
+
+Sitemap: https://budy.study/sitemap.xml

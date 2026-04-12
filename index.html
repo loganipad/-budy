@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Budy.Study | SAT & PSAT Prep for Students</title>
 <meta name="description" content="The easiest way to prep for the SAT and PSAT. Practice tests, instant scoring, and step-by-step help. Used by students accepted to top colleges.">
+<link rel="canonical" href="https://budy.study/">
+<meta name="robots" content="index,follow">
+<link rel="icon" type="image/png" href="/assets/budy-logo.png">
+<link rel="apple-touch-icon" href="/assets/budy-logo.png">
 
 <!-- PWA / App-ready meta -->
 <meta name="theme-color" content="#0d1117">
@@ -18,12 +22,23 @@
 <meta property="og:title" content="Budy.Study | SAT & PSAT Prep">
 <meta property="og:description" content="Free SAT practice tests for 8th–10th graders. Instant scoring, AI explanations, score tracking.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://budy.study/">
+<meta property="og:image" content="https://budy.study/assets/budy-logo.png">
+<meta property="og:site_name" content="Budy.Study">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Budy.Study | SAT & PSAT Prep for Students">
+<meta name="twitter:description" content="Practice tests, instant scoring, AI explanations, and score tracking for SAT and PSAT students.">
+<meta name="twitter:image" content="https://budy.study/assets/budy-logo.png">
 
 <!-- Inline PWA manifest -->
 <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Budy.Study&quot;,&quot;short_name&quot;:&quot;Budy.Study&quot;,&quot;description&quot;:&quot;SAT %26 PSAT Prep&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%230d1117&quot;,&quot;theme_color&quot;:&quot;%231a56db&quot;,&quot;orientation&quot;:&quot;portrait&quot;}">
 
-<!-- Apple splash / icons (placeholders, replace with real assets for app store) -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231a56db'/%3E%3Cpath d='M90 30L42 58l48 24 48-24L90 30zM42 118l48 24 48-24M42 88l48 24 48-24' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Budy.Study","url":"https://budy.study/","logo":"https://budy.study/assets/budy-logo.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Budy.Study","url":"https://budy.study/"}
+</script>
 <script src="/assets/landing-scroll.js?v=20260407d"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
@@ -589,7 +604,7 @@
      ============================================================ -->
 <div id="results-screen" role="main">
   <div class="res-header">
-    <div class="wrap"><h1 id="res-headline">Your Results Are In!</h1><p id="res-subline">Practice Test</p></div>
+    <div class="wrap"><h2 id="res-headline">Your Results Are In!</h2><p id="res-subline">Practice Test</p></div>
   </div>
   <div class="wrap-sm">
     <div class="res-score-card">
@@ -610,7 +625,7 @@
           <p>Unlock full-length tests (27–49 questions), explanations, and unlimited tries with Premium.</p>
         </div>
         <div class="limit-banner-actions">
-          <button class="btn btn-primary btn-sm" onclick="openPaywall('results')">Unlock Premium</button>
+          <button class="btn btn-primary btn-sm" onclick="purchasePlan('monthly')">Unlock Premium</button>
         </div>
       </div>
       <div class="res-grid">
@@ -650,7 +665,7 @@
           <path d="M36 60 Q50 70 64 60" stroke="#1a56db" stroke-width="5" fill="none" stroke-linecap="round"/>
         </svg>
         <p class="dash-greeting">Welcome back</p>
-        <h1 id="dash-greet" class="dash-greet">Welcome back, Student!</h1>
+        <h2 id="dash-greet" class="dash-greet">Welcome back, Student!</h2>
         <div class="acct-status free" id="acct-status-badge">
           <span class="acct-status-icon" id="acct-status-icon">•</span>
           <span id="acct-status-text">FREE PLAN</span>
@@ -723,8 +738,8 @@
                 <div class="plan-name" id="profile-plan">Free</div>
                 <div class="plan-price" style="margin-top:6px">$0 / month - 20 QR generations lifetime</div>
                 <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-                  <button class="btn btn-primary" onclick="openPaywall('billing')">Upgrade to Pro</button>
-                  <button class="btn btn-ghost-dark" onclick="openPaywall('pricing')">View Plans</button>
+                  <button class="btn btn-primary" onclick="purchasePlan('monthly')">Upgrade to Pro</button>
+                  <button class="btn btn-ghost-dark" onclick="scrollToSection('#pricing')">View Plans</button>
                 </div>
               </div>
               <svg width="56" height="56" viewBox="0 0 100 100" fill="none" style="flex-shrink:0;opacity:.5" aria-hidden="true">
