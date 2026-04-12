@@ -272,6 +272,20 @@ body::before{
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script>
     (function () {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+
+      function resetPageScrollToTop() {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
+
+      resetPageScrollToTop();
+      requestAnimationFrame(resetPageScrollToTop);
+      window.addEventListener('pageshow', resetPageScrollToTop);
+
       var STUDY_GUIDE_PROGRESS_KEY = 'budy_study_guide_progress_v1';
 
       function sanitizePdfPath(rawPath) {
