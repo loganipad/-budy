@@ -1540,6 +1540,7 @@ function updatePriceDisplay(plan) {
   const monthlyBill = document.getElementById('monthly-bill-main');
   const annualBill = document.getElementById('annual-bill-main');
   const weeklyCard = document.getElementById('weekly-price-card');
+  const annualCard = document.querySelector('.price-card.annual-tier');
   const weeklyCta = document.getElementById('weekly-price-cta');
   const unitLabel = mode === 'weekly' ? 'Per Week' : 'Per Month';
   if (freeUnit) freeUnit.textContent = unitLabel;
@@ -1553,6 +1554,7 @@ function updatePriceDisplay(plan) {
   if (monthlyBill) monthlyBill.textContent = mode === 'weekly' ? 'Billed $20 monthly' : 'Billed $20 monthly';
   if (annualBill) annualBill.textContent = mode === 'weekly' ? 'Billed $96 annually' : 'Billed $8 monthly equivalent';
   if (weeklyCard) weeklyCard.classList.toggle('trial-focus', isTrial);
+  if (annualCard) annualCard.classList.toggle('trial-muted', isTrial);
   if (weeklyCta) {
     weeklyCta.className = isTrial ? 'btn-price-trial' : 'btn-price-ghost';
     weeklyCta.textContent = 'Choose Weekly';

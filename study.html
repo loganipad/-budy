@@ -980,12 +980,13 @@ button,input,select{font:inherit}
   font-size:.62rem;
   font-weight:800;
   letter-spacing:.02em;
-  color:#f8fafc;
-  background:rgba(248,113,113,.2);
+  color:rgba(241,245,249,.92);
+  background:rgba(148,163,184,.16);
   margin-top:2px;
   white-space:nowrap;
 }
 
+.topic-card-completion.is-neutral{background:rgba(148,163,184,.16);border-color:rgba(148,163,184,.3);color:rgba(241,245,249,.9)}
 .topic-card-completion.is-red{background:rgba(239,68,68,.24);border-color:rgba(239,68,68,.46);color:#fecaca}
 .topic-card-completion.is-yellow{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.44);color:#fde68a}
 .topic-card-completion.is-green{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.44);color:#bbf7d0}
@@ -1282,15 +1283,16 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   min-height:40px;
   padding:0 14px;
   border-radius:999px;
-  border:1px solid rgba(239,68,68,.5);
-  background:rgba(239,68,68,.22);
-  color:#fecaca;
+  border:1px solid rgba(148,163,184,.3);
+  background:rgba(148,163,184,.16);
+  color:rgba(241,245,249,.9);
   font-size:.78rem;
   font-weight:800;
   letter-spacing:.01em;
   white-space:nowrap;
 }
 
+.guide-completion-pill.is-neutral{background:rgba(148,163,184,.16);border-color:rgba(148,163,184,.3);color:rgba(241,245,249,.9)}
 .guide-completion-pill.is-red{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.52);color:#fecaca}
 .guide-completion-pill.is-yellow{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.5);color:#fde68a}
 .guide-completion-pill.is-green{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.48);color:#bbf7d0}
@@ -3096,9 +3098,18 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
     function applyCompletionPill(node, progress) {
       if (!node) return;
+      const hasProgress = Boolean(progress) && (
+        Number(progress && progress.lastPage || 0) > 0 ||
+        Number(progress && progress.percent || 0) > 0
+      );
+      node.classList.remove('is-neutral', 'is-red', 'is-yellow', 'is-green');
+      if (!hasProgress) {
+        node.textContent = 'Not started';
+        node.classList.add('is-neutral');
+        return;
+      }
       const pct = clamp(Math.round(Number(progress && progress.percent != null ? progress.percent : 0)), 0, 100);
       node.textContent = pct + '% Completed';
-      node.classList.remove('is-red', 'is-yellow', 'is-green');
       node.classList.add(getCompletionColorClass(pct));
     }
 
@@ -3114,7 +3125,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         lastTrackedPage = Math.max(0, Number(existing.lastPage || 0));
         applyCompletionPill(pillNode, existing);
       } else {
-        applyCompletionPill(pillNode, { percent: 0 });
+        applyCompletionPill(pillNode, null);
       }
 
       function commitPage(page) {
@@ -4518,7 +4529,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         const guidePdf = '/data/study-guides/' + slugifyTopicForPdf(topic.section, topic.label);
         const completion = document.createElement('div');
         completion.className = 'topic-card-completion';
-        applyCompletionPill(completion, getStudyGuideProgress(guidePdf) || { percent: 0 });
+        applyCompletionPill(completion, getStudyGuideProgress(guidePdf));
         card.appendChild(completion);
 
         list.appendChild(card);
@@ -4742,7 +4753,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       const completionPill = document.createElement('div');
       completionPill.className = 'guide-completion-pill';
-      applyCompletionPill(completionPill, existingProgress || { percent: 0 });
+      applyCompletionPill(completionPill, existingProgress);
       heroActions.appendChild(completionPill);
 
       const heroFullscreenBtn = document.createElement('button');
@@ -5632,7 +5643,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         const topicPdfPath = '/data/study-guides/' + topicPdfFilename;
         const actionCompletionPill = document.createElement('div');
         actionCompletionPill.className = 'guide-completion-pill';
-        applyCompletionPill(actionCompletionPill, getStudyGuideProgress(topicPdfPath) || { percent: 0 });
+        applyCompletionPill(actionCompletionPill, getStudyGuideProgress(topicPdfPath));
 
         const downloadBtn = document.createElement('a');
         downloadBtn.className = 'guide-topic-download-btn';

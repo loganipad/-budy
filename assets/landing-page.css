@@ -517,6 +517,11 @@ input,select{font-family:inherit}
 }
 .price-card:hover{background:rgba(255,255,255,.09);transform:translateY(-3px)}
 .price-card.trial-focus{border-color:rgba(245,158,11,.42);box-shadow:0 10px 34px rgba(245,158,11,.18);transform:translateY(-3px)}
+.price-card.trial-focus:hover{
+  background:rgba(255,255,255,.12);
+  transform:scale(1.04) translateY(-3px);
+  box-shadow:0 16px 40px rgba(245,158,11,.22);
+}
 .price-card.free-tier .pf-item.locked{color:rgba(254,202,202,.94)}
 .price-card.featured{
   background:var(--brand);border-color:var(--brand-l);
@@ -532,6 +537,24 @@ input,select{font-family:inherit}
   background:#2563eb;
   box-shadow:0 22px 58px rgba(26,86,219,.58);
 }
+.price-card.featured.annual-tier.trial-muted{
+  animation:none;
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.1);
+  box-shadow:none;
+  transform:none;
+}
+.price-card.featured.annual-tier.trial-muted:hover{
+  background:rgba(255,255,255,.09);
+  box-shadow:none;
+  transform:translateY(-3px);
+}
+.price-card.featured.annual-tier.trial-muted .price-tier,
+.price-card.featured.annual-tier.trial-muted .price-unit,
+.price-card.featured.annual-tier.trial-muted .price-billed,
+.price-card.featured.annual-tier.trial-muted .price-billed strong,
+.price-card.featured.annual-tier.trial-muted .pf-item,
+.price-card.featured.annual-tier.trial-muted .btn-price-ghost{color:rgba(255,255,255,.8)}
 .best-badge{
   position:absolute;top:-14px;left:50%;transform:translateX(-50%);
   background:var(--gold);color:#fff;font-size:.7rem;font-weight:800;
