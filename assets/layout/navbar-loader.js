@@ -61,10 +61,10 @@
     var head = document.head;
     if (!head) return;
 
-    var faviconHref = '/assets/budy-book-favicon.svg';
+    var faviconHref = '/assets/budy-logo.png';
     var icon = head.querySelector('link[rel="icon"]') || document.createElement('link');
     icon.setAttribute('rel', 'icon');
-    icon.setAttribute('type', 'image/svg+xml');
+    icon.setAttribute('type', 'image/png');
     icon.setAttribute('href', faviconHref);
     if (!icon.parentNode) head.appendChild(icon);
 
