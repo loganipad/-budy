@@ -1,3 +1,45 @@
+/* --- Global Mobile/Touch Upgrades --- */
+@media (max-width: 600px) {
+  /* Relax fixed heights/widths for main cards and buttons */
+  .achievement-item,
+  .btn,
+  .acct-tab,
+  .dashboard-tour,
+  .admin-panel-btn {
+    height: auto !important;
+    min-height: 44px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Stack grid/flex layouts vertically */
+  .achievement-grid,
+  .acct-tabs,
+  .dash-grid,
+  .progress-grid {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+
+  /* Touch-friendly tap targets for nav/buttons */
+  button,
+  .btn,
+  .acct-tab,
+  .achievement-nav-btn,
+  .dashboard-tour-close {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0 18px !important;
+    font-size: 1rem !important;
+    cursor: pointer;
+  }
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
