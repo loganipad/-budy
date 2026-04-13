@@ -221,33 +221,88 @@
     color: rgba(240, 244, 255, 0.76);
   }
 
+
   #nav .mobile-menu-panel {
-    position: absolute;
-    right: 0;
-    top: 48px;
-    min-width: 220px;
-    background: #1c2333;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.22);
-    padding: 8px;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    min-width: 0;
+    min-height: 0;
+    background: rgba(28,35,51,0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
     display: none;
-    z-index: 30;
+    z-index: 2000;
+    transition: opacity 0.28s cubic-bezier(.4,0,.2,1);
+    opacity: 0;
   }
 
-  #nav .mobile-menu-panel.open { display: block; }
+  #nav .mobile-menu-panel.open {
+    display: block;
+    opacity: 1;
+    animation: navMobileMenuIn 0.32s cubic-bezier(.4,0,.2,1);
+  }
+
+  @keyframes navMobileMenuIn {
+    0% { opacity: 0; transform: translateY(-24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  #nav .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 80px 28px 32px 28px;
+    align-items: stretch;
+    height: 100%;
+    overflow-y: auto;
+  }
 
   #nav .mobile-menu-link {
     display: block;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: rgba(240, 244, 255, 0.88);
+    padding: 18px 0;
+    border-radius: 12px;
+    font-size: 1.18rem;
+    font-weight: 800;
+    color: #f8fafc;
     text-decoration: none;
+    text-align: left;
+    background: none;
+    transition: background 0.18s;
   }
 
-  #nav .mobile-menu-link:hover { background: rgba(255, 255, 255, 0.06); }
+  #nav .mobile-menu-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fbbf24;
+  }
+
+  #nav .mobile-menu-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: #f8fafc;
+    font-size: 2rem;
+    font-weight: 800;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+
+  #nav .mobile-menu-close:hover {
+    background: rgba(255,255,255,0.18);
+    color: #fbbf24;
+  }
 
   #nav.nav-context-default #nav-link-why,
   #nav.nav-context-default #nav-link-features,
@@ -341,11 +396,14 @@
         <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test">Start Test</button>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
         <div class="mobile-menu-panel" id="mobile-menu-panel">
-          <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-why">Why Budy?</a>
-          <a class="mobile-menu-link" href="/#pricing" onclick="closeMobileMenu()" id="nav-m-link-pricing">Pricing</a>
-          <a class="mobile-menu-link" href="/#solutions" onclick="closeMobileMenu()" id="nav-m-link-features">Features</a>
-          <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()" id="nav-m-link-account">Dashboard</a>
-          <a class="mobile-menu-link" href="/login.html" onclick="closeMobileMenu()" id="mobile-auth-link">Log In</a>
+          <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">×</button>
+          <div class="mobile-menu-links">
+            <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-why">Why Budy?</a>
+            <a class="mobile-menu-link" href="/#pricing" onclick="closeMobileMenu()" id="nav-m-link-pricing">Pricing</a>
+            <a class="mobile-menu-link" href="/#solutions" onclick="closeMobileMenu()" id="nav-m-link-features">Features</a>
+            <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()" id="nav-m-link-account">Dashboard</a>
+            <a class="mobile-menu-link" href="/login.html" onclick="closeMobileMenu()" id="mobile-auth-link">Log In</a>
+          </div>
         </div>
       </div>
     </div>
