@@ -503,6 +503,7 @@ button { font-family: inherit; cursor: pointer; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: stretch;
 }
 .achievement-item {
   position: relative;
@@ -510,12 +511,17 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  min-height: 142px;
+  min-height: 172px;
+  min-width: 0;
+  max-width: 520px;
+  width: 100%;
   padding: 16px;
   border-radius: 22px;
   background: rgba(255,255,255,.04);
   border: 1px solid rgba(255,255,255,.08);
   box-shadow: 0 16px 34px rgba(3,10,24,.2);
+  box-sizing: border-box;
+  flex: 1 1 0%;
 }
 .achievement-item > * { position: relative; z-index: 1; }
 .achievement-item.unlocked {
