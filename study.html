@@ -2697,8 +2697,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
   <main class="study-shell">
     <div class="wrap">
-      <section class="top-grid">
-        <div class="study-main-column">
+      <section class="top-grid study-mobile-grid">
+        <div class="study-main-column" id="study-main-column">
           <section class="study-intro section-card">
             <div class="intro-grid">
               <div class="intro-copy">
@@ -2794,6 +2794,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           </div>
 
           <div class="menu-panel" id="menu-panel-library">
+            <button id="mobile-topic-toggle" class="mobile-topic-toggle" type="button" style="display:none">← Back to topics</button>
             <div class="panel-head">
               <div>
                 <h2 id="library-title">Study guides</h2>
@@ -2817,8 +2818,8 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
               </div>
             </div>
 
-            <div class="library-body">
-              <div class="library-list-panel">
+            <div class="library-body" id="library-body">
+              <div class="library-list-panel" id="library-list-panel">
                 <div class="topic-summary" id="topic-summary">0 topics</div>
                 <div class="topic-list" id="topic-list"></div>
               </div>
@@ -2872,6 +2873,89 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
     </div>
   </aside>
   <script src="/assets/layout/footer-loader.js" defer></script>
+  <style>
+    @media (max-width: 900px) {
+      .study-mobile-grid {
+        display: block !important;
+      }
+      .library-body {
+        display: block !important;
+        position: relative;
+      }
+      .library-list-panel, .topic-detail {
+        transition: all 0.22s cubic-bezier(.4,0,.2,1);
+      }
+      .library-list-panel.mobile-hidden {
+        display: none !important;
+      }
+      .topic-detail.mobile-hidden {
+        display: none !important;
+      }
+      #mobile-topic-toggle {
+        display: block !important;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(20,29,45,.98);
+        color: #fff;
+        border: none;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 12px 18px;
+        border-radius: 0 0 18px 18px;
+        margin-bottom: 8px;
+        width: 100%;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      }
+    }
+  </style>
+  <script>
+    // Mobile topic list/detail toggle logic
+    function updateMobileTopicPanels() {
+      var isMobile = window.innerWidth <= 900;
+      var selected = !!window.studyUIState && !!window.studyUIState.selectedTopicKey;
+      var listPanel = document.getElementById('library-list-panel');
+      var detailPanel = document.getElementById('topic-detail');
+      var toggleBtn = document.getElementById('mobile-topic-toggle');
+      if (!listPanel || !detailPanel || !toggleBtn) return;
+      if (!isMobile) {
+        listPanel.classList.remove('mobile-hidden');
+        detailPanel.classList.remove('mobile-hidden');
+        toggleBtn.style.display = 'none';
+        return;
+      }
+      if (selected) {
+        listPanel.classList.add('mobile-hidden');
+        detailPanel.classList.remove('mobile-hidden');
+        toggleBtn.style.display = 'block';
+      } else {
+        listPanel.classList.remove('mobile-hidden');
+        detailPanel.classList.add('mobile-hidden');
+        toggleBtn.style.display = 'none';
+      }
+    }
+    window.addEventListener('resize', updateMobileTopicPanels);
+    document.addEventListener('DOMContentLoaded', function() {
+      var toggleBtn = document.getElementById('mobile-topic-toggle');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          if (window.studyUIState) {
+            window.studyUIState.selectedTopicKey = '';
+            if (typeof window.renderLibraryPanel === 'function') window.renderLibraryPanel();
+          }
+        });
+      }
+      // Patch renderLibraryPanel to call updateMobileTopicPanels
+      if (window.renderLibraryPanel) {
+        var origRender = window.renderLibraryPanel;
+        window.renderLibraryPanel = function() {
+          origRender.apply(this, arguments);
+          updateMobileTopicPanels();
+        };
+      }
+      updateMobileTopicPanels();
+    });
+  </script>
   <script src="/assets/review-bank.js"></script>
   <script src="/assets/ai-deep-dive.js"></script>
   <script src="/assets/flashcard-pdf.js"></script>
@@ -4134,6 +4218,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
       renderLibraryPanel();
       focusWorkspace();
+      setTimeout(function() { if (window.innerWidth <= 900 && typeof updateMobileTopicPanels === 'function') updateMobileTopicPanels(); }, 0);
     }
 
     function exitTopicPreview() {
