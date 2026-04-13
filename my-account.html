@@ -512,6 +512,7 @@ button { font-family: inherit; cursor: pointer; }
   align-items: flex-start;
   gap: 12px;
   min-height: 172px;
+  height: 192px;
   min-width: 0;
   max-width: 520px;
   width: 100%;
@@ -522,6 +523,13 @@ button { font-family: inherit; cursor: pointer; }
   box-shadow: 0 16px 34px rgba(3,10,24,.2);
   box-sizing: border-box;
   flex: 1 1 0%;
+}
+
+@media (max-width: 600px) {
+  .achievement-item {
+    height: auto;
+    min-height: 142px;
+  }
 }
 .achievement-item > * { position: relative; z-index: 1; }
 .achievement-item.unlocked {
