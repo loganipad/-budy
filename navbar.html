@@ -124,12 +124,7 @@
     font-weight: 700;
   }
 
-  #nav #nav-link-why { width: 110px; }
-  #nav #nav-link-features { width: 106px; }
-  #nav #nav-link-pricing { width: 102px; }
-  #nav #nav-link-account,
-  #nav #auth-btn { width: 118px; }
-  #nav .btn.btn-primary.btn-sm { width: 146px; }
+  #nav .nav-right > .btn { flex-shrink: 0; }
 
   #nav #auth-btn,
   #nav #mobile-auth-link { visibility: hidden; }
@@ -207,6 +202,8 @@
   #nav .mobile-menu-wrap {
     display: none;
     position: relative;
+    align-items: center;
+    gap: 8px;
   }
 
   #nav .mobile-menu-btn {
@@ -335,8 +332,6 @@
   #nav.nav-context-account .nav-right,
   #nav.nav-context-study .nav-right,
   #nav.nav-context-test .nav-right {
-    width: 402px;
-    max-width: 100%;
     justify-content: flex-end;
   }
 
@@ -371,11 +366,21 @@
   @media (max-width: 860px) {
     #nav .nav-right > .btn.btn-ghost.btn-sm:not(#auth-btn):not(.mobile-menu-btn),
     #nav .nav-right > #auth-btn,
-    #nav .nav-right > .btn.btn-primary.btn-sm {
+    #nav .nav-right > .btn.btn-primary.btn-sm,
+    #nav .nav-right > #nav-link-account {
       display: none;
     }
 
-    #nav .mobile-menu-wrap { display: block; }
+    #nav .mobile-menu-wrap { display: flex; }
+
+    #nav .nav-right { gap: 0; }
+  }
+
+  @media (max-width: 420px) {
+    #nav .nav-logo-img { width: 40px; height: 40px; }
+    #nav .nav-logo { font-size: 1.3rem; gap: 6px; }
+    #nav .mobile-menu-wrap .btn.btn-primary.btn-sm { padding: 0 14px; font-size: 0.78rem; }
+    #nav .mobile-menu-btn { padding: 0 12px; font-size: 0.78rem; }
   }
 </style>
 

@@ -14,7 +14,7 @@
 
   .site-footer .footer-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(160px, 0.8fr) minmax(160px, 0.8fr);
+    grid-template-columns: minmax(0, 1.5fr) minmax(140px, 0.7fr) minmax(140px, 0.7fr) auto;
     column-gap: 36px;
     row-gap: 18px;
     align-items: start;
@@ -177,19 +177,17 @@
     text-wrap: balance;
   }
 
+  .site-footer .footer-apps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
   .site-footer .footer-store-badge {
-    display: inline-flex;
     display: inline-flex;
     align-items: center;
     transition: transform 0.18s, opacity 0.18s;
-  }
-
-  .site-footer .footer-store-badge-ios {
-    grid-column: 2;
-  }
-
-  .site-footer .footer-store-badge-android {
-    grid-column: 3;
   }
 
   .site-footer .footer-store-badge:hover {
@@ -199,13 +197,27 @@
 
   .site-footer .footer-store-badge img,
   .site-footer .footer-store-badge svg {
-    width: 176px;
+    width: 150px;
     height: auto;
     display: block;
   }
 
   .site-footer .footer-store-badge svg {
     border-radius: 14px;
+  }
+
+  @media (max-width: 860px) {
+    .site-footer .footer-grid {
+      grid-template-columns: minmax(0, 1.5fr) minmax(120px, 0.7fr) minmax(120px, 0.7fr);
+      column-gap: 24px;
+    }
+
+    .site-footer .footer-apps {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
   }
 
   @media (max-width: 640px) {
@@ -218,9 +230,10 @@
       grid-column: 1 / -1;
     }
 
-    .site-footer .footer-store-badge-ios,
-    .site-footer .footer-store-badge-android {
-      grid-column: auto;
+    .site-footer .footer-apps {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      justify-content: center;
     }
   }
 
@@ -235,6 +248,12 @@
 
     .site-footer .footer-grid-socials {
       grid-column: auto;
+    }
+
+    .site-footer .footer-apps {
+      grid-column: auto;
+      flex-direction: column;
+      align-items: center;
     }
 
     .site-footer .footer-col a {
@@ -277,12 +296,14 @@
           </ul>
         </div>
 
-        <a class="footer-store-badge footer-store-badge-ios" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.55;" aria-label="App Store button disabled">
-          <img src="/assets/app-store-badge.png" alt="Download on the App Store (coming soon)">
-        </a>
-        <a class="footer-store-badge footer-store-badge-android" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.55;" aria-label="Google Play button disabled">
-          <img src="/assets/Google_Play_Store_badge_EN.png?v=2" alt="Get it on Google Play (coming soon)">
-        </a>
+        <div class="footer-apps">
+          <a class="footer-store-badge" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.55;" aria-label="App Store button disabled">
+            <img src="/assets/app-store-badge.png" alt="Download on the App Store (coming soon)">
+          </a>
+          <a class="footer-store-badge" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.55;" aria-label="Google Play button disabled">
+            <img src="/assets/Google_Play_Store_badge_EN.png?v=2" alt="Get it on Google Play (coming soon)">
+          </a>
+        </div>
       </div>
 
       <div class="footer-bottom">

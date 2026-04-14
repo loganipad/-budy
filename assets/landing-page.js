@@ -941,6 +941,7 @@ function toggleMobileMenu() {
 function closeMobileMenu() {
   const panel = document.getElementById('mobile-menu-panel');
   if (panel) panel.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function setAccountTab(tab) {
