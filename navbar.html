@@ -6,30 +6,21 @@
     scrollbar-color: rgba(140, 168, 215, 0.55) rgba(7, 18, 37, 0.92);
   }
 
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(7, 18, 37, 0.92);
-  }
-
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: rgba(7, 18, 37, 0.92); }
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, rgba(69, 117, 207, 0.95), rgba(40, 80, 160, 0.95));
     border-radius: 999px;
     border: 2px solid rgba(7, 18, 37, 0.92);
   }
-
   ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, rgba(96, 142, 231, 0.95), rgba(57, 100, 187, 0.95));
   }
 
+  /* ── Base bar ─────────────────────────────────────────────── */
   #nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 900;
     padding-top: env(safe-area-inset-top, 0px);
     height: calc(var(--shared-nav-h) + env(safe-area-inset-top, 0px));
@@ -38,7 +29,6 @@
     backdrop-filter: blur(12px);
     transition: box-shadow 0.2s ease;
   }
-
   #nav.scrolled { box-shadow: 0 6px 26px rgba(0, 0, 0, 0.34); }
 
   #nav .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
@@ -50,6 +40,7 @@
     justify-content: space-between;
   }
 
+  /* ── Logo ──────────────────────────────────────────────────── */
   #nav .nav-logo {
     display: inline-flex;
     align-items: center;
@@ -59,36 +50,20 @@
     font-weight: 800;
     color: #ffffff;
     text-decoration: none;
-  }
-
-  #nav .nav-logo-wordmark {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0;
-    line-height: 1;
-  }
-
-  #nav .nav-logo-study {
-    color: #f59e0b;
-    margin-left: 0;
-  }
-
-  #nav .nav-logo-img {
-    width: 56px;
-    height: 56px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    object-fit: contain;
-    object-position: center;
-    display: block;
     flex-shrink: 0;
-    filter: none;
-    box-shadow: none;
+  }
+  #nav .nav-logo-wordmark { display: inline-flex; align-items: baseline; gap: 0; line-height: 1; }
+  #nav .nav-logo-study { color: #f59e0b; margin-left: 0; }
+  #nav .nav-logo-img {
+    width: 56px; height: 56px;
+    margin: 0; padding: 0; border: 0; border-radius: 0;
+    background: transparent;
+    object-fit: contain; object-position: center;
+    display: block; flex-shrink: 0;
+    filter: none; box-shadow: none;
   }
 
+  /* ── Right side ────────────────────────────────────────────── */
   #nav .nav-right {
     display: flex;
     align-items: center;
@@ -96,14 +71,19 @@
     gap: 10px;
   }
 
-  #nav .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    white-space: nowrap;
-    border-radius: 999px;
-    border: none;
+  /*
+   * All #nav buttons get reset with !important so that external
+   * stylesheets (landing-page.css mobile overrides) cannot break them.
+   */
+  #nav .btn,
+  #nav .mobile-menu-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    border-radius: 999px !important;
     cursor: pointer;
     text-decoration: none;
     font-family: 'Sora', system-ui, sans-serif;
@@ -114,83 +94,69 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     transform: none;
+    box-sizing: border-box;
   }
 
   #nav .btn-sm {
-    height: 44px;
-    min-height: 44px;
-    padding: 0 20px;
-    font-size: 0.8375rem;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 20px !important;
+    font-size: 0.8375rem !important;
     font-weight: 700;
   }
 
-  #nav .nav-right > .btn { flex-shrink: 0; }
+  #nav .nav-right > .btn,
+  #nav .nav-right > .mobile-menu-wrap > .btn { flex-shrink: 0; }
 
   #nav #auth-btn,
   #nav #mobile-auth-link { visibility: hidden; }
-
   #nav.nav-auth-ready #auth-btn,
   #nav.nav-auth-ready #mobile-auth-link { visibility: visible; }
 
+  /* ── Button variants ───────────────────────────────────────── */
   #nav .btn-ghost {
     background: rgba(255, 255, 255, 0.08);
     color: rgba(240, 244, 255, 0.76);
     border: 2px solid rgba(255, 255, 255, 0.14);
   }
-
-  #nav .btn-ghost.nav-progress-pill {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-
-  #nav .btn-ghost.nav-progress-pill::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--nav-pill-fill, 0%);
-    border-radius: 999px;
-    background: rgba(24, 43, 78, 0.58);
-    transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
-    z-index: -1;
-  }
-
-  #nav .btn-ghost.nav-progress-pill::after {
-    display: none;
-  }
-
-  #nav .btn-ghost.nav-progress-pill.nav-progress-active {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.28);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-  }
-
-  #nav .btn-ghost.nav-progress-pill.nav-progress-active::before,
-  #nav .btn-ghost.nav-progress-pill.nav-progress-complete::before {
-    background: rgba(31, 53, 95, 0.72);
-  }
-
-  #nav .btn-ghost.nav-progress-pill.nav-progress-complete {
-    color: rgba(255, 255, 255, 0.92);
-    border-color: rgba(255, 255, 255, 0.22);
-  }
-
   #nav .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
     border-color: rgba(255, 255, 255, 0.32);
   }
 
+  #nav .btn-ghost.nav-progress-pill {
+    position: relative; overflow: hidden; isolation: isolate;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  #nav .btn-ghost.nav-progress-pill::before {
+    content: ''; position: absolute; top: 0; left: 0; bottom: 0;
+    width: var(--nav-pill-fill, 0%);
+    border-radius: 999px;
+    background: rgba(24, 43, 78, 0.58);
+    transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
+    z-index: -1;
+  }
+  #nav .btn-ghost.nav-progress-pill::after { display: none; }
+  #nav .btn-ghost.nav-progress-pill.nav-progress-active {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  }
+  #nav .btn-ghost.nav-progress-pill.nav-progress-active::before,
+  #nav .btn-ghost.nav-progress-pill.nav-progress-complete::before { background: rgba(31, 53, 95, 0.72); }
+  #nav .btn-ghost.nav-progress-pill.nav-progress-complete {
+    color: rgba(255, 255, 255, 0.92);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
   #nav .btn-primary {
     background: #f59e0b;
     color: #fff;
+    border: none;
     box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35);
   }
-
   #nav .btn-primary:hover {
     background: #fbbf24;
     transform: none;
@@ -199,6 +165,7 @@
 
   #nav .nav-link-hide { display: none; }
 
+  /* ── Mobile menu wrap ──────────────────────────────────────── */
   #nav .mobile-menu-wrap {
     display: none;
     position: relative;
@@ -207,121 +174,124 @@
   }
 
   #nav .mobile-menu-btn {
-    height: 44px;
-    min-height: 44px;
-    padding: 0 16px;
-    border-radius: 999px;
-    font-size: 0.8375rem;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 16px !important;
+    font-size: 0.8375rem !important;
     font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     color: rgba(240, 244, 255, 0.76);
+    cursor: pointer;
+  }
+  #nav .mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.32) !important;
   }
 
-
+  /* ── Fullscreen mobile menu panel ──────────────────────────── */
   #nav .mobile-menu-panel {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
-    background: rgba(28,35,51,0.92);
-    backdrop-filter: blur(12px);
-    border-radius: 0;
-    box-shadow: none;
-    padding: 0;
+    width: 100%; height: 100%;
+    min-width: 0; min-height: 0;
+    background: rgba(7, 18, 37, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 0; box-shadow: none; padding: 0;
     display: none;
     z-index: 2000;
-    transition: opacity 0.28s cubic-bezier(.4,0,.2,1);
     opacity: 0;
   }
-
   #nav .mobile-menu-panel.open {
-    display: block;
+    display: flex;
+    flex-direction: column;
     opacity: 1;
-    animation: navMobileMenuIn 0.32s cubic-bezier(.4,0,.2,1);
+    animation: navMobileMenuIn 0.28s cubic-bezier(.4,0,.2,1);
   }
 
   @keyframes navMobileMenuIn {
-    0% { opacity: 0; transform: translateY(-24px); }
+    0% { opacity: 0; transform: translateY(-16px); }
     100% { opacity: 1; transform: translateY(0); }
+  }
+
+  #nav .mobile-menu-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 44px; height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f8fafc;
+    font-size: 1.5rem;
+    font-weight: 400;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s;
+  }
+  #nav .mobile-menu-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.24);
   }
 
   #nav .mobile-menu-links {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding: 80px 28px 32px 28px;
+    gap: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 72px) 24px calc(env(safe-area-inset-bottom, 0px) + 32px) 24px;
     align-items: stretch;
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   #nav .mobile-menu-link {
-    display: block;
-    padding: 18px 0;
+    display: flex !important;
+    align-items: center;
+    padding: 16px 8px;
     border-radius: 12px;
-    font-size: 1.18rem;
-    font-weight: 800;
-    color: #f8fafc;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(248, 250, 252, 0.88);
     text-decoration: none;
     text-align: left;
     background: none;
-    transition: background 0.18s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.18s, color 0.18s;
+    width: auto !important;
+    margin: 0 !important;
+    min-height: 52px;
   }
-
-  #nav .mobile-menu-link:hover {
-    background: rgba(255,255,255,0.08);
+  #nav .mobile-menu-link:last-child { border-bottom: none; }
+  #nav .mobile-menu-link:hover,
+  #nav .mobile-menu-link:active {
+    background: rgba(255, 255, 255, 0.06);
     color: #fbbf24;
   }
 
-  #nav .mobile-menu-close {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
-    border: none;
-    background: rgba(255,255,255,0.08);
-    color: #f8fafc;
-    font-size: 2rem;
-    font-weight: 800;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.18s;
-  }
-
-  #nav .mobile-menu-close:hover {
-    background: rgba(255,255,255,0.18);
-    color: #fbbf24;
-  }
-
+  /* ── Context-based desktop link hiding ─────────────────────── */
+  /* Only hide the DESKTOP nav links per context — never the mobile menu links */
   #nav.nav-context-default #nav-link-why,
   #nav.nav-context-default #nav-link-features,
   #nav.nav-context-default #nav-link-pricing,
-  #nav.nav-context-default #nav-m-link-why,
-  #nav.nav-context-default #nav-m-link-features,
-  #nav.nav-context-default #nav-m-link-pricing,
   #nav.nav-context-account #nav-link-why,
   #nav.nav-context-account #nav-link-features,
   #nav.nav-context-account #nav-link-pricing,
-  #nav.nav-context-account #nav-m-link-why,
-  #nav.nav-context-account #nav-m-link-features,
-  #nav.nav-context-account #nav-m-link-pricing,
   #nav.nav-context-study #nav-link-pricing,
   #nav.nav-context-study #nav-link-features,
   #nav.nav-context-study #auth-btn,
+  #nav.nav-context-test #nav-link-why,
+  #nav.nav-context-test #nav-link-features,
+  #nav.nav-context-test #nav-link-pricing {
+    display: none !important;
+  }
+
+  /* Mobile menu links: only hide per context within the panel */
   #nav.nav-context-study #nav-m-link-pricing,
   #nav.nav-context-study #nav-m-link-features,
   #nav.nav-context-study #mobile-auth-link,
-  #nav.nav-context-test #nav-link-why,
-  #nav.nav-context-test #nav-link-features,
-  #nav.nav-context-test #nav-link-pricing,
   #nav.nav-context-test #nav-m-link-why,
   #nav.nav-context-test #nav-m-link-features,
   #nav.nav-context-test #nav-m-link-pricing {
@@ -335,30 +305,25 @@
     justify-content: flex-end;
   }
 
+  /* ── Account context auth button ───────────────────────────── */
   #nav.nav-context-account #auth-btn {
     background: #1a56db;
     color: #fff;
     border: 2px solid #1a56db;
     box-shadow: 0 4px 20px rgba(26, 86, 219, 0.35);
   }
-
   #nav.nav-context-account #auth-btn:hover {
-    background: #2563eb;
-    border-color: #2563eb;
+    background: #2563eb; border-color: #2563eb;
     color: #fff;
     box-shadow: 0 8px 30px rgba(26, 86, 219, 0.45);
   }
-
   #nav.nav-context-account #mobile-auth-link {
-    background: #1a56db;
-    color: #fff;
+    background: #1a56db; color: #fff;
     border: 1px solid #1a56db;
   }
+  #nav.nav-context-account #mobile-auth-link:hover { background: #2563eb; }
 
-  #nav.nav-context-account #mobile-auth-link:hover {
-    background: #2563eb;
-  }
-
+  /* ── Breakpoints ───────────────────────────────────────────── */
   @media (min-width: 640px) {
     #nav .nav-link-hide { display: inline-flex; }
   }
@@ -368,19 +333,25 @@
     #nav .nav-right > #auth-btn,
     #nav .nav-right > .btn.btn-primary.btn-sm,
     #nav .nav-right > #nav-link-account {
-      display: none;
+      display: none !important;
     }
-
     #nav .mobile-menu-wrap { display: flex; }
-
-    #nav .nav-right { gap: 0; }
+    #nav .nav-right { gap: 8px; }
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 480px) {
     #nav .nav-logo-img { width: 40px; height: 40px; }
     #nav .nav-logo { font-size: 1.3rem; gap: 6px; }
-    #nav .mobile-menu-wrap .btn.btn-primary.btn-sm { padding: 0 14px; font-size: 0.78rem; }
-    #nav .mobile-menu-btn { padding: 0 12px; font-size: 0.78rem; }
+    #nav .mobile-menu-wrap .btn.btn-primary.btn-sm { padding: 0 14px !important; font-size: 0.78rem !important; }
+    #nav .mobile-menu-btn { padding: 0 12px !important; font-size: 0.78rem !important; }
+  }
+
+  @media (max-width: 360px) {
+    #nav .wrap { padding: 0 12px; }
+    #nav .nav-logo { font-size: 1.15rem; gap: 4px; }
+    #nav .nav-logo-img { width: 34px; height: 34px; }
+    #nav .mobile-menu-wrap .btn.btn-primary.btn-sm { padding: 0 10px !important; font-size: 0.72rem !important; height: 38px !important; min-height: 38px !important; }
+    #nav .mobile-menu-btn { padding: 0 10px !important; font-size: 0.72rem !important; height: 38px !important; min-height: 38px !important; }
   }
 </style>
 
@@ -401,8 +372,9 @@
         <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test" data-analytics-event="nav_start_test_mobile">Start Test</button>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
         <div class="mobile-menu-panel" id="mobile-menu-panel">
-          <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">×</button>
+          <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">&#x2715;</button>
           <div class="mobile-menu-links">
+            <a class="mobile-menu-link" href="/" onclick="closeMobileMenu()" id="nav-m-link-home">Home</a>
             <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-why">Why Budy?</a>
             <a class="mobile-menu-link" href="/#pricing" onclick="closeMobileMenu()" id="nav-m-link-pricing">Pricing</a>
             <a class="mobile-menu-link" href="/#solutions" onclick="closeMobileMenu()" id="nav-m-link-features">Features</a>
