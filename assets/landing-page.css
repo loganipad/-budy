@@ -1039,12 +1039,76 @@ input,select{font-family:inherit}
 .admin-test-tools .btn{height:36px;min-height:36px;padding:0 12px;flex-shrink:0}
 .admin-adaptive-note{font-size:.74rem;font-weight:700;color:#1e3a8a;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:999px;padding:7px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+/* Mobile toggle button in the top bar — hidden on desktop */
+.tb-qnav-toggle{display:none}
+
 @media(max-width:600px){
   .tb{height:auto;padding:12px 14px 10px;flex-wrap:wrap;align-items:flex-start}
   .tb-left,.tb-right{width:100%;justify-content:space-between}
   .tb-right{order:2}
   .tb-timer{position:static;left:auto;transform:none;order:3;width:100%;justify-content:center;padding-top:2px}
-  .q-nav{display:none}
+
+  /* Show the mobile toggle button in the top bar */
+  .tb-qnav-toggle{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;flex-shrink:0;
+    border-radius:10px;border:1px solid rgba(148,163,184,.28);
+    background:rgba(255,255,255,.88);color:#36517a;
+    cursor:pointer;transition:background .15s,border-color .15s;
+    padding:0;
+  }
+  .tb-qnav-toggle:hover{background:#fff;border-color:rgba(37,99,235,.34)}
+  .tb-qnav-toggle svg{width:18px;height:18px;display:block}
+
+  /*
+   * Question nav becomes a slide-out drawer on mobile.
+   * It lives off-screen left and slides in when toggled.
+   */
+  .q-nav{
+    position:fixed !important;
+    top:0;left:0;bottom:0;
+    width:260px;max-width:80vw;
+    z-index:1100;
+    background:rgba(255,255,255,.97);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-right:1px solid rgba(148,163,184,.16);
+    padding:20px 16px;
+    overflow-y:auto;overflow-x:hidden;
+    transform:translateX(-100%);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow:none;
+  }
+  /* Override all the desktop .collapsed rules on mobile */
+  .q-nav.collapsed{
+    width:260px;max-width:80vw;
+    padding:20px 16px;
+    border-right-color:rgba(148,163,184,.16);
+    overflow-y:auto;overflow-x:hidden;
+    background:rgba(255,255,255,.97);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  }
+  .q-nav.collapsed .qn-head{position:static;left:auto;top:auto;z-index:auto}
+  .q-nav.collapsed .qn-title{display:block}
+  .q-nav.collapsed .qn-grid,
+  .q-nav.collapsed .qn-legend{display:grid}
+  .q-nav.collapsed .qn-legend{display:flex}
+
+  /* When drawer is open (not collapsed), slide it in */
+  .q-nav:not(.collapsed){transform:translateX(0);box-shadow:6px 0 24px rgba(0,0,0,.15)}
+
+  /* Grid layout tweaks for the wider mobile drawer */
+  .q-nav .qn-grid{max-width:none;grid-template-columns:repeat(6,minmax(0,1fr))}
+
+  /* Backdrop overlay when drawer is open */
+  #test-screen .qnav-backdrop{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.35);
+    z-index:1099;
+    cursor:pointer;
+  }
+  #test-screen.q-nav-open .qnav-backdrop{display:block}
+
   .q-main{padding:20px 16px}
   .q-nav.collapsed + .q-main{padding-left:16px}
   .q-hd{padding:12px 14px;border-radius:18px}

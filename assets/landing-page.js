@@ -2717,16 +2717,23 @@ function isAnswerLockedForQuestion(index){
 function applyQNavCollapsedState(){
   const nav = document.getElementById('q-nav');
   const btn = document.getElementById('qn-toggle-btn');
+  const tbBtn = document.getElementById('tb-qnav-toggle');
   const testScreen = document.getElementById('test-screen');
-  if(!nav || !btn) return;
-  nav.classList.toggle('collapsed', Boolean(S.qNavCollapsed));
+  if(!nav) return;
+  const isCollapsed = Boolean(S.qNavCollapsed);
+  nav.classList.toggle('collapsed', isCollapsed);
   if(testScreen){
-    testScreen.classList.toggle('q-nav-open', !S.qNavCollapsed);
+    testScreen.classList.toggle('q-nav-open', !isCollapsed);
   }
-  btn.setAttribute('aria-expanded', S.qNavCollapsed ? 'false' : 'true');
-  const label = S.qNavCollapsed ? 'Open question menu' : 'Close question menu';
-  btn.setAttribute('aria-label', label);
-  btn.setAttribute('title', label);
+  if(btn){
+    btn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+    const label = isCollapsed ? 'Open question menu' : 'Close question menu';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  if(tbBtn){
+    tbBtn.setAttribute('aria-label', isCollapsed ? 'Open question grid' : 'Close question grid');
+  }
 }
 
 function toggleQNav(){
@@ -2979,6 +2986,10 @@ function goQ(i,options={}){
   if(spr)saveSpr(S.curQ,spr.value);
   renderQ(i);
   scheduleDraftAutosave('question_nav');
+  if(window.innerWidth <= 600 && !S.qNavCollapsed){
+    S.qNavCollapsed = true;
+    applyQNavCollapsedState();
+  }
 }
 function goNext(){
   const current=S.curQ;
