@@ -181,7 +181,7 @@ input,select{font-family:inherit}
 .btn-cta{background:var(--gold);color:var(--ink);height:60px;padding:0 40px;font-size:1.0625rem;
   box-shadow:0 6px 24px rgba(245,158,11,.4);}
 .btn-cta:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 12px 36px rgba(245,158,11,.5)}
-.btn-cta[data-free-text="Take a Free Practice Test"]{color:#fff}
+.btn-cta[data-start-cta]{color:#fff}
 
 .btn-ghost{background:transparent;color:var(--slate);border:2px solid var(--line);
   height:44px;padding:0 20px;font-size:.875rem;}
