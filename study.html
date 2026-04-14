@@ -1060,18 +1060,23 @@ button,input,select{font:inherit}
 
 .topic-detail:fullscreen,
 .topic-detail:-webkit-full-screen{
+  display:flex;
+  flex-direction:column;
   width:100%;
   height:100%;
   max-height:none;
   border-radius:0;
   border-color:rgba(255,255,255,.16);
   background:rgba(9,14,25,.97);
-  padding:26px;
+  padding:16px;
+  overflow:hidden;
 }
 
 body.viewer-faux-fullscreen-active{overflow:hidden}
 
 .topic-detail.is-faux-fullscreen{
+  display:flex;
+  flex-direction:column;
   position:fixed;
   inset:0;
   z-index:1500;
@@ -1081,9 +1086,10 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
   border-radius:0;
   border-color:rgba(255,255,255,.16);
   background:rgba(9,14,25,.97);
-  padding:26px;
-  padding-top:calc(26px + env(safe-area-inset-top, 0px));
-  padding-bottom:calc(26px + env(safe-area-inset-bottom, 0px));
+  padding:16px;
+  padding-top:calc(16px + env(safe-area-inset-top, 0px));
+  padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  overflow:hidden;
 }
 
 .topic-detail.hidden{display:none}
@@ -1375,6 +1381,100 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
 
 .topic-detail.guide-inline-expanded .guide-inline-frame-wrap{
   height:calc(100vh - 300px);
+}
+
+.topic-detail:fullscreen .guide-inline-frame-wrap,
+.topic-detail:-webkit-full-screen .guide-inline-frame-wrap,
+.topic-detail.is-faux-fullscreen .guide-inline-frame-wrap{
+  flex:1;
+  min-height:0;
+  height:auto;
+  border-radius:0;
+  border:none;
+}
+
+.topic-detail:fullscreen .guide-inline-frame,
+.topic-detail:-webkit-full-screen .guide-inline-frame,
+.topic-detail.is-faux-fullscreen .guide-inline-frame{
+  pointer-events:auto;
+}
+
+.topic-detail:fullscreen .guide-inline-viewer,
+.topic-detail:-webkit-full-screen .guide-inline-viewer,
+.topic-detail.is-faux-fullscreen .guide-inline-viewer{
+  flex:1;
+  min-height:0;
+  border-radius:0;
+  border:none;
+  padding:0;
+  background:none;
+  display:flex;
+  flex-direction:column;
+}
+
+.topic-detail:fullscreen .preview-shell,
+.topic-detail:-webkit-full-screen .preview-shell,
+.topic-detail.is-faux-fullscreen .preview-shell{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  min-height:0;
+}
+
+.topic-detail:fullscreen .preview-hero,
+.topic-detail:-webkit-full-screen .preview-hero,
+.topic-detail.is-faux-fullscreen .preview-hero{
+  display:none;
+}
+
+.topic-detail:fullscreen .guide-hero-actions,
+.topic-detail:-webkit-full-screen .guide-hero-actions,
+.topic-detail.is-faux-fullscreen .guide-hero-actions{
+  display:none;
+}
+
+.topic-detail:fullscreen .guide-preview-card,
+.topic-detail:-webkit-full-screen .guide-preview-card,
+.topic-detail.is-faux-fullscreen .guide-preview-card{
+  display:none;
+}
+
+.topic-detail:fullscreen .preview-back,
+.topic-detail:-webkit-full-screen .preview-back,
+.topic-detail.is-faux-fullscreen .preview-back{
+  display:none;
+}
+
+.guide-fs-exit{
+  display:none;
+  position:absolute;
+  top:16px;
+  right:16px;
+  z-index:10;
+  min-height:38px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(8,12,22,.72);
+  color:#e2e8f0;
+  font-size:.8rem;
+  font-weight:700;
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+  white-space:nowrap;
+}
+
+.guide-fs-exit:hover{
+  background:rgba(244,63,94,.3);
+  border-color:rgba(244,63,94,.6);
+  color:#fff;
+}
+
+.topic-detail:fullscreen .guide-fs-exit,
+.topic-detail:-webkit-full-screen .guide-fs-exit,
+.topic-detail.is-faux-fullscreen .guide-fs-exit{
+  display:inline-flex;
+  align-items:center;
 }
 
 .guide-page-card span,
@@ -4861,10 +4961,11 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       const heroFullscreenBtn = document.createElement('button');
       heroFullscreenBtn.type = 'button';
       heroFullscreenBtn.className = 'guide-hero-fullscreen-btn';
-      heroFullscreenBtn.textContent = 'Open Full Screen Page';
-      heroFullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
-      heroFullscreenBtn.addEventListener('click', function (event) {
-        openStudyGuideViewer(fullscreenViewerUrl, event);
+      heroFullscreenBtn.textContent = 'Full Screen';
+      heroFullscreenBtn.setAttribute('aria-label', 'Enter full screen study guide viewer');
+      heroFullscreenBtn.addEventListener('click', function () {
+        const container = shell.closest('.topic-detail') || shell.parentElement;
+        toggleViewerFullscreen(container, heroFullscreenBtn);
       });
       heroActions.appendChild(heroFullscreenBtn);
       hero.appendChild(heroActions);
@@ -4880,8 +4981,24 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
       frame.title = topic.label + ' study guide preview';
       frame.loading = 'lazy';
 
+      const exitFsBtn = document.createElement('button');
+      exitFsBtn.type = 'button';
+      exitFsBtn.className = 'guide-fs-exit';
+      exitFsBtn.textContent = 'Exit Full Screen';
+      exitFsBtn.addEventListener('click', function () {
+        const container = shell.closest('.topic-detail') || shell.parentElement;
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(function () {});
+        } else {
+          container.classList.remove('is-faux-fullscreen');
+          document.body.classList.remove('viewer-faux-fullscreen-active');
+        }
+        setFullscreenButtonLabel(heroFullscreenBtn, container);
+      });
+
       frameWrap.appendChild(frame);
       inlineViewer.appendChild(frameWrap);
+      inlineViewer.appendChild(exitFsBtn);
       shell.appendChild(inlineViewer);
 
       if (typeof studyUIState.guideTrackerCleanup === 'function') {
@@ -5717,11 +5834,7 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         if (studyUIState.activeTab === 'flashcards') {
           renderFlashcardContent(detail, topic);
         } else {
-          try {
-            window.location.assign(topicViewerUrl);
-          } catch (_) {
-            window.location.href = topicViewerUrl;
-          }
+          renderGuideContent(detail, topic);
         }
       });
 
@@ -5750,13 +5863,20 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         });
 
         const fullscreenBtn = document.createElement('button');
-        const fullscreenUrl = topicViewerUrl;
         fullscreenBtn.type = 'button';
         fullscreenBtn.className = 'topic-detail-tab-link';
-        fullscreenBtn.textContent = 'Full Screen Page';
-        fullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
-        fullscreenBtn.addEventListener('click', function (event) {
-          openStudyGuideViewer(fullscreenUrl, event);
+        fullscreenBtn.textContent = 'Full Screen';
+        fullscreenBtn.setAttribute('aria-label', 'Enter full screen study guide viewer');
+        fullscreenBtn.addEventListener('click', function () {
+          const guideContainer = detail.querySelector('.guide-inline-viewer') ? detail : null;
+          if (guideContainer) {
+            toggleViewerFullscreen(detail, fullscreenBtn);
+          } else {
+            renderGuideContent(detail, topic);
+            requestAnimationFrame(function () {
+              toggleViewerFullscreen(detail, fullscreenBtn);
+            });
+          }
         });
 
         const switchBtn = document.createElement('button');
