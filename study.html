@@ -5745,15 +5745,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
           renderTopicList(getFilteredTopics());
         });
 
-        const fullscreenBtn = document.createElement('button');
-        fullscreenBtn.type = 'button';
-        fullscreenBtn.className = 'topic-detail-tab-link';
-        fullscreenBtn.textContent = 'Full Screen Page';
-        fullscreenBtn.setAttribute('aria-label', 'Open study guide in full screen page');
-        fullscreenBtn.addEventListener('click', function () {
-          openStudyGuideViewer(topicViewerUrl);
-        });
-
         const switchBtn = document.createElement('button');
         switchBtn.type = 'button';
         switchBtn.className = 'topic-detail-tab-link';
@@ -5765,7 +5756,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         actionRow.appendChild(actionCompletionPill);
         actionRow.appendChild(startButton);
         actionRow.appendChild(downloadBtn);
-        actionRow.appendChild(fullscreenBtn);
         actionRow.appendChild(switchBtn);
         hero.appendChild(actionRow);
 
