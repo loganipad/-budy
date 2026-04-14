@@ -889,6 +889,8 @@ function applyHomeStudyNavOverride() {
   const nav = document.getElementById('nav');
   if (!nav) return;
   nav.classList.add('home-study-nav');
+  const panel = document.getElementById('mobile-menu-panel');
+  if (panel) panel.classList.add('nav-study-ctx');
   const studyTarget = '/study.html';
 
   const authBtn = document.getElementById('auth-btn');

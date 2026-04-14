@@ -169,12 +169,14 @@ input,select{font-family:inherit}
   color:#fff !important;
   border-color:var(--brand) !important;
 }
-#nav.home-study-nav #mobile-auth-link.mobile-menu-link{
+#mobile-menu-panel.nav-study-ctx #mobile-auth-link.mobile-menu-link{
   background:#1a56db !important;
   color:#fff !important;
   border:1px solid #1a56db !important;
+  border-radius:12px;
+  justify-content:center;
 }
-#nav.home-study-nav #mobile-auth-link.mobile-menu-link:hover{background:var(--brand) !important}
+#mobile-menu-panel.nav-study-ctx #mobile-auth-link.mobile-menu-link:hover{background:var(--brand) !important}
 
 .btn-cta{background:var(--gold);color:var(--ink);height:60px;padding:0 40px;font-size:1.0625rem;
   box-shadow:0 6px 24px rgba(245,158,11,.4);}

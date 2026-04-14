@@ -108,10 +108,10 @@
   #nav .nav-right > .btn,
   #nav .nav-right > .mobile-menu-wrap > .btn { flex-shrink: 0; }
 
-  #nav #auth-btn,
-  #nav #mobile-auth-link { visibility: hidden; }
-  #nav.nav-auth-ready #auth-btn,
-  #nav.nav-auth-ready #mobile-auth-link { visibility: visible; }
+  #nav #auth-btn { visibility: hidden; }
+  #nav.nav-auth-ready #auth-btn { visibility: visible; }
+  #mobile-menu-panel #mobile-auth-link { visibility: hidden; }
+  #mobile-menu-panel.nav-auth-ready #mobile-auth-link { visibility: visible; }
 
   /* ── Button variants ───────────────────────────────────────── */
   #nav .btn-ghost {
@@ -190,8 +190,13 @@
     border-color: rgba(255, 255, 255, 0.32) !important;
   }
 
-  /* ── Fullscreen mobile menu panel ──────────────────────────── */
-  #nav .mobile-menu-panel {
+  /*
+   * ── Fullscreen mobile menu panel ──────────────────────────
+   * Panel lives OUTSIDE <nav id="nav"> in the DOM so that
+   * position:fixed is relative to the viewport, not #nav
+   * (whose backdrop-filter creates a containing block).
+   */
+  #mobile-menu-panel {
     position: fixed;
     inset: 0;
     width: 100%; height: 100%;
@@ -204,7 +209,7 @@
     z-index: 2000;
     opacity: 0;
   }
-  #nav .mobile-menu-panel.open {
+  #mobile-menu-panel.open {
     display: flex;
     flex-direction: column;
     opacity: 1;
@@ -216,7 +221,7 @@
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  #nav .mobile-menu-close {
+  #mobile-menu-panel .mobile-menu-close {
     position: absolute;
     top: 16px; right: 16px;
     width: 44px; height: 44px;
@@ -231,12 +236,12 @@
     cursor: pointer;
     transition: background 0.18s, border-color 0.18s;
   }
-  #nav .mobile-menu-close:hover {
+  #mobile-menu-panel .mobile-menu-close:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.24);
   }
 
-  #nav .mobile-menu-links {
+  #mobile-menu-panel .mobile-menu-links {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -247,7 +252,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  #nav .mobile-menu-link {
+  #mobile-menu-panel .mobile-menu-link {
     display: flex !important;
     align-items: center;
     padding: 16px 8px;
@@ -264,9 +269,9 @@
     margin: 0 !important;
     min-height: 52px;
   }
-  #nav .mobile-menu-link:last-child { border-bottom: none; }
-  #nav .mobile-menu-link:hover,
-  #nav .mobile-menu-link:active {
+  #mobile-menu-panel .mobile-menu-link:last-child { border-bottom: none; }
+  #mobile-menu-panel .mobile-menu-link:hover,
+  #mobile-menu-panel .mobile-menu-link:active {
     background: rgba(255, 255, 255, 0.06);
     color: #fbbf24;
   }
@@ -288,15 +293,11 @@
     display: none !important;
   }
 
-  /* Mobile menu links: only hide per context within the panel */
-  #nav.nav-context-study #nav-m-link-pricing,
-  #nav.nav-context-study #nav-m-link-features,
-  #nav.nav-context-study #mobile-auth-link,
-  #nav.nav-context-test #nav-m-link-why,
-  #nav.nav-context-test #nav-m-link-features,
-  #nav.nav-context-test #nav-m-link-pricing {
-    display: none !important;
-  }
+  /*
+   * Mobile menu links: context-based hiding is handled by JS
+   * in navbar-loader.js via data attributes, since the panel
+   * is outside #nav and can't use nav-context-* selectors.
+   */
 
   #nav.nav-context-default .nav-right,
   #nav.nav-context-account .nav-right,
@@ -317,11 +318,12 @@
     color: #fff;
     box-shadow: 0 8px 30px rgba(26, 86, 219, 0.45);
   }
-  #nav.nav-context-account #mobile-auth-link {
+  #mobile-menu-panel.nav-account-ctx #mobile-auth-link {
     background: #1a56db; color: #fff;
-    border: 1px solid #1a56db;
+    border: 1px solid #1a56db; border-radius: 12px;
+    justify-content: center;
   }
-  #nav.nav-context-account #mobile-auth-link:hover { background: #2563eb; }
+  #mobile-menu-panel.nav-account-ctx #mobile-auth-link:hover { background: #2563eb; }
 
   /* ── Breakpoints ───────────────────────────────────────────── */
   @media (min-width: 640px) {
@@ -371,18 +373,19 @@
       <div class="mobile-menu-wrap">
         <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test" data-analytics-event="nav_start_test_mobile">Start Test</button>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
-        <div class="mobile-menu-panel" id="mobile-menu-panel">
-          <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">&#x2715;</button>
-          <div class="mobile-menu-links">
-            <a class="mobile-menu-link" href="/" onclick="closeMobileMenu()" id="nav-m-link-home">Home</a>
-            <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-why">Why Budy?</a>
-            <a class="mobile-menu-link" href="/#pricing" onclick="closeMobileMenu()" id="nav-m-link-pricing">Pricing</a>
-            <a class="mobile-menu-link" href="/#solutions" onclick="closeMobileMenu()" id="nav-m-link-features">Features</a>
-            <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()" id="nav-m-link-account">Dashboard</a>
-            <a class="mobile-menu-link" href="/login.html" onclick="closeMobileMenu()" id="mobile-auth-link">Log In</a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </nav>
+
+<div class="mobile-menu-panel" id="mobile-menu-panel">
+  <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">&#x2715;</button>
+  <div class="mobile-menu-links">
+    <a class="mobile-menu-link" href="/" onclick="closeMobileMenu()" id="nav-m-link-home">Home</a>
+    <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-why">Why Budy?</a>
+    <a class="mobile-menu-link" href="/#pricing" onclick="closeMobileMenu()" id="nav-m-link-pricing">Pricing</a>
+    <a class="mobile-menu-link" href="/#solutions" onclick="closeMobileMenu()" id="nav-m-link-features">Features</a>
+    <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()" id="nav-m-link-account">Dashboard</a>
+    <a class="mobile-menu-link" href="/login.html" onclick="closeMobileMenu()" id="mobile-auth-link">Log In</a>
+  </div>
+</div>

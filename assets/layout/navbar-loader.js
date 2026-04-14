@@ -308,6 +308,20 @@
 
     updateAccountLink(account || test || isLoginPage(path));
     updateStudyLink(study);
+
+    var panel = document.getElementById('mobile-menu-panel');
+    if (panel) {
+      panel.classList.toggle('nav-account-ctx', account);
+
+      var hideInStudy = ['nav-m-link-pricing', 'nav-m-link-features', 'mobile-auth-link'];
+      var hideInTest = ['nav-m-link-why', 'nav-m-link-features', 'nav-m-link-pricing'];
+      var idsToHide = test ? hideInTest : (study ? hideInStudy : []);
+
+      panel.querySelectorAll('.mobile-menu-link').forEach(function (link) {
+        var hide = idsToHide.indexOf(link.id) !== -1;
+        link.style.display = hide ? 'none' : '';
+      });
+    }
   }
 
   function syncNavAuthState() {
@@ -379,6 +393,8 @@
     }
 
     nav.classList.add('nav-auth-ready');
+    var menuPanel = document.getElementById('mobile-menu-panel');
+    if (menuPanel) menuPanel.classList.add('nav-auth-ready');
     syncNavStartCtas();
   }
 
