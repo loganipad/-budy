@@ -133,25 +133,16 @@
 
   <div class="page">
   <main class="card">
-    <h1>Checkout Route Ready</h1>
-    <p>
-      This page confirms your <strong>/checkout</strong> route is live. Connect your Stripe Checkout
-      session API next to enable one-click upgrades.
-    </p>
-
-    <div class="row">
-      <span>Webhook destination</span>
-      <span>/api/stripe-webhook</span>
-    </div>
-
-    <p class="status">Stripe setup status: endpoint path is now in place.</p>
+    <h1>Redirecting to upgrade&hellip;</h1>
+    <p>Taking you to the upgrade page now.</p>
 
     <div class="actions">
-      <a class="btn primary" href="/">Back to Home</a>
-      <a class="btn ghost" href="/login.html">Open Login</a>
+      <a class="btn primary" href="/?upgrade=1">Go to Upgrade</a>
+      <a class="btn ghost" href="/">Back to Home</a>
     </div>
   </main>
   </div>
+  <script>window.location.replace('/?upgrade=1');</script>
 
   <div id="footer-slot"></div>
   <script src="/assets/layout/footer-loader.js" defer></script>

@@ -627,11 +627,20 @@
     );
   }
 
+  var _deepDiveAbortController = null;
+  var _deepDiveRequestId = 0;
+
   async function launchDeepDive(state, payload) {
     if (!payload || !payload.text) return;
 
     hideLauncher(state);
     state.lastPayload = payload;
+
+    if (_deepDiveAbortController) {
+      try { _deepDiveAbortController.abort(); } catch (_) {}
+    }
+    _deepDiveAbortController = typeof AbortController === 'function' ? new AbortController() : null;
+    var currentRequestId = ++_deepDiveRequestId;
 
     const token = typeof state.config.getAccessToken === 'function'
       ? await Promise.resolve(state.config.getAccessToken())
@@ -650,7 +659,7 @@
 
     renderLoading(state, payload.text);
     try {
-      const response = await fetch('/api/deep-dive', {
+      var fetchOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -661,7 +670,14 @@
           surroundingText: payload.surroundingText,
           context: typeof state.config.getRuntimeContext === 'function' ? state.config.getRuntimeContext() : {}
         })
-      });
+      };
+      if (_deepDiveAbortController) {
+        fetchOptions.signal = _deepDiveAbortController.signal;
+      }
+
+      const response = await fetch('/api/deep-dive', fetchOptions);
+
+      if (currentRequestId !== _deepDiveRequestId) return;
 
       const data = await response.json().catch(() => ({}));
       if (response.status === 401) {
@@ -686,7 +702,8 @@
         localStorage.setItem(HINT_KEY, '1');
       } catch (_) {}
       state.ui.hint.classList.add('hidden');
-    } catch (_) {
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
       renderError(state, payload.text, 'Network trouble interrupted the request. Try again in a moment.');
     }
   }

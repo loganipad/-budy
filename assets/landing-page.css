@@ -1365,8 +1365,8 @@ button, a, .q-opt, .sec-opt, .feat-card { -webkit-tap-highlight-color: rgba(26,8
 /* Minimum 44×44px touch targets (Apple HIG) */
 .btn, button { min-height: 44px; }
 .qn-btn { min-width: 36px; min-height: 36px; }
-.q-nav .qn-grid { max-width: 164px; gap: 10px 8px; }
-.q-nav .qn-btn { width: 28px; min-width: 28px; height: 28px; min-height: 28px; }
+.q-nav .qn-grid { max-width: 200px; gap: 8px 6px; }
+.q-nav .qn-btn { width: 36px; min-width: 36px; height: 36px; min-height: 36px; }
 .faq-btn { min-height: 52px; }
 .flag-btn { min-height: 44px; }
 .modal-close { min-width: 44px; min-height: 44px; width: 44px; height: 44px; }

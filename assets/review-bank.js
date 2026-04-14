@@ -463,8 +463,22 @@
 
     const answerMeta = document.createElement('div');
     answerMeta.className = 'review-bank-answer-meta';
-    if (item.userAnswer) answerMeta.innerHTML += '<span><strong>Yours:</strong> ' + item.userAnswer + '</span>';
-    if (item.correctAnswer) answerMeta.innerHTML += '<span><strong>Correct:</strong> ' + item.correctAnswer + '</span>';
+    if (item.userAnswer) {
+      const yoursSpan = document.createElement('span');
+      const yoursLabel = document.createElement('strong');
+      yoursLabel.textContent = 'Yours: ';
+      yoursSpan.appendChild(yoursLabel);
+      yoursSpan.appendChild(document.createTextNode(item.userAnswer));
+      answerMeta.appendChild(yoursSpan);
+    }
+    if (item.correctAnswer) {
+      const correctSpan = document.createElement('span');
+      const correctLabel = document.createElement('strong');
+      correctLabel.textContent = 'Correct: ';
+      correctSpan.appendChild(correctLabel);
+      correctSpan.appendChild(document.createTextNode(item.correctAnswer));
+      answerMeta.appendChild(correctSpan);
+    }
     footer.appendChild(answerMeta);
 
     const actions = document.createElement('div');
@@ -710,7 +724,16 @@
       });
     }
 
-    void loadQuestionBank().catch(function () {});
+    void loadQuestionBank().catch(function (err) {
+      var errorEl = root.querySelector('[data-review-empty]');
+      if (errorEl) {
+        errorEl.textContent = 'Could not load the question bank. Please refresh the page to try again.';
+        errorEl.classList.remove('hidden');
+      }
+      if (typeof window.BudyTelemetry === 'object' && typeof window.BudyTelemetry.trackError === 'function') {
+        window.BudyTelemetry.trackError('review_bank_load_failed', err);
+      }
+    });
     render();
 
     return {

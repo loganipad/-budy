@@ -1,7 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <style>
 /* --- Global Mobile/Touch Upgrades --- */
 @media (max-width: 600px) {
-  /* Relax fixed heights/widths for main cards and buttons */
   .achievement-item,
   .btn,
   .acct-tab,
@@ -14,7 +17,6 @@
     box-sizing: border-box;
   }
 
-  /* Stack grid/flex layouts vertically */
   .achievement-grid,
   .acct-tabs,
   .dash-grid,
@@ -23,7 +25,6 @@
     flex-direction: column !important;
   }
 
-  /* Touch-friendly tap targets for nav/buttons */
   button,
   .btn,
   .acct-tab,
@@ -36,17 +37,11 @@
     cursor: pointer;
   }
 
-  /* Prevent horizontal scroll */
   body {
     overflow-x: hidden;
   }
 }
 </style>
-<!DOCTYPE html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Budy.Study - My Account</title>
 <meta name="description" content="View your Budy.Study account, progress, and subscription details.">
@@ -59,6 +54,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <script src="/assets/shared/runtime-env.js" defer></script>
+<script src="/assets/shared/escape-html.js" defer></script>
+<script src="/assets/shared/utm.js" defer></script>
 <script src="/assets/shared/observability.js" defer></script>
 <link rel="stylesheet" href="/assets/review-bank.css">
 <style>

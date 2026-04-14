@@ -503,10 +503,21 @@ body::before{
         }
       }
 
+      var _boundScrollHandler = null;
+      var _boundResizeHandler = null;
+
       function setupLivePageTracking() {
         if (!pagesHost || !frameWrap) return;
         if (io && typeof io.disconnect === 'function') {
           io.disconnect();
+        }
+        if (_boundScrollHandler) {
+          frameWrap.removeEventListener('scroll', _boundScrollHandler);
+          _boundScrollHandler = null;
+        }
+        if (_boundResizeHandler) {
+          window.removeEventListener('resize', _boundResizeHandler);
+          _boundResizeHandler = null;
         }
         if (typeof IntersectionObserver === 'function') {
           io = new IntersectionObserver(function (entries) {
@@ -525,8 +536,10 @@ body::before{
             io.observe(node);
           });
         }
-        frameWrap.addEventListener('scroll', readNearestVisiblePage, { passive: true });
-        window.addEventListener('resize', readNearestVisiblePage);
+        _boundScrollHandler = readNearestVisiblePage;
+        _boundResizeHandler = readNearestVisiblePage;
+        frameWrap.addEventListener('scroll', _boundScrollHandler, { passive: true });
+        window.addEventListener('resize', _boundResizeHandler);
       }
 
       function renderPdfPages(pdfPathToRender, initialPage) {

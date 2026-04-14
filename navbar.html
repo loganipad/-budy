@@ -225,8 +225,8 @@
   #nav .mobile-menu-panel {
     position: fixed;
     inset: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     min-width: 0;
     min-height: 0;
     background: rgba(28,35,51,0.92);
@@ -387,13 +387,13 @@
     </a>
     <div class="nav-right">
       <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-why">Why Budy?</a>
-      <a href="/#pricing" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-pricing">Pricing</a>
+      <a href="/#pricing" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-pricing" data-analytics-event="nav_pricing">Pricing</a>
       <a href="/#solutions" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-features">Features</a>
       <a class="btn btn-ghost btn-sm" href="/my-account.html" id="nav-link-account">Dashboard</a>
-      <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()">Log In</button>
-      <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test">Start Test</button>
+      <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()" data-analytics-event="nav_auth">Log In</button>
+      <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test" data-analytics-event="nav_start_test">Start Test</button>
       <div class="mobile-menu-wrap">
-        <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test">Start Test</button>
+        <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test" data-analytics-event="nav_start_test_mobile">Start Test</button>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
         <div class="mobile-menu-panel" id="mobile-menu-panel">
           <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">×</button>

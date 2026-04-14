@@ -45,6 +45,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <link rel="stylesheet" href="/assets/landing-page.css?v=20260407d">
+<script src="/assets/shared/escape-html.js" defer></script>
+<script src="/assets/shared/utm.js" defer></script>
 <script src="/assets/shared/observability.js" defer></script>
 </head>
 <body data-page-type="landing">
@@ -87,7 +89,7 @@
       <h1>Score Hack for&nbsp;2026<br><em>SAT & PSAT</em></h1>
       <p class="hero-sub">Real SAT/PSAT model tests that will actually prepare you. Instant scoring and real feedback for <span class="hero-sub-student">students</span> not <span class="hero-sub-robots">robots.</span></p>
       <div class="hero-actions">
-        <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Take a Free Practice Test" data-premium-text="Start a Practice Test">Take a Free Practice Test</button>
+        <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Take a Free Practice Test" data-premium-text="Start a Practice Test" data-analytics-event="hero_start_test">Take a Free Practice Test</button>
       </div>
       <div class="hero-proof">
         <div class="hero-proof-item"><div class="hero-proof-n">+200pts</div><div class="hero-proof-l">Avg. score increase</div></div>
@@ -345,7 +347,7 @@
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Best for short-term prep bursts</div>
         </div>
-        <button class="btn-price-ghost" id="weekly-price-cta" onclick="purchasePlan('weekly')">Choose Weekly</button>
+        <button class="btn-price-ghost" id="weekly-price-cta" onclick="purchasePlan('weekly')" data-analytics-event="pricing_choose_weekly">Choose Weekly</button>
       </div>
 
       <!-- MONTHLY -->
@@ -360,7 +362,7 @@
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Includes AI deep-dive explanations</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Flashcards + extra wrong-skill quizzes</div>
         </div>
-        <button class="btn-price-ghost" onclick="purchasePlan('monthly')">Choose Monthly</button>
+        <button class="btn-price-ghost" onclick="purchasePlan('monthly')" data-analytics-event="pricing_choose_monthly">Choose Monthly</button>
       </div>
 
       <!-- ANNUALLY -->
@@ -376,7 +378,7 @@
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Perfect for full-year prep</div>
           <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Premium analytics included</div>
         </div>
-        <button class="btn-price-ghost" onclick="purchasePlan('annual')">Choose Annually</button>
+        <button class="btn-price-ghost" onclick="purchasePlan('annual')" data-analytics-event="pricing_choose_annual">Choose Annually</button>
       </div>
     </div>
     <p class="price-note"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-card"></use></svg></span>Secure checkout · Cancel any time · 7-day money-back guarantee</p>
@@ -625,7 +627,7 @@
           <p>Unlock full-length tests (27–49 questions), explanations, and unlimited tries with Premium.</p>
         </div>
         <div class="limit-banner-actions">
-          <button class="btn btn-primary btn-sm" onclick="purchasePlan('monthly')">Unlock Premium</button>
+          <button class="btn btn-primary btn-sm" onclick="purchasePlan('monthly')" data-analytics-event="results_unlock_premium">Unlock Premium</button>
         </div>
       </div>
       <div class="res-grid">

@@ -3,17 +3,7 @@
 (() => {
   const heroUserCounterEl = document.getElementById('hero-user-counter');
   if (!heroUserCounterEl) return;
-  const baseUsers = 49100;
-  const counterStart = new Date('2026-03-23T22:48:42-0700').getTime();
-  const msPerDay = 24 * 60 * 60 * 1000;
-  const msPerWeek = 7 * msPerDay;
-  const elapsedMs = Math.max(0, Date.now() - counterStart);
-  const elapsedDays = elapsedMs / msPerDay;
-  const elapsedWeeks = elapsedMs / msPerWeek;
-  const weeklyGrowth = baseUsers * Math.pow(1.01, elapsedWeeks);
-  const dailyGrowth = 200 * elapsedDays;
-  const currentUsers = Math.max(baseUsers, Math.floor(weeklyGrowth + dailyGrowth));
-  heroUserCounterEl.textContent = currentUsers.toLocaleString('en-US') + '+';
+  heroUserCounterEl.textContent = 'Thousands';
 })();
 
 /* ── AUTH0 CONFIG ── */
@@ -26,8 +16,8 @@ const REVIEW_TEST_STORAGE_KEY = 'budy_review_test_v1';
 const TEST_DRAFT_LOCAL_PREFIX = 'budy_test_draft_v1:';
 const TEST_DRAFT_AUTOSAVE_DEBOUNCE_MS = 1200;
 const TEST_DRAFT_AUTOSAVE_INTERVAL_MS = 15000;
-const ADMIN_PREMIUM_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
-const TEST_USER_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
+const ADMIN_PREMIUM_EMAILS = [];
+const TEST_USER_EMAILS = [];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
 const CHECKOUT_SYNC_DELAY_MS = 2500;
 
@@ -110,6 +100,7 @@ const S = {
   savedQuestionsCache: [],
   section: null,
   isPremium: false,
+  premiumVerified: false,
   obStep: 1,
   obSection: null,
 
@@ -845,12 +836,12 @@ async function launchQueuedReviewTestIfPresent() {
 function trackEvent(name, payload = {}) {
   const safeName = String(name || '').trim();
   if (!safeName) return;
+  const utms = typeof window.BudyUtm === 'object' && typeof window.BudyUtm.getUtmParams === 'function'
+    ? window.BudyUtm.getUtmParams() : {};
+  const enriched = { event: safeName, ...payload, ...utms };
   try {
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: safeName, ...payload });
-  } catch {}
-  try {
-    console.log('analytics_event', { event: safeName, ...payload });
+    window.dataLayer.push(enriched);
   } catch {}
 }
 
@@ -943,7 +934,8 @@ function syncStartCtaLabels() {
 function toggleMobileMenu() {
   const panel = document.getElementById('mobile-menu-panel');
   if (!panel) return;
-  panel.classList.toggle('open');
+  const isOpen = panel.classList.toggle('open');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
 }
 
 function closeMobileMenu() {
@@ -1144,8 +1136,9 @@ async function refreshPremiumStatus() {
     const data = await response.json();
 
     if (response.ok) {
-      S.isAdmin = Boolean(data.isAdmin) || isAdminPremiumEmail(S.user.email);
+      S.isAdmin = Boolean(data.isAdmin);
       S.isPremium = Boolean(data.isPremium) || S.isAdmin;
+      S.premiumVerified = true;
       if (data.userId) S.authUserId = String(data.userId);
       S.subscriptionStatus = data && data.subscriptionStatus ? String(data.subscriptionStatus).toLowerCase() : 'free';
       S.cancelAtPeriodEnd = Boolean(data && data.cancelAtPeriodEnd);
@@ -1593,7 +1586,8 @@ function renderLandingDemo(index) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'phone-opt';
-    btn.innerHTML = '<span class="phone-opt-k">' + letter + '</span>' + choice;
+    const demoEsc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v));
+    btn.innerHTML = '<span class="phone-opt-k">' + letter + '</span>' + demoEsc(choice);
 
     if (previousAnswer === letter) {
       btn.classList.add(previousStatus === 'correct' ? 'correct' : 'wrong');
@@ -2889,15 +2883,16 @@ function updQNav(){
 function renderQ(idx){
   S.curQ=idx;
   const q=S.questions[idx];
+  const esc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v));
   const answerLocked = isAnswerLockedForQuestion(idx);
   const sec=q.section==='math'?'Math':'Reading & Writing';
   const remaining=Math.max(0,S.questions.length-(idx+1));
-  const qBadge=`${sec} · ${remaining} left`;
-  let html=`<div class="q-hd"><div class="q-badge">${qBadge}</div><div class="q-skill">${q.skill||''}</div></div>`;
-  html+=`<div class="q-text">${q.question}</div>`;
-  if(q.passage)html+=`<div class="q-passage">${q.passage}</div>`;
+  const qBadge=`${esc(sec)} · ${remaining} left`;
+  let html=`<div class="q-hd"><div class="q-badge">${qBadge}</div><div class="q-skill">${esc(q.skill||'')}</div></div>`;
+  html+=`<div class="q-text">${esc(q.question)}</div>`;
+  if(q.passage)html+=`<div class="q-passage">${esc(q.passage)}</div>`;
   if(q.type==='spr'){
-    const v=S.answers[idx]||'';
+    const v=esc(S.answers[idx]||'');
     const lockAttrs = answerLocked ? ' readonly disabled aria-disabled="true"' : '';
     html+=`<p class="q-spr-lbl">Type your answer below. Fractions and decimals are OK.</p>
     <input class="q-spr-inp" type="text" id="spr-${idx}" placeholder="Your answer" value="${v}"
@@ -2915,7 +2910,7 @@ function renderQ(idx){
       const keydown = answerLocked ? '' : ' onkeydown="if(event.key===\'Enter\'||event.key===\' \' )this.click()"';
       const tabIndex = answerLocked ? '-1' : '0';
       html+=`<div class="q-opt${sel?' sel':''}${disabledClass}"${onClick} role="radio" aria-checked="${sel}" aria-disabled="${answerLocked ? 'true' : 'false'}" tabindex="${tabIndex}"${keydown}>
-        <div class="q-opt-k">${l}</div><div>${opt.replace(/^[A-D]\)\s*/,'')}</div></div>`;
+        <div class="q-opt-k">${l}</div><div>${esc(opt.replace(/^[A-D]\)\s*/,''))}</div></div>`;
     });
     html+=`</div>`;
     if (answerLocked) {
@@ -3317,11 +3312,12 @@ function renderResults(r){
     const cls={c:'c',w:'w',s:'s'}[st];
     const shortQ=q.question.length>100?q.question.slice(0,100)+'…':q.question;
     const div=document.createElement('div');div.className='review-item';
-    div.innerHTML=`<div class="rev-hd"><span class="rev-badge ${cls}">${badge}</span><span style="font-size:.75rem;color:var(--muted)">Q${i+1} · ${q.skill||''}</span></div>
-      <div class="rev-q">${shortQ}</div>
+    const resEsc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v));
+    div.innerHTML=`<div class="rev-hd"><span class="rev-badge ${cls}">${badge}</span><span style="font-size:.75rem;color:var(--muted)">Q${i+1} · ${resEsc(q.skill||'')}</span></div>
+      <div class="rev-q">${resEsc(shortQ)}</div>
       <div class="rev-ans">
-        ${q.userAnswer?`<span class="${q.isCorrect?'ra-yours ok':'ra-yours'}">Yours: ${q.userAnswer}</span>`:'<span class="ra-yours">No answer</span>'}
-        ${!q.isCorrect?`<span class="ra-correct">Correct: ${q.answer}</span>`:''}
+        ${q.userAnswer?`<span class="${q.isCorrect?'ra-yours ok':'ra-yours'}">Yours: ${resEsc(q.userAnswer)}</span>`:'<span class="ra-yours">No answer</span>'}
+        ${!q.isCorrect?`<span class="ra-correct">Correct: ${resEsc(q.answer)}</span>`:''}
       </div>
       <div class="exp-wrap" id="exp-wrap-${i}"></div>`;
     rv.appendChild(div);
@@ -4192,6 +4188,23 @@ async function init() {
     const nextQuery = searchParams.toString();
     const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
     window.history.replaceState({}, document.title, nextUrl);
+  }
+
+  if (searchParams.get('upgrade') === '1') {
+    searchParams.delete('upgrade');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+    openPaywall('checkout_redirect');
+  }
+
+  if (searchParams.get('source') === 'free-trial') {
+    searchParams.delete('source');
+    const nextQuery = searchParams.toString();
+    const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+    window.history.replaceState({}, document.title, nextUrl);
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) pricingSection.scrollIntoView({ behavior: 'smooth' });
   }
 
   ensurePrimaryViewVisible();

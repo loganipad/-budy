@@ -73,6 +73,15 @@
     return truncate(href, 180);
   }
 
+  function getUtmContext() {
+    try {
+      if (typeof window.BudyUtm === 'object' && typeof window.BudyUtm.getUtmParams === 'function') {
+        return window.BudyUtm.getUtmParams();
+      }
+    } catch (_) {}
+    return {};
+  }
+
   function buildContext() {
     return {
       path: truncate(window.location.pathname || '/', 180),
@@ -88,7 +97,8 @@
         height: Number(window.screen && window.screen.height ? window.screen.height : 0)
       },
       language: truncate(navigator.language || '', 32),
-      navigationType: getNavigationType()
+      navigationType: getNavigationType(),
+      utm: getUtmContext()
     };
   }
 

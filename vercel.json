@@ -97,6 +97,10 @@
       "destination": "/checkout.html"
     },
     {
+      "source": "/free-trial",
+      "destination": "/index.html?source=free-trial"
+    },
+    {
       "source": "/login",
       "destination": "/login.html"
     },

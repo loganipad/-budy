@@ -3,6 +3,9 @@ import { json } from '../lib/http.js';
 import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 import { isCorrectAnswer, loadQuestionBank } from '../lib/question-bank.js';
 import { createTestSessionToken, verifyTestSessionToken } from '../lib/test-session-token.js';
+import { resolveAuthUser } from '../lib/auth.js';
+import { getSubscriptionByUserId } from '../lib/subscription-store.js';
+import { FREE_QUESTION_LIMIT, MAX_TEST_SESSION_QUESTIONS, isPremiumFromStatus } from '../lib/entitlements.js';
 
 function getAction(req) {
   const raw = req.query && req.query.action;
@@ -24,6 +27,25 @@ function normalizeAnswerMap(value) {
     acc[id] = normalizedAnswer;
     return acc;
   }, {});
+}
+
+async function resolveCallerPremiumStatus(req) {
+  const auth = await resolveAuthUser(req);
+  if (!auth.ok) return { authenticated: false, isPremium: false };
+
+  const record = await getSubscriptionByUserId(auth.user.id);
+  const row = record.ok ? record.data : null;
+  const dbIsPremium = Boolean(row && row.is_premium);
+  const dbStatus = row && row.subscription_status ? String(row.subscription_status).toLowerCase() : 'free';
+
+  const adminEmails = String(process.env.ADMIN_PREMIUM_EMAILS || '')
+    .split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const isAdmin = adminEmails.includes(String(auth.user.email || '').trim().toLowerCase());
+
+  return {
+    authenticated: true,
+    isPremium: dbIsPremium || isPremiumFromStatus(dbStatus) || isAdmin
+  };
 }
 
 async function handleIssue(req, res) {
@@ -49,8 +71,19 @@ async function handleIssue(req, res) {
     return json(res, 400, { error: 'Question ids are required.' });
   }
 
-  if (questionIds.length > 60) {
-    return json(res, 400, { error: 'Test session cannot include more than 60 questions.' });
+  if (questionIds.length > MAX_TEST_SESSION_QUESTIONS) {
+    return json(res, 400, { error: `Test session cannot include more than ${MAX_TEST_SESSION_QUESTIONS} questions.` });
+  }
+
+  const caller = await resolveCallerPremiumStatus(req);
+  const questionLimit = caller.isPremium ? MAX_TEST_SESSION_QUESTIONS : FREE_QUESTION_LIMIT;
+
+  if (questionIds.length > questionLimit) {
+    return json(res, 403, {
+      error: `Free accounts are limited to ${FREE_QUESTION_LIMIT} questions per test. Upgrade to Pro for full-length tests.`,
+      upgradeRequired: true,
+      limit: questionLimit
+    });
   }
 
   const bank = await loadQuestionBank();
