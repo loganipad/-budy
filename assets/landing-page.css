@@ -596,19 +596,23 @@ input,select{font-family:inherit}
   transition:all .25s var(--ease);height:100%;display:flex;flex-direction:column;
 }
 .price-card:hover{background:rgba(255,255,255,.09);transform:translateY(-3px)}
-.price-card.trial-focus{border-color:rgba(245,158,11,.42);box-shadow:0 10px 34px rgba(245,158,11,.18);transform:translateY(-3px)}
+.price-card.trial-focus{
+  background:linear-gradient(180deg,rgba(245,158,11,.18),rgba(245,158,11,.08));
+  border-color:rgba(245,158,11,.5);
+  box-shadow:0 16px 48px rgba(245,158,11,.28);
+  animation:phoneFloat 5s ease-in-out infinite;
+}
 .price-card.trial-focus:hover{
-  background:rgba(255,255,255,.12);
-  transform:scale(1.04) translateY(-3px);
-  box-shadow:0 16px 40px rgba(245,158,11,.22);
+  background:linear-gradient(180deg,rgba(245,158,11,.24),rgba(245,158,11,.12));
+  transform:translateY(-3px);
+  box-shadow:0 22px 58px rgba(245,158,11,.36);
 }
 .price-card.free-tier .pf-item.locked{color:rgba(254,202,202,.94)}
 .price-card.featured{
   background:var(--brand);border-color:var(--brand-l);
   box-shadow:0 8px 40px rgba(26,86,219,.5);
-  transform:scale(1.03);
 }
-.price-card.featured:hover{transform:scale(1.03) translateY(-3px)}
+.price-card.featured:hover{transform:translateY(-3px)}
 .price-card.featured.annual-tier{
   animation:phoneFloat 5s ease-in-out infinite;
   box-shadow:0 16px 48px rgba(26,86,219,.46);
@@ -622,13 +626,13 @@ input,select{font-family:inherit}
   background:rgba(255,255,255,.06);
   border-color:rgba(255,255,255,.1);
   box-shadow:none;
-  transform:none;
 }
 .price-card.featured.annual-tier.trial-muted:hover{
   background:rgba(255,255,255,.09);
   box-shadow:none;
   transform:translateY(-3px);
 }
+.price-card.featured.annual-tier.trial-muted .best-badge{display:none}
 .price-card.featured.annual-tier.trial-muted .price-tier,
 .price-card.featured.annual-tier.trial-muted .price-unit,
 .price-card.featured.annual-tier.trial-muted .price-billed,
@@ -666,6 +670,7 @@ input,select{font-family:inherit}
   font-size:.9rem;cursor:pointer;transition:all .2s;font-family:var(--font-h)}
 .btn-price-ghost:hover{border-color:rgba(255,255,255,.5);color:#fff}
 .price-card.featured.annual-tier .btn-price-ghost{color:#fff}
+.price-card.trial-focus .btn-price-ghost{color:#fff;border-color:rgba(245,158,11,.5)}
 .btn-price-trial{width:100%;height:48px;background:linear-gradient(180deg,#fbbf24,#f59e0b);color:#fff;
   font-weight:800;border-radius:var(--r-full);border:none;font-size:.9rem;cursor:pointer;transition:all .2s;font-family:var(--font-h);
   box-shadow:0 8px 22px rgba(245,158,11,.26), inset 0 1px 0 rgba(255,255,255,.22)}
@@ -677,8 +682,8 @@ input,select{font-family:inherit}
 }
 @media(max-width:768px){
   .price-grid{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto}
-  .price-card.featured{transform:scale(1)}
-  .price-card.featured.annual-tier{animation:none;transform:scale(1)}
+  .price-card.featured.annual-tier{animation:none}
+  .price-card.trial-focus{animation:none}
 }
 
 .solution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
