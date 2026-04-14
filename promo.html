@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budy.Study | Free Trial – SAT & PSAT Prep</title>
+<meta name="description" content="Start your free trial of Budy.Study. Full SAT and PSAT practice tests, instant scoring, and step-by-step help.">
+<link rel="canonical" href="https://budy.study/promo.html">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/assets/budy-logo.png">
+<link rel="apple-touch-icon" href="/assets/budy-logo.png">
+
+<!-- PWA / App-ready meta -->
+<meta name="theme-color" content="#0d1117">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Budy.Study">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Budy.Study | SAT & PSAT Prep">
+<meta property="og:description" content="Free SAT practice tests for 8th–10th graders. Instant scoring, AI explanations, score tracking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://budy.study/promo.html">
+<meta property="og:image" content="https://budy.study/assets/budy-logo.png">
+<meta property="og:site_name" content="Budy.Study">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Budy.Study | SAT & PSAT Prep for Students">
+<meta name="twitter:description" content="Practice tests, instant scoring, AI explanations, and score tracking for SAT and PSAT students.">
+<meta name="twitter:image" content="https://budy.study/assets/budy-logo.png">
+
+<!-- Inline PWA manifest -->
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Budy.Study&quot;,&quot;short_name&quot;:&quot;Budy.Study&quot;,&quot;description&quot;:&quot;SAT %26 PSAT Prep&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%230d1117&quot;,&quot;theme_color&quot;:&quot;%231a56db&quot;,&quot;orientation&quot;:&quot;portrait&quot;}">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Budy.Study","url":"https://budy.study/","logo":"https://budy.study/assets/budy-logo.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Budy.Study","url":"https://budy.study/"}
+</script>
+<script src="/assets/landing-scroll.js?v=20260407d"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<link rel="stylesheet" href="/assets/landing-page.css?v=20260407d">
+<script src="/assets/shared/escape-html.js" defer></script>
+<script src="/assets/shared/utm.js" defer></script>
+<script src="/assets/shared/observability.js" defer></script>
+</head>
+<body data-page-type="promo">
+
+<div id="aria-live" aria-live="polite" aria-atomic="true"></div>
+<div id="toasts"></div>
+<canvas id="confetti-c"></canvas>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<div id="navbar-slot"></div>
+<script src="/assets/layout/navbar-loader.js" defer></script>
+
+<!-- ============================================================
+     LANDING
+     ============================================================ -->
+<div id="landing-screen">
+
+<div class="wrap">
+  <section id="checkout-status" class="checkout-status pending hidden" role="status" aria-live="polite">
+    <div class="checkout-status-top">
+      <span class="checkout-status-chip" id="checkout-status-chip">Syncing</span>
+      <button class="checkout-status-close" onclick="dismissCheckoutStatus()" aria-label="Dismiss checkout status"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
+    </div>
+    <h3 id="checkout-status-title">Activating Premium...</h3>
+    <p id="checkout-status-body">We are syncing your payment with your account now.</p>
+    <div class="checkout-status-actions">
+      <button id="checkout-status-primary" class="btn btn-primary btn-sm hidden">Start Premium Test</button>
+      <button id="checkout-status-secondary" class="btn btn-ghost btn-sm hidden">Go to Dashboard</button>
+    </div>
+  </section>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="hero-pill"><span>NEW</span> 2026 SAT Blueprint</div>
+      <h1>Score Hack for&nbsp;2026<br><em>SAT & PSAT</em></h1>
+      <p class="hero-sub">Real SAT/PSAT model tests that will actually prepare you. Instant scoring and real feedback for <span class="hero-sub-student">students</span> not <span class="hero-sub-robots">robots.</span></p>
+      <div class="hero-actions">
+        <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Start FREE Trial" data-premium-text="Start a Practice Test" data-analytics-event="hero_start_trial">Start FREE Trial</button>
+      </div>
+      <div class="hero-proof">
+        <div class="hero-proof-item"><div class="hero-proof-n">+200pts</div><div class="hero-proof-l">Avg. score increase</div></div>
+        <div class="hero-proof-divider"></div>
+        <div class="hero-proof-item"><div class="hero-proof-n">$0-$100,000</div><div class="hero-proof-l">Avg. full-ride scholarship</div></div>
+        <div class="hero-proof-divider"></div>
+        <div class="hero-proof-item"><div class="hero-proof-n" id="hero-user-counter"></div><div class="hero-proof-l">Students trained</div></div>
+      </div>
+    </div>
+    <!-- Phone mockup -->
+    <div class="hero-phone">
+      <div class="phone-bar">
+        <span class="phone-logo">Budy.Study</span>
+        <span class="phone-timer" id="landing-phone-timer">30:00</span>
+      </div>
+      <div class="phone-body">
+        <div id="demo-stage">
+          <div class="phone-q-label" id="demo-q-label">Math · Question 1 of 4</div>
+          <div class="phone-q" id="demo-q-text">Loading question...</div>
+          <div class="phone-opts" id="demo-opts"></div>
+          <div class="phone-exp" id="demo-exp"></div>
+        </div>
+        <div class="phone-demo-analytics" id="demo-analytics">
+          <div class="phone-demo-analytics-title">Test Analytics</div>
+          <div class="phone-demo-analytics-celebrate">
+            <img src="/assets/budy-logo.png" alt="" class="phone-demo-analytics-icon" aria-hidden="true">
+            <div class="phone-demo-analytics-message"><strong id="demo-analytics-rating">Nice work finishing the demo.</strong><span id="demo-analytics-copy">You completed the set and unlocked your skill snapshot.</span></div>
+          </div>
+          <div class="phone-analytics-bars">
+            <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">English</div><div class="phone-analytics-score" id="demo-analytics-english-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill english" id="demo-analytics-english"></div></div></div>
+            <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">Math</div><div class="phone-analytics-score" id="demo-analytics-math-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill math" id="demo-analytics-math"></div></div></div>
+            <div class="phone-analytics-row"><div class="phone-analytics-head"><div class="phone-analytics-label">Overall</div><div class="phone-analytics-score" id="demo-analytics-overall-score">0%</div></div><div class="phone-analytics-track"><div class="phone-analytics-fill overall" id="demo-analytics-overall"></div></div></div>
+          </div>
+        </div>
+        <div class="phone-demo-grading" id="demo-grading">
+          <div class="phone-demo-spinner" aria-hidden="true"></div>
+          <div class="phone-demo-grading-title">Grading Test</div>
+          <div class="phone-demo-grading-copy">Scoring your demo and preparing limited analytics...</div>
+        </div>
+      </div>
+      <div class="phone-prog-row">
+        <div class="phone-prog" id="demo-dots"></div>
+        <button type="button" class="phone-done-btn" id="demo-done-btn" onclick="completeDemoTest()" disabled>Done</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHOLARSHIP IMPACT BANNER -->
+<div class="impact-band">
+  <div class="wrap">
+    <div class="impact-inner">
+      <div class="impact-stat">
+        <div class="impact-kicker">UP TO</div>
+        <div class="impact-num" id="impact-counter">$0</div>
+        <div class="impact-lbl">Avg. full-ride scholarship</div>
+      </div>
+      <div class="impact-divider"></div>
+      <div class="impact-copy">
+        <p>A higher SAT score doesn't just open doors. It <strong>can change your cost of college</strong>. Strong applicants can qualify for <strong>up to $100,000</strong> in merit scholarships depending on the school, score gains, and academic profile.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIVERSITY CREDIBILITY STRIP -->
+<section class="cred-section">
+  <div class="cred-label">STUDENTS RECEIVED SCHOLARSHIPS AT</div>
+  <div class="marquee-outer">
+    <div class="marquee-track" id="marquee-track">
+      <!-- Set 1: Ivy League + Top Tech + Business -->
+      <div class="school-logo-wrap"><span class="school-logo-text">MIT</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Stanford</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Harvard</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Yale</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Princeton</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Columbia</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Penn · Wharton</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Cornell</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Dartmouth</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Brown</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Caltech</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Carnegie Mellon</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">UC Berkeley</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">UCLA</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Georgia Tech</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">University of Michigan</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Duke</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Northwestern</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">NYU Stern</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Vanderbilt</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Georgetown</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Notre Dame</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Emory</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">UT Austin · McCombs</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">USC Marshall</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Boston University</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Purdue</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Rice University</span></div>
+      <!-- Set 2: exact duplicate for seamless infinite loop -->
+      <div class="school-logo-wrap"><span class="school-logo-text">MIT</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Stanford</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Harvard</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Yale</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Princeton</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Columbia</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Penn · Wharton</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Cornell</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Dartmouth</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Brown</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Caltech</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Carnegie Mellon</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">UC Berkeley</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">UCLA</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Georgia Tech</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">University of Michigan</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Duke</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Northwestern</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">NYU Stern</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Vanderbilt</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Georgetown</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Notre Dame</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Emory</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">UT Austin · McCombs</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">USC Marshall</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Boston University</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Purdue</span></div>
+      <div class="school-logo-wrap"><span class="school-logo-text">Rice University</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section landing-dark-section" id="features">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Why Budy.Study</div>
+      <h2 class="sec-head">Everything you need to raise your score</h2>
+      <p class="sec-sub">No confusing tools. No jargon. Just practice tests, clear feedback, and explanations that actually make sense.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon fi-blue"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-target"></use></svg></span></div>
+        <h3>Real SAT-Style Questions</h3>
+        <p>Every question follows the actual College Board format for reading, writing, and math, with the same skills tested on test day.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-gold"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bolt"></use></svg></span></div>
+        <h3>Instant Score & Feedback</h3>
+        <p>See your score the second you finish. Know exactly which questions you got right and wrong, with no waiting and no guessing.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-green"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></div>
+        <h3>Track Your Progress</h3>
+        <p>Every test you take gets saved. Watch your score go up over time and see which subjects are your strongest.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-rose"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span></div>
+        <h3>Step-by-Step Explanations</h3>
+        <p>Missed a question? Premium members get a clear, easy-to-understand explanation for every single answer.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-blue"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-device"></use></svg></span></div>
+        <h3>Works on Any Device</h3>
+        <p>Practice on your phone, tablet, or computer. Budy.Study works anywhere, even in the car on the way to school.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-gold"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-trophy"></use></svg></span></div>
+        <h3>Grade-Appropriate Difficulty</h3>
+        <p>Questions are calibrated for 8th, 9th, and 10th graders. Start where you are, and we will push you to where you want to be.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-bg how-section">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">How It Works</div>
+      <h2 class="sec-head">Three steps to a better score</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <h3>Tell Us About You</h3>
+        <p>Enter your name and pick which section you want to practice: reading, math, or both.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <h3>Take the Practice Test</h3>
+        <p>Answer real SAT-style questions with a timer just like the real test. Flag the tough ones and come back.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <h3>See Your Score & Improve</h3>
+        <p>Get your score instantly, see which skills need work, and unlock explanations to understand exactly what you missed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Simple Pricing</div>
+      <h2 class="sec-head">Start free. Unlock everything when you're ready.</h2>
+      <p class="sec-sub" style="color:rgba(255,255,255,.55)">Cancel any time. No contracts. No hidden fees.</p>
+    </div>
+
+    <!-- Billing toggle -->
+    <div class="pricing-toggle-row">
+      <div class="billing-toggle">
+        <input type="radio" name="billing" id="b-weekly" value="weekly" checked>
+        <label for="b-weekly">Show Weekly Rates</label>
+        <input type="radio" name="billing" id="b-monthly" value="monthly">
+        <label for="b-monthly">Show Monthly Rates</label>
+      </div>
+      <div class="billing-toggle billing-toggle-trial-wrap">
+        <input type="radio" name="billing" id="b-trial" value="trial">
+        <label for="b-trial" class="billing-toggle-trial">Free Trial</label>
+      </div>
+    </div>
+
+    <div class="price-grid">
+      <!-- FREE -->
+      <div class="price-card free-tier">
+        <div class="price-tier">Free</div>
+        <div class="price-per-week"><sup>$</sup>0</div>
+        <div class="price-unit" id="free-price-unit">Per Week</div>
+        <div class="price-billed">Always free, no credit card</div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>10 practice questions per test</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Instant score after each test</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Basic score history</div>
+          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Answer explanations</div>
+          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Full 27-49 question tests</div>
+          <div class="pf-item locked"><svg class="pf-check n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Unlimited tries</div>
+        </div>
+      </div>
+
+      <!-- WEEKLY -->
+      <div class="price-card" id="weekly-price-card">
+        <div class="price-tier" style="color:rgba(255,255,255,.8)">Weekly</div>
+        <div class="price-per-week"><sup>$</sup><span data-plan="weekly" data-rate="weekly">8</span></div>
+        <div class="price-unit" id="weekly-price-unit">Per Week</div>
+        <div class="price-billed" id="weekly-price-billed" style="color:rgba(255,255,255,.65)">
+          <strong style="color:#fff" id="weekly-bill-main">Billed $8 weekly</strong> · Flexible anytime
+        </div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All premium learning tools</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Best for short-term prep bursts</div>
+        </div>
+        <button class="btn-price-ghost" id="weekly-price-cta" onclick="purchasePlan('weekly')" data-analytics-event="pricing_choose_weekly">Choose Weekly</button>
+      </div>
+
+      <!-- MONTHLY -->
+      <div class="price-card">
+        <div class="price-tier">Monthly</div>
+        <div class="price-per-week"><sup>$</sup><span data-plan="monthly" data-rate="weekly">5</span></div>
+        <div class="price-unit" id="monthly-price-unit">Per Week</div>
+        <div class="price-billed" id="monthly-price-billed"><strong style="color:rgba(255,255,255,.8)" id="monthly-bill-main">Billed $20 monthly</strong> · Most popular everyday plan</div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Most popular everyday plan</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Includes AI deep-dive explanations</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Flashcards + extra wrong-skill quizzes</div>
+        </div>
+        <button class="btn-price-ghost" onclick="purchasePlan('monthly')" data-analytics-event="pricing_choose_monthly">Choose Monthly</button>
+      </div>
+
+      <!-- ANNUALLY -->
+      <div class="price-card featured annual-tier">
+        <div class="best-badge">BEST VALUE</div>
+        <div class="price-tier">Annually</div>
+        <div class="price-per-week"><sup>$</sup><span data-plan="annual" data-rate="weekly">2</span></div>
+        <div class="price-unit" id="annual-price-unit">Per Week</div>
+        <div class="price-billed" id="annual-price-billed"><strong style="color:rgba(255,255,255,.8)" id="annual-bill-main">Billed $96 annually</strong> · Lowest long-term cost</div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Lowest long-term cost</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Perfect for full-year prep</div>
+          <div class="pf-item"><svg class="pf-check y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Premium analytics included</div>
+        </div>
+        <button class="btn-price-ghost" onclick="purchasePlan('annual')" data-analytics-event="pricing_choose_annual">Choose Annually</button>
+      </div>
+    </div>
+    <p class="price-note"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-card"></use></svg></span>Secure checkout · Cancel any time · 7-day money-back guarantee</p>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section landing-dark-section">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Student Stories</div>
+      <h2 class="sec-head">Real results from real students</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
+        <p class="test-body">"I'm in 8th grade and already practicing for high school SATs. My parents love that I can show them my progress chart."</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:var(--green)">JL</div>
+          <div><div class="test-name">Jamie L.</div><div class="test-meta">8th Grade · Early prep</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
+        <p class="test-body">"My son was really stressed about the SAT. After a month of Budy.Study he was way more confident. He scored a 1570, way higher than expected!"</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:var(--rose)">PR</div>
+          <div><div class="test-name">Priya R.</div><div class="test-meta">Parent · Son scored 1570</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
+        <p class="test-body">"The daily mini-quizzes fixed my weakest math topics. I finally stopped guessing on linear models."</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:#0ea5e9">NT</div>
+          <div><div class="test-name">Noah T.</div><div class="test-meta">10th Grade · +170 pts</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span></div>
+        <p class="test-body">"The explanation mode feels like tutoring. I can see exactly why each wrong answer is tempting."</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:#8b5cf6">ES</div>
+          <div><div class="test-name">Emma S.</div><div class="test-meta">9th Grade · PSAT prep</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.5l-5.7 3 1.1-6.3L2.8 9.7l6.4-.9L12 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg></span></div>
+        <p class="test-body">"I went from a 1210 to 1440 before junior year. The explanations actually told me WHY I got it wrong instead of just showing the answer."</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:var(--brand)">AK</div>
+          <div><div class="test-name">Arjun K.</div><div class="test-meta">10th Grade · +230 pts</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-star"></use></svg></span><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.5l-5.7 3 1.1-6.3L2.8 9.7l6.4-.9L12 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg></span></div>
+        <p class="test-body">"I used Budy.Study every night for two weeks before the PSAT. My score jumped way more than I expected. Getting into AP English now!"</p>
+        <div class="test-author">
+          <div class="test-avi" style="background:#7c3aed">SM</div>
+          <div><div class="test-name">Sofia M.</div><div class="test-meta">9th Grade · PSAT prep</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="section landing-dark-section" id="solutions">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Features</div>
+      <h2 class="sec-head">Tools that convert missed questions into higher scores</h2>
+      <p class="sec-sub">Hover each card to preview how the workflow behaves in real study sessions.</p>
+    </div>
+    <div class="solution-grid">
+      <div class="solution-card">
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-book"></use></svg></span>SAT / PSAT Practice Tests</span></h3>
+        <p>Adaptive section plans that focus on your biggest score-impact gaps first.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-cards"></use></svg></span>SAT / PSAT Study Guides</span></h3>
+        <p>Adaptive section plans that focus on your biggest score-impact gaps first.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span>Test / Score Analytics</span></h3>
+        <p>Track score trend, pacing, and skill-level movement over time.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-cards"></use></svg></span>Wrong-Answer Flashcards</span></h3>
+        <p>Turn misses into printable flashcards with fold and cut guides for fast review.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flask"></use></svg></span>Extra Quizzes</span></h3>
+        <p>Auto-generated mini quizzes from weak skills so practice stays targeted.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+      <div class="solution-card">
+        <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-robot"></use></svg></span>AI Deep-Dive Explanations</span></h3>
+        <p>Animated explanation flow showing why each distractor fails and what wins.</p>
+        <div class="solution-preview"><div class="sp-chip"></div><div class="sp-row"></div><div class="sp-row"></div><div class="sp-row"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="wrap-sm">
+    <h2 id="landing-cta-title">Try everything free — no risk</h2>
+    <p id="landing-cta-sub">No credit card required. Full access to all premium features during your trial.</p>
+    <button class="btn btn-cta" onclick="openOnboard()" data-start-cta data-free-text="Start FREE Trial" data-premium-text="Start a Practice Test">Start FREE Trial</button>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section landing-dark-section faq-section">
+  <div class="wrap">
+    <div class="section-center">
+      <div class="sec-eyebrow">Questions</div>
+      <h2 class="sec-head">Stuff students ask us</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-btn" onclick="faq(this)">Can I use Budy.Study without making an account first? <span class="faq-arrow">▾</span></button>
+        <div class="faq-body"><div class="faq-body-inner">Yes. You can open a free practice test immediately, and the Study Hub also has a guided demo mode so students can see how review tests, flashcards, and study guides work before signing in. Creating an account is what saves long-term progress, score history, and premium access.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="faq(this)">What is actually inside the Study Hub? <span class="faq-arrow">▾</span></button>
+        <div class="faq-body"><div class="faq-body-inner">The Study Hub is built around the stuff students usually need after a test: targeted review tests from flagged or wrong answers, topic-based study guides, printable and on-screen flashcards, recent test reveals, and next-topic recommendations. The point is to turn a missed question into the next useful rep instead of leaving it buried in old results.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="faq(this)">How is this different from other test prep? <span class="faq-arrow">▾</span></button>
+        <div class="faq-body"><div class="faq-body-inner">Most prep products stop at “take another test.” Budy.Study is built around the full loop: test, inspect misses, study the exact topic, run a targeted review test, then track whether the problem actually improved. That loop now includes a progress dashboard, guided Study Hub, and AI Deep Dive explanations written to be readable instead of robotic.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="faq(this)">Is this built for phones or do I need an app? <span class="faq-arrow">▾</span></button>
+        <div class="faq-body"><div class="faq-body-inner">It is browser-first and mobile-ready today, so students can use it on a phone, tablet, or laptop without downloading anything. That matters because the real competition is attention span and convenience. Native app packaging can come later, but the product already works like a fast mobile study tool right now.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="faq(this)">What does Premium unlock? <span class="faq-arrow">▾</span></button>
+        <div class="faq-body"><div class="faq-body-inner">Premium is where the full system opens up: longer practice tests, richer analytics, saved progress across devices, subscription billing tools, and AI-assisted help tied to the study experience. The free path is meant to prove the workflow; Premium is meant for students who want the full loop and ongoing accountability.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="faq(this)">Are you working with schools too? <span class="faq-arrow">▾</span></button>
+        <div class="faq-body"><div class="faq-body-inner">Yes. Budy.Study is preparing for an April 2026 launch with local high-school testing, school outreach, and measured acquisition campaigns. The goal is not just to sell a subscription, but to learn which messages, results, and student workflows actually hold up in real school environments.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-slot"></div>
+<script src="/assets/layout/footer-loader.js" defer></script>
+
+</div><!-- /#landing-screen -->
+
+<!-- ============================================================
+     LOADING
+     ============================================================ -->
+<div id="loading-screen">
+  <div class="spin"></div>
+  <div class="load-msg" id="load-msg">Getting your test ready…</div>
+</div>
+
+<!-- ============================================================
+     TEST ENGINE
+     ============================================================ -->
+<div id="test-screen" role="main">
+  <div class="tb">
+    <div class="tb-left">
+      <button class="tb-qnav-toggle" id="tb-qnav-toggle" type="button" onclick="toggleQNav()" aria-label="Open question grid" title="Question grid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <a class="tb-logo" href="/" onclick="event.preventDefault();goLanding();">
+        <img src="/assets/budy-logo.png" alt="Budy logo" class="tb-logo-img">
+        <span class="tb-logo-wordmark">Budy<span class="tb-logo-study">.Study</span></span>
+      </a>
+      <div class="tb-sec" id="tb-sec-lbl">Math</div>
+    </div>
+    <div class="tb-timer" id="tb-timer">
+      <span class="tb-timer-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <span id="timer-txt">35:00</span>
+      <button class="tb-timer-btn" id="timer-toggle-btn" type="button" onclick="toggleTimerPause()" aria-label="Pause timer" title="Pause timer">
+        <svg id="timer-toggle-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+      </button>
+    </div>
+    <div class="tb-right">
+      <div class="tb-prog"><div class="tb-prog-fill" id="tb-prog-fill"></div></div>
+      <button class="tb-submit" onclick="confirmSubmit()">Submit</button>
+    </div>
+  </div>
+  <div class="qnav-backdrop" id="qnav-backdrop" onclick="toggleQNav()"></div>
+  <div class="test-body">
+    <aside class="q-nav" id="q-nav">
+      <div class="qn-head">
+        <div class="qn-title">Questions</div>
+        <button class="qn-toggle" id="qn-toggle-btn" type="button" onclick="toggleQNav()" aria-expanded="false" aria-controls="qn-grid" aria-label="Open question menu" title="Open question menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="qn-grid" id="qn-grid"></div>
+      <div class="qn-legend" id="qn-legend">
+        <div class="leg-row"><div class="leg-dot complete"></div>Green = Completed</div>
+        <div class="leg-row"><div class="leg-dot current"></div>Yellow = Current</div>
+      </div>
+    </aside>
+    <main class="q-main" id="q-main"></main>
+  </div>
+  <div class="test-ft">
+    <button class="flag-btn" id="flag-btn" onclick="toggleFlag()"><span class="ui-icon ui-icon-sm" id="flag-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-flag"></use></svg></span><span id="flag-lbl">Flag</span></button>
+    <div class="admin-test-tools hidden" id="admin-test-tools" aria-live="polite">
+      <span class="admin-adaptive-note" id="admin-adaptive-note"></span>
+    </div>
+    <div class="test-nav-btns">
+      <span class="test-prog-txt" id="test-prog-txt"></span>
+      <button class="btn btn-primary btn-sm" id="step-submit-btn" onclick="handleStepSubmit()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     RESULTS
+     ============================================================ -->
+<div id="results-screen" role="main">
+  <div class="res-header">
+    <div class="wrap"><h2 id="res-headline">Your Results Are In!</h2><p id="res-subline">Practice Test</p></div>
+  </div>
+  <div class="wrap-sm">
+    <div class="res-score-card">
+      <div class="big-num bl" id="big-score">0</div>
+      <div class="score-lbl" id="score-lbl">Score</div>
+      <div class="pct-badge" id="pct-badge">-</div>
+      <div class="score-ticks">
+        <div><div class="score-tick-n" id="r-correct">-</div><div class="score-tick-l">Correct</div></div>
+        <div><div class="score-tick-n" id="r-wrong" style="color:var(--rose)">-</div><div class="score-tick-l">Wrong</div></div>
+        <div><div class="score-tick-n" id="r-skip" style="color:var(--muted)">-</div><div class="score-tick-l">Skipped</div></div>
+      </div>
+    </div>
+    <div class="res-content" style="padding:0">
+      <div id="free-limit-banner" class="limit-banner hidden">
+        <div class="limit-banner-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span></div>
+        <div class="limit-banner-text">
+          <h4>You used your free 10-question test!</h4>
+          <p>Unlock full-length tests (27–49 questions), explanations, and unlimited tries with Premium.</p>
+        </div>
+        <div class="limit-banner-actions">
+          <button class="btn btn-primary btn-sm" onclick="purchasePlan('monthly')" data-analytics-event="results_unlock_premium">Unlock Premium</button>
+        </div>
+      </div>
+      <div class="res-grid">
+        <div class="res-card">
+          <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span>Skill Breakdown</span></h3>
+          <div id="skill-bars"></div>
+        </div>
+        <div class="res-card">
+          <h3><span class="ui-inline"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span>Summary</span></h3>
+          <div id="perf-summary" style="font-size:.875rem;color:var(--slate);line-height:1.7"></div>
+        </div>
+      </div>
+      <div style="margin-top:24px">
+        <h3 style="font-size:1rem;font-weight:800;margin-bottom:16px;color:var(--ink)">Answer Review</h3>
+        <div id="review-list"></div>
+      </div>
+      <div class="res-actions">
+        <button class="btn btn-primary" onclick="openOnboard()">Take Another Test</button>
+        <a class="btn btn-ghost" href="/my-account.html">My Account</a>
+        <button class="btn btn-ghost" onclick="downloadReport()"><span class="ui-inline"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-download"></use></svg></span>Report</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD
+     ============================================================ -->
+<div id="dash-screen" role="main">
+  <div class="dash-hd">
+    <div class="wrap dash-hd-inner">
+      <div style="position:relative">
+        <svg style="position:absolute;right:0;top:-60px;width:200px;opacity:.07;pointer-events:none" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 20 Q50 10 90 20 L90 80 Q50 70 10 80 Z" fill="white"/>
+          <circle cx="35" cy="44" r="7" fill="#1a56db"/>
+          <circle cx="65" cy="44" r="7" fill="#1a56db"/>
+          <path d="M36 60 Q50 70 64 60" stroke="#1a56db" stroke-width="5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <p class="dash-greeting">Welcome back</p>
+        <h2 id="dash-greet" class="dash-greet">Welcome back, Student!</h2>
+        <div class="acct-status free" id="acct-status-badge">
+          <span class="acct-status-icon" id="acct-status-icon">•</span>
+          <span id="acct-status-text">FREE PLAN</span>
+        </div>
+      </div>
+      <div class="acct-tabs" role="tablist" aria-label="My account tabs">
+        <button class="acct-tab active" id="acct-tab-progress" onclick="setAccountTab('progress')" role="tab" aria-selected="true">My Progress</button>
+        <button class="acct-tab" id="acct-tab-billing" onclick="setAccountTab('billing')" role="tab" aria-selected="false">Billing</button>
+        <button class="acct-tab" id="acct-tab-settings" onclick="setAccountTab('settings')" role="tab" aria-selected="false">Settings</button>
+      </div>
+    </div>
+  </div>
+  <div class="dash-body">
+    <div class="wrap">
+      <div class="acct-pane active" id="acct-pane-progress" role="tabpanel">
+        <div class="dash-stats">
+          <div class="d-stat"><div class="d-stat-lbl">Best Score</div><div class="d-stat-v pos" id="d-best">-</div><div class="d-stat-sub">All-time SAT</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Latest Score</div><div class="d-stat-v" id="d-latest">-</div><div class="d-stat-sub">Most recent</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Last 7 Days</div><div class="d-stat-v neu" id="d-week-imp">+0</div><div class="d-stat-sub">Score improvement</div></div>
+          <div class="d-stat"><div class="d-stat-lbl">Tests Taken</div><div class="d-stat-v" id="d-count">0</div><div class="d-stat-sub">This month</div></div>
+        </div>
+        <div class="dash-grid">
+          <div class="d-card">
+            <div class="d-card-hd"><h3>Score History</h3><span class="d-card-tag tag-brand">30 Days</span></div>
+            <div id="ch-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></div><p>Complete your first test to see your score chart.</p></div>
+            <div class="score-chart-wrap">
+              <canvas id="score-chart" height="230"></canvas>
+              <div class="score-hover-card" id="score-hover-card" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="d-card">
+            <div class="d-card-hd"><h3>Recent Tests</h3><span class="d-card-tag tag-gold">Latest</span></div>
+            <div id="sess-empty" class="empty-s hidden"><div class="empty-s-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-note"></use></svg></span></div><p>No tests yet. Start one!</p></div>
+            <table class="sessions-tbl" id="sess-tbl">
+              <thead><tr><th>Date</th><th>Section</th><th>Score</th><th>%</th></tr></thead>
+              <tbody id="sess-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="d-card admin-qbank-panel hidden" id="admin-question-bank-panel">
+          <div class="d-card-hd"><h3>Admin Question Bank Monitor</h3><span class="d-card-tag tag-gold">3200 Questions</span></div>
+          <div class="admin-qbank-grid" id="admin-qbank-content"></div>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="d-card">
+            <div class="d-card-hd">
+              <h3>Recent AI Explanation</h3>
+              <span class="expl-chip">AI Explanation</span>
+            </div>
+            <div style="background:rgba(26,86,219,.08);border:1px solid rgba(59,130,246,.15);border-radius:14px;padding:16px 20px">
+              <p style="font-size:.8rem;color:rgba(240,244,255,.38);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;font-weight:700">Q: Which best describes the main argument?</p>
+              <p style="font-size:.875rem;color:rgba(240,244,255,.65);line-height:1.7">The passage argues that <strong style="color:#f0f4ff">economic incentives alone are insufficient</strong> to explain behavioral change - social norms and peer influence play an equally critical role. The author supports this with the community recycling study in paragraphs 3-4.</p>
+              <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span style="font-size:.72rem;color:#10b981;font-weight:700;background:rgba(16,185,129,.12);padding:3px 10px;border-radius:999px">Your answer was correct</span>
+                <span style="font-size:.72rem;color:rgba(240,244,255,.38)">Answer: B - Social norms as primary driver</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acct-pane" id="acct-pane-billing" role="tabpanel">
+        <div class="billing-wrap">
+          <div class="billing-plan-card">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <div class="plan-label">Current Plan</div>
+                <div class="plan-name" id="profile-plan">Free</div>
+                <div class="plan-price" style="margin-top:6px">$0 / month - 20 QR generations lifetime</div>
+                <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-primary" onclick="purchasePlan('monthly')">Upgrade to Pro</button>
+                  <button class="btn btn-ghost-dark" onclick="scrollToSection('#pricing')">View Plans</button>
+                </div>
+              </div>
+              <svg width="56" height="56" viewBox="0 0 100 100" fill="none" style="flex-shrink:0;opacity:.5" aria-hidden="true">
+                <rect width="100" height="100" rx="22" fill="#1a56db"/>
+                <path d="M20 30 Q50 24 80 30 L80 72 Q50 66 20 72 Z" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+                <line x1="50" y1="26" x2="50" y2="70" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+                <circle cx="36" cy="48" r="3.5" fill="white"/>
+                <circle cx="64" cy="48" r="3.5" fill="white"/>
+                <path d="M40 58 Q50 64 60 58" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="billing-plan-card pro">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <div class="plan-label">Pro Plan</div>
+                <div class="plan-name" style="color:#3b82f6">$50<span style="font-size:1rem;color:rgba(240,244,255,.38)">/month</span></div>
+                <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Unlimited test attempts</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Full AI explanations on every question</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Score analytics and progress charts</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(240,244,255,.65)"><span class="ui-icon ui-icon-sm" style="color:#10b981" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-check"></use></svg></span> Printable flashcard generator</div>
+                </div>
+              </div>
+              <svg width="64" height="64" viewBox="0 0 100 100" fill="none" style="flex-shrink:0" aria-hidden="true">
+                <rect width="100" height="100" rx="26" fill="#f59e0b"/>
+                <path d="M15 28 Q50 18 85 28 L85 74 Q50 64 15 74 Z" fill="rgba(255,255,255,.25)" stroke="white" stroke-width="3"/>
+                <line x1="50" y1="22" x2="50" y2="70" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+                <circle cx="34" cy="46" r="5" fill="#1a56db"/>
+                <circle cx="66" cy="46" r="5" fill="#1a56db"/>
+                <path d="M36 57 Q50 65 64 57" stroke="#1a56db" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="billing-rows">
+            <div class="billing-row"><span class="billing-k">Account status</span><span class="billing-v"><span class="sc-pill sc-hi" id="profile-account-status">ACTIVE</span></span></div>
+            <div class="billing-row"><span class="billing-k">Account type</span><span class="billing-v" id="profile-account-type">Standard user</span></div>
+            <div class="billing-row"><span class="billing-k">Subscription timing</span><span class="billing-v" id="profile-billing-timing">-</span></div>
+            <div class="billing-row"><span class="billing-k">Payment method</span><span class="billing-v">Managed in Stripe checkout</span></div>
+            <div class="billing-row"><span class="billing-k">Billing actions</span><div class="billing-actions"><button class="btn-outline-dark" id="billing-portal-btn" onclick="openBillingPortal()">Manage Billing</button><button class="btn-danger" id="billing-cancel-btn" onclick="cancelSubscriptionNow()">Cancel Now</button></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acct-pane" id="acct-pane-settings" role="tabpanel">
+        <div class="settings-section">
+          <div class="settings-section-hd">Profile</div>
+          <div class="settings-row"><span class="settings-k">Full Name</span><span class="settings-v" id="profile-name">-</span></div>
+          <div class="settings-row"><span class="settings-k">Email</span><span class="settings-v" id="profile-email">-</span></div>
+          <div class="settings-row"><span class="settings-k">Grade</span><span class="settings-v" id="profile-grade">-</span></div>
+          <div class="settings-row"><span class="settings-k">Target SAT Score</span><span class="settings-v">1500+</span></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-hd">Notifications</div>
+          <div class="settings-row"><span class="settings-k">Marketing emails</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-marketing-email"><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Opt in</span></label></div>
+          <div class="settings-row"><span class="settings-k">SMS updates</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-marketing-sms"><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Opt in</span></label></div>
+          <div class="settings-row"><span class="settings-k">Product announcements</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-product-news" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Opt in</span></label></div>
+          <div class="settings-row"><span class="settings-k">Study reminders</span><label class="toggle-wrap"><label class="toggle"><input type="checkbox" id="opt-reminders" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label><span>Daily nudge</span></label></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-hd">Account</div>
+          <div class="settings-row"><span class="settings-k">Export my data</span><button class="btn-outline-dark">Download CSV</button></div>
+          <div class="settings-row"><span class="settings-k">Sign out</span><button class="btn-outline-dark" onclick="authAction()">Sign Out</button></div>
+          <div class="settings-row"><span class="settings-k">Delete account</span><button class="btn-danger">Delete Account</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ONBOARDING MODAL
+     ============================================================ -->
+<div class="overlay" id="onboard-overlay" role="dialog" aria-modal="true" aria-labelledby="ob-title">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-text"><h2 id="ob-title">Let's set up your test</h2><p id="ob-sub">Step 1 of 3</p></div>
+      <button class="modal-close" onclick="closeOnboard()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
+    </div>
+    <div class="modal-bd">
+      <div class="step-dots"><div class="step-dot on" id="sd1"></div><div class="step-dot" id="sd2"></div><div class="step-dot" id="sd3"></div></div>
+
+      <!-- Step 1 -->
+      <div id="ob-s1">
+        <div class="fg"><label class="fl" for="ob-name">Your first name</label><input class="fi" type="text" id="ob-name" placeholder="e.g. Alex" maxlength="40"></div>
+        <div class="fg"><label class="fl" for="ob-grade">Your grade</label>
+          <select class="fi-sel" id="ob-grade">
+            <option value="">Select your grade</option>
+            <option value="8">8th Grade</option>
+            <option value="9">9th Grade</option>
+            <option value="10">10th Grade</option>
+            <option value="11">11th Grade</option>
+            <option value="12">12th Grade</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="ob-s2" class="hidden">
+        <p style="font-size:.875rem;color:var(--muted);margin-bottom:14px">What do you want to practice today?</p>
+        <div class="sec-pick">
+          <div class="sec-opt" onclick="pickSec('english',this)">
+            <div class="sec-opt-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-book"></use></svg></span></div>
+            <div><h4>Reading & Writing</h4><p>Grammar, passages, and vocabulary. 10 questions free, 27 with Premium.</p></div>
+          </div>
+          <div class="sec-opt" onclick="pickSec('math',this)">
+            <div class="sec-opt-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-calculator"></use></svg></span></div>
+            <div><h4>Math</h4><p>Algebra, geometry, and data. 10 questions free, 22 with Premium.</p></div>
+          </div>
+          <div class="sec-opt" onclick="pickSec('full',this)" id="sec-full-opt">
+            <div class="sec-opt-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-clipboard"></use></svg></span></div>
+            <div><h4>Full Test <span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-lock"></use></svg></span> Premium</h4><p>Both sections. 49 questions, 67 minutes.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="ob-s3" class="hidden">
+        <div class="ready-box">
+          <div class="rb-row"><span class="rb-lbl">Name</span><span class="rb-val" id="rb-name">-</span></div>
+          <div class="rb-row"><span class="rb-lbl">Grade</span><span class="rb-val" id="rb-grade">-</span></div>
+          <div class="rb-row"><span class="rb-lbl">Section</span><span class="rb-val"><span class="rb-chip" id="rb-sec">-</span></span></div>
+          <div class="rb-row"><span class="rb-lbl">Questions</span><span class="rb-val" id="rb-qcount">-</span></div>
+          <div class="rb-row"><span class="rb-lbl">Time</span><span class="rb-val" id="rb-time">-</span></div>
+        </div>
+        <div class="tip"><strong><span class="ui-inline"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span>Tip:</span></strong> Find a quiet spot. Treat this like the real thing, and your practice score will be much more useful.</div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" id="ob-back" onclick="obBack()" style="display:none">← Back</button>
+      <button class="btn btn-primary" id="ob-next" onclick="obNext()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAYWALL MODAL
+     ============================================================ -->
+<div class="overlay" id="paywall-overlay" role="dialog" aria-modal="true">
+  <div class="modal paywall-modal-shell">
+    <button class="paywall-close" onclick="closePaywall()" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
+    <div class="modal-bd paywall-modal-body">
+      <div class="paywall-modal">
+        <div class="paywall-icon"><span class="ui-icon ui-icon-xl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-rocket"></use></svg></span></div>
+        <h2 class="paywall-title">Unlock Budy.Study Premium</h2>
+        <p class="paywall-msg" id="paywall-msg">Full tests, instant AI explanations, and smarter score growth.</p>
+        <div class="paywall-perks">
+          <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-clipboard"></use></svg></span></span> Full 27-49 question practice tests</div>
+          <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-bulb"></use></svg></span></span> AI deep-dive explanations</div>
+          <div class="pw-perk"><span class="pw-perk-icon"><span class="ui-icon ui-icon-md" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-chart"></use></svg></span></span> Score analytics and progress tracking</div>
+        </div>
+        <!-- Inline pricing in paywall -->
+        <div class="paywall-plan-stack">
+          <button onclick="selectPlan('weekly')" class="pw-plan-btn" id="pwp-weekly" type="button">
+            <div class="pw-plan-row">
+              <div class="pw-plan-name">Weekly</div>
+              <div class="pw-plan-price">$8<span class="pw-plan-unit">/wk</span></div>
+            </div>
+            <div class="pw-plan-meta">$32/mo equivalent · billed at $8 weekly</div>
+          </button>
+          <button onclick="selectPlan('monthly')" class="pw-plan-btn" id="pwp-monthly" type="button">
+            <div class="pw-plan-row">
+              <div class="pw-plan-name">Monthly <span class="pw-plan-badge">POPULAR</span></div>
+              <div class="pw-plan-price">$20<span class="pw-plan-unit">/mo</span></div>
+            </div>
+            <div class="pw-plan-meta">$5/week equivalent · billed at $20 monthly</div>
+          </button>
+          <button onclick="selectPlan('annual')" class="pw-plan-btn" id="pwp-annual" type="button">
+            <div class="pw-plan-row">
+              <div class="pw-plan-name">Annually</div>
+              <div class="pw-plan-price">$96<span class="pw-plan-unit">/yr</span></div>
+            </div>
+            <div class="pw-plan-meta">$2/week · $8/mo billed at $96 annually</div>
+          </button>
+        </div>
+        <button class="btn btn-primary btn-full" id="pw-cta-btn" onclick="handlePurchase()">Start Premium</button>
+        <p class="paywall-note">7-day money-back guarantee · Cancel any time</p>
+      </div>
+    </div>
+    <div class="paywall-modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closePaywall()">No thanks, stay free</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     LEAVE TEST MODAL
+     ============================================================ -->
+<div class="overlay" id="leave-test-overlay" role="dialog" aria-modal="true" aria-labelledby="leave-test-title" onclick="if(event.target===this)closeLeaveTestModal()">
+  <div class="modal leave-test-modal">
+    <div class="modal-hd">
+      <div class="modal-hd-text"><p style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 6px"><span class="modal-eyebrow-inline"><span>Test In Progress</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l2.5 2.5"></path></svg></span></p><h2 id="leave-test-title">Leave The Test?</h2></div>
+    </div>
+    <div class="modal-bd">
+      <div class="leave-test-copy">
+        <h2 class="leave-test-alert-title"><span class="leave-test-alert-title-text">Progress Will Be Lost!</span></h2>
+        <p>If you leave now, your current answers, flags, and remaining time for this practice test will be cleared.</p>
+      </div>
+    </div>
+    <div class="modal-ft modal-actions-even">
+      <button class="btn btn-ghost" onclick="closeLeaveTestModal()">Stay In Test</button>
+      <button class="btn btn-primary" onclick="confirmLeaveTest()">Leave Test</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="action-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="action-confirm-title" onclick="if(event.target===this)closeActionConfirm(false)">
+  <div class="modal action-confirm-modal">
+    <div class="modal-hd">
+      <div class="modal-hd-text"><p id="action-confirm-eyebrow" style="font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 6px">Before you continue</p><h2 id="action-confirm-title">Confirm action</h2></div>
+      <button class="modal-close action-confirm-close" id="action-confirm-close" onclick="closeActionConfirm(false)" aria-label="Close"><span class="ui-icon ui-icon-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-close"></use></svg></span></button>
+    </div>
+    <div class="modal-bd">
+      <div class="action-confirm-icon" id="action-confirm-icon"><span class="ui-icon ui-icon-lg" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/assets/ui-icons.svg#icon-warning"></use></svg></span></div>
+      <div class="action-confirm-copy">
+        <p id="action-confirm-body">Please review this action before continuing.</p>
+      </div>
+      <div class="action-confirm-note hidden" id="action-confirm-note"></div>
+    </div>
+    <div class="modal-ft modal-actions-even" id="action-confirm-actions">
+      <button class="btn btn-ghost" id="action-confirm-cancel-btn" onclick="closeActionConfirm(false)">Cancel</button>
+      <button class="btn btn-primary action-confirm-confirm-btn" id="action-confirm-confirm-btn" onclick="closeActionConfirm(true)">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script src="/assets/ai-deep-dive.js"></script>
+<script src="/assets/landing-page.js?v=20260410c"></script>
+</body>
+</html>
