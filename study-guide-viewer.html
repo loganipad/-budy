@@ -144,6 +144,44 @@ body::before{
 .viewer-download:hover{border-color:rgba(255,255,255,.34);color:#fff;transform:translateY(-1px)}
 .viewer-download svg{width:14px;height:14px;display:block}
 
+.viewer-fullscreen{
+  position:absolute;
+  top:20px;
+  right:140px;
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(8,12,22,.64);
+  color:#e2e8f0;
+  font-size:.8rem;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+  backdrop-filter:blur(8px);
+}
+.viewer-fullscreen:hover{border-color:rgba(255,255,255,.34);color:#fff;transform:translateY(-1px)}
+.viewer-fullscreen svg{width:14px;height:14px;display:block}
+
+.viewer-frame-wrap:fullscreen,
+.viewer-frame-wrap:-webkit-full-screen{
+  background:var(--ink);
+  border-radius:0;
+  border:none;
+  height:100%;
+  max-height:none;
+  padding:12px;
+}
+
+.viewer-frame-wrap:fullscreen .viewer-pages,
+.viewer-frame-wrap:-webkit-full-screen .viewer-pages{
+  max-width:1200px;
+  margin:0 auto;
+}
+
 .viewer-completion-pill{
   position:absolute;
   top:20px;
@@ -237,7 +275,10 @@ body::before{
   .viewer-shell{padding:0}
   .viewer-frame-wrap{border-radius:10px;height:calc(100vh - 128px);min-height:560px;padding:10px}
   .viewer-back{left:14px;top:14px}
-  .viewer-download{right:14px;top:14px}
+  .viewer-fullscreen{right:60px;top:14px;min-height:34px;font-size:.72rem;padding:0 10px}
+  .viewer-fullscreen span{display:none}
+  .viewer-download{right:14px;top:14px;min-height:34px;font-size:.72rem;padding:0 10px}
+  .viewer-download span{display:none}
   .viewer-completion-pill{top:14px;min-height:34px;font-size:.72rem;padding:0 12px}
 
   #footer-slot footer.site-footer{
@@ -258,6 +299,10 @@ body::before{
     <section class="viewer-wrap wrap">
       <div class="viewer-shell">
         <a class="viewer-back" href="/study.html" id="viewer-back">Back to Study Hub</a>
+        <button class="viewer-fullscreen" id="viewer-fullscreen" type="button" aria-label="Toggle full screen">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Full Screen</span>
+        </button>
         <a class="viewer-download" id="viewer-download" href="#" aria-label="Download study guide PDF" download>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8 11 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           <span>Download</span>
@@ -609,6 +654,30 @@ body::before{
       });
 
       document.title = 'Budy.Study | ' + (title || 'Study Guide');
+
+      var fsBtn = document.getElementById('viewer-fullscreen');
+      var fsLabel = fsBtn ? fsBtn.querySelector('span') : null;
+
+      function updateFsLabel() {
+        if (!fsLabel) return;
+        var active = document.fullscreenElement === frameWrap;
+        fsLabel.textContent = active ? 'Exit Full Screen' : 'Full Screen';
+      }
+
+      if (fsBtn && frameWrap) {
+        fsBtn.addEventListener('click', function () {
+          if (document.fullscreenElement === frameWrap) {
+            document.exitFullscreen().catch(function () {});
+          } else if (frameWrap.requestFullscreen) {
+            frameWrap.requestFullscreen().catch(function () {});
+          } else if (frameWrap.webkitRequestFullscreen) {
+            frameWrap.webkitRequestFullscreen();
+          }
+        });
+
+        document.addEventListener('fullscreenchange', updateFsLabel);
+        document.addEventListener('webkitfullscreenchange', updateFsLabel);
+      }
     })();
   </script>
 </body>
