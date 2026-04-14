@@ -70,7 +70,7 @@
   }
 
   .site-footer .footer-col h4 {
-    font-size: 0.77rem;
+    font-size: 0.82rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -170,10 +170,11 @@
 
   .site-footer .footer-copy {
     display: block;
-    font-size: 0.775rem;
+    font-size: 0.82rem;
     max-width: none;
     line-height: 1.6;
-    white-space: nowrap;
+    white-space: normal;
+    text-wrap: balance;
   }
 
   .site-footer .footer-store-badge {
@@ -225,7 +226,7 @@
 
   @media (max-width: 560px) {
     footer.site-footer {
-      padding: 50px 0 22px;
+      padding: 50px 0 calc(22px + env(safe-area-inset-bottom, 0px));
     }
 
     .site-footer .footer-grid {
@@ -234,6 +235,13 @@
 
     .site-footer .footer-grid-socials {
       grid-column: auto;
+    }
+
+    .site-footer .footer-col a {
+      font-size: 0.95rem;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
   }
 </style>

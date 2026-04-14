@@ -525,8 +525,8 @@ button { font-family: inherit; cursor: pointer; }
   gap: 8px;
 }
 .achievement-nav-btn {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.16);
   background: rgba(255,255,255,.06);
@@ -1211,13 +1211,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .dashboard-tour-close {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.04);
   color: rgba(240,244,255,.76);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
@@ -1254,8 +1254,8 @@ button { font-family: inherit; cursor: pointer; }
 
 .dashboard-tour-btn,
 .dashboard-tour-primary {
-  min-height: 38px;
-  padding: 0 14px;
+  min-height: 44px;
+  padding: 0 16px;
   border-radius: 999px;
   font-size: .78rem;
   font-weight: 800;
@@ -1275,13 +1275,16 @@ button { font-family: inherit; cursor: pointer; }
 
 #toasts {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   right: 20px;
+  left: 20px;
   z-index: 2000;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  pointer-events: none;
 }
+.toast { pointer-events: auto; }
 .toast {
   background: #1c2333;
   color: #fff;
@@ -1346,8 +1349,8 @@ button { font-family: inherit; cursor: pointer; }
   color: #f0f4ff;
 }
 .confirm-close {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.06);
@@ -1355,7 +1358,7 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 .confirm-close:hover {
   color: #fff;
@@ -1404,8 +1407,8 @@ button { font-family: inherit; cursor: pointer; }
 }
 .confirm-btn-secondary,
  .confirm-btn-primary {
-  height: 38px;
-  padding: 0 18px;
+  height: 44px;
+  padding: 0 20px;
   border-radius: 999px;
   font-size: .84rem;
   font-weight: 800;
