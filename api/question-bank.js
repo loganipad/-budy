@@ -1,3 +1,4 @@
+import { resolveAuthUser } from '../lib/auth.js';
 import { withApiErrorBoundary } from '../lib/observability.js';
 import { json } from '../lib/http.js';
 import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
@@ -21,6 +22,11 @@ async function handler(req, res) {
       error: 'Too many question bank requests. Please retry shortly.',
       retryAfterSeconds: rateLimit.retryAfterSeconds
     });
+  }
+
+  const auth = await resolveAuthUser(req);
+  if (!auth.ok) {
+    return json(res, auth.status || 401, { error: 'Unauthorized' });
   }
 
   const section = String(req.query && req.query.section ? req.query.section : 'all').trim().toLowerCase();

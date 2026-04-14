@@ -451,13 +451,18 @@
     refreshNavChrome();
   }
 
+  var didPostMount = false;
   function postMount() {
+    var isFirstMount = !didPostMount;
+    didPostMount = true;
     setNavFallbacks();
     applyNavContext();
     syncNavAuthState();
     syncNavStartCtas();
     updateNavProgress();
-    document.dispatchEvent(new CustomEvent('navbar:mounted'));
+    if (isFirstMount) {
+      document.dispatchEvent(new CustomEvent('navbar:mounted'));
+    }
   }
 
   function mountNavbar() {

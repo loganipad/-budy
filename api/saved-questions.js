@@ -49,7 +49,7 @@ async function handler(req, res) {
     const result = await listSavedQuestionsByUserId(auth.user.id, 200);
     if (!result.ok) {
       const status = result.disabled ? 503 : 500;
-      return json(res, status, { error: result.error || 'Unable to fetch saved questions.', disabled: Boolean(result.disabled) });
+      return json(res, status, { error: 'Unable to fetch saved questions.', disabled: Boolean(result.disabled) });
     }
 
     const questions = Array.isArray(result.data) ? result.data.map(normalizeSavedQuestionRow) : [];
@@ -62,7 +62,7 @@ async function handler(req, res) {
 
   if (!saveResult.ok) {
     const status = saveResult.disabled ? 503 : 500;
-    return json(res, status, { error: saveResult.error || 'Unable to save questions.', disabled: Boolean(saveResult.disabled) });
+    return json(res, status, { error: 'Unable to save questions.', disabled: Boolean(saveResult.disabled) });
   }
 
   const questions = Array.isArray(saveResult.data) ? saveResult.data.map(normalizeSavedQuestionRow) : [];

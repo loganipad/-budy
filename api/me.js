@@ -86,7 +86,7 @@ async function handler(req, res) {
 
   const record = await getSubscriptionByUserId(auth.user.id);
   if (!record.ok && !record.disabled) {
-    return json(res, 500, { error: record.error || 'Unable to fetch subscription.' });
+    return json(res, 500, { error: 'Unable to fetch subscription.' });
   }
 
   const row = record.ok ? record.data : null;

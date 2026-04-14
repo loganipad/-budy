@@ -3,6 +3,11 @@ mobile-web/
 .DS_Store
 *.log
 
+# Environment files
+.env
+.env.*
+.env.local
+
 # Python virtual environments
 .venv/
 .venv-1/

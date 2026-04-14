@@ -220,7 +220,7 @@ async function handler(req, res) {
         logOperationalEvent('stripe_webhook_event_rejected', req, { eventType, eventId: event.id, reason: result.error }, {
           severity: 'warn'
         });
-        return json(res, result.status || 400, { error: result.error });
+        return json(res, result.status || 400, { error: 'Webhook event processing failed.' });
       }
     } else if (eventType === 'customer.subscription.updated' || eventType === 'customer.subscription.deleted') {
       const result = await handleSubscriptionChanged(event, stripeSecretKey);
@@ -228,7 +228,7 @@ async function handler(req, res) {
         logOperationalEvent('stripe_webhook_event_rejected', req, { eventType, eventId: event.id, reason: result.error }, {
           severity: 'warn'
         });
-        return json(res, result.status || 400, { error: result.error });
+        return json(res, result.status || 400, { error: 'Webhook event processing failed.' });
       }
     }
 
@@ -242,7 +242,7 @@ async function handler(req, res) {
       alertType: 'webhook_failure',
       alertSummary: `Stripe webhook processing failed for ${eventType}`
     });
-    return json(res, 500, { error: message });
+    return json(res, 500, { error: 'Webhook processing failed.' });
   }
 }
 

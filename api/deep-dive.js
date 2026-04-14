@@ -193,7 +193,7 @@ async function requestDeepDiveFromOpenAI(input, config) {
       return {
         ok: false,
         status: 502,
-        error: data && data.error && data.error.message ? data.error.message : 'AI provider request failed.'
+        error: 'AI provider request failed.'
       };
     }
 

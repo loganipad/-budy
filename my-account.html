@@ -1999,8 +1999,6 @@ const AUTH0_REDIRECT_URI = window.location.origin;
 const ADMIN_PANEL_URL = '/admin';
 const LOCAL_AUTH_KEY = 'budy_local_auth_user';
 const SAVED_QUESTIONS_KEY = 'budy_saved_questions';
-const ADMIN_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
-const TEST_USER_EMAILS = ['loganipad@gmail.com', 'myleskcb@gmail.com'];
 const GRADE_KEY = 'budy_grade_pref';
 const LOGIN_STREAK_KEY = 'budy_login_activity_v1';
 const DASHBOARD_TOUR_KEY = 'budy_dashboard_tour_seen_v1';
@@ -2123,14 +2121,12 @@ function openAccountConfirm(options) {
   });
 }
 
-function isTestUserEmail(email) {
-  if (!email) return false;
-  return TEST_USER_EMAILS.includes(String(email).trim().toLowerCase());
+function isTestUserEmail() {
+  return Boolean(S.isAdmin);
 }
 
-function isAdminEmail(email) {
-  if (!email) return false;
-  return ADMIN_EMAILS.includes(String(email).trim().toLowerCase());
+function isAdminEmail() {
+  return Boolean(S.isAdmin);
 }
 
 function setAccountTab(tab) {
@@ -2761,7 +2757,7 @@ async function initAuth() {
     if (user && user.sub) S.authUserId = String(user.sub);
     if (user && user.name) S.user.name = user.name;
     if (user && user.email) S.user.email = user.email;
-    S.isAdmin = isAdminEmail(S.user.email);
+    S.isAdmin = false;
     if (S.isAdmin) S.isPremium = true;
   } else {
     const localUser = getLocalAuthUser();
@@ -2771,7 +2767,7 @@ async function initAuth() {
       if (localUser.sub) S.authUserId = String(localUser.sub);
       if (localUser.name) S.user.name = localUser.name;
       if (localUser.email) S.user.email = localUser.email;
-      S.isAdmin = isAdminEmail(S.user.email);
+      S.isAdmin = false;
       if (S.isAdmin) S.isPremium = true;
     }
   }
@@ -2819,7 +2815,7 @@ async function refreshPremiumStatus() {
 
     if (!response.ok) return;
 
-    S.isAdmin = Boolean(data && data.isAdmin) || isAdminEmail(S.user.email);
+    S.isAdmin = Boolean(data && data.isAdmin);
     S.isPremium = Boolean(data.isPremium) || S.isAdmin;
     S.subscriptionStatus = data && data.subscriptionStatus ? String(data.subscriptionStatus).toLowerCase() : 'free';
     S.cancelAtPeriodEnd = Boolean(data && data.cancelAtPeriodEnd);

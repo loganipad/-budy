@@ -49,7 +49,7 @@ async function handler(req, res) {
     const result = await listAttemptsByUserId(auth.user.id, 200);
     if (!result.ok) {
       const status = result.disabled ? 503 : 500;
-      return json(res, status, { error: result.error || 'Unable to fetch attempts.', disabled: Boolean(result.disabled) });
+      return json(res, status, { error: 'Unable to fetch attempts.', disabled: Boolean(result.disabled) });
     }
 
     const attempts = Array.isArray(result.data) ? result.data.map(normalizeAttemptRow) : [];
@@ -70,7 +70,7 @@ async function handler(req, res) {
 
   if (!createResult.ok) {
     const status = createResult.disabled ? 503 : 500;
-    return json(res, status, { error: createResult.error || 'Unable to save attempt.', disabled: Boolean(createResult.disabled) });
+    return json(res, status, { error: 'Unable to save attempt.', disabled: Boolean(createResult.disabled) });
   }
 
   const createdRow = Array.isArray(createResult.data) ? createResult.data[0] || null : null;

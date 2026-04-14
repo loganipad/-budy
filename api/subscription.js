@@ -101,7 +101,7 @@ function humanizeCheckoutError(err) {
     return 'Stripe price ID is invalid for this request. Verify the selected plan env var points to a recurring price_ ID.';
   }
 
-  return err && err.message ? err.message : 'Unable to create checkout session.';
+  return 'Unable to create checkout session.';
 }
 
 function humanizeBillingPortalError(err) {
@@ -115,7 +115,7 @@ function humanizeBillingPortalError(err) {
     return 'Stripe key lacks permission for billing portal sessions. Use a full secret key or grant billing portal permissions.';
   }
 
-  return err && err.message ? err.message : 'Unable to create billing portal session.';
+  return 'Unable to create billing portal session.';
 }
 
 function humanizeCancelError(err) {
@@ -129,7 +129,7 @@ function humanizeCancelError(err) {
     return 'Stripe key lacks permission to cancel subscriptions.';
   }
 
-  return err && err.message ? err.message : 'Unable to cancel subscription.';
+  return 'Unable to cancel subscription.';
 }
 
 async function handleCheckout(req, res, auth, secretKey) {

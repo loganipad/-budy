@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<script defer src="/assets/shared/escape-html.js"></script>
 <style>
 :root {
   --bg: #0a1222;
@@ -342,15 +343,17 @@ function renderTablePage() {
   const end = Math.min(total, start + PAGE_SIZE);
   const pageRows = state.filtered.slice(start, end);
 
+  const esc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
   tbody.innerHTML = pageRows.map((row) => {
-    const safePrompt = String(row.prompt || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').slice(0, 220);
+    const safePrompt = esc(String(row.prompt || '').slice(0, 220));
+    const safeDiff = esc(row.difficulty || '');
     return '<tr>' +
-      '<td>' + row.id + '</td>' +
-      '<td>' + subjectLabel(row.subject) + '</td>' +
-      '<td>' + (row.domain || '-') + '</td>' +
-      '<td>' + (row.skill || '-') + '</td>' +
-      '<td><span class="pill ' + row.difficulty + '">' + row.difficulty.toUpperCase() + '</span></td>' +
-      '<td>' + (row.format || '-') + '</td>' +
+      '<td>' + esc(row.id) + '</td>' +
+      '<td>' + esc(subjectLabel(row.subject)) + '</td>' +
+      '<td>' + esc(row.domain || '-') + '</td>' +
+      '<td>' + esc(row.skill || '-') + '</td>' +
+      '<td><span class="pill ' + safeDiff + '">' + safeDiff.toUpperCase() + '</span></td>' +
+      '<td>' + esc(row.format || '-') + '</td>' +
       '<td>' + safePrompt + '</td>' +
     '</tr>';
   }).join('');
@@ -446,7 +449,8 @@ async function init() {
     renderTablePage();
   } catch (err) {
     lock.classList.remove('hidden');
-    lock.innerHTML = '<h2 style="font-size:1rem;margin-bottom:7px">Could not load question bank</h2><p class="muted" style="color:#fecaca">' + (err && err.message ? err.message : 'Unknown error') + '</p>';
+    const errEsc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+    lock.innerHTML = '<h2 style="font-size:1rem;margin-bottom:7px">Could not load question bank</h2><p class="muted" style="color:#fecaca">' + errEsc(err && err.message ? err.message : 'Unknown error') + '</p>';
     app.classList.add('hidden');
   }
 }

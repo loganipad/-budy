@@ -3302,11 +3302,12 @@ function renderResults(r){
 
   // Skill bars
   const sb=document.getElementById('skill-bars');sb.innerHTML='';
+  const skillEsc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v));
   Object.entries(r.skillMap).forEach(([sk,d])=>{
     const pct=Math.round(d.correct/d.total*100);
     const clr=d.section==='math'?'var(--green)':'var(--brand)';
     const row=document.createElement('div');row.className='skill-row';
-    row.innerHTML=`<div class="skill-row-hd"><span class="skill-row-nm">${sk}</span><span class="skill-row-sc">${d.correct}/${d.total}</span></div><div class="skill-track"><div class="skill-fill" style="background:${clr}" data-p="${pct}"></div></div>`;
+    row.innerHTML=`<div class="skill-row-hd"><span class="skill-row-nm">${skillEsc(sk)}</span><span class="skill-row-sc">${d.correct}/${d.total}</span></div><div class="skill-track"><div class="skill-fill" style="background:${clr}" data-p="${pct}"></div></div>`;
     sb.appendChild(row);
     setTimeout(()=>{row.querySelector('.skill-fill').style.width=pct+'%'},400);
   });
@@ -3345,8 +3346,8 @@ function renderResults(r){
 
 function buildExpSection(i, q, wrap) {
   if (!S.isPremium) {
-    // Show locked blur
-    const fakeExp = `The correct answer is ${q.answer} because this question tests ${q.skill}. To get this type of question right, you need to carefully analyze the ${q.section==='math'?'equation and apply the relevant formula':'passage and identify the key supporting evidence'}. Remember that on the SAT, the correct answer is always directly supported by the text or mathematical logic, never your outside knowledge.`;
+    const expEsc = typeof window.BudyEscapeHtml === 'function' ? window.BudyEscapeHtml : (v => String(v == null ? '' : v));
+    const fakeExp = `The correct answer is ${expEsc(q.answer)} because this question tests ${expEsc(q.skill)}. To get this type of question right, you need to carefully analyze the ${q.section==='math'?'equation and apply the relevant formula':'passage and identify the key supporting evidence'}. Remember that on the SAT, the correct answer is always directly supported by the text or mathematical logic, never your outside knowledge.`;
     wrap.innerHTML=`<div class="exp-locked">
       <div class="exp-locked-preview">${fakeExp}</div>
       <div class="exp-lock-overlay">
@@ -4124,10 +4125,10 @@ async function init() {
   attachDemoSwipe();
   attachRipple();
   initLandingCounters();
-  updateAuthUI();
   document.addEventListener('navbar:mounted', applyHomeStudyNavOverride);
   try {
     await initAuth();
+    updateAuthUI();
     await refreshPremiumStatus();
     await hydrateSessions();
   } catch (err) {

@@ -66,7 +66,7 @@ async function handler(req, res) {
     const result = await getDraftSessionBySid(auth.user.id, sid);
     if (!result.ok) {
       const status = result.disabled ? 503 : 500;
-      return json(res, status, { error: result.error || 'Unable to fetch draft session.', disabled: Boolean(result.disabled) });
+      return json(res, status, { error: 'Unable to fetch draft session.', disabled: Boolean(result.disabled) });
     }
 
     const row = Array.isArray(result.data) ? result.data[0] || null : null;
@@ -81,7 +81,7 @@ async function handler(req, res) {
     const result = await deleteDraftSessionBySid(auth.user.id, sid);
     if (!result.ok) {
       const status = result.disabled ? 503 : 500;
-      return json(res, status, { error: result.error || 'Unable to delete draft session.', disabled: Boolean(result.disabled) });
+      return json(res, status, { error: 'Unable to delete draft session.', disabled: Boolean(result.disabled) });
     }
 
     return json(res, 200, { ok: true, sid });
@@ -94,7 +94,7 @@ async function handler(req, res) {
 
   if (!result.ok) {
     const status = result.disabled ? 503 : 500;
-    return json(res, status, { error: result.error || 'Unable to save draft session.', disabled: Boolean(result.disabled) });
+    return json(res, status, { error: 'Unable to save draft session.', disabled: Boolean(result.disabled) });
   }
 
   const row = Array.isArray(result.data) ? result.data[0] || null : null;
