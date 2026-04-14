@@ -5606,16 +5606,6 @@ body.viewer-faux-fullscreen-active{overflow:hidden}
         if (typeof event.stopPropagation === 'function') event.stopPropagation();
       }
 
-      var popup = null;
-      try {
-        popup = window.open(url, '_blank', 'noopener,noreferrer');
-      } catch (_) {}
-
-      if (popup && typeof popup.focus === 'function') {
-        popup.focus();
-        return;
-      }
-
       try {
         window.location.assign(url);
       } catch (_) {
