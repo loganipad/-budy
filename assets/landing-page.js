@@ -1575,7 +1575,12 @@ function renderLandingDemo(index) {
   renderDemoControls();
   if (S.demoCompleted || S.demoGrading) return;
 
-  label.textContent = q.section.toUpperCase() + ' · QUESTION ' + (index + 1) + ' OF ' + LANDING_DEMO_QUESTIONS.length;
+  const demoSubject = String(q.section || '')
+    .replace(/^SAT\s+/i, '')
+    .replace(/\s*DEMO\s*$/i, '')
+    .trim()
+    .toUpperCase();
+  label.textContent = demoSubject + ' DEMO · QUESTION ' + (index + 1) + ' OF ' + LANDING_DEMO_QUESTIONS.length;
   text.textContent = q.question;
   exp.className = 'phone-exp';
   exp.textContent = '';
