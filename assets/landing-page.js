@@ -72,13 +72,6 @@ const LANDING_DEMO_QUESTIONS = [
     explanation: 'A semicolon + conjunctive adverb + comma correctly links two independent clauses.'
   },
   {
-    section: 'Reading Demo',
-    question: 'An author contrasts "quick fixes" with "long-term systems." The main purpose is to:',
-    choices: ['Show why durable solutions matter more', 'Describe unrelated topics', 'Argue that all fixes fail', 'Reject planning entirely'],
-    answer: 'A',
-    explanation: 'The contrast highlights the value of long-term systems over temporary fixes.'
-  },
-  {
     section: 'Math Demo',
     question: 'What is the y-intercept of y = 2x + 5?',
     choices: ['2', '5', '-2', '-5'],
