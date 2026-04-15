@@ -19,6 +19,8 @@ Set these in Vercel Production before deployment.
 - `STRIPE_PRICE_ID_WEEKLY`
 - `STRIPE_PRICE_ID_MONTHLY`
 - `STRIPE_PRICE_ID_YEARLY`
+- `STRIPE_PRICE_ID_MONTHLY_TRIAL` (optional; used for free-trial mode monthly checkout)
+- `STRIPE_PRICE_ID_YEARLY_TRIAL` (optional; used for free-trial mode annual checkout)
 
 ### Data (Supabase)
 - `SUPABASE_URL`

@@ -186,6 +186,47 @@ test('api/subscription returns checkout url on success', { concurrency: false },
   globalThis.fetch = originalFetch;
 });
 
+test('api/subscription supports monthly trial checkout plan', { concurrency: false }, async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    json: async () => ({ id: 'cs_test_trial_123', url: 'https://checkout.stripe.test/trial-session' })
+  });
+
+  const mod = loadRouteModule('api/subscription.js', makeCommonImports({
+    '../lib/auth.js': { resolveAuthUser: async () => ({ ok: true, user: { id: 'u_1', email: 'user@example.com' } }) },
+    '../lib/origin.js': { resolveSafeOrigin: () => 'https://budy.study' },
+    '../lib/stripe-key.js': {
+      normalizeSecretKey: () => 'sk_live_abc',
+      looksMaskedKey: () => false
+    },
+    '../lib/rate-limit.js': {
+      checkRateLimit: () => ({ ok: true, limit: 30, remaining: 29, windowMs: 60000, retryAfterSeconds: 0 }),
+      applyRateLimitHeaders: () => {}
+    },
+    '../lib/subscription-store.js': {
+      getSubscriptionByUserId: async () => ({ ok: true, data: null }),
+      upsertSubscription: async () => ({ ok: true })
+    }
+  }));
+
+  process.env.STRIPE_SECRET_KEY = 'sk_live_abc';
+  process.env.STRIPE_PRICE_ID_MONTHLY_TRIAL = 'price_monthly_trial';
+
+  const req = createReq({ method: 'POST', query: { action: 'checkout' }, body: { plan: 'monthly_trial' } });
+  const res = createRes();
+  await mod.default(req, res);
+
+  assert.equal(res.statusCode, 200);
+  const body = parseJsonBody(res);
+  assert.equal(body.id, 'cs_test_trial_123');
+  assert.equal(body.url, 'https://checkout.stripe.test/trial-session');
+
+  delete process.env.STRIPE_SECRET_KEY;
+  delete process.env.STRIPE_PRICE_ID_MONTHLY_TRIAL;
+  globalThis.fetch = originalFetch;
+});
+
 test('api/stripe-webhook handles missing config/signature and invalid payload', { concurrency: false }, async () => {
   const mod = loadRouteModule('api/stripe-webhook.js', makeCommonImports({
     'node:crypto': { default: crypto },

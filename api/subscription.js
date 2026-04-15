@@ -9,7 +9,9 @@ import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
 const PLAN_TO_ENV = {
   weekly: 'STRIPE_PRICE_ID_WEEKLY',
   monthly: 'STRIPE_PRICE_ID_MONTHLY',
-  annual: 'STRIPE_PRICE_ID_YEARLY'
+  annual: 'STRIPE_PRICE_ID_YEARLY',
+  monthly_trial: 'STRIPE_PRICE_ID_MONTHLY_TRIAL',
+  annual_trial: 'STRIPE_PRICE_ID_YEARLY_TRIAL'
 };
 
 function getAction(req) {
@@ -95,7 +97,7 @@ function humanizeCheckoutError(err) {
     return 'Stripe key lacks permissions for checkout sessions. Use a full Secret key or grant restricted-key permission for checkout.sessions.create.';
   }
   if (code === 'resource_missing' && param.includes('line_items')) {
-    return 'Stripe price ID was not found. Verify STRIPE_PRICE_ID_WEEKLY/MONTHLY/YEARLY are real price_ IDs in the same Stripe mode (live vs test) as STRIPE_SECRET_KEY.';
+    return 'Stripe price ID was not found. Verify STRIPE_PRICE_ID_WEEKLY/MONTHLY/YEARLY (and optional *_TRIAL IDs) are real price_ IDs in the same Stripe mode (live vs test) as STRIPE_SECRET_KEY.';
   }
   if (code === 'invalid_request_error' && param.includes('line_items')) {
     return 'Stripe price ID is invalid for this request. Verify the selected plan env var points to a recurring price_ ID.';
@@ -165,7 +167,7 @@ async function handleCheckout(req, res, auth, secretKey) {
   const plan = (req.body && req.body.plan ? String(req.body.plan) : 'monthly').toLowerCase();
   const envName = PLAN_TO_ENV[plan];
   if (!envName) {
-    return json(res, 400, { error: 'Invalid plan. Use weekly, monthly, or annual.' });
+    return json(res, 400, { error: 'Invalid plan. Use weekly, monthly, annual, monthly_trial, or annual_trial.' });
   }
 
   const priceId = process.env[envName];

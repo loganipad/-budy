@@ -81,6 +81,16 @@ const BILLING_DISPLAY = {
     note: 'Billed $96 annually'
   }
 };
+const TRIAL_BILLING_DISPLAY = {
+  monthly: {
+    weekly: '3',
+    monthly: '12'
+  },
+  annual: {
+    weekly: '2',
+    monthly: '7'
+  }
+};
 
 let authClient = null;
 let authReady = false;
@@ -1506,6 +1516,19 @@ window.addEventListener('scroll',()=>document.querySelectorAll('#nav').forEach(n
 /* ── SMOOTH SCROLL ── */
 function scrollToSection(sel) { const el=document.querySelector(sel); if(el) el.scrollIntoView({behavior:'smooth'}); }
 
+function getBillingModeSelection() {
+  const selected = document.querySelector('input[name="billing"]:checked');
+  return selected && selected.value ? String(selected.value).toLowerCase() : 'weekly';
+}
+
+function resolveStripeCheckoutPlan(plan, billingMode) {
+  const safePlan = ['weekly', 'monthly', 'annual'].includes(plan) ? plan : 'monthly';
+  if (billingMode !== 'trial') return safePlan;
+  if (safePlan === 'monthly') return 'monthly_trial';
+  if (safePlan === 'annual') return 'annual_trial';
+  return safePlan;
+}
+
 /* ── FAQ ── */
 function faq(btn) {
   const open=btn.classList.contains('open');
@@ -1523,6 +1546,10 @@ function updatePriceDisplay(plan) {
   document.querySelectorAll('[data-plan][data-rate]').forEach(el => {
     const planKey = el.getAttribute('data-plan');
     if (!planKey || !BILLING_DISPLAY[planKey]) return;
+    if (isTrial && TRIAL_BILLING_DISPLAY[planKey] && TRIAL_BILLING_DISPLAY[planKey][mode]) {
+      el.textContent = TRIAL_BILLING_DISPLAY[planKey][mode];
+      return;
+    }
     el.textContent = BILLING_DISPLAY[planKey][mode];
   });
   const freeUnit = document.getElementById('free-price-unit');
@@ -1547,8 +1574,14 @@ function updatePriceDisplay(plan) {
   if (monthlyBilledWrap) monthlyBilledWrap.hidden = mode !== 'weekly';
   if (annualBilledWrap) annualBilledWrap.hidden = mode !== 'weekly';
   if (weeklyBill) weeklyBill.textContent = mode === 'weekly' ? 'Billed $8 weekly' : 'Billed $32 monthly equivalent';
-  if (monthlyBill) monthlyBill.textContent = mode === 'weekly' ? 'Billed $20 monthly' : 'Billed $20 monthly';
-  if (annualBill) annualBill.textContent = mode === 'weekly' ? 'Billed $96 annually' : 'Billed $8 monthly equivalent';
+  if (monthlyBill) {
+    if (isTrial) monthlyBill.textContent = mode === 'weekly' ? 'Billed $12 monthly · $8 off in free trial mode' : 'Billed $12 monthly · $8 off in free trial mode';
+    else monthlyBill.textContent = mode === 'weekly' ? 'Billed $20 monthly' : 'Billed $20 monthly';
+  }
+  if (annualBill) {
+    if (isTrial) annualBill.textContent = mode === 'weekly' ? 'Billed $88 annually · $8 off in free trial mode' : 'Billed $7 monthly equivalent · $8 off in free trial mode';
+    else annualBill.textContent = mode === 'weekly' ? 'Billed $96 annually' : 'Billed $8 monthly equivalent';
+  }
   if (weeklyCard) weeklyCard.classList.toggle('trial-focus', isTrial);
   if (annualCard) annualCard.classList.toggle('trial-muted', isTrial);
   if (weeklyCta) {
@@ -1898,7 +1931,11 @@ function selectPlan(plan) {
     btn.classList.toggle('is-selected', p===plan);
   });
   const p=PLANS[plan];
-  document.getElementById('pw-cta-btn').textContent=`Start ${p.label} Plan (${p.perWeek}/wk) →`;
+  const billingMode = getBillingModeSelection();
+  const trialDiscountApplies = billingMode === 'trial' && (plan === 'monthly' || plan === 'annual');
+  document.getElementById('pw-cta-btn').textContent = trialDiscountApplies
+    ? `Start ${p.label} Plan ($8 off) →`
+    : `Start ${p.label} Plan (${p.perWeek}/wk) →`;
 }
 
 async function handlePurchase() {
@@ -1944,8 +1981,11 @@ async function handlePurchase() {
   }
 
   try {
+    const billingMode = getBillingModeSelection();
+    const stripePlan = resolveStripeCheckoutPlan(S.selectedPlan || 'monthly', billingMode);
     trackEvent('checkout_started', {
       plan: S.selectedPlan,
+      checkoutPlan: stripePlan,
       view: S.view,
       source: paywallCtx || 'paywall'
     });
@@ -1961,7 +2001,7 @@ async function handlePurchase() {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ plan: S.selectedPlan })
+      body: JSON.stringify({ plan: stripePlan })
     });
     const data = await response.json();
 
@@ -1969,11 +2009,14 @@ async function handlePurchase() {
       throw new Error((data && data.error) ? data.error : 'Could not start checkout.');
     }
 
-    trackEvent('checkout_redirected', { plan: S.selectedPlan });
+    trackEvent('checkout_redirected', { plan: S.selectedPlan, checkoutPlan: stripePlan });
 
     window.location.href = data.url;
   } catch (err) {
-    trackEvent('checkout_error', { plan: S.selectedPlan, message: err && err.message ? String(err.message) : 'unknown' });
+    trackEvent('checkout_error', {
+      plan: S.selectedPlan,
+      message: err && err.message ? String(err.message) : 'unknown'
+    });
     toast(err.message || 'Could not start checkout. Try again.', 'er');
     if (cta) {
       cta.disabled = false;
