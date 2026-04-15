@@ -7,7 +7,7 @@
   var NAV_PROGRESS_ITEMS = [
     { linkId: 'nav-link-why', sectionId: 'features' },
     { linkId: 'nav-link-pricing', sectionId: 'pricing' },
-    { linkId: 'nav-link-features', sectionId: 'how-it-works' }
+    { linkId: 'nav-link-features', sectionId: 'features' }
   ];
 
   function getPath() {
