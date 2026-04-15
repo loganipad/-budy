@@ -940,7 +940,7 @@ function syncStartCtaLabels() {
   if (ctaSub) {
     ctaSub.textContent = isPremium
       ? 'Choose Reading & Writing, Math, or Full Test and jump in.'
-      : 'No account needed. No credit card. Just pick your section and go.';
+      : 'No credit card required. Start with a free test and upgrade only if you want more.';
   }
 }
 
