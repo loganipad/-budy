@@ -975,7 +975,7 @@ function syncStartCtaLabels() {
   if (stickyCopy) {
     stickyCopy.textContent = isPremium
       ? 'Pick your next practice test and keep momentum.'
-      : 'Try it free with no credit card required.';
+      : 'Try it free - no credit card required.';
   }
 }
 
