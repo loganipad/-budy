@@ -516,17 +516,22 @@ input,select{font-family:inherit}
 .marquee-track{display:flex;gap:0;width:max-content;animation:marquee 52s linear infinite}
 .marquee-track:hover{animation-play-state:paused}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.school-logo-wrap{display:flex;align-items:center;justify-content:center;padding:0 32px;height:60px;flex-shrink:0}
-.school-logo-text{
-  font-family:var(--font-serif);font-size:1rem;font-weight:700;
-  color:transparent;
-  -webkit-text-stroke:1.5px rgba(100,116,139,.38);
-  letter-spacing:.04em;white-space:nowrap;
-  filter:grayscale(1);opacity:.5;
-  transition:opacity .3s,color .3s,-webkit-text-stroke .3s;
-  user-select:none;
+.school-logo-wrap{display:flex;align-items:center;justify-content:center;padding:0 26px;height:60px;flex-shrink:0}
+.school-logo-img{
+  width:auto;
+  max-width:138px;
+  height:34px;
+  object-fit:contain;
+  object-position:center;
+  filter:grayscale(1) contrast(1.05);
+  opacity:.72;
+  transition:opacity .3s,filter .3s,transform .3s;
 }
-.school-logo-wrap:hover .school-logo-text{opacity:.9;-webkit-text-stroke:1.5px rgba(26,86,219,.6)}
+.school-logo-wrap:hover .school-logo-img{
+  opacity:.98;
+  filter:grayscale(0) contrast(1.08);
+  transform:translateY(-1px);
+}
 /* Shield SVG logos, purely decorative grayscale */
 .school-shield{width:44px;height:52px;opacity:.28;filter:grayscale(1);flex-shrink:0}
 
