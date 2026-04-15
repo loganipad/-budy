@@ -4199,7 +4199,6 @@ function enforceLandingSectionFlow() {
   const features = landing.querySelector('section#features');
   const how = landing.querySelector('section.how-section');
   const testimonials = landing.querySelector('.test-grid')?.closest('section') || null;
-  const solutions = landing.querySelector('section#solutions');
   const pricing = landing.querySelector('section#pricing');
   const faq = landing.querySelector('section.faq-section');
   const cta = landing.querySelector('section.cta-band');
@@ -4210,7 +4209,6 @@ function enforceLandingSectionFlow() {
     testimonials,
     features,
     how,
-    solutions,
     credibilityStrip,
     pricing,
     faq,
