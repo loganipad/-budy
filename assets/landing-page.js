@@ -898,6 +898,7 @@ function syncAdminVisibility() {
 function applyHomeStudyNavOverride() {
   const nav = document.getElementById('nav');
   if (!nav) return;
+  if (!S.isLoggedIn) return;
   nav.classList.add('home-study-nav');
   const panel = document.getElementById('mobile-menu-panel');
   if (panel) panel.classList.add('nav-study-ctx');

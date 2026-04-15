@@ -328,6 +328,8 @@
     var nav = document.getElementById('nav');
     var authBtn = document.getElementById('auth-btn');
     var mobileAuth = document.getElementById('mobile-auth-link');
+    var dashboardLink = document.getElementById('nav-link-account');
+    var mobileDashboardLink = document.getElementById('nav-m-link-account');
     if (!authBtn || !nav) return;
 
     var path = getPath();
@@ -341,6 +343,13 @@
     var authHref = ((isLanding && isLoggedIn) || (isAccount && isLoggedIn))
       ? '/study.html'
       : '/login.html';
+
+    if (dashboardLink) {
+      dashboardLink.style.display = isLoggedIn ? '' : 'none';
+    }
+    if (mobileDashboardLink) {
+      mobileDashboardLink.style.display = isLoggedIn ? '' : 'none';
+    }
 
     authBtn.textContent = nextLabel;
     authBtn.onclick = function () {
