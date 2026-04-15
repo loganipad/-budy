@@ -4155,6 +4155,48 @@ function ensurePrimaryViewVisible() {
   renderLandingDemo(0);
 }
 
+function enforceLandingSectionFlow() {
+  const landing = document.getElementById('landing-screen');
+  if (!landing) return;
+
+  const hero = landing.querySelector('section.hero');
+  const impactBand = landing.querySelector('.impact-band');
+  const credibilityStrip = landing.querySelector('section.cred-section');
+  const features = landing.querySelector('section#features');
+  const how = landing.querySelector('section.how-section');
+  const testimonials = landing.querySelector('section.test-grid')?.closest('section') || null;
+  const solutions = landing.querySelector('section#solutions');
+  const pricing = landing.querySelector('section#pricing');
+  const faq = landing.querySelector('section.faq-section');
+  const cta = landing.querySelector('section.cta-band');
+
+  const flow = [
+    hero,
+    impactBand,
+    testimonials,
+    features,
+    how,
+    solutions,
+    credibilityStrip,
+    pricing,
+    faq,
+    cta
+  ];
+
+  let anchor = null;
+  flow.forEach((node) => {
+    if (!node || !node.parentElement) return;
+    if (!anchor) {
+      anchor = node;
+      return;
+    }
+    if (node.previousElementSibling !== anchor) {
+      anchor.insertAdjacentElement('afterend', node);
+    }
+    anchor = node;
+  });
+}
+
 async function init() {
   const initialSearchParams = new URLSearchParams(window.location.search);
   const initialSid = normalizeSessionId(initialSearchParams.get('sid'));
@@ -4168,6 +4210,7 @@ async function init() {
     if (nav) nav.classList.toggle('scrolled', scrollY > 20);
   });
   closeMobileMenu();
+  enforceLandingSectionFlow();
   selectPlan('monthly');
   updatePriceDisplay('weekly');
   renderLandingDemo(0);
