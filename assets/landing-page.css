@@ -516,21 +516,47 @@ input,select{font-family:inherit}
 .marquee-track{display:flex;gap:0;width:max-content;animation:marquee 52s linear infinite}
 .marquee-track:hover{animation-play-state:paused}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.school-logo-wrap{display:flex;align-items:center;justify-content:center;padding:0 26px;height:60px;flex-shrink:0}
+.school-logo-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  justify-content:center;
+  padding:0 14px;
+  height:60px;
+  min-width:178px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.24);
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(241,245,249,.86));
+  box-shadow:0 8px 22px rgba(15,23,42,.08);
+  flex-shrink:0;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease),background .25s var(--ease);
+}
 .school-logo-img{
-  width:auto;
-  max-width:138px;
-  height:34px;
+  width:24px;
+  height:24px;
   object-fit:contain;
   object-position:center;
-  filter:grayscale(1) contrast(1.05);
-  opacity:.72;
+  filter:grayscale(.25) contrast(1.05);
+  opacity:.95;
   transition:opacity .3s,filter .3s,transform .3s;
 }
+.school-logo-name{
+  color:#334155;
+  font-size:.82rem;
+  font-weight:800;
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
 .school-logo-wrap:hover .school-logo-img{
-  opacity:.98;
+  opacity:1;
   filter:grayscale(0) contrast(1.08);
   transform:translateY(-1px);
+}
+.school-logo-wrap:hover{
+  border-color:rgba(37,99,235,.36);
+  box-shadow:0 14px 30px rgba(37,99,235,.16);
+  background:linear-gradient(180deg,#ffffff,#eef4ff);
+  transform:translateY(-2px);
 }
 /* Shield SVG logos, purely decorative grayscale */
 .school-shield{width:44px;height:52px;opacity:.28;filter:grayscale(1);flex-shrink:0}
