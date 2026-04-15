@@ -24,6 +24,7 @@ const CHECKOUT_SYNC_DELAY_MS = 2500;
 const LANDING_DEMO_QUESTIONS = [
   {
     section: 'Math',
+    domain: 'Algebra',
     question: 'If a tutoring app has 120 users and grows by 25%, how many users does it have now?',
     choices: ['130', '140', '150', '160'],
     answer: 'C',
@@ -31,6 +32,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'SAT Reading Demo',
+    domain: 'Evidence',
     question: 'A passage says a scientist repeated an experiment three times with the same result. The best inference is:',
     choices: ['The result may be reliable', 'The experiment is definitely perfect', 'The scientist is biased', 'No conclusion can be made'],
     answer: 'A',
@@ -38,6 +40,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'SAT Math Demo',
+    domain: 'Linear Equations',
     question: 'What is the slope of a line through points (2, 4) and (6, 12)?',
     choices: ['1', '2', '3', '4'],
     answer: 'B',
@@ -45,6 +48,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'Writing Demo',
+    domain: 'Transitions',
     question: 'Choose the best transition: "The class practiced daily. _____, scores improved by 18%."',
     choices: ['However', 'For example', 'As a result', 'Meanwhile'],
     answer: 'C',
@@ -52,6 +56,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'Reading Demo',
+    domain: 'Data Analysis',
     question: 'A paragraph says, "The city added shaded bus stops, and heat-related complaints dropped the next month." Which claim is best supported?',
     choices: ['Shaded stops may reduce heat stress for riders', 'All transit problems are solved', 'Bus routes became faster', 'Complaints are always inaccurate'],
     answer: 'A',
@@ -59,6 +64,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'Math Demo',
+    domain: 'Linear Equations',
     question: 'If 3x - 7 = 20, what is x?',
     choices: ['7', '8', '9', '11'],
     answer: 'C',
@@ -66,6 +72,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'Writing Demo',
+    domain: 'Grammar',
     question: 'Choose the sentence with correct punctuation.',
     choices: ['The team practiced hard therefore, they improved.', 'The team practiced hard; therefore, they improved.', 'The team practiced hard therefore they, improved.', 'The team practiced; hard therefore they improved.'],
     answer: 'B',
@@ -73,6 +80,7 @@ const LANDING_DEMO_QUESTIONS = [
   },
   {
     section: 'Math Demo',
+    domain: 'Functions',
     question: 'What is the y-intercept of y = 2x + 5?',
     choices: ['2', '5', '-2', '-5'],
     answer: 'B',
@@ -1725,8 +1733,7 @@ function renderDemoControls() {
   if (S.demoCompleted) {
     dots.className = 'phone-prog phone-prog-actions';
     dots.innerHTML = [
-      '<button type="button" class="phone-action-btn retry" onclick="retryDemoTest()">Retry</button>',
-      '<button type="button" class="phone-action-btn full" onclick="openOnboard()">Start Free →</button>'
+      '<button type="button" class="phone-action-btn full" onclick="openOnboard()">Unlock Full Results - Start Free, No Card Needed</button>'
     ].join('');
     doneBtn.hidden = true;
     return;
@@ -1805,15 +1812,42 @@ function renderDemoAnalytics() {
   const overall = Math.round((correctCount / LANDING_DEMO_QUESTIONS.length) * 100);
   const rating = document.getElementById('demo-analytics-rating');
   const copy = document.getElementById('demo-analytics-copy');
+  const domainStats = {};
+  LANDING_DEMO_QUESTIONS.forEach((q, idx) => {
+    const domain = String(q.domain || (String(q.section || '').toLowerCase().includes('math') ? 'Math' : 'Reading & Writing'));
+    if (!domainStats[domain]) domainStats[domain] = { domain, total: 0, correct: 0 };
+    domainStats[domain].total += 1;
+    if (S.demoStatus[idx] === 'correct') domainStats[domain].correct += 1;
+  });
+  const domainList = Object.values(domainStats);
+  const strongest = domainList.length ? domainList.slice().sort((a, b) => {
+    const accA = a.total ? a.correct / a.total : 0;
+    const accB = b.total ? b.correct / b.total : 0;
+    if (accB !== accA) return accB - accA;
+    return b.correct - a.correct;
+  })[0] : null;
+  const weakest = domainList.length ? domainList.slice().sort((a, b) => {
+    const missA = a.total - a.correct;
+    const missB = b.total - b.correct;
+    if (missB !== missA) return missB - missA;
+    const accA = a.total ? a.correct / a.total : 0;
+    const accB = b.total ? b.correct / b.total : 0;
+    return accA - accB;
+  })[0] : null;
+  const weakestMisses = weakest ? Math.max(0, weakest.total - weakest.correct) : 0;
 
   if (rating) {
     rating.textContent = 'You got ' + correctCount + '/' + LANDING_DEMO_QUESTIONS.length + '.';
   }
 
   if (copy) {
-    if (overall >= 75) copy.textContent = 'Want full explanations for every question? Start free →';
-    else if (overall >= 50) copy.textContent = 'You are close. Want full explanations and targeted review? Start free →';
-    else copy.textContent = 'Want to see exactly why each answer works? Start free →';
+    const strongestLine = strongest
+      ? 'You are strongest in ' + strongest.domain + ' (' + strongest.correct + '/' + strongest.total + ').'
+      : '';
+    const weakestLine = weakest && weakestMisses > 0
+      ? 'You missed ' + weakestMisses + ' ' + weakest.domain.toLowerCase() + ' question' + (weakestMisses === 1 ? '' : 's') + '.'
+      : 'You completed the demo and unlocked your baseline.';
+    copy.textContent = strongestLine + ' ' + weakestLine + ' Premium members get full explanations for every miss and a personalized study plan based on this result.';
   }
 
   [
