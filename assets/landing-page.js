@@ -4265,7 +4265,7 @@ async function init() {
   closeMobileMenu();
   enforceLandingSectionFlow();
   selectPlan('monthly');
-  updatePriceDisplay('weekly');
+  updatePriceDisplay('monthly');
   renderLandingDemo(0);
   attachDemoSwipe();
   attachRipple();
