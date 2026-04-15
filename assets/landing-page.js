@@ -4226,9 +4226,9 @@ function enforceLandingSectionFlow() {
     hero,
     impactBand,
     testimonials,
+    credibilityStrip,
     features,
     how,
-    credibilityStrip,
     pricing,
     faq,
     cta
