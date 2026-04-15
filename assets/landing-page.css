@@ -814,6 +814,8 @@ input,select{font-family:inherit}
 .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
 .test-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;transition:all .22s var(--ease)}
 .test-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.test-card[data-priority="1"]{order:-2}
+.test-card[data-priority="2"]{order:-1}
 .test-stars{color:var(--gold);display:flex;align-items:center;gap:4px;margin-bottom:12px}
 .test-body{font-size:.9rem;color:var(--slate);line-height:1.65;margin-bottom:18px;font-style:italic}
 .test-author{display:flex;align-items:center;gap:12px}
