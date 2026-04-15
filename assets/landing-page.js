@@ -970,6 +970,24 @@ function syncStartCtaLabels() {
       ? 'Choose Reading & Writing, Math, or Full Test and jump in.'
       : 'No credit card required. Start with a free test and upgrade only if you want more.';
   }
+
+  const stickyCopy = document.querySelector('#sticky-conversion-cta .sticky-conversion-copy');
+  if (stickyCopy) {
+    stickyCopy.textContent = isPremium
+      ? 'Pick your next practice test and keep momentum.'
+      : 'Try it free with no credit card required.';
+  }
+}
+
+function updateStickyConversionCtaVisibility() {
+  const sticky = document.getElementById('sticky-conversion-cta');
+  const hero = document.querySelector('section.hero');
+  if (!sticky || !hero) return;
+  const inLanding = S.view === 'landing';
+  const scrolledPastHero = window.scrollY > (hero.offsetTop + hero.offsetHeight - 120);
+  const shouldShow = inLanding && scrolledPastHero;
+  sticky.classList.toggle('show', shouldShow);
+  sticky.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
 }
 
 function toggleMobileMenu() {
@@ -1433,6 +1451,7 @@ function setView(v, options = {}) {
     window.scrollTo(0, 0);
   }
 
+  updateStickyConversionCtaVisibility();
   syncAdminVisibility();
   syncLandingDeepDive();
 }
@@ -4240,7 +4259,9 @@ async function init() {
   window.addEventListener('scroll', () => {
     const nav = document.getElementById('nav');
     if (nav) nav.classList.toggle('scrolled', scrollY > 20);
+    updateStickyConversionCtaVisibility();
   });
+  window.addEventListener('resize', updateStickyConversionCtaVisibility);
   closeMobileMenu();
   enforceLandingSectionFlow();
   selectPlan('monthly');
@@ -4291,6 +4312,7 @@ async function init() {
   }
 
   setView('landing', { preserveScroll: true });
+  updateStickyConversionCtaVisibility();
 
   if (searchParams.get('review') === '1') {
     searchParams.delete('review');
