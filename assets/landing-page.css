@@ -700,6 +700,10 @@ input,select{font-family:inherit}
 .sp-chip{width:42%;height:12px;border-radius:999px;background:rgba(16,185,129,.8)}
 .solution-card.blank .solution-preview{display:flex;align-items:center;justify-content:center;color:rgba(226,232,240,.6);font-size:.78rem;font-weight:700}
 @keyframes scan{from{left:-45%}to{left:120%}}
+@media (hover: none), (pointer: coarse) {
+  .solution-preview::before{opacity:.8}
+  .sp-row::after{animation:scan 1.4s linear infinite}
+}
 
 /* ============================================================
    TESTIMONIALS
