@@ -49,6 +49,41 @@ const LANDING_DEMO_QUESTIONS = [
     choices: ['However', 'For example', 'As a result', 'Meanwhile'],
     answer: 'C',
     explanation: 'The second clause is an outcome of the first, so "As a result" fits best.'
+  },
+  {
+    section: 'Reading Demo',
+    question: 'A paragraph says, "The city added shaded bus stops, and heat-related complaints dropped the next month." Which claim is best supported?',
+    choices: ['Shaded stops may reduce heat stress for riders', 'All transit problems are solved', 'Bus routes became faster', 'Complaints are always inaccurate'],
+    answer: 'A',
+    explanation: 'The timing supports a likely link between added shade and fewer heat complaints.'
+  },
+  {
+    section: 'Math Demo',
+    question: 'If 3x - 7 = 20, what is x?',
+    choices: ['7', '8', '9', '11'],
+    answer: 'C',
+    explanation: 'Add 7 to both sides to get 3x = 27, then divide by 3 to get x = 9.'
+  },
+  {
+    section: 'Writing Demo',
+    question: 'Choose the sentence with correct punctuation.',
+    choices: ['The team practiced hard therefore, they improved.', 'The team practiced hard; therefore, they improved.', 'The team practiced hard therefore they, improved.', 'The team practiced; hard therefore they improved.'],
+    answer: 'B',
+    explanation: 'A semicolon + conjunctive adverb + comma correctly links two independent clauses.'
+  },
+  {
+    section: 'Reading Demo',
+    question: 'An author contrasts "quick fixes" with "long-term systems." The main purpose is to:',
+    choices: ['Show why durable solutions matter more', 'Describe unrelated topics', 'Argue that all fixes fail', 'Reject planning entirely'],
+    answer: 'A',
+    explanation: 'The contrast highlights the value of long-term systems over temporary fixes.'
+  },
+  {
+    section: 'Math Demo',
+    question: 'What is the y-intercept of y = 2x + 5?',
+    choices: ['2', '5', '-2', '-5'],
+    answer: 'B',
+    explanation: 'In slope-intercept form y = mx + b, the y-intercept is b, which is 5.'
   }
 ];
 
@@ -152,7 +187,7 @@ const S = {
 
 /* ── FREE TIER LIMITS ── */
 const FREE_Q = 10; // questions allowed on free tier
-const LANDING_TIMER_SECONDS = 30 * 60;
+const LANDING_TIMER_SECONDS = 8 * 60;
 const LANDING_STRICT_ONE_AT_TIME = true;
 const TEST_DURATION_SECONDS = {
   english: { premium: 32 * 60, free: 12 * 60 },
@@ -1679,7 +1714,7 @@ function renderDemoControls() {
     dots.className = 'phone-prog phone-prog-actions';
     dots.innerHTML = [
       '<button type="button" class="phone-action-btn retry" onclick="retryDemoTest()">Retry</button>',
-      '<button type="button" class="phone-action-btn full" onclick="openOnboard()">Full Test</button>'
+      '<button type="button" class="phone-action-btn full" onclick="openOnboard()">Start Free →</button>'
     ].join('');
     doneBtn.hidden = true;
     return;
@@ -1738,29 +1773,35 @@ function completeDemoTest() {
 }
 
 function renderDemoAnalytics() {
-  const mathIds = [0, 2];
-  const englishIds = [1, 3];
+  const mathIds = LANDING_DEMO_QUESTIONS
+    .map((q, idx) => ({ q, idx }))
+    .filter((item) => /math/i.test(String(item.q.section || '')))
+    .map((item) => item.idx);
+  const englishIds = LANDING_DEMO_QUESTIONS
+    .map((q, idx) => ({ q, idx }))
+    .filter((item) => !/math/i.test(String(item.q.section || '')))
+    .map((item) => item.idx);
   const scoreFor = (ids) => {
+    if (!ids.length) return 0;
     const correct = ids.filter((id) => S.demoStatus[id] === 'correct').length;
     return Math.round((correct / ids.length) * 100);
   };
 
+  const correctCount = Object.values(S.demoStatus).filter((status) => status === 'correct').length;
   const english = scoreFor(englishIds);
   const math = scoreFor(mathIds);
-  const overall = Math.round((Object.values(S.demoStatus).filter((status) => status === 'correct').length / LANDING_DEMO_QUESTIONS.length) * 100);
+  const overall = Math.round((correctCount / LANDING_DEMO_QUESTIONS.length) * 100);
   const rating = document.getElementById('demo-analytics-rating');
   const copy = document.getElementById('demo-analytics-copy');
 
   if (rating) {
-    if (overall >= 75) rating.textContent = 'Strong job finishing the demo.';
-    else if (overall >= 50) rating.textContent = 'Good work completing the demo.';
-    else rating.textContent = 'Nice effort finishing the demo.';
+    rating.textContent = 'You got ' + correctCount + '/' + LANDING_DEMO_QUESTIONS.length + '.';
   }
 
   if (copy) {
-    if (overall >= 75) copy.textContent = 'You are showing solid early proficiency. Keep going and build on this momentum.';
-    else if (overall >= 50) copy.textContent = 'You are building real progress. A few more reps can turn this into stronger consistency.';
-    else copy.textContent = 'You finished the set and that matters. This snapshot gives you a starting point to improve from.';
+    if (overall >= 75) copy.textContent = 'Want full explanations for every question? Start free →';
+    else if (overall >= 50) copy.textContent = 'You are close. Want full explanations and targeted review? Start free →';
+    else copy.textContent = 'Want to see exactly why each answer works? Start free →';
   }
 
   [
@@ -4164,7 +4205,7 @@ function enforceLandingSectionFlow() {
   const credibilityStrip = landing.querySelector('section.cred-section');
   const features = landing.querySelector('section#features');
   const how = landing.querySelector('section.how-section');
-  const testimonials = landing.querySelector('section.test-grid')?.closest('section') || null;
+  const testimonials = landing.querySelector('.test-grid')?.closest('section') || null;
   const solutions = landing.querySelector('section#solutions');
   const pricing = landing.querySelector('section#pricing');
   const faq = landing.querySelector('section.faq-section');
