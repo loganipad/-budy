@@ -47,10 +47,22 @@ function checkJavaScriptSyntax(filePath) {
   }
 }
 
+const VERCEL_HOBBY_MAX_SERVERLESS_FUNCTIONS = 12;
+
 function validateApiFunctionLayout() {
   const apiDir = path.join(root, 'api');
   if (!existsSync(apiDir)) {
     return;
+  }
+
+  const routeFiles = readdirSync(apiDir).filter(
+    (entry) => entry.endsWith('.js') || entry.endsWith('.mjs')
+  );
+  if (routeFiles.length > VERCEL_HOBBY_MAX_SERVERLESS_FUNCTIONS) {
+    throw new Error(
+      `api/ has ${routeFiles.length} serverless route files; Vercel Hobby allows at most ${VERCEL_HOBBY_MAX_SERVERLESS_FUNCTIONS} per deployment. ` +
+        `Merge routes (e.g. use query actions on one handler) or use vercel.json rewrites to an existing function. Files: ${routeFiles.sort().join(', ')}`
+    );
   }
 
   for (const entry of readdirSync(apiDir)) {
