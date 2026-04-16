@@ -311,11 +311,8 @@ test('api/stripe-webhook rejects stale signatures and handles duplicate event de
   delete process.env.STRIPE_WEBHOOK_TOLERANCE_SECONDS;
 });
 
-test('api/question-bank returns sanitized question payloads', { concurrency: false }, async () => {
+test('api/question-bank returns sanitized question payloads without auth', { concurrency: false }, async () => {
   const mod = loadRouteModule('api/question-bank.js', makeCommonImports({
-    '../lib/auth.js': {
-      resolveAuthUser: async () => ({ ok: true, user: { id: 'test-user', email: 'test@example.com' } })
-    },
     '../lib/question-bank.js': {
       loadQuestionBank: async () => ({
         english: [{ id: 'e1', type: 'mc', section: 'english', domain: 'd', skill: 's', difficulty: 'easy', tags: [], source_context: '', calculator_allowed: null, estimated_time_seconds: 60, passage: '', question: 'Q1', options: ['A', 'B', 'C', 'D'], answer: 'A', rationale: 'r1' }],

@@ -1,4 +1,3 @@
-import { resolveAuthUser } from '../lib/auth.js';
 import { withApiErrorBoundary } from '../lib/observability.js';
 import { json } from '../lib/http.js';
 import { applyRateLimitHeaders, checkRateLimit } from '../lib/rate-limit.js';
@@ -24,18 +23,15 @@ async function handler(req, res) {
     });
   }
 
-  const auth = await resolveAuthUser(req);
-  if (!auth.ok) {
-    return json(res, auth.status || 401, { error: 'Unauthorized' });
-  }
-
+  // Public GET: prompts and metadata only via toPublicQuestion (no answers). Guest practice
+  // tests on the landing page load this without a Bearer token.
   const section = String(req.query && req.query.section ? req.query.section : 'all').trim().toLowerCase();
   const bank = await loadQuestionBank();
 
   const english = bank.english.map(toPublicQuestion);
   const math = bank.math.map(toPublicQuestion);
 
-  res.setHeader('Cache-Control', 'private, max-age=120');
+  res.setHeader('Cache-Control', 'public, max-age=120');
 
   if (section === 'english') {
     return json(res, 200, { english, math: [], total: english.length });
