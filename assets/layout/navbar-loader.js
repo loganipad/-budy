@@ -2,11 +2,12 @@
   var didMountNavbar = false;
   var didBindScroll = false;
   var didBindResize = false;
-  var NAV_CACHE_KEY = 'budy_navbar_html_v5';
+  var NAV_CACHE_KEY = 'budy_navbar_html_v6';
   var NAV_STATE_KEY = 'budy_navbar_state_v1';
+  // Order matches landing scroll order (features section before pricing).
   var NAV_PROGRESS_ITEMS = [
-    { linkId: 'nav-link-pricing', sectionId: 'pricing' },
-    { linkId: 'nav-link-features', sectionId: 'features' }
+    { linkId: 'nav-link-features', sectionId: 'features' },
+    { linkId: 'nav-link-pricing', sectionId: 'pricing' }
   ];
 
   function getPath() {
