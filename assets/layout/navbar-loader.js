@@ -5,7 +5,6 @@
   var NAV_CACHE_KEY = 'budy_navbar_html_v5';
   var NAV_STATE_KEY = 'budy_navbar_state_v1';
   var NAV_PROGRESS_ITEMS = [
-    { linkId: 'nav-link-why', sectionId: 'features' },
     { linkId: 'nav-link-pricing', sectionId: 'pricing' },
     { linkId: 'nav-link-features', sectionId: 'features' }
   ];
@@ -194,6 +193,9 @@
 
   function syncNavStartCtas() {
     var nextLabel = 'Start Test';
+    var path = getPath();
+    var state = getRuntimeNavState();
+    var usePremiumLabel = !isLandingPage(path) || Boolean(state.isPremium);
 
     var nav = document.getElementById('nav');
     if (!nav) return;
@@ -201,7 +203,9 @@
     nav.querySelectorAll('[data-start-cta]').forEach(function (el) {
       var freeText = el.getAttribute('data-free-text') || '';
       var premiumText = el.getAttribute('data-premium-text') || freeText;
-      el.textContent = premiumText || freeText || nextLabel;
+      el.textContent = usePremiumLabel
+        ? (premiumText || freeText || nextLabel)
+        : (freeText || premiumText || nextLabel);
     });
 
     nav.querySelectorAll('button[onclick="openOnboard()"], button[onclick="openOnboard();"]').forEach(function (el) {
@@ -314,7 +318,7 @@
       panel.classList.toggle('nav-account-ctx', account);
 
       var hideInStudy = ['nav-m-link-pricing', 'nav-m-link-features', 'mobile-auth-link'];
-      var hideInTest = ['nav-m-link-why', 'nav-m-link-features', 'nav-m-link-pricing'];
+      var hideInTest = ['nav-m-link-features', 'nav-m-link-pricing'];
       var idsToHide = test ? hideInTest : (study ? hideInStudy : []);
 
       panel.querySelectorAll('.mobile-menu-link').forEach(function (link) {

@@ -401,3 +401,28 @@ test('api/deep-dive enforces auth and supports preview mode', { concurrency: fal
   assert.equal(payload.previewMode, true);
   assert.ok(payload.definition);
 });
+
+test('legacy test API routes proxy to test-engine actions', { concurrency: false }, async () => {
+  const calledActions = [];
+  const makeProxyHandler = () => async (req, res) => {
+    calledActions.push(String(req.query && req.query.action ? req.query.action : ''));
+    res.status(200).setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ ok: true }));
+  };
+
+  const issueRoute = loadRouteModule('api/issue-test-session.js', {
+    './test-engine.js': { default: makeProxyHandler() }
+  });
+  const evaluateRoute = loadRouteModule('api/evaluate-answer.js', {
+    './test-engine.js': { default: makeProxyHandler() }
+  });
+  const gradeRoute = loadRouteModule('api/grade-test.js', {
+    './test-engine.js': { default: makeProxyHandler() }
+  });
+
+  await issueRoute.default(createReq({ method: 'POST', body: {} }), createRes());
+  await evaluateRoute.default(createReq({ method: 'POST', body: {} }), createRes());
+  await gradeRoute.default(createReq({ method: 'POST', body: {} }), createRes());
+
+  assert.deepEqual(calledActions, ['issue', 'evaluate', 'grade']);
+});

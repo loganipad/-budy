@@ -278,16 +278,13 @@
 
   /* ── Context-based desktop link hiding ─────────────────────── */
   /* Only hide the DESKTOP nav links per context — never the mobile menu links */
-  #nav.nav-context-default #nav-link-why,
   #nav.nav-context-default #nav-link-features,
   #nav.nav-context-default #nav-link-pricing,
-  #nav.nav-context-account #nav-link-why,
   #nav.nav-context-account #nav-link-features,
   #nav.nav-context-account #nav-link-pricing,
   #nav.nav-context-study #nav-link-pricing,
   #nav.nav-context-study #nav-link-features,
   #nav.nav-context-study #auth-btn,
-  #nav.nav-context-test #nav-link-why,
   #nav.nav-context-test #nav-link-features,
   #nav.nav-context-test #nav-link-pricing {
     display: none !important;
@@ -364,14 +361,13 @@
       <span class="nav-logo-wordmark">Budy<span class="nav-logo-study">.Study</span></span>
     </a>
     <div class="nav-right">
-      <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-why">Why Budy?</a>
       <a href="/#pricing" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-pricing" data-analytics-event="nav_pricing">Pricing</a>
       <a href="/#features" class="btn btn-ghost btn-sm nav-link-hide nav-progress-pill" id="nav-link-features">Features</a>
       <a class="btn btn-ghost btn-sm" href="/my-account.html" id="nav-link-account">Dashboard</a>
       <button class="btn btn-ghost btn-sm" id="auth-btn" onclick="handleAuthButton()" data-analytics-event="nav_auth">Log In</button>
-      <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test" data-analytics-event="nav_start_test">Start Test</button>
+      <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start a FREE Practice Test" data-premium-text="Start a Practice Test" data-analytics-event="nav_start_test">Start a FREE Practice Test</button>
       <div class="mobile-menu-wrap">
-        <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start Test" data-premium-text="Start Test" data-analytics-event="nav_start_test_mobile">Start Test</button>
+        <button class="btn btn-primary btn-sm" onclick="openOnboard()" data-start-cta data-free-text="Start a FREE Practice Test" data-premium-text="Start a Practice Test" data-analytics-event="nav_start_test_mobile">Start a FREE Practice Test</button>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">Menu ▾</button>
       </div>
     </div>
@@ -382,7 +378,6 @@
   <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">&#x2715;</button>
   <div class="mobile-menu-links">
     <a class="mobile-menu-link" href="/" onclick="closeMobileMenu()" id="nav-m-link-home">Home</a>
-    <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-why">Why Budy?</a>
     <a class="mobile-menu-link" href="/#pricing" onclick="closeMobileMenu()" id="nav-m-link-pricing">Pricing</a>
     <a class="mobile-menu-link" href="/#features" onclick="closeMobileMenu()" id="nav-m-link-features">Features</a>
     <a class="mobile-menu-link" href="/my-account.html" onclick="closeMobileMenu()" id="nav-m-link-account">Dashboard</a>

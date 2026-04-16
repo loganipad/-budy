@@ -1,11 +1,5 @@
 'use strict';
 
-(() => {
-  const heroUserCounterEl = document.getElementById('hero-user-counter');
-  if (!heroUserCounterEl) return;
-  heroUserCounterEl.textContent = 'Thousands';
-})();
-
 /* ── AUTH0 CONFIG ── */
 const AUTH0_DOMAIN = 'dev-rv7cg5xpm5r2o1z2.us.auth0.com';
 const AUTH0_CLIENT_ID = 'UeJa9w8a0auVzw8vBBx1Tt5eD28sxMkC';
@@ -20,6 +14,8 @@ const ADMIN_PREMIUM_EMAILS = [];
 const TEST_USER_EMAILS = [];
 const CHECKOUT_SYNC_ATTEMPTS = 8;
 const CHECKOUT_SYNC_DELAY_MS = 2500;
+const NAV_STUDY_HIGHLIGHT_DELAY_MS = 500;
+const LANDING_FREE_CTA_SWAP_DELAY_MS = 500;
 
 const LANDING_DEMO_QUESTIONS = [
   {
@@ -94,6 +90,8 @@ let draftAutosaveIntervalTimer = null;
 let draftAutosaveInFlight = false;
 let draftAutosaveQueued = false;
 let draftBackendUnavailable = false;
+let homeStudyNavHighlightTimer = null;
+let landingFreeCtaSwapTimer = null;
 
 function spriteIcon(name, className) {
   const cls = className || 'ui-icon ui-icon-md';
@@ -147,6 +145,7 @@ const S = {
   section: null,
   isPremium: false,
   premiumVerified: false,
+  landingCtaSwapDone: false,
   obStep: 1,
   obSection: null,
 
@@ -166,7 +165,7 @@ const S = {
 
   results: null,
   chart: null,
-  selectedPlan: 'monthly',
+  selectedPlan: 'weekly',
   demoIndex: 0,
   demoAnswers: {},
   demoStatus: {},
@@ -934,10 +933,19 @@ function syncAdminVisibility() {
 function applyHomeStudyNavOverride() {
   const nav = document.getElementById('nav');
   if (!nav) return;
-  if (!S.isLoggedIn) return;
-  nav.classList.add('home-study-nav');
   const panel = document.getElementById('mobile-menu-panel');
-  if (panel) panel.classList.add('nav-study-ctx');
+  if (!S.isLoggedIn) {
+    nav.classList.remove('home-study-nav');
+    if (panel) panel.classList.remove('nav-study-ctx');
+    if (homeStudyNavHighlightTimer) {
+      clearTimeout(homeStudyNavHighlightTimer);
+      homeStudyNavHighlightTimer = null;
+    }
+    return;
+  }
+
+  nav.classList.remove('home-study-nav');
+  if (panel) panel.classList.remove('nav-study-ctx');
   const studyTarget = '/study.html';
 
   const authBtn = document.getElementById('auth-btn');
@@ -956,16 +964,38 @@ function applyHomeStudyNavOverride() {
       window.location.href = studyTarget;
     };
   }
+
+  if (homeStudyNavHighlightTimer) clearTimeout(homeStudyNavHighlightTimer);
+  homeStudyNavHighlightTimer = window.setTimeout(() => {
+    nav.classList.add('home-study-nav');
+    if (panel) panel.classList.add('nav-study-ctx');
+    homeStudyNavHighlightTimer = null;
+  }, NAV_STUDY_HIGHLIGHT_DELAY_MS);
 }
 
 function syncStartCtaLabels() {
   const isPremium = Boolean(S.isPremium);
-
-  document.querySelectorAll('[data-start-cta]').forEach((el) => {
+  const startCtas = Array.from(document.querySelectorAll('[data-start-cta]'));
+  startCtas.forEach((el) => {
     const freeText = el.getAttribute('data-free-text') || '';
     const premiumText = el.getAttribute('data-premium-text') || freeText;
     el.textContent = isPremium ? premiumText : freeText;
   });
+
+  if (landingFreeCtaSwapTimer) {
+    clearTimeout(landingFreeCtaSwapTimer);
+    landingFreeCtaSwapTimer = null;
+  }
+  if (!isPremium && !S.landingCtaSwapDone && S.view === 'landing') {
+    landingFreeCtaSwapTimer = window.setTimeout(() => {
+      startCtas.forEach((el) => {
+        const premiumText = el.getAttribute('data-premium-text') || 'Start a Practice Test';
+        el.textContent = premiumText;
+      });
+      S.landingCtaSwapDone = true;
+      landingFreeCtaSwapTimer = null;
+    }, LANDING_FREE_CTA_SWAP_DELAY_MS);
+  }
 
   const ctaTitle = document.getElementById('landing-cta-title');
   if (ctaTitle) {
@@ -2258,9 +2288,9 @@ async function cancelSubscriptionNow() {
 
 /* ── QUESTIONS ── */
 const QUESTION_BANK_URL = '/api/question-bank';
-const ISSUE_TEST_SESSION_URL = '/api/issue-test-session';
-const EVALUATE_ANSWER_URL = '/api/evaluate-answer';
-const GRADE_TEST_URL = '/api/grade-test';
+const ISSUE_TEST_SESSION_URL = '/api/test-engine?action=issue';
+const EVALUATE_ANSWER_URL = '/api/test-engine?action=evaluate';
+const GRADE_TEST_URL = '/api/test-engine?action=grade';
 
 let questionBankLoadPromise = null;
 let questionBankCache = null;
@@ -4207,19 +4237,16 @@ function initLandingCounters() {
   const heroUserCounterEl = document.getElementById('hero-user-counter');
   if (heroUserCounterEl && heroUserCounterEl.dataset.budyInit !== '1') {
     heroUserCounterEl.dataset.budyInit = '1';
-    const baseUsers = 49100;
+    const baseUsers = 45000;
     const counterStart = new Date('2026-03-23T22:48:42-0700').getTime();
     const msPerDay = 24 * 60 * 60 * 1000;
-    const msPerWeek = 7 * msPerDay;
 
     const formatExactNumber = n => Math.max(baseUsers, Math.floor(n)).toLocaleString('en-US');
     const getCurrentUserCount = () => {
       const elapsedMs = Math.max(0, Date.now() - counterStart);
       const elapsedDays = elapsedMs / msPerDay;
-      const elapsedWeeks = elapsedMs / msPerWeek;
-      const weeklyGrowth = baseUsers * Math.pow(1.01, elapsedWeeks);
-      const dailyGrowth = 200 * elapsedDays;
-      return weeklyGrowth + dailyGrowth;
+      const dailyGrowth = 250 * elapsedDays;
+      return baseUsers + dailyGrowth;
     };
 
     const updateHeroUserCounter = () => {
@@ -4298,8 +4325,8 @@ async function init() {
   window.addEventListener('resize', updateStickyConversionCtaVisibility);
   closeMobileMenu();
   enforceLandingSectionFlow();
-  selectPlan('monthly');
-  updatePriceDisplay('monthly');
+  selectPlan('weekly');
+  updatePriceDisplay('weekly');
   renderLandingDemo(0);
   attachDemoSwipe();
   attachRipple();
